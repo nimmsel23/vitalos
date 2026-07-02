@@ -43,7 +43,7 @@ function FuelInner() {
                   Fuel Centre V3
                 </p>
               </div>
-              <h1 className="text-3xl font-semibold tracking-tight md:text-5xl">Nutrition Journal</h1>
+              <h1 className="text-3xl font-semibold tracking-tight md:text-5xl">Fuel Centre</h1>
             </div>
             <div className="rounded-2xl border border-white/10 bg-slate-950/70 p-4 text-right">
               <div className="text-xs uppercase tracking-[0.2em] text-slate-400">Tagessumme</div>
