@@ -1,0 +1,1 @@
+../../../fitness-dev/src/views/Settings/SegmentedControl.jsx

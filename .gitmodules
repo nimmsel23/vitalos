@@ -1,0 +1,15 @@
+[submodule "fitness-dev"]
+	path = fitness-dev
+	url = git@github.com:nimmsel23/fitness-dev.git
+[submodule "fuel-dev"]
+	path = fuel-dev
+	url = git@github.com:nimmsel23/fuel-dev.git
+[submodule "journal-dev"]
+	path = journal-dev
+	url = /home/alpha/journal-dev
+[submodule "habits-dev"]
+	path = habits-dev
+	url = /home/alpha/habits-dev
+[submodule "learn-dev"]
+	path = learn-dev
+	url = /home/alpha/learn-dev

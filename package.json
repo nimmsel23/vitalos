@@ -1,0 +1,59 @@
+{
+  "name": "vitalos",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "workspaces": [
+    "fuel-dev",
+    "journal-dev",
+    "habits-dev",
+    "learn-dev"
+  ],
+  "scripts": {
+    "dev":           "npx vite",
+    "build":         "npx vite build",
+    "build:firebase":"npx vite build --mode firebase && BUILD=$(date +%s) && sed -i \"s/vitalos-v[0-9]*/vitalos-$BUILD/\" dist-firebase/sw.js && sed -i \"s/\\\"version\\\": \\\"[0-9]*/\\\"version\\\": \\\"$BUILD/\" dist-firebase/manifest.json",
+    "deploy:shell":  "npm run build:firebase && firebase deploy --only hosting",
+    "preview":       "npx vite preview"
+  },
+  "dependencies": {
+    "@dnd-kit/core": "^6.3.1",
+    "@dnd-kit/sortable": "^8.0.0",
+    "@dnd-kit/utilities": "^3.2.2",
+    "@fullcalendar/daygrid": "^6.1.15",
+    "@fullcalendar/interaction": "^6.1.15",
+    "@fullcalendar/react": "^6.1.15",
+    "@fullcalendar/timegrid": "^6.1.15",
+    "@hookform/resolvers": "^3.9.0",
+    "@radix-ui/react-dialog": "^1.1.15",
+    "@tanstack/react-query": "^5.101.0",
+    "body-muscles": "^1.0.0",
+    "clsx": "^2.1.1",
+    "date-fns": "^4.4.0",
+    "firebase": "^11.10.0",
+    "framer-motion": "^12.40.0",
+    "js-yaml": "^4.1.1",
+    "lucide-react": "^0.453.0",
+    "react": "^18.3.1",
+    "react-body-highlighter": "^2.0.5",
+    "react-dom": "^18.3.1",
+    "react-hook-form": "^7.53.0",
+    "react-is": "^19.2.7",
+    "react-markdown": "^10.1.0",
+    "react-muscle-highlighter": "^1.2.0",
+    "recharts": "^3.8.1",
+    "remark-gfm": "^4.0.1",
+    "tailwind-merge": "^2.5.3",
+    "yaml": "^2.9.0",
+    "zod": "^3.23.8",
+    "zustand": "^5.0.14"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-react": "^4.3.2",
+    "autoprefixer": "^10.4.20",
+    "postcss": "^8.4.47",
+    "tailwindcss": "^3.4.13",
+    "vite": "^5.4.8",
+    "vite-plugin-pwa": "^0.20.0"
+  }
+}

@@ -1,0 +1,1 @@
+../../fitness-dev/src/lib/muscleMapping.js

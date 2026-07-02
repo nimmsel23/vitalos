@@ -1,0 +1,1 @@
+../../../fitness-dev/src/components/dashboard/DashboardWidget.jsx
