@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import Learn from '@view/learn/index.jsx'
-import ExerciseInsightModal from '@fitness/src/components/ExerciseInsightModal.jsx'
+import ExerciseInsightModal from '@components/ExerciseInsightModal.jsx'
 import { getAnatomy } from '@db'
 
 export default function LearnApp({ muscleLanguage = 'de', taxonomy = null }) {

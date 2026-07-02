@@ -4,7 +4,7 @@ import Dashboard from './Dashboard.jsx'
 import PlanView from '@view/plan/index.jsx'
 import Session from '@view/session/index.jsx'
 import WeeklyReview from '@view/review/index.jsx'
-import ExerciseInsightModal from '@fitness/src/components/ExerciseInsightModal.jsx'
+import ExerciseInsightModal from '@components/ExerciseInsightModal.jsx'
 import { getAnatomy, getRecentSessions } from '@db'
 import { getBlockColor as blockColor, ACTIVITY_LABELS, ACTIVITY_ICONS, ACTIVITY_EMOJI } from '@constants/ActivityConstants'
 
