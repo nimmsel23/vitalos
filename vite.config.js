@@ -12,13 +12,11 @@ const FUEL_ROOT    = resolve(__dirname, 'fuel-dev')
 const JOURNAL_DEV  = resolve(__dirname, 'journal-dev')
 const HABITS_DEV   = resolve(__dirname, 'habits-dev')
 const LEARN_DEV    = resolve(__dirname, 'learn-dev')
-const JOURNAL_ROOT = resolve(__dirname, 'journal-vos')
-const LEARN_ROOT   = resolve(__dirname, 'learn-vos')
 const BACKEND      = 'http://localhost:9100'
 
 // Context-aware @db resolver: journal+habits views → journal-dev db, rest → vitalos db
 function journalDbPlugin(isFirebase) {
-  const journalDb = resolve(JOURNAL_DEV, isFirebase ? 'src/db.js' : 'src/db.js')
+  const journalDb = resolve(JOURNAL_DEV, 'src/db.js')
   return {
     name: 'journal-db-resolver',
     resolveId(id, importer) {
@@ -29,20 +27,24 @@ function journalDbPlugin(isFirebase) {
   }
 }
 
+
 export default defineConfig(({ mode }) => {
   const isFirebase = mode === 'firebase'
 
   const aliases = {
     '@src':        VITALOS_SRC,
     '@shell':      resolve(VITALOS_SRC, 'shell'),
-    '@components': resolve(VITALOS_SRC, 'shell/components'),
-    '@lib':        resolve(VITALOS_SRC, 'lib'),
+    '@coach':      resolve(VITALOS_SRC, 'coach'),
+    '@cloud':      resolve(VITALOS_SRC, 'cloud'),
+    '@components': resolve(FITNESS_SRC, 'components'),
+    '@lib':        resolve(FITNESS_SRC, 'lib'),
     '@constants':  resolve(FITNESS_SRC, 'constants'),
-    '@utils':      resolve(VITALOS_SRC, 'lib/utils.js'),
-    '@db':         resolve(VITALOS_SRC, isFirebase ? 'db.firestore.js' : 'db.js'),
-    '@habits':              HABITS_DEV,
-    '@journal':             JOURNAL_DEV,
-    '@learn':               LEARN_DEV,
+    '@utils':      resolve(FITNESS_SRC, 'lib/utils.js'),
+    '@db':         resolve(VITALOS_SRC, isFirebase ? 'cloud/db.firestore.js' : 'coach/db.js'),
+    '@fitness-db': resolve(FITNESS_SRC, 'lib/db'),
+    '@habits':              resolve(HABITS_DEV, 'src'),
+    '@journal':             resolve(JOURNAL_DEV, 'src'),
+    '@learn':               resolve(LEARN_DEV, 'src'),
     '@fitness/components':  resolve(FITNESS_SRC, 'components'),
     '@fitness':             FITNESS_DEV,
 
@@ -58,13 +60,11 @@ export default defineConfig(({ mode }) => {
     '@view/plan':       resolve(FITNESS_SRC,          'views/Plan'),           // fitness-dev
     '@view/coach':      resolve(FITNESS_SRC,          'views/Coach'),          // fitness-dev
 
-    'journal/JournalApp': resolve(VITALOS_SRC, 'apps/JournalApp.jsx'),
-    'learn/LearnApp':     resolve(VITALOS_SRC, 'apps/LearnApp.jsx'),
-    'fuel/FuelApp':       resolve(VITALOS_SRC, 'shell/FuelApp.jsx'),
-    '@fuel':              resolve(FUEL_ROOT, 'src/client'),
-    '@fuel-shared':       resolve(FUEL_ROOT, 'src/shared'),
-    '@journal-vos':       resolve(JOURNAL_ROOT, 'src'),
-    '@learn-vos':         resolve(LEARN_ROOT, 'src'),
+    '@firebase-config': resolve(__dirname, 'firebase.config.js'),
+
+    'fuel/FuelApp':     resolve(VITALOS_SRC, 'shell/FuelApp.jsx'),
+    '@fuel':            resolve(FUEL_ROOT, 'src/client'),
+    '@fuel-shared':     resolve(FUEL_ROOT, 'src/shared'),
   }
 
   const federationPlugin = []

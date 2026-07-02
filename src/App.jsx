@@ -6,8 +6,8 @@ import { THEMES } from '@constants/Themes.js'
 import Settings from '@view/settings/index.jsx'
 import Sidebar from './shell/layout/Sidebar.jsx'
 import MobileShell from './shell/layout/MobileShell.jsx'
-import UserProfile from './components/common/UserProfile.jsx'
-import ErrorBoundary from './components/common/ErrorBoundary.jsx'
+import UserProfile from '@components/common/UserProfile.jsx'
+import ErrorBoundary from '@components/common/ErrorBoundary.jsx'
 
 const FitnessApp  = lazy(() => import('./shell/FitnessApp.jsx'))
 const FuelWrapper = lazy(() => import('./shell/FuelWrapper.jsx'))

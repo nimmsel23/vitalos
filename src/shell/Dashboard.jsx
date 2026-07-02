@@ -5,7 +5,7 @@ import {
   getDashboardAnalytics, exportCsv, getAllExercises, getGlobalInbox, isLocalMode
 } from "@db";
 import { localToday } from "@utils";
-import WeightChart from "../components/WeightChart.jsx";
+import WeightChart from "@components/WeightChart.jsx";
 
 import DashboardHeader from "@src/components/dashboard/DashboardHeader";
 import ActivityHeatmap from "@src/components/dashboard/ActivityHeatmap";
