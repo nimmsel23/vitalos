@@ -40,10 +40,11 @@ export default defineConfig(({ mode }) => {
     '@constants':  resolve(FITNESS_SRC, 'constants'),
     '@utils':      resolve(VITALOS_SRC, 'lib/utils.js'),
     '@db':         resolve(VITALOS_SRC, isFirebase ? 'db.firestore.js' : 'db.js'),
-    '@habits':     HABITS_DEV,
-    '@journal':    JOURNAL_DEV,
-    '@learn':      LEARN_DEV,
-    '@fitness':    resolve(FITNESS_SRC, '..'),
+    '@habits':              HABITS_DEV,
+    '@journal':             JOURNAL_DEV,
+    '@learn':               LEARN_DEV,
+    '@fitness/components':  resolve(FITNESS_SRC, 'components'),
+    '@fitness':             FITNESS_DEV,
 
     // ── Tab Sources (eine Zeile = ein Tab, Herkunft sofort sichtbar) ───────────
     '@view/dashboard':  resolve(VITALOS_SRC,         'shell/Dashboard.jsx'),  // vitalos-spezifisch
