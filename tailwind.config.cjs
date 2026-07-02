@@ -1,13 +1,14 @@
-const base = require('../../tailwind.config.cjs')
+const base = require('./fitness-dev/tailwind.config.cjs')
 
 module.exports = {
   ...base,
   content: [
     './src/**/*.{js,jsx,ts,tsx}',
     './index.html',
-    // fitness-dev SSOT views (Journal, Habits, Session, Dashboard, etc.)
-    '../../src/**/*.{js,jsx,ts,tsx}',
-    // journal-vos (DB-Layer + views die direkt importiert werden)
-    '../journal-vos/src/**/*.{js,jsx,ts,tsx}',
+    './fitness-dev/src/**/*.{js,jsx,ts,tsx}',
+    './journal-dev/src/**/*.{js,jsx,ts,tsx}',
+    './habits-dev/src/**/*.{js,jsx,ts,tsx}',
+    './learn-dev/src/**/*.{js,jsx,ts,tsx}',
+    './fuel-dev/src/**/*.{js,jsx,ts,tsx}',
   ],
 }

@@ -75,7 +75,6 @@ export default defineConfig(({ mode }) => {
     resolve: {
       alias: aliases,
       dedupe: ['react', 'react-dom', '@tanstack/react-query', 'lucide-react'],
-      preserveSymlinks: true,
     },
     css: {
       postcss: {
