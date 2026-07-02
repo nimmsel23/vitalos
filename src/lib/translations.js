@@ -1,1 +1,0 @@
-../../fitness-dev/src/lib/translations.js

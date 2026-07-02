@@ -1,1 +1,0 @@
-../../../fitness-dev/src/components/common/UserProfile.jsx
