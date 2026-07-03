@@ -6,10 +6,10 @@
 	url = git@github.com:nimmsel23/fuel-dev.git
 [submodule "journal-dev"]
 	path = journal-dev
-	url = /home/alpha/journal-dev
+	url = git@github.com:nimmsel23/journal-dev.git
 [submodule "habits-dev"]
 	path = habits-dev
-	url = /home/alpha/habits-dev
+	url = git@github.com:nimmsel23/habits-dev.git
 [submodule "learn-dev"]
 	path = learn-dev
-	url = /home/alpha/learn-dev
+	url = git@github.com:nimmsel23/learn-dev.git
