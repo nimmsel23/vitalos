@@ -1,0 +1,52 @@
+# Deployt die VitalOS-Shell (vitalos.web.app) aus dem Meta-Repo.
+#
+# Warum hier und nicht in den Sub-Repos: Die Apps importieren sich gegenseitig
+# (Cross-Repo-Aliases). Nur ein Checkout MIT Submodules hat alle Quellen —
+# per-Repo-Workflows in fitness/fuel/journal/habits/learn können nie bauen
+# und wurden deshalb deaktiviert (2026-07-03).
+#
+# Submodule-Zugriff: journal-dev, habits-dev, learn-dev sind PRIVATE.
+# GITHUB_TOKEN reicht dafür nicht — es braucht ein Secret GH_SUBMODULE_TOKEN
+# (fine-grained PAT, contents:read auf journal-dev/habits-dev/learn-dev)
+# ODER die Repos werden public. Bis dahin: nur workflow_dispatch.
+
+name: Deploy VitalOS Shell
+
+on:
+  workflow_dispatch:
+  # push:
+  #   branches: [master]   # aktivieren sobald GH_SUBMODULE_TOKEN existiert
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout (ohne Submodules)
+        uses: actions/checkout@v4
+
+      - name: Submodules via HTTPS + Token
+        run: |
+          git config --global url."https://x-access-token:${{ secrets.GH_SUBMODULE_TOKEN || secrets.GITHUB_TOKEN }}@github.com/".insteadOf "git@github.com:"
+          git submodule sync
+          git submodule update --init --depth 1
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install (Shell + fuel-dev)
+        run: |
+          npm ci
+          npm ci --prefix fuel-dev
+
+      - name: Build (firebase mode)
+        run: npm run build:firebase
+
+      - name: Deploy Hosting (vitalos)
+        uses: FirebaseExtended/action-hosting-deploy@v0
+        with:
+          repoToken: ${{ secrets.GITHUB_TOKEN }}
+          firebaseServiceAccount: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+          projectId: fitness-aos
+          channelId: live

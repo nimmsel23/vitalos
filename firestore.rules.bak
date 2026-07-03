@@ -55,21 +55,22 @@ service cloud.firestore {
     }
 
     // ── Fuel (Nutrition & Supplements) ───────────────────────────────────────
-    match /nutrition/{uid}/meta/catalog {
+    // /nutrition/{uid}/logs|journal|meta/… und /supplements/{uid}/logs|meta/…
+    match /nutrition/{uid}/{document=**} {
       allow read, write: if owner(uid) || isCoach();
     }
-    match /supplements/{uid}/meta/catalog {
-      allow read, write: if owner(uid) || isCoach();
-    }
-    match /nutrition/{uid}/logs/{document=**} {
-      allow read, write: if owner(uid) || isCoach();
-    }
-    match /supplements/{uid}/logs/{document=**} {
+    match /supplements/{uid}/{document=**} {
       allow read, write: if owner(uid) || isCoach();
     }
 
-    // Geteilter Mikronährstoff-Katalog (read-only, Pflege via Admin SDK/CLI)
-    match /nutrition/public/meta/micros {
+    // User-Settings (fuel cloud: users/{uid}/meta/settings)
+    match /users/{uid}/{document=**} {
+      allow read, write: if owner(uid) || isCoach();
+    }
+
+    // Geteilter Mikronährstoff-Katalog (pseudo-uid "public", read-only,
+    // Pflege via Admin SDK/CLI)
+    match /nutrition/public/{document=**} {
       allow read: if authed();
       allow write: if false;
     }
