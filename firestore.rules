@@ -23,10 +23,13 @@ service cloud.firestore {
     function owner(uid) {
       return authed() && request.auth.uid == uid;
     }
+    // Coach = Custom Claim (set_admin.py, bestehende Konvention) ODER roles-Doc
     function isCoach() {
-      return authed()
-        && exists(/databases/$(database)/documents/roles/$(request.auth.uid))
-        && get(/databases/$(database)/documents/roles/$(request.auth.uid)).data.role == 'coach';
+      return authed() && (
+        request.auth.token.coach == true
+        || (exists(/databases/$(database)/documents/roles/$(request.auth.uid))
+            && get(/databases/$(database)/documents/roles/$(request.auth.uid)).data.role == 'coach')
+      );
     }
 
     // Rollen: eigene Rolle lesbar, Schreiben nur via Console/Admin SDK
