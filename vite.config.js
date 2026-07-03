@@ -49,6 +49,7 @@ export default defineConfig(({ mode }) => {
     '@journal':             resolve(JOURNAL_DEV, 'src'),
     '@learn':               resolve(LEARN_DEV, 'src'),
     '@fitness/components':  resolve(FITNESS_SRC, 'components'),
+    '@fitness/constants':   resolve(FITNESS_SRC, 'constants'),
     '@fitness':             FITNESS_DEV,
 
     // ── Tab Sources (eine Zeile = ein Tab, Herkunft sofort sichtbar) ───────────
