@@ -1,11 +1,12 @@
 import {
   Dumbbell, Flame, BookOpen, CheckSquare, Brain, Settings2,
-  Activity, BarChart3, UtensilsCrossed, Pill, Microscope, History, ClipboardList, NotebookPen,
+  Activity, BarChart3, UtensilsCrossed, Pill, Microscope, History, ClipboardList, NotebookPen, MoonStar,
 } from 'lucide-react'
 
 export const NAV_ITEMS = [
   { id: 'fitness',  label: 'Fitness', Icon: Dumbbell },
   { id: 'fuel',     label: 'Fuel',    Icon: Flame },
+  { id: 'relax',    label: 'Relax',   Icon: MoonStar },
   { id: 'journal',  label: 'Journal', Icon: BookOpen },
   { id: 'habits',   label: 'Habits',  Icon: CheckSquare },
   { id: 'learn',    label: 'Lernen',  Icon: Brain },

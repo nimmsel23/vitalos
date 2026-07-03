@@ -1,0 +1,60 @@
+/*
+ * relax-scope.css — Catppuccin-Variablen aus relax-dev/src/styles.css,
+ * gescoped auf .relax-scope statt :root, damit sie das Shell-Theme nicht
+ * überschreiben. RelaxApp rendert ohne useCircadianTheme (der Hook setzt
+ * data-theme global auf <html>) — hier statisch Mocha.
+ * Quelle: relax-dev/src/styles.css (bei Änderungen dort nachziehen).
+ */
+
+.relax-scope {
+  --bg:         #1e1e2e;
+  --bg2:        #181825;
+  --panel:      #11111b;
+  --card:       #313244;
+  --card-hover: #45475a;
+  --line:       #45475a;
+  --ink:        #cdd6f4;
+  --muted:      #9399b2;
+  --dim:        #6c7086;
+  --accent:     #89b4fa;
+  --accent-glow: rgba(137,180,250,0.12);
+  --green:      #a6e3a1;
+  --red:        #f38ba8;
+  --orange:     #fab387;
+  --glass:      rgba(30,30,46,0.85);
+  --glass-border: rgba(137,180,250,0.1);
+
+  font-size: 14px;
+  line-height: 1.55;
+  background: var(--bg);
+  color: var(--ink);
+}
+
+@keyframes relax-spin { to { transform: rotate(360deg); } }
+.relax-scope .spinner {
+  width: 14px; height: 14px;
+  border: 2px solid var(--line);
+  border-top-color: var(--accent);
+  border-radius: 50%;
+  animation: relax-spin 0.7s linear infinite;
+  display: inline-block;
+}
+
+/* Vault markdown rendering (SubstanceCatalog Vault-Tab) */
+.relax-scope .vault-markdown h1, .relax-scope .vault-markdown h2, .relax-scope .vault-markdown h3 {
+  color: var(--ink); font-weight: 700; margin: 0.75rem 0 0.35rem;
+}
+.relax-scope .vault-markdown h1 { font-size: 1.15rem; }
+.relax-scope .vault-markdown h2 { font-size: 1rem; color: var(--accent); }
+.relax-scope .vault-markdown h3 { font-size: 0.9rem; }
+.relax-scope .vault-markdown p { font-size: 0.85rem; line-height: 1.6; color: var(--muted); margin-bottom: 0.5rem; }
+.relax-scope .vault-markdown ul, .relax-scope .vault-markdown ol { padding-left: 1.25rem; margin-bottom: 0.5rem; }
+.relax-scope .vault-markdown li { font-size: 0.85rem; color: var(--muted); line-height: 1.5; }
+.relax-scope .vault-markdown strong { color: var(--ink); font-weight: 600; }
+.relax-scope .vault-markdown em { color: var(--accent); }
+.relax-scope .vault-markdown hr { border-color: var(--line); margin: 0.75rem 0; }
+.relax-scope .vault-markdown table { width: 100%; font-size: 0.8rem; border-collapse: collapse; margin-bottom: 0.75rem; }
+.relax-scope .vault-markdown th { background: var(--glass); color: var(--accent); padding: 0.4rem 0.6rem; text-align: left; }
+.relax-scope .vault-markdown td { padding: 0.35rem 0.6rem; border-top: 1px solid var(--line); color: var(--muted); }
+.relax-scope .vault-markdown blockquote { border-left: 3px solid var(--accent); padding-left: 0.75rem; color: var(--dim); }
+.relax-scope .vault-markdown code { background: var(--glass); padding: 0.1rem 0.3rem; border-radius: 4px; font-size: 0.8rem; color: var(--green); }

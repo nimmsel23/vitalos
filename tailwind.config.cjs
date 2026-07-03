@@ -10,5 +10,6 @@ module.exports = {
     './habits-dev/src/**/*.{js,jsx,ts,tsx}',
     './learn-dev/src/**/*.{js,jsx,ts,tsx}',
     './fuel-dev/src/**/*.{js,jsx,ts,tsx}',
+    './relax-dev/src/**/*.{js,jsx,ts,tsx}',
   ],
 }

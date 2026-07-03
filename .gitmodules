@@ -13,3 +13,6 @@
 [submodule "learn-dev"]
 	path = learn-dev
 	url = git@github.com:nimmsel23/learn-dev.git
+[submodule "relax-dev"]
+	path = relax-dev
+	url = git@github.com:nimmsel23/relax-dev.git

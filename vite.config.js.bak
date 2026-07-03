@@ -13,6 +13,8 @@ const FUEL_ROOT    = resolve(__dirname, 'fuel-dev')
 const JOURNAL_DEV  = resolve(__dirname, 'journal-dev')
 const HABITS_DEV   = resolve(__dirname, 'habits-dev')
 const LEARN_DEV    = resolve(__dirname, 'learn-dev')
+const RELAX_DEV    = resolve(__dirname, 'relax-dev')
+const RELAX_BACKEND = 'http://localhost:9123'
 const BACKEND      = 'http://localhost:9100'
 
 // Context-aware @db resolver: journal+habits views → journal-dev db, rest → vitalos db
@@ -48,7 +50,9 @@ export default defineConfig(({ mode }) => {
     '@habits':              resolve(HABITS_DEV, 'src'),
     '@journal':             resolve(JOURNAL_DEV, 'src'),
     '@learn':               resolve(LEARN_DEV, 'src'),
+    '@relax':               resolve(RELAX_DEV, 'src'),
     '@fitness/components':  resolve(FITNESS_SRC, 'components'),
+    '@fitness/constants':   resolve(FITNESS_SRC, 'constants'),
     '@fitness':             FITNESS_DEV,
 
     // ── Tab Sources (eine Zeile = ein Tab, Herkunft sofort sichtbar) ───────────
