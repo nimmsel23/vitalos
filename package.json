@@ -4,6 +4,7 @@
   "private": true,
   "type": "module",
   "workspaces": [
+    "fitness-dev",
     "fuel-dev",
     "journal-dev",
     "habits-dev",
