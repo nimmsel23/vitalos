@@ -13,7 +13,7 @@
 
 import {
   collection, doc, addDoc, setDoc, getDoc, getDocs, deleteDoc,
-  query, where, orderBy, limit, serverTimestamp, writeBatch, collectionGroup, documentId
+  query, where, orderBy, limit, serverTimestamp, writeBatch, collectionGroup
 } from "firebase/firestore";
 import {
   onAuthStateChanged,
@@ -417,19 +417,10 @@ export async function saveHabitJournal(habitId, date, text) {
   return { ok: true };
 }
 
-// ── Fuel (nutrition/{uid}/logs/{date} — read-only für den Journal-Aggregator) ──
-// Dokument-IDs sind YYYY-MM-DD, also lexikographisch = chronologisch sortierbar.
-export async function getMealsHistory(limitCount = 30) {
-  const q = query(
-    collection(db, "nutrition", getUid(), "logs"),
-    orderBy(documentId(), "desc"),
-    limit(limitCount)
-  );
-  const snap = await getDocs(q);
-  return snap.docs
-    .map(d => ({ date: d.id, ...d.data() }))
-    .filter(log => (log.meals || []).length > 0);
-}
+// Fuel-Daten kommen aus fuel-devs eigenem Firestore-Layer statt hier
+// dupliziert zu werden — fuel-dev/src/client/lib/firebase.js hat einen
+// getApps()-Guard und teilt sich die schon initialisierte App-Instanz.
+export { getMealsHistory } from "@fuel/lib/firestore-db.js";
 
 // ── Habits (from pwa.bak/src/lib/db/habits.js) ───────────────────────────────
 
