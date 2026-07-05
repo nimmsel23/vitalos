@@ -53,6 +53,47 @@
   --glass-border: rgba(255,255,255,0.05); /* Global glass border */
 }
 
+/* Safe-area and mobile touch defaults added by Copilot PR
+   Commit: safe-area + touch defaults
+*/
+
+/* safe-area insets for iOS notch / Android cutouts */
+:root {
+  --safe-top: env(safe-area-inset-top);
+  --safe-bottom: env(safe-area-inset-bottom);
+  --safe-left: env(safe-area-inset-left);
+  --safe-right: env(safe-area-inset-right);
+}
+
+/* apply safe area to main app shell */
+.app-shell,
+main,
+.mobile-shell {
+  padding-top: calc(var(--safe-top, 0px) + 12px);
+  padding-bottom: calc(var(--safe-bottom, 0px) + 12px);
+  padding-left: calc(var(--safe-left, 0px) + 12px);
+  padding-right: calc(var(--safe-right, 0px) + 12px);
+}
+
+/* touch / accessibility defaults */
+button, a, input, .tap-target {
+  min-height: 44px;
+  min-width: 44px;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: rgba(0,0,0,0.06);
+}
+
+/* momentum scrolling for overflow containers */
+.scroll-y {
+  -webkit-overflow-scrolling: touch;
+  overflow-y: auto;
+}
+
+/* ensure inputs are scrolled into view on focus */
+input, textarea {
+  scroll-margin-bottom: calc(56px + var(--safe-bottom, 0px));
+}
+
 /* ==========================================================================
    2. THEME DEFINITIONS: Fully Self-Contained Color Palettes
    ========================================================================== */
@@ -104,4 +145,4 @@ html, body {
   display: inline-block;
 }
 
-/* ═════════════════════════════════════════════════════════════════════════════ */
+/* ════════════════════════════════════════════════════════════════[...]

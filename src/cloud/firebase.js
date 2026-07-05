@@ -8,6 +8,11 @@ const app = initializeApp(config);
 // Firestore with IndexedDB-backed persistent cache.
 // Reads served from cache while offline; writes queued locally and
 // flushed when connectivity returns. Multi-tab safe.
+//
+// Note: This enables an offline-first UX for the shell/PWA. Writes made
+// while offline are stored in the local IndexedDB queue and will be
+// synchronized when connectivity is restored. No additional queue
+// management is required here — Firestore handles it internally.
 export const db = initializeFirestore(app, {
   localCache: persistentLocalCache({ tabManager: persistentMultipleTabManager() }),
 });
