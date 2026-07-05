@@ -17,7 +17,11 @@ if (typeof window !== 'undefined') window.__RELAX_API_BASE__ = '/relax-api'
 const TABS = [
   { id: 'dash',    label: 'Heute',   Icon: Activity,  View: lazy(() => import('@relax/views/Dashboard.jsx')) },
   { id: 'session', label: 'Session', Icon: MoonStar,  View: lazy(() => import('@relax/views/Session.jsx')) },
-  { id: 'journal', label: 'Journal', Icon: BookOpen,  View: lazy(() => import('@relax/views/Journal.jsx')) },
+  // Geteiltes Kern-Journal (journal-dev), nicht relax' eigenes Journal.jsx —
+  // aggregiert bereits Journal-Text + Habit-Memoirs + Fitness-Sessions.
+  // relax' /journal-Backend (:9123, api.js) bleibt für den Standalone-Modus
+  // unverändert bestehen, wird hier nur nicht mehr genutzt.
+  { id: 'journal', label: 'Journal', Icon: BookOpen,  View: lazy(() => import('@view/journal')) },
   { id: 'stats',   label: 'Stats',   Icon: BarChart3, View: lazy(() => import('@relax/views/Stats.jsx')) },
   { id: 'physio',  label: 'Physio',  Icon: Zap,       View: lazy(() => import('@relax/views/PhysioTimeline.jsx')) },
   { id: 'catalog', label: 'Catalog', Icon: Beaker,    View: lazy(() => import('@relax/views/SubstanceCatalog.jsx')) },
