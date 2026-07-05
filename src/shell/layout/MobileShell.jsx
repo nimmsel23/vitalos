@@ -11,7 +11,7 @@ import FuelMobileLayout from './FuelMobileLayout.jsx'
 export default function MobileShell({ tab, navigate, mobileLayout, swipeHint, children }) {
   if (mobileLayout === 'fuel') {
     return (
-      <div className="lg:hidden">
+      <div className="lg:hidden mobile-shell">
         <FuelMobileLayout tab={tab} navigate={navigate}>
           {children}
         </FuelMobileLayout>
@@ -20,5 +20,5 @@ export default function MobileShell({ tab, navigate, mobileLayout, swipeHint, ch
   }
 
   // Classic: Content kommt von App.jsx main, wir rendern nur die Bottom-Nav
-  return <MobileNav tab={tab} navigate={navigate} swipeHint={swipeHint} />
+  return <div className="mobile-shell"><MobileNav tab={tab} navigate={navigate} swipeHint={swipeHint} /></div>
 }
