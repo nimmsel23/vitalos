@@ -1,4 +1,4 @@
-import Journal from '@view/journal/index.jsx'
+import Journal from '@view/journal'
 
 export default function JournalApp({ onOpenSession }) {
   return (

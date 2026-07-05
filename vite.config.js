@@ -61,7 +61,7 @@ export default defineConfig(({ mode }) => {
     '@view/review':     resolve(FITNESS_SRC,          'views/WeeklyReview'),   // fitness-dev
     '@view/muscles':    resolve(FITNESS_SRC,          'views/Muscles'),        // fitness-dev
     '@view/learn':      resolve(LEARN_DEV,            'src/views/Learn'),      // learn-dev
-    '@view/journal':    resolve(JOURNAL_DEV,          'src/views/Journal'),    // journal-dev
+    '@view/journal':    resolve(JOURNAL_DEV,          'src/views/JournalVosView.jsx'), // journal-dev
     '@view/habits':     resolve(HABITS_DEV,           'src/views/Habits'),     // habits-dev
     '@view/settings':   resolve(VITALOS_SRC,          'shell/Settings'),       // vitalos-spezifisch
     '@view/plan':       resolve(FITNESS_SRC,          'views/Plan'),           // fitness-dev
