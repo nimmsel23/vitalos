@@ -13,7 +13,7 @@
 
 import {
   collection, doc, addDoc, setDoc, getDoc, getDocs, deleteDoc,
-  query, where, orderBy, limit, serverTimestamp, writeBatch, collectionGroup
+  query, where, orderBy, limit, serverTimestamp, writeBatch, collectionGroup, documentId
 } from "firebase/firestore";
 import {
   onAuthStateChanged,
@@ -415,6 +415,20 @@ export async function saveHabitJournal(habitId, date, text) {
     updated_at: serverTimestamp(),
   }, { merge: true });
   return { ok: true };
+}
+
+// ── Fuel (nutrition/{uid}/logs/{date} — read-only für den Journal-Aggregator) ──
+// Dokument-IDs sind YYYY-MM-DD, also lexikographisch = chronologisch sortierbar.
+export async function getMealsHistory(limitCount = 30) {
+  const q = query(
+    collection(db, "nutrition", getUid(), "logs"),
+    orderBy(documentId(), "desc"),
+    limit(limitCount)
+  );
+  const snap = await getDocs(q);
+  return snap.docs
+    .map(d => ({ date: d.id, ...d.data() }))
+    .filter(log => (log.meals || []).length > 0);
 }
 
 // ── Habits (from pwa.bak/src/lib/db/habits.js) ───────────────────────────────
