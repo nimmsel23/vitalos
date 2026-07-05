@@ -1,12 +1,23 @@
 #!/bin/bash
+# vitalos post-commit hook: Lokale Warnung dass Build/Deploy via post-push triggert
+# (Nicht selbst deployen — das passiert auf post-push nach Push zu remote)
+
 CURRENT_BRANCH=$(git rev-parse --abbrev-ref HEAD)
 if [ "$CURRENT_BRANCH" != "master" ]; then exit 0; fi
 
 cd "$(git rev-parse --show-toplevel)"
+
+# Prüfe ob Submodule-Pointer geändert wurden
+SUBMODULE_CHANGED=$(git diff --cached --name-only | grep -E '^(fitness-dev|fuel-dev|journal-dev|habits-dev|learn-dev|relax-dev)$' || true)
+if [ -n "$SUBMODULE_CHANGED" ]; then
+  echo "ℹ️  Submodule-Pointer geändert: $SUBMODULE_CHANGED"
+  echo "   Nach push: vitalos wird zu Firebase gebaut und deployed."
+fi
+
 CHANGED=$(git diff-tree --no-commit-id --name-only -r HEAD | grep -Ev '\.(md|bak)$' || true)
 TRIGGER="^(src/|public/|index.html|vite.config|package.json|firebase.json|tailwind)"
 
 if echo "$CHANGED" | grep -qE "$TRIGGER"; then
-  echo "🔍 vitalos changes detected. Building + deploying..."
-  npm run deploy:shell && echo "✅ Deploy successful." || echo "❌ Deploy failed."
+  echo "ℹ️  vitalos code changes detected (src/, public/, config)."
+  echo "   Nach push: Build + Deploy zu Firebase werden triggert via post-push hook."
 fi
