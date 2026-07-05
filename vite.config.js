@@ -17,21 +17,16 @@ const RELAX_DEV    = resolve(__dirname, 'relax-dev')
 const RELAX_BACKEND = 'http://localhost:9123'
 const BACKEND      = 'http://localhost:9100'
 
-// Context-aware @db resolver: journal+habits views → journal-dev db, rest → vitalos db
-function journalDbPlugin(isFirebase) {
-  const journalDb = isFirebase
-    ? resolve(VITALOS_SRC, 'cloud/db.firestore.js')
-    : resolve(JOURNAL_DEV, 'src/db.js')
-  return {
-    name: 'journal-db-resolver',
-    resolveId(id, importer) {
-      if (id !== '@db' || !importer) return
-      if (importer.includes('/journal-dev/') || importer.includes('/habits-dev/')) return journalDb
-      if (importer.includes('/src/views/Journal/') || importer.includes('/src/views/Habits/')) return journalDb
-    },
-  }
-}
-
+// journalDbPlugin wurde entfernt (2026-07-05): sollte @db für journal-dev/
+// habits-dev-Importer kontextabhängig umleiten, feuerte aber nie — Vites
+// core Alias-Resolution (resolve.alias['@db']) läuft mit höherer Priorität
+// und löst '@db' auf, bevor normale Plugin-resolveId-Hooks es sehen
+// (empirisch verifiziert: resolveId wurde für keinen einzigen @db-Import
+// aus JournalVosView.jsx aufgerufen). Der bestehende Fallback — '@db' →
+// coach/db.js (lokal) bzw. cloud/db.firestore.js (firebase), beide re-
+// exportieren/implementieren journal+habits+sessions+meals vollständig —
+// hat die ganze Zeit funktioniert und liefert sogar bessere Daten als das
+// tote Plugin (echte fitness-dev-Sessions statt journal-devs Stubs).
 
 export default defineConfig(({ mode }) => {
   const isFirebase = mode === 'firebase'
@@ -82,7 +77,6 @@ export default defineConfig(({ mode }) => {
     base: '/',
     plugins: [
       react(),
-      journalDbPlugin(isFirebase),
       ...federationPlugin,
       VitePWA({
         registerType: 'autoUpdate',
