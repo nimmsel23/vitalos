@@ -82,9 +82,10 @@ Alle Sub-Repos sind als Git Submodules eingebunden:
 |---|---|---|
 | `fitness-dev` | `git@github.com:nimmsel23/fitness-dev.git` | GitHub (remote) |
 | `fuel-dev` | `git@github.com:nimmsel23/fuel-dev.git` | GitHub (remote) |
-| `journal-dev` | `/home/alpha/journal-dev` | lokal |
-| `habits-dev` | `/home/alpha/habits-dev` | lokal |
-| `learn-dev` | `/home/alpha/learn-dev` | lokal |
+| `journal-dev` | `git@github.com:nimmsel23/journal-dev.git` | GitHub (remote) |
+| `habits-dev` | `git@github.com:nimmsel23/habits-dev.git` | GitHub (remote) |
+| `learn-dev` | `git@github.com:nimmsel23/learn-dev.git` | GitHub (remote) |
+| `relax-dev` | `git@github.com:nimmsel23/relax-dev.git` | GitHub (remote) |
 
 ```bash
 git submodule update --init          # alle initialisieren
@@ -104,7 +105,18 @@ git submodule update --remote fitness-dev   # einzelnes updaten
 | journal-dev | `@journal` | — | Journal + Fuel-Tabs |
 | learn-dev | `@learn` | — | Fitness-Wissen |
 
-Die Tempel (fitness-dev, fuel-dev) haben eigene Backends und sind eigenständig deployed. VitalOS embeddet sie via Aliases, ohne Code zu duplizieren.
+---
+
+## Domain Extensions (Knowledge Bases)
+
+Einige Hauptmodule werden durch eigenständige Knowledge Base (KB) Repositories erweitert. Diese KBs werden als **Git Subtrees** direkt in das jeweilige Domain-Repo integriert, um den Code untrennbar mit dem Modul zu deployen:
+
+| Hauptmodul | Knowledge Base | Beschreibung |
+|---|---|---|
+| `fitness-dev` | `anatomy-kb` | Anatomie Wissensdatenbank |
+| `relax-dev` | `physio-dev` | Physiologie Wissensdatenbank |
+
+Die Tempel (fitness-dev, fuel-dev, relax-dev) haben eigene Backends und sind eigenständig deployed. VitalOS embeddet sie via Aliases, ohne Code zu duplizieren.
 
 ---
 

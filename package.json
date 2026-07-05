@@ -8,7 +8,8 @@
     "fuel-dev",
     "journal-dev",
     "habits-dev",
-    "learn-dev"
+    "learn-dev",
+    "relax-dev"
   ],
   "scripts": {
     "dev": "npx vite",
