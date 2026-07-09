@@ -40,12 +40,29 @@ Kein `src/shared/` Unterordner nötig — `src/` selbst ist der shared Layer.
 
 `@db` Alias wählt per Build-Mode:
 - **local** (`npm run build`): `@db` → `src/coach/db.js` — kein Firebase-SDK im Bundle
-- **firebase** (`--mode firebase`): `@db` → `src/cloud/db.firestore.js` — kein lokaler Code
+- **firebase** (`--mode firebase`): `@db` → `src/shell/db/index.js` — kein lokaler Code
 
 ```js
 // vite.config.js
-'@db': resolve(VITALOS_SRC, isFirebase ? 'cloud/db.firestore.js' : 'coach/db.js')
+'@db': resolve(VITALOS_SRC, isFirebase ? 'shell/db/index.js' : 'coach/db.js')
 ```
+
+### shell/db/ — Doppelwrapper (seit 2026-07-09)
+
+`src/shell/db/` ersetzt den Monolithen `src/cloud/db.firestore.js`: die Shell
+konsumiert die **modularen** Firestore-Layer der Sub-Repos direkt beim Build,
+plus Shell-eigene Module:
+
+| Modul | Quelle |
+|---|---|
+| `fitness.js` | `@fitness-db/index.firestore.js` → `fitness-dev/src/lib/db/firestore/*` (komplett) |
+| `fuel.js` | `@fuel/lib/db/firestore/*` (selektiv, Kollisionsnamen umbenannt: `getNutritionJournal`) |
+| `profile.js` | `users/{uid}` — Shell-eigen |
+| `push.js` | `fitness/{uid}/settings/push` — Shell-eigen |
+
+Firebase-Init ist **einmalig**: `src/cloud/firebase.js`. Ein `enforce:'pre'`
+resolveId-Plugin in `vite.config.js` (`vitalos:subrepo-firebase-redirect`)
+leitet die firebase.js der Sub-Repos im Firebase-Build darauf um.
 
 Identisches Muster wie fitness-dev (`db.js` vs. `db.firestore.js`) und fuel-dev (`api.local.js` vs. `api.cloud.js`).
 
@@ -55,7 +72,7 @@ Identisches Muster wie fitness-dev (`db.js` vs. `db.firestore.js`) und fuel-dev 
 
 | Alias | Zeigt auf | Herkunft |
 |---|---|---|
-| `@db` | `src/coach/db.js` oder `src/cloud/db.firestore.js` | build-time swap |
+| `@db` | `src/coach/db.js` oder `src/shell/db/index.js` | build-time swap |
 | `@shell` | `src/shell/` | vitalos |
 | `@coach` | `src/coach/` | vitalos |
 | `@cloud` | `src/cloud/` | vitalos |

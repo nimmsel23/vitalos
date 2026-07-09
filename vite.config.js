@@ -40,7 +40,7 @@ export default defineConfig(({ mode }) => {
     '@lib':        resolve(FITNESS_SRC, 'lib'),
     '@constants':  resolve(FITNESS_SRC, 'constants'),
     '@utils':      resolve(FITNESS_SRC, 'lib/utils.js'),
-    '@db':         resolve(VITALOS_SRC, isFirebase ? 'cloud/db.firestore.js' : 'coach/db.js'),
+    '@db':         resolve(VITALOS_SRC, isFirebase ? 'shell/db/index.js' : 'coach/db.js'),
     '@fitness-db': resolve(FITNESS_SRC, 'lib/db'),
     '@habits':              resolve(HABITS_DEV, 'src'),
     '@journal':             resolve(JOURNAL_DEV, 'src'),
@@ -72,10 +72,35 @@ export default defineConfig(({ mode }) => {
 
   const federationPlugin = []
 
+  // Firebase-Build: Sub-Repo-eigene firebase.js-Inits (fitness-dev, fuel-dev)
+  // auf die Shell-Init umleiten — genau eine initializeApp/initializeFirestore
+  // im Bundle, Config aus @firebase-config. enforce:'pre' nötig, damit der
+  // Hook vor vite:resolve läuft — im Gegensatz zum toten journalDbPlugin
+  // (s.o.) greift das hier, weil relative Imports nicht von der Alias-
+  // Resolution abgefangen werden.
+  const SHELL_FIREBASE = resolve(VITALOS_SRC, 'cloud/firebase.js')
+  const SUBREPO_FIREBASE = new Set([
+    resolve(FITNESS_SRC, 'firebase.js'),
+    resolve(FUEL_ROOT, 'src/client/lib/firebase.js'),
+  ])
+  const firebaseRedirect = {
+    name: 'vitalos:subrepo-firebase-redirect',
+    enforce: 'pre',
+    resolveId(source, importer) {
+      if (!isFirebase || !importer || !source.startsWith('.')) return null
+      const resolved = resolve(dirname(importer.split('?')[0]), source)
+      if (SUBREPO_FIREBASE.has(resolved) || SUBREPO_FIREBASE.has(`${resolved}.js`)) {
+        return SHELL_FIREBASE
+      }
+      return null
+    },
+  }
+
   return {
     root: __dirname,
     base: '/',
     plugins: [
+      firebaseRedirect,
       react(),
       ...federationPlugin,
       VitePWA({
