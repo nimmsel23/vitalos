@@ -7,6 +7,7 @@ import LocalDevSection from "./LocalDevSection";
 import AccountSection from "./AccountSection";
 import ProfileSection from "./ProfileSection";
 import FuelSection from "./FuelSection";
+import NotificationsSection from "./NotificationsSection";
 
 export default function Settings({
   user, signOut,
@@ -130,6 +131,7 @@ export default function Settings({
             onSwCheck={handleSwCheck} onSwApply={handleSwApply}
           />
           <FuelSection />
+          {!isLocalMode() && <NotificationsSection user={user} />}
        </div>
 
        {isLocalMode() && (

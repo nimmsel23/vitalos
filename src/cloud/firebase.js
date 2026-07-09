@@ -1,6 +1,7 @@
 import { initializeApp } from "firebase/app";
 import { initializeFirestore, persistentLocalCache, persistentMultipleTabManager } from "firebase/firestore";
 import { getAuth, GoogleAuthProvider, browserLocalPersistence, setPersistence } from "firebase/auth";
+import { isSupported, getMessaging } from "firebase/messaging";
 import { config } from "@firebase-config";
 
 const app = initializeApp(config);
@@ -22,3 +23,8 @@ export const auth = getAuth(app);
 setPersistence(auth, browserLocalPersistence).catch(() => {});
 
 export const googleProvider = new GoogleAuthProvider();
+
+// Messaging ist nicht in jedem Kontext verfügbar (z.B. Safari < 16.4, kein
+// installiertes PWA-Icon) — isSupported() vorher prüfen, sonst wirft
+// getMessaging() in nicht unterstützten Browsern.
+export const getMessagingIfSupported = () => isSupported().then((ok) => (ok ? getMessaging(app) : null));

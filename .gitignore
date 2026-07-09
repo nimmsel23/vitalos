@@ -5,5 +5,4 @@ dist-firebase/
 *.log
 .env
 .env.*
-*.bak
-*.bak2
+*.bak*

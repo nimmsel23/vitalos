@@ -1,0 +1,81 @@
+import { useState, useEffect } from 'react';
+import { RefreshCw } from 'lucide-react';
+// Contexts
+import { useUser } from './contexts/UserContext';
+import { useSettings } from './contexts/SettingsContext';
+import { useSwipeNavigation } from './hooks/useSwipeNavigation';
+// Views & Components
+import Dashboard from './views/Dashboard/index.jsx';
+import Session from './views/Session/index.jsx';
+import Settings from './views/Settings/index.jsx';
+// ... (restliche Imports)
+
+export default function App() {
+  const { user, authLoading, signIn, signInEmail, signUpEmail, signOut } = useUser();
+  const { sidebarPinned, setSidebarPinned, swipeEnabled, navMode } = useSettings();
+
+  // Routing State
+  const [navModeState, setNavModeState] = useState(() => localStorage.getItem('fitness-navMode') || 'tabs');
+  const [tab, setTab] = useState(() => window.location.hash.replace(/^#\/?/, '') || 'dash');
+  const [subTab, setSubTab] = useState(null);
+  
+  // App State (Ephemer)
+  const [sessionDate, setSessionDate] = useState(null);
+  const [inspectorExercise, setInspectorExercise] = useState(null);
+
+  // Swipe Hook
+  const { mainRef, swipeHint, slideDirection, setSlideDirection } = useSwipeNavigation({ 
+    navMode: navModeState, tab, swipeEnabled, setTab 
+  });
+
+  // Auth States für UI
+  const [authEmail, setAuthEmail] = useState('');
+  const [authPassword, setAuthPassword] = useState('');
+  const [authRegistering, setAuthRegistering] = useState(false);
+
+  // Navigation Logic
+  const navigate = (id) => {
+     setSlideDirection('bottom'); // oder Berechnungs-Logik
+     setSubTab(null);
+     setTab(id);
+  };
+
+  // Auth Screen
+  if (authLoading) return <div className="min-h-screen flex items-center justify-center bg-fit-bg">...</div>;
+  
+  if (!user) return (
+    <div className="min-h-screen flex items-center justify-center bg-fit-bg p-6">
+       {/* ... Dein exakter Auth-HTML Block von vorhin ... */}
+       {/* Ruft jetzt einfach signInEmail() aus dem useUser-Hook auf! */}
+    </div>
+  );
+
+  return (
+    <ErrorBoundary>
+      <div className="flex min-h-screen bg-fit-bg text-fit-ink transition-colors duration-500">
+        <Sidebar tab={tab} navigate={navigate} pinned={sidebarPinned} setPinned={setSidebarPinned} user={user}>
+          <UserProfile user={user} />
+          <button onClick={signOut}>Logout</button>
+        </Sidebar>
+
+        <div className={`flex-1 transition-all duration-500 ${sidebarPinned ? 'lg:ml-[280px]' : 'lg:ml-24'}`}>
+          <main ref={mainRef} className="relative pb-28 min-h-[100dvh]">
+            
+            <div className={`animate-in fade-in ${slideDirection === 'left' ? 'slide-in-from-right-8' : 'slide-in-from-bottom-4'} duration-500`}>
+                
+                {/* 
+                  Schau dir an, wie sauber das jetzt ist! 
+                  Settings braucht keine Props mehr, weil es sich alles aus dem Context holt.
+                  Die anderen Views (Dashboard etc.) kannst du nach und nach auch umbauen!
+                */}
+                {tab === 'dash'     && <Dashboard onOpenSession={setSessionDate} />}
+                {tab === 'session'  && <Session initialDate={sessionDate} />}
+                {tab === 'settings' && <Settings />}
+                
+            </div>
+          </main>
+        </div>
+      </div>
+    </ErrorBoundary>
+  );
+}

@@ -839,6 +839,49 @@ export async function getProgressTrend(exerciseName, lastN = 4) {
   return                   { status: "neutral", change: pctChange.toFixed(1) };
 }
 
+// ── User Profile (users/{uid} — Stammdaten, separat von fitness/{uid}/settings) ─
+
+export async function getUserProfile(uid) {
+  const snap = await getDoc(doc(db, "users", uid));
+  return snap.exists() ? snap.data() : null;
+}
+
+export async function updateUserProfile(uid, data) {
+  try {
+    await setDoc(doc(db, "users", uid), {
+      ...data,
+      updated_at: serverTimestamp(),
+    }, { merge: true });
+    return true;
+  } catch (e) {
+    console.error("updateUserProfile failed:", e);
+    return false;
+  }
+}
+
+// ── Push Notifications (fitness/{uid}/settings/push) ─────────────────────────
+
+const DEFAULT_PUSH_SETTINGS = {
+  enabled: false,
+  token: null,
+  reminderTime: "18:00",
+  types: { workout: true, habit: true, coverage: true, restday: true },
+};
+
+export async function getPushSettings() {
+  const snap = await getDoc(doc(db, "fitness", getUid(), "settings", "push"));
+  if (!snap.exists()) return DEFAULT_PUSH_SETTINGS;
+  return { ...DEFAULT_PUSH_SETTINGS, ...snap.data() };
+}
+
+export async function savePushSettings(settings) {
+  await setDoc(doc(db, "fitness", getUid(), "settings", "push"), {
+    ...settings,
+    updated_at: serverTimestamp(),
+  }, { merge: true });
+  return { ok: true };
+}
+
 // ── Settings / Layout / Body (from pwa.bak/src/lib/db/user.js) ───────────────
 
 export async function getSettings() {

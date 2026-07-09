@@ -1,0 +1,52 @@
+#!/bin/bash
+# vitalos post-push hook: Automatischer Build + Deploy zu Firebase nach erfolgreichem Push
+# Triggert nur auf master Branch + nur wenn relevante Dateien geändert wurden
+
+CURRENT_BRANCH=$(git rev-parse --abbrev-ref HEAD)
+if [ "$CURRENT_BRANCH" != "master" ]; then
+  echo "ℹ️ Not on 'master' branch ($CURRENT_BRANCH). Skipping Firebase deploy."
+  exit 0
+fi
+
+cd "$(git rev-parse --show-toplevel)"
+
+# Hole Liste der Commits zwischen lokalem master und origin/master
+# (das ist die Kombo die gerade gepusht wurde)
+COMMITS=$(git log origin/master..HEAD --oneline 2>/dev/null | wc -l)
+if [ "$COMMITS" -eq 0 ]; then
+  # Kein neuer Commit → nichts zu deployen
+  exit 0
+fi
+
+# Prüfe ob Submodule-Pointer oder vitalos-Code geändert wurden
+CHANGED_FILES=$(git diff origin/master...HEAD --name-only 2>/dev/null)
+
+# Ignoriere reine Doku
+SKIP='\.(md|bak)$'
+RELEVANT=$(echo "$CHANGED_FILES" | grep -Ev "$SKIP" || true)
+
+# Trigger wenn: Submodule-Pointer ODER vitalos-Code geändert
+TRIGGER_PATTERN="^(src/|public/|index.html|vite.config|package.json|firebase.json|tailwind|fitness-dev|fuel-dev|journal-dev|habits-dev|learn-dev|relax-dev)"
+
+if echo "$RELEVANT" | grep -qE "$TRIGGER_PATTERN"; then
+  echo "🚀 vitalos pushed to master. Building + deploying to Firebase..."
+
+  # Build für Firebase
+  npm run build:firebase 2>&1
+  if [ $? -ne 0 ]; then
+    echo "❌ Build failed. Skipping deploy."
+    exit 1
+  fi
+
+  # Deploy zu Firebase (Output nach dist-firebase/)
+  npm run deploy:firebase 2>&1
+  if [ $? -eq 0 ]; then
+    echo "✅ Firebase deploy successful (vitalos v$(git describe --tags --always))."
+  else
+    echo "❌ Firebase deploy failed."
+    exit 1
+  fi
+else
+  echo "ℹ️ No relevant changes detected. Skipping deploy."
+  exit 0
+fi
