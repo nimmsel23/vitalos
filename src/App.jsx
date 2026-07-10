@@ -8,12 +8,14 @@ import Sidebar from './shell/layout/Sidebar.jsx'
 import MobileShell from './shell/layout/MobileShell.jsx'
 import UserProfile from '@components/common/UserProfile.jsx'
 import ErrorBoundary from './components/common/ErrorBoundary.jsx'
+import Hub from './shell/Hub.jsx'
 
 const FitnessApp  = lazy(() => import('./shell/FitnessApp.jsx'))
 const FuelWrapper = lazy(() => import('./shell/FuelWrapper.jsx'))
 const JournalApp  = lazy(() => import('./shell/JournalApp.jsx'))
 const HabitsApp   = lazy(() => import('./shell/HabitsApp.jsx'))
 const LearnApp    = lazy(() => import('./shell/LearnApp.jsx'))
+const RelaxApp    = lazy(() => import('./shell/RelaxApp.jsx'))
 
 const DAY_START = 8
 const DAY_END   = 20
@@ -33,6 +35,7 @@ function Views({ tab, fitnessProps, fuelTab, setFuelTab, user, settingsProps, op
     {tab === 'journal'  && <JournalApp onOpenSession={openSession} />}
     {tab === 'habits'   && <HabitsApp />}
     {tab === 'learn'    && <LearnApp muscleLanguage={muscleLanguage} taxonomy={taxonomy} />}
+    {tab === 'relax'    && <RelaxApp />}
     {tab === 'settings' && <div className={`${p} max-w-[1600px] mx-auto`}><Settings {...settingsProps} /></div>}
     </Suspense>
   )
@@ -41,7 +44,7 @@ function Views({ tab, fitnessProps, fuelTab, setFuelTab, user, settingsProps, op
 export default function App() {
   const [tab, setTab] = useState(() => {
     const hash = window.location.hash.replace(/^#\/?/, '')
-    return VALID_TABS.has(hash) ? hash : 'fitness'
+    return VALID_TABS.has(hash) ? hash : 'hub'
   })
   const [fitnessTab,    setFitnessTab]    = useState('dash')
   const [fuelTab,       setFuelTab]       = useState('dashboard')
@@ -192,6 +195,12 @@ export default function App() {
       </div>
       </div>
     )
+
+      if (tab === 'hub') return (
+        <ErrorBoundary>
+        <Hub navigate={navigate} />
+        </ErrorBoundary>
+      )
 
       const settingsProps = {
         user, signOut,
