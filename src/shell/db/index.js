@@ -22,3 +22,8 @@ export * from "./fitness.js";
 export * from "./fuel.js";
 export * from "./profile.js";
 export * from "./push.js";
+
+// Resolve ESM wildcard conflicts
+export { getUserProfile, updateUserProfile } from "./profile.js";
+export { getMealsHistory } from "./fuel.js";
+
