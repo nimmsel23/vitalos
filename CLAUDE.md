@@ -114,6 +114,35 @@ git submodule update --remote fitness-dev   # einzelnes updaten
 
 ---
 
+## CI/CD: Deploy-Workflow (`.github/workflows/deploy-shell.yml`)
+
+**Trigger:** `push` auf `master` (+ `workflow_dispatch`). Deployt **immer frisch** —
+kein Wiederverwenden von altem `dist-firebase/`:
+1. Checkout ohne Submodule, dann `git submodule update --init --recursive`
+   über HTTPS+Token (alle Sub-Repos sind seit 2026-07-03 public, `GITHUB_TOKEN`
+   reicht — kein SSH-Deploy-Key nötig).
+2. `npm ci` (npm workspaces — ein `ci` installiert fitness/fuel/journal/
+   habits/learn zusammen, `.npmrc` hat `legacy-peer-deps` wg. eslint@10-Konflikt
+   in fitness-dev).
+3. `npm run build:firebase` — kompletter Vite-Build aus den aktuellen
+   Submodule-Ständen (den Commit, der in vitalos für jedes Submodule
+   eingecheckt ist, nicht zwangsläufig dessen neuester `HEAD`).
+4. Deploy via `FirebaseExtended/action-hosting-deploy@v0` → Projekt
+   `fitness-aos`, Channel `live`.
+
+**Bekanntes Problem (Stand 2026-07-12): CI ist seit mehreren Pushes rot.**
+Scheitert reproduzierbar beim `npm ci`-Schritt (~15–18s, kommt nie bis zum
+Build) mit `EUSAGE` — `package-lock.json` ist nicht synchron zu
+`package.json` (`Missing: vite-plugin-pwa@1.3.0 from lock file`). Betrifft
+alle Pushes der letzten Tage, auch reine Submodule-Pointer-Updates —
+**kein Zusammenhang mit den jeweiligen inhaltlichen Änderungen**. Fix:
+`npm install` lokal laufen lassen um das Lockfile zu aktualisieren, dann
+committen. `gh run view <id> --log-failed` liefert aktuell `403: Must have
+admin rights to Repository` — Logs sind über die CLI mit dem aktuellen
+Token nicht einsehbar, nur der Job-Step-Status (`gh run view <id>`).
+
+---
+
 ## Hidden Chambers (Sub-Repos)
 
 | Modul | Pfad | Standalone Port | Rolle |
