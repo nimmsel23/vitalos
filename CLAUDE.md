@@ -130,14 +130,14 @@ kein Wiederverwenden von altem `dist-firebase/`:
 4. Deploy via `FirebaseExtended/action-hosting-deploy@v0` → Projekt
    `fitness-aos`, Channel `live`.
 
-**Bekanntes Problem (Stand 2026-07-12): CI ist seit mehreren Pushes rot.**
-Scheitert reproduzierbar beim `npm ci`-Schritt (~15–18s, kommt nie bis zum
-Build) mit `EUSAGE` — `package-lock.json` ist nicht synchron zu
-`package.json` (`Missing: vite-plugin-pwa@1.3.0 from lock file`). Betrifft
-alle Pushes der letzten Tage, auch reine Submodule-Pointer-Updates —
-**kein Zusammenhang mit den jeweiligen inhaltlichen Änderungen**. Fix:
-`npm install` lokal laufen lassen um das Lockfile zu aktualisieren, dann
-committen. `gh run view <id> --log-failed` liefert aktuell `403: Must have
+**BEHOBEN (2026-07-12, `6abbfb7`): CI war mehrere Pushes rot** — `npm ci`
+scheiterte mit `EUSAGE`, weil `package-lock.json` nicht synchron zu
+`package.json` war (`Missing: vite-plugin-pwa@1.3.0 from lock file`,
+Verursacher: learn-dev-Bump auf ^1.3.0 ohne Root-`npm install`). Seit dem
+Lockfile-Sync läuft die CI grün. **Merkregel:** Nach jedem
+Dependency-Bump in einem Workspace `npm install` im vitalos-Root laufen
+lassen und das Lockfile mitcommitten, sonst bricht `npm ci` für ALLE
+folgenden Pushes. `gh run view <id> --log-failed` liefert aktuell `403: Must have
 admin rights to Repository` — Logs sind über die CLI mit dem aktuellen
 Token nicht einsehbar, nur der Job-Step-Status (`gh run view <id>`).
 
