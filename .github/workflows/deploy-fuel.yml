@@ -29,7 +29,10 @@ jobs:
         run: npm ci
 
       - name: Firebase config schreiben
-        run: echo "$FIREBASE_CONFIG" > fuel-dev/src/firebase.config.js
+        run: |
+          if [ -n "$FIREBASE_CONFIG" ]; then
+            echo "$FIREBASE_CONFIG" > fuel-dev/src/client/lib/firebase.config.js
+          fi
         env:
           FIREBASE_CONFIG: ${{ secrets.FIREBASE_CONFIG }}
 

@@ -29,7 +29,10 @@ jobs:
         run: npm ci
 
       - name: Firebase config schreiben
-        run: echo "$FIREBASE_CONFIG" > fitness-dev/firebase.config.js
+        run: |
+          if [ -n "$FIREBASE_CONFIG" ]; then
+            echo "$FIREBASE_CONFIG" > fitness-dev/firebase.config.js
+          fi
         env:
           FIREBASE_CONFIG: ${{ secrets.FIREBASE_CONFIG }}
 
