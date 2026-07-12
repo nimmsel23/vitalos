@@ -1,0 +1,52 @@
+# PR-Preview für die VitalOS-Shell selbst (vitalos.web.app).
+#
+# Bewusst NUR für vitalos/src — die Submodule (fuel-dev, fitness-dev, ...)
+# haben ihre eigene lokale Preview-Pipeline (npm run deploy:preview +
+# Telegram-Link), die bleibt unangetastet. Dieser Workflow feuert nur,
+# wenn sich die Shell selbst (src/, public/, Root-Configs) ändert.
+
+name: PR Preview (VitalOS Shell)
+
+on:
+  pull_request:
+    branches: [master]
+    paths:
+      - 'src/**'
+      - 'public/**'
+      - 'index.html'
+      - 'vite.config*'
+      - 'package.json'
+      - 'firebase.json'
+
+jobs:
+  preview:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout (ohne Submodules)
+        uses: actions/checkout@v4
+
+      - name: Submodules via HTTPS + Token
+        run: |
+          git config --global url."https://x-access-token:${{ secrets.GH_SUBMODULE_TOKEN || secrets.GITHUB_TOKEN }}@github.com/".insteadOf "git@github.com:"
+          git submodule sync
+          git submodule update --init --recursive
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install (Workspaces)
+        run: npm ci
+
+      - name: Build (firebase mode)
+        run: npm run build:firebase
+
+      - name: Deploy Preview Channel (vitalos)
+        uses: FirebaseExtended/action-hosting-deploy@v0
+        with:
+          repoToken: ${{ secrets.GITHUB_TOKEN }}
+          firebaseServiceAccount: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+          projectId: fitness-aos
+          channelId: pr-${{ github.event.number }}
+          expires: 7d
