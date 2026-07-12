@@ -7,13 +7,13 @@ import {
 import { localToday } from "@utils";
 import WeightChart from "@components/WeightChart.jsx";
 
-import DashboardHeader from "@src/components/dashboard/DashboardHeader";
-import ActivityHeatmap from "@src/components/dashboard/ActivityHeatmap";
-import MuscleBody from "@src/components/dashboard/MuscleBody";
-import MuscleCoverage from "@src/components/dashboard/MuscleCoverage";
-import SessionStatus from "@src/components/dashboard/SessionStatus";
-import DashboardWidget from "@src/components/dashboard/DashboardWidget";
-import { getRolling10Days } from "@src/components/dashboard/utils";
+import DashboardHeader from "./DashboardHeader";
+import ActivityHeatmap from "./ActivityHeatmap";
+import MuscleBody from "./MuscleBody";
+import MuscleCoverage from "./MuscleCoverage";
+import SessionStatus from "./SessionStatus";
+import DashboardWidget from "./DashboardWidget";
+import { getRolling10Days } from "./utils";
 
 const DEFAULT_LAYOUT = ['session', 'heatmap', 'body', 'coverage', 'weight'];
 const LAYOUT_KEY = 'vitalos-dashboard-layout';
@@ -66,14 +66,14 @@ export default function Dashboard({ user, onOpenSession, onOpenReview, recentDay
   useEffect(() => {
     getSession(today).then(setTodaySession).catch(() => setTodaySession({}));
     getPlan().then(setPlan).catch(() => setPlan(null));
-
+    
     const isSuperUser = isLocalMode() || user?.email?.includes('alpha') || user?.uid === '59ole36uNpNwml5H6VDYCXyCME92';
     if (isSuperUser) {
       getGlobalInbox().then(res => {
         if (Array.isArray(res)) setGlobalInboxCount(res.length);
       }).catch(() => {});
     }
-
+    
     getDashboardAnalytics(recentDays).then(analytics => {
        const scores = analytics?.body_region_scores || {};
        const allGroups = ["chest", "back", "shoulders", "arms", "core", "glutes", "quads", "hamstrings", "calves", "legs"];
@@ -181,8 +181,8 @@ export default function Dashboard({ user, onOpenSession, onOpenReview, recentDay
       />
 
       {globalInboxCount > 0 && !isEditMode ? (
-        <div
-          onClick={() => navigate?.('coach')}
+        <div 
+          onClick={() => navigate('coach')}
           className="mb-8 px-5 py-4 rounded-[24px] bg-fit-red/15 border border-fit-red/25 hover:border-fit-red/40 transition-all cursor-pointer flex items-center justify-between text-fit-red animate-in slide-in-from-top-4 duration-500 hover:scale-[1.01] active:scale-[0.99] group shadow-lg shadow-fit-red/5"
         >
           <div className="flex items-center gap-3">
@@ -244,6 +244,7 @@ export default function Dashboard({ user, onOpenSession, onOpenReview, recentDay
         })}
       </div>
 
+      {/* Hidden Chambers Access */}
       <div className="mt-16 pt-8 border-t border-dashed border-fit-line flex justify-center opacity-10 hover:opacity-100 transition-opacity duration-1000">
         <a
           href="https://ideapad.tail7a15d6.ts.net/workout/"

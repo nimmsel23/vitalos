@@ -35,3 +35,8 @@ export {
   getJournal as getNutritionJournal,
   saveJournal as saveNutritionJournal,
 } from "@fuel/lib/db/firestore/journal.js";
+
+// Stub — fuel-dev's Firestore-Journal-Layer hat keine History-Query (nur
+// getJournal für einen Tag). JournalVosView.jsx ruft dies mit .catch(() => [])
+// auf, also reicht ein leeres Array bis es echt gebraucht wird.
+export async function getNutritionJournalHistory(_limit) { return []; }

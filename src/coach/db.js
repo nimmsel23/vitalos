@@ -4,6 +4,7 @@ export * from "@fitness-db";
 // (eigener Server :9000, kein shared local store). Cloud-Build (Firestore)
 // hat die echte Implementierung in cloud/db.firestore.js.
 export async function getMealsHistory(_limit) { return []; }
+export async function getNutritionJournalHistory(_limit) { return []; }
 
 // Stub — users/{uid} Profil existiert nur im Firebase-Build (Multi-User).
 // Lokaler Coach-Build ist Single-User, UserContext nutzt isLocalMode()-Guard.
