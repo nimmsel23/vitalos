@@ -50,3 +50,16 @@ jobs:
           firebaseServiceAccount: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
           projectId: fitness-aos
           channelId: live
+
+      - name: Send Telegram Notification
+        if: success()
+        uses: appleboy/telegram-action@master
+        with:
+          to: ${{ secrets.TELEGRAM_TO }}
+          token: ${{ secrets.TELEGRAM_TOKEN }}
+          message: |
+            🚀 VitalOS (Shell) erfolgreich deployed (master)!
+            
+            🔗 Live-URL: https://vitalos.web.app
+            
+            Commit: ${{ github.event.head_commit.message }}
