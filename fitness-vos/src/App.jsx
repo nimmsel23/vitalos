@@ -1,26 +1,29 @@
 import { useState, useEffect, useRef } from 'react'
 import { RefreshCw } from 'lucide-react'
-import Session from '@view/session'
-import Learn   from '@view/learn'
-import WeeklyReview from '@view/review'
-import Settings from '@view/settings'
-import Coach from '@view/coach'
-import Inbox from '@fitness/views/Inbox/index.js'
-import ExerciseInsightModal from '@fitness/components/ExerciseInsightModal.jsx'
+import Session from '@src/views/Session/index.jsx'
+import Journal from '@src/views/Journal/index.jsx'
+import Habits  from '@src/views/Habits/index.jsx'
+import Learn   from '@src/views/Learn/index.jsx'
+import WeeklyReview from '@src/views/WeeklyReview/index.jsx'
+import Settings from '@src/views/Settings/index.jsx'
+import Coach from '@src/views/Coach/index.jsx'
+import Inbox from '@src/views/Inbox/index.js'
+import ExerciseInsightModal from '@src/components/ExerciseInsightModal.jsx'
 import { isLocalMode, getAnatomy } from '@db'
 
-import { NAV_ITEMS, VALID_TABS } from '@fitness/constants/NavigationItems.js'
+import { NAV_ITEMS, VALID_TABS } from '@src/constants/NavigationItems.js'
 
-import Sidebar from '@fitness/components/layout/Sidebar.jsx'
-import MobileNav from '@fitness/components/layout/MobileNav.jsx'
-import UserProfile from '@fitness/components/common/UserProfile.jsx'
-import ErrorBoundary from '@fitness/components/common/ErrorBoundary.jsx'
+import Sidebar from '@src/components/layout/Sidebar.jsx'
+import MobileNav from '@src/components/layout/MobileNav.jsx'
+import UserProfile from '@src/components/common/UserProfile.jsx'
+import ErrorBoundary from '@src/components/common/ErrorBoundary.jsx'
+import PwaUpdateBanner from '@src/components/common/PwaUpdateBanner.jsx'
 
-import AppGate from '@fitness/views/AppGate.jsx'
+import AppGate from '@src/views/AppGate.jsx'
 
-import { useUser } from '@fitness/contexts/UserContext'
-import { useSettings } from '@fitness/contexts/SettingsContext'
-import { useSwipeNavigation } from '@fitness/hooks/useSwipeNavigation'
+import { useUser } from '@src/contexts/UserContext'
+import { useSettings } from '@src/contexts/SettingsContext'
+import { useSwipeNavigation } from '@src/hooks/useSwipeNavigation'
 
 export default function App() {
   const {
@@ -163,6 +166,7 @@ export default function App() {
 
   return (
     <>
+      <PwaUpdateBanner />
       <ErrorBoundary>
         <div className="app-shell flex min-h-screen overflow-x-hidden w-full bg-fit-bg text-fit-ink font-sans transition-colors duration-500">
 
@@ -219,6 +223,8 @@ export default function App() {
                       {tab === 'session'  && <Session key={sessionDate || 'today'} initialDate={sessionDate} initialDraft={sessionDraft} onInspectExercise={inspectExercise} onOpenSession={openSession} recentDays={recentDays} coverageThreshold={coverageThreshold} subTab={subTab} />}
                       {tab === 'review'   && <WeeklyReview onOpenSession={openSession} onInspectExercise={inspectExercise} muscleLanguage={muscleLanguage} taxonomy={taxonomy} gender={gender} recentDays={recentDays} subTab={subTab} onSubNav={navigateSub} />}
                       {tab === 'learn'    && <Learn subTab={subTab} />}
+                      {tab === 'journal'  && <Journal />}
+                      {tab === 'habits'   && <Habits />}
                       {tab === 'coach'    && (isLocalMode() || user?.email?.includes('alpha') || user?.uid === '59ole36uNpNwml5H6VDYCXyCME92') && <Coach onInspectExercise={inspectExercise} />}
                       {tab === 'inbox'    && <Inbox />}
                       {tab === 'settings' && <Settings />}
