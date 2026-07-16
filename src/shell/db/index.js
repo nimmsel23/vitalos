@@ -28,9 +28,13 @@ export * from "./habits.js";
 // Resolve ESM wildcard conflicts
 export { getUserProfile, updateUserProfile } from "./settings.js";
 export { getMealsHistory } from "./fuel.js";
-// Konflikte zwischen fitness.js und journal.js/habits.js auflösen,
-// wir geben den dedizierten Wrappern Vorrang:
+
+// Konflikte zwischen fitness.js und journal.js/habits.js auflösen
 export { getJournal, saveJournal } from "./journal.js";
-// Wenn habits.js ebenfalls getHabit/etc. bereitstellt, hier auflösen:
-// export { getHabits, saveHabits } from "./habits.js";
+
+// Core/Auth/Sessions Konflikte auflösen (alle Repos exportieren core.js, wir nutzen fitness als SSOT)
+export { 
+  getUid, watchAuth, signIn, signInEmail, signUpEmail, signOut, isLocalMode, api,
+  getSessionHistory
+} from "./fitness.js";
 

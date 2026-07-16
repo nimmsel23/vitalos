@@ -1,14 +1,14 @@
 /**
- * User-Profil — users/{uid} (Stammdaten, separat von fitness/{uid}/settings).
+ * User-Profil & Push-Notification-Settings
  *
- * Shell-eigen: das Profil gehört der vitalos-Shell (Coach sieht alle
- * Klienten via getAllUserProfiles aus dem fitness-Layer), nicht einem
- * einzelnen Tempel.
+ * Shell-eigen: users/{uid} und fitness/{uid}/settings/push
  */
 
 import { doc, getDoc, setDoc, serverTimestamp } from "firebase/firestore";
 import { db } from "../../cloud/firebase.js";
+import { getUid } from "./fitness.js";
 
+// --- Profile ---
 export async function getUserProfile(uid) {
   const snap = await getDoc(doc(db, "users", uid));
   return snap.exists() ? snap.data() : null;
@@ -26,17 +26,8 @@ export async function updateUserProfile(uid, data) {
     return false;
   }
 }
-/**
- * Push-Notification-Settings — fitness/{uid}/settings/push.
- *
- * Shell-eigen: Web-Push (VAPID/Messaging) ist ein Shell-Feature
- * (usePushNotifications.js), kein Sub-Repo-Feature.
- */
 
-import { doc, getDoc, setDoc, serverTimestamp } from "firebase/firestore";
-import { db } from "../../cloud/firebase.js";
-import { getUid } from "./fitness.js";
-
+// --- Push Settings ---
 const DEFAULT_PUSH_SETTINGS = {
   enabled: false,
   token: null,
