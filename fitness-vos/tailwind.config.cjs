@@ -1,8 +1,10 @@
 /** @type {import('tailwindcss').Config} */
 module.exports = {
-  content: [
+  "content": [
     "./index.html",
     "./src/**/*.{js,jsx,ts,tsx}",
+    "../fitness-dev/src/**/*.{js,jsx,ts,tsx}",
+    "../src/**/*.{js,jsx,ts,tsx}"
   ],
   safelist: [
     'lg:flex',
