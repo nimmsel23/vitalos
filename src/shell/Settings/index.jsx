@@ -1,13 +1,15 @@
 import { useState, useEffect } from "react";
 import { api, isLocalMode } from "@db";
 import AppearanceSection from "./AppearanceSection";
-import TrainingSection from "./TrainingSection";
 import AdvancedSection from "./AdvancedSection";
 import LocalDevSection from "./LocalDevSection";
 import AccountSection from "./AccountSection";
 import ProfileSection from "./ProfileSection";
-import FuelSection from "./FuelSection";
 import NotificationsSection from "./NotificationsSection";
+// Domain-Sektionen — fertig aus den Sub-Repos importiert (kein Doppel-Code)
+import TrainingSection from "@fitness/src/views/Settings/TrainingSection.jsx";
+import FuelGoalsSection from "@fuel/views/settings/GoalsSection.jsx";
+import { useSettings as useFuelStore } from "@fuel/store.js";
 
 export default function Settings({
   user, signOut,
@@ -39,19 +41,33 @@ export default function Settings({
   const [swUpdateAvailable, setSwUpdateAvailable] = useState(false)
   const [swChecking, setSwChecking] = useState(false)
 
+  // User-Settings global: vitalos-Profil (Alter/Geschlecht) in den Fuel-Store spiegeln,
+  // damit z. B. DACH-Referenzwerte im Mikros-Tab dieselben Werte nutzen.
+  const setFuelSetting = useFuelStore(s => s.setSetting)
+  useEffect(() => {
+    if (age) setFuelSetting('age', age)
+    if (gender) setFuelSetting('gender', gender)
+  }, [age, gender, setFuelSetting])
+
   useEffect(() => {
     if (!('serviceWorker' in navigator)) return
     const sw = navigator.serviceWorker
     const askVersion = () => { if (sw.controller) sw.controller.postMessage({ type: 'GET_VERSION' }) }
     const onMsg = (e) => { if (e.data?.type === 'VERSION') setSwVersion(e.data.version) }
     sw.addEventListener('message', onMsg)
+    sw.addEventListener('controllerchange', askVersion)
     askVersion()
+    
+    // Fallback: check again after a short delay just in case
+    setTimeout(askVersion, 1000)
+
     const reg = window.__swRegistration
     if (reg?.waiting) setSwUpdateAvailable(true)
     const onUpdate = () => setSwUpdateAvailable(true)
     window.addEventListener('sw-update-available', onUpdate)
     return () => {
       sw.removeEventListener('message', onMsg)
+      sw.removeEventListener('controllerchange', askVersion)
       window.removeEventListener('sw-update-available', onUpdate)
     }
   }, [])
@@ -126,11 +142,10 @@ export default function Settings({
             cycleLength={cycleLength} setCycleLength={setCycleLength}
             recentDays={recentDays} setRecentDays={setRecentDays}
             coverageThreshold={coverageThreshold} setCoverageThreshold={setCoverageThreshold}
-            showAdvanced={showAdvanced} setShowAdvanced={setShowAdvanced}
             swVersion={swVersion} swUpdateAvailable={swUpdateAvailable} swChecking={swChecking}
             onSwCheck={handleSwCheck} onSwApply={handleSwApply}
           />
-          <FuelSection />
+          <FuelGoalsSection className="card p-8 space-y-4 border-t-4 border-t-orange-400 text-fit-ink" />
           {!isLocalMode() && <NotificationsSection user={user} />}
        </div>
 
@@ -141,6 +156,15 @@ export default function Settings({
            health={health} wger={wger}
          />
        )}
+
+       <div className="flex justify-center pt-2">
+          <button
+            onClick={() => setShowAdvanced(!showAdvanced)}
+            className={`px-4 py-2 rounded-xl border transition-all font-black text-[9px] uppercase tracking-widest ${showAdvanced ? 'border-fit-accent bg-fit-accent/5 text-fit-accent' : 'border-fit-line bg-fit-bg2 text-fit-dim hover:text-fit-ink'}`}
+          >
+             {showAdvanced ? 'Advanced Mode: Ein' : 'Advanced Mode: Aus'}
+          </button>
+       </div>
 
        {showAdvanced && (
          <AdvancedSection

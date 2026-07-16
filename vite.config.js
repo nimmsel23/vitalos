@@ -1,6 +1,5 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
-import { VitePWA } from 'vite-plugin-pwa'
 import tailwindcss from 'tailwindcss'
 import { resolve, dirname } from 'path'
 import { fileURLToPath } from 'url'
@@ -103,39 +102,6 @@ export default defineConfig(({ mode }) => {
       firebaseRedirect,
       react(),
       ...federationPlugin,
-      VitePWA({
-        registerType: 'autoUpdate',
-        injectRegister: 'script',
-        filename: 'sw.js',
-        manifest: {
-          name: 'VitalOS',
-          short_name: 'VitalOS',
-          description: 'VitalOS — Fitness, Fuel, Journal, Habits, Learn',
-          theme_color: '#0a0a0f',
-          background_color: '#0a0a0f',
-          display: 'standalone',
-          start_url: '/',
-          scope: '/',
-          icons: [
-            { src: '/icon-192.png', sizes: '192x192', type: 'image/png', purpose: 'any' },
-            { src: '/icon-512.png', sizes: '512x512', type: 'image/png', purpose: 'any' },
-            { src: '/icon-192.png', sizes: '192x192', type: 'image/png', purpose: 'maskable' },
-            { src: '/icon-512.png', sizes: '512x512', type: 'image/png', purpose: 'maskable' },
-          ],
-        },
-        workbox: {
-          globPatterns: ['**/*.{js,css,html,ico,png,svg,woff2}'],
-          navigateFallback: '/index.html',
-          navigateFallbackDenylist: [/^\/api/, /^\/session/, /^\/journal/, /^\/fitness/, /^\/health/],
-          runtimeCaching: [
-            {
-              urlPattern: /^\/api\//,
-              handler: 'NetworkFirst',
-              options: { cacheName: 'vitalos-api', networkTimeoutSeconds: 5 },
-            },
-          ],
-        },
-      }),
     ],
     resolve: {
       alias: aliases,
