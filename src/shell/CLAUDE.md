@@ -32,12 +32,23 @@ Der `*Shell.jsx` ist für die Layout-Ebene (Sidebar, MobileShell), der `*App.jsx
 | `MobileNav.jsx` | Bottom-Navigation Bar |
 | `FuelMobileLayout.jsx` | Fuel-spezifisches Mobile-Layout |
 
-## Settings/
+## Settings/ (Setup-Tab)
 
-Eigenständiger Settings-Tab — vitalos SSOT. Sektionen:
-`Account · Profile · Appearance · Training · Fuel · LocalDev · Advanced`
+Eigenständiger Setup-Tab — vitalos SSOT. Shell-eigene Sektionen:
+`Account · Profile · Notifications · Appearance · Fuel · LocalDev · Advanced` + Kompositor `index.jsx`.
+
+Importierte Domain-Sektionen (einzige Sub-Repo-Anteile):
+- `TrainingSection` ← `@fitness/src/views/Settings/TrainingSection.jsx` (Split, Zyklus, Location)
+- `FuelSection` ist shell-eigenes UI über `@fuel/store.js` (Tagesziele)
 
 `LocalDevSection.jsx` = coach-only (Port-Checks, Sync-Trigger) — wird im Firebase-Build nicht angezeigt.
+
+**INVARIANTE (2026-07-16):** Im Shell-Betrieb darf KEINE App einen eigenen
+Setup-/Settings-Einstieg haben, der über app-spezifische Funktionen hinausgeht.
+Generisches (Account/Auth, Theme, SW-Update, Profil, Layout, Diagnose) lebt
+ausschließlich im VitalOS-Setup-Tab. Deshalb: kein `settings`-Eintrag in
+`SUB_NAV`, RelaxApp/FuelWrapper routen die Settings-Views der Sub-Repos nicht.
+App-spezifische Settings-Modals (z. B. Journal: Darstellung/Telegram) sind ok.
 
 ## Regel
 

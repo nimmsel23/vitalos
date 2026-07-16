@@ -1,0 +1,10 @@
+{
+  "hosting": {
+    "site": "fitness-vos",
+    "public": "dist-firebase",
+    "ignore": ["firebase.json", "**/.*", "**/node_modules/**"],
+    "rewrites": [
+      { "source": "**", "destination": "/index.html" }
+    ]
+  }
+}
