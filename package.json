@@ -9,7 +9,8 @@
     "journal-dev",
     "habits-dev",
     "learn-dev",
-    "relax-dev"
+    "relax-dev",
+    "fitness-vos"
   ],
   "scripts": {
     "dev": "npx vite",
