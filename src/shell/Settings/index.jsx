@@ -9,7 +9,6 @@ import NotificationsSection from "./NotificationsSection";
 // Domain-Sektionen — fertig aus den Sub-Repos importiert (kein Doppel-Code)
 import TrainingSection from "@fitness/src/views/Settings/TrainingSection.jsx";
 import FuelGoalsSection from "@fuel/views/settings/GoalsSection.jsx";
-import { useSettings as useFuelStore } from "@fuel/store.js";
 
 export default function Settings({
   user, signOut,
@@ -40,14 +39,6 @@ export default function Settings({
   const [swVersion, setSwVersion] = useState(null)
   const [swUpdateAvailable, setSwUpdateAvailable] = useState(false)
   const [swChecking, setSwChecking] = useState(false)
-
-  // User-Settings global: vitalos-Profil (Alter/Geschlecht) in den Fuel-Store spiegeln,
-  // damit z. B. DACH-Referenzwerte im Mikros-Tab dieselben Werte nutzen.
-  const setFuelSetting = useFuelStore(s => s.setSetting)
-  useEffect(() => {
-    if (age) setFuelSetting('age', age)
-    if (gender) setFuelSetting('gender', gender)
-  }, [age, gender, setFuelSetting])
 
   useEffect(() => {
     if (!('serviceWorker' in navigator)) return

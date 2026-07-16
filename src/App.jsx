@@ -9,6 +9,7 @@ import MobileShell from './shell/layout/MobileShell.jsx'
 import UserProfile from '@components/common/UserProfile.jsx'
 import ErrorBoundary from './components/common/ErrorBoundary.jsx'
 import Hub from './shell/Hub.jsx'
+import { useSettings as useFuelStore } from '@fuel/store.js'
 
 const FitnessApp  = lazy(() => import('./shell/FitnessApp.jsx'))
 const FuelWrapper = lazy(() => import('./shell/FuelWrapper.jsx'))
@@ -109,6 +110,15 @@ export default function App() {
   }, [])
 
   useEffect(() => { document.documentElement.style.fontSize = `${layoutScale}%` }, [layoutScale])
+
+  // User-Settings global: vitalos-Profil (Alter/Geschlecht) in den Fuel-Store spiegeln,
+  // damit z. B. DACH-Referenzwerte im Mikros-Tab dieselben Werte nutzen — unabhängig
+  // davon, ob der Setup-Tab je geöffnet wurde.
+  const setFuelSetting = useFuelStore(s => s.setSetting)
+  useEffect(() => {
+    if (age) setFuelSetting('age', age)
+    if (gender) setFuelSetting('gender', gender)
+  }, [age, gender, setFuelSetting])
 
   useEffect(() => {
     if (themeMode === 'manual') {
