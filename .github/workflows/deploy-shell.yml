@@ -38,7 +38,7 @@ jobs:
       # npm-workspaces (fitness/fuel/journal/habits/learn) — ein ci installiert alles.
       # .npmrc: legacy-peer-deps wegen eslint@10-Konflikt in fitness-dev.
       - name: Install (Workspaces)
-        run: npm ci
+        run: npm install --legacy-peer-deps
 
       - name: Build (firebase mode)
         run: npm run build:firebase
@@ -49,6 +49,7 @@ jobs:
           repoToken: ${{ secrets.GITHUB_TOKEN }}
           firebaseServiceAccount: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
           projectId: fitness-aos
+          target: vitalos
           channelId: live
 
       - name: Send Telegram Notification
