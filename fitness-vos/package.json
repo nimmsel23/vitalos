@@ -6,6 +6,8 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "build:cloud": "VITE_APP_MODE=client vite build --config vite.config.cjs",
+    "firebase": "npm run build:cloud && firebase deploy --only hosting --project fitness-aos"
   }
 }
