@@ -14,14 +14,14 @@ const baseItems = [
     { id: 'exercises', label: 'Übungen',  Icon: LibraryBig },
     { id: 'anatomy',   label: 'Anatomie', Icon: Microscope },
     { id: 'quiz',      label: 'Quiz',     Icon: HelpCircle },
-  ]},
-  { id: 'settings', label: 'Setup',    Icon: Settings2 },
+  ]}
 ];
 
 export const NAV_ITEMS = baseItems;
 
 export const VALID_TABS = new Set([
   ...baseItems.map(item => item.id),
+  'settings',
   'coach',
   'inbox',
 ]);

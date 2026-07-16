@@ -8,8 +8,9 @@
  *
  *   fitness.js  → fitness-dev/src/lib/db/firestore/*   (alles)
  *   fuel.js     → fuel-dev/src/client/lib/db/firestore/* (selektiv)
- *   profile.js  → users/{uid}                          (Shell-eigen)
- *   push.js     → fitness/{uid}/settings/push          (Shell-eigen)
+ *   journal.js  → journal-dev/src/db.js                (Wrapper)
+ *   habits.js   → habits-dev/src/db/index.js           (Wrapper)
+ *   settings.js → users/{uid} & push                   (Shell-eigen)
  */
 
 // Zuerst: Firebase-Init der Shell (Multi-Tab-Cache + Messaging). Muss vor
@@ -20,10 +21,16 @@ export { db, auth, googleProvider, getMessagingIfSupported } from "../../cloud/f
 
 export * from "./fitness.js";
 export * from "./fuel.js";
-export * from "./profile.js";
-export * from "./push.js";
+export * from "./settings.js";
+export * from "./journal.js";
+export * from "./habits.js";
 
 // Resolve ESM wildcard conflicts
-export { getUserProfile, updateUserProfile } from "./profile.js";
+export { getUserProfile, updateUserProfile } from "./settings.js";
 export { getMealsHistory } from "./fuel.js";
+// Konflikte zwischen fitness.js und journal.js/habits.js auflösen,
+// wir geben den dedizierten Wrappern Vorrang:
+export { getJournal, saveJournal } from "./journal.js";
+// Wenn habits.js ebenfalls getHabit/etc. bereitstellt, hier auflösen:
+// export { getHabits, saveHabits } from "./habits.js";
 
