@@ -14,7 +14,8 @@
   "scripts": {
     "dev": "npx vite",
     "build": "npx vite build",
-    "build:firebase": "npx vite build --mode firebase && BUILD=$(date +%s) && sed -i \"s/vitalos-v[0-9]*/vitalos-$BUILD/\" dist-firebase/sw.js && sed -i \"s/\\\"version\\\": \\\"[0-9]*/\\\"version\\\": \\\"$BUILD/\" dist-firebase/manifest.json",
+    "build:firebase": "npm run bump:sw && npx vite build --mode firebase",
+    "bump:sw": "node scripts/bump-sw.mjs",
     "deploy:shell": "npm run build:firebase && firebase deploy --only hosting",
     "preview": "npx vite preview"
   },
