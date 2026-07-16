@@ -4,7 +4,7 @@
     "indexes": "firestore.indexes.json"
   },
   "hosting": {
-    "site": "vitalos",
+    "target": "vitalos",
     "public": "dist-firebase",
     "ignore": ["firebase.json", "**/.*", "**/node_modules/**"],
     "rewrites": [

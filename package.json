@@ -16,7 +16,7 @@
     "build": "npx vite build",
     "build:firebase": "npm run bump:sw && npx vite build --mode firebase",
     "bump:sw": "node scripts/bump-sw.mjs",
-    "deploy:shell": "npm run build:firebase && firebase deploy --only hosting",
+    "deploy:shell": "npm run build:firebase && npx -y firebase-tools@latest deploy --only hosting --project fitness-aos",
     "preview": "npx vite preview"
   },
   "dependencies": {
