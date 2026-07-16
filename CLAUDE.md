@@ -110,7 +110,12 @@ git submodule update --remote        # alle auf neuesten Stand bringen
 git submodule update --remote fitness-dev   # einzelnes updaten
 ```
 
-Änderungen in einem Submodule → dort committen, dann in vitalos den neuen Commit-Pointer committen.
+Änderungen in einem Submodule → dort committen, **unbedingt auf GitHub (origin) pushen**, dann erst in vitalos den neuen Commit-Pointer committen und pushen.
+
+### ⚠️ WICHTIGE SUBMODUL-PULL-REGEL (CI-Crashes verhindern)
+* **Problem:** Wenn ein Pointer im Meta-Repo auf einen lokalen Commit zeigt, der noch nicht auf GitHub gepusht wurde, bricht der Submodule-Checkout der CI-Pipeline mit `fatal: not our ref` ab.
+* **Merkregel:** Bevor ein Submodul-Pointer im Meta-Repo committet/gepusht wird, MUSS der Submodul-Commit auf GitHub existieren (z.B. durch `git push` im Submodul).
+* **Sicherer Push im Meta-Repo:** Nutze `git push --recurse-submodules=check`, um versehentliche Verstöße vor dem Push abzufangen (bricht den Push ab, falls Submodule noch ungepushte Commits haben).
 
 ---
 
