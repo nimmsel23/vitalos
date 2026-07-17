@@ -17,6 +17,7 @@
     "build": "npx vite build",
     "build:firebase": "npm run bump:sw && npx vite build --mode firebase",
     "bump:sw": "node scripts/bump-sw.mjs",
+    "deploy:preview": "npm run build:firebase && npx -y firebase-tools@latest hosting:channel:deploy agent-preview --expires 3d --project fitness-aos",
     "preview": "npx vite preview"
   },
   "dependencies": {
