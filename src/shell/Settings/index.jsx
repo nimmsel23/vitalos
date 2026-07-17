@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { api, isLocalMode } from "@db";
 import { useShellSettings } from "../store.js";
-import { THEMES } from "@constants/Themes.js";
+import { THEMES } from "../themes.js";
 import AppearanceSection from "./AppearanceSection";
 import AdvancedSection from "./AdvancedSection";
 import LocalDevSection from "./LocalDevSection";
@@ -111,7 +111,7 @@ export default function Settings({ user, signOut }) {
     <div className="space-y-8 pb-32 max-w-5xl mx-auto">
        <header className="mb-4 animate-in fade-in duration-700">
           <h2 className="text-3xl font-black text-fit-ink">Settings</h2>
-          <p className="text-sm font-medium opacity-40">VitalOS — Fitness, Ernährung, Journal</p>
+          <p className="text-sm font-medium opacity-40">VitalOS — Fitness, Ernährung, Entspannung</p>
        </header>
 
        <AccountSection user={user} signOut={signOut} />

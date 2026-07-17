@@ -50,7 +50,7 @@ export default defineConfig(({ mode }) => {
     '@fitness':             FITNESS_DEV,
 
     // ── Tab Sources (eine Zeile = ein Tab, Herkunft sofort sichtbar) ───────────
-    '@view/dashboard':  resolve(VITALOS_SRC,         'fitness/dashboard/Dashboard.jsx'),  // vitalos-spezifisch (Stats-Widget, aus fitness-dev übernommen + gepflegt)
+    '@view/dashboard':  resolve(VITALOS_SRC,         'fitness/Dashboard.jsx'),  // vitalos-spezifisch (Stats-Widget, aus fitness-dev übernommen + gepflegt)
     '@view/session':    resolve(FITNESS_SRC,          'views/Session'),        // fitness-dev
     '@view/review':     resolve(FITNESS_SRC,          'views/WeeklyReview'),   // fitness-dev
     '@view/muscles':    resolve(FITNESS_SRC,          'views/Muscles'),        // fitness-dev
@@ -81,6 +81,8 @@ export default defineConfig(({ mode }) => {
   const SUBREPO_FIREBASE = new Set([
     resolve(FITNESS_SRC, 'firebase.js'),
     resolve(FUEL_ROOT, 'src/client/lib/firebase.js'),
+    resolve(JOURNAL_DEV, 'src/lib/firebase.js'),
+    resolve(HABITS_DEV, 'src/lib/firebase.js'),
   ])
   const firebaseRedirect = {
     name: 'vitalos:subrepo-firebase-redirect',

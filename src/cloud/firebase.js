@@ -1,11 +1,15 @@
-import { initializeApp } from "firebase/app";
-import { initializeFirestore, persistentLocalCache, persistentMultipleTabManager } from "firebase/firestore";
+import { initializeApp, getApps, getApp } from "firebase/app";
+import { initializeFirestore, persistentLocalCache, persistentMultipleTabManager, getFirestore } from "firebase/firestore";
 import { getAuth, GoogleAuthProvider, browserLocalPersistence, setPersistence } from "firebase/auth";
 import { isSupported, getMessaging } from "firebase/messaging";
 import { getVertexAI } from "firebase/vertexai";
 import { config } from "@firebase-config";
 
-const app = initializeApp(config);
+// Guard gegen Doppel-Init: im Local-Build können Sub-Repo-firebase.js-Module
+// (journal/habits) vor diesem Modul evaluieren — dann existiert die App schon
+// und initializeFirestore() mit eigenen Optionen würde werfen (Tab-Hänger).
+const alreadyInit = getApps().length > 0;
+const app = alreadyInit ? getApp() : initializeApp(config);
 
 // Firestore with IndexedDB-backed persistent cache.
 // Reads served from cache while offline; writes queued locally and
@@ -15,9 +19,11 @@ const app = initializeApp(config);
 // while offline are stored in the local IndexedDB queue and will be
 // synchronized when connectivity is restored. No additional queue
 // management is required here — Firestore handles it internally.
-export const db = initializeFirestore(app, {
-  localCache: persistentLocalCache({ tabManager: persistentMultipleTabManager() }),
-});
+export const db = alreadyInit
+  ? getFirestore(app)
+  : initializeFirestore(app, {
+      localCache: persistentLocalCache({ tabManager: persistentMultipleTabManager() }),
+    });
 
 export const auth = getAuth(app);
 // Keep user signed in across reloads — needed for PWA offline UX.
