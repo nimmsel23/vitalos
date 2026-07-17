@@ -30,7 +30,12 @@ export { getUserProfile, updateUserProfile } from "./settings.js";
 export { getMealsHistory } from "./fuel.js";
 
 // Konflikte zwischen fitness.js und journal.js/habits.js auflösen
-export { getJournal, saveJournal } from "./journal.js";
+// (habits.js re-exportiert komplett @fitness-db, das kollidiert hier mit
+// journal-devs eigenem Journal-Modul — journal.js gewinnt)
+export {
+  getJournal, saveJournal,
+  getJournalHistory, updateJournal, getAllHabitJournalsHistory,
+} from "./journal.js";
 
 // Core/Auth/Sessions Konflikte auflösen (alle Repos exportieren core.js, wir nutzen fitness als SSOT)
 export { 

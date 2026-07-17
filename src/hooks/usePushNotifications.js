@@ -1,5 +1,8 @@
 import { useCallback, useEffect, useState } from 'react'
 import { isLocalMode, getPushSettings, savePushSettings } from '@db'
+import { getMessagingIfSupported } from '@cloud/firebase.js'
+import { getToken } from 'firebase/messaging'
+import { VAPID_KEY } from '@firebase-config'
 
 const PUSH_SW_URL = '/firebase-messaging-sw.js'
 const PUSH_SW_SCOPE = '/firebase-push/'
@@ -22,10 +25,6 @@ export function usePushNotifications(user) {
     if (isLocalMode() || !user) return
     setBusy(true)
     try {
-      const { getMessagingIfSupported } = await import('@cloud/firebase.js')
-      const { getToken } = await import('firebase/messaging')
-      const { VAPID_KEY } = await import('@firebase-config')
-
       const messaging = await getMessagingIfSupported()
       if (!messaging) throw new Error('Push wird auf diesem Gerät/Browser nicht unterstützt')
 
