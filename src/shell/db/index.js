@@ -35,6 +35,7 @@ export { getMealsHistory } from "./fuel.js";
 export {
   getJournal, saveJournal,
   getJournalHistory, updateJournal, getAllHabitJournalsHistory,
+  getAllHabitJournalsForDate,
 } from "./journal.js";
 
 // Core/Auth/Sessions Konflikte auflösen (alle Repos exportieren core.js, wir nutzen fitness als SSOT)
