@@ -52,8 +52,11 @@ jobs:
           target: vitalos
           channelId: live
 
+      # continue-on-error: eine fehlgeschlagene Notification darf den Run nicht
+      # rot färben — Build+Deploy sind dann bereits erfolgreich durch.
       - name: Send Telegram Notification
         if: success()
+        continue-on-error: true
         uses: appleboy/telegram-action@master
         with:
           to: ${{ secrets.TELEGRAM_TO }}
