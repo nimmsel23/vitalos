@@ -6,6 +6,7 @@
   "hosting": {
     "target": "vitalos",
     "public": "dist-firebase",
+    "predeploy": ["node scripts/ci-deploy-guard.mjs"],
     "ignore": ["firebase.json", "**/.*", "**/node_modules/**"],
     "rewrites": [
       { "source": "**", "destination": "/index.html" }
