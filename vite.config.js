@@ -105,7 +105,10 @@ export default defineConfig(({ mode }) => {
     ],
     resolve: {
       alias: aliases,
-      dedupe: ['react', 'react-dom', '@tanstack/react-query', 'lucide-react'],
+      // firebase: Workspaces können eigene (neuere) SDK-Kopien mitbringen
+      // (z. B. habits-dev firebase@12 vs. Root @11) — zwei @firebase/app-Instanzen
+      // im Bundle ergeben "Component auth has not been registered yet" (Whitescreen).
+      dedupe: ['react', 'react-dom', '@tanstack/react-query', 'lucide-react', 'firebase'],
     },
     css: {
       postcss: {

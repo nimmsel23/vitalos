@@ -1,5 +1,7 @@
 import { useState, useEffect } from "react";
 import { api, isLocalMode } from "@db";
+import { useShellSettings } from "../store.js";
+import { THEMES } from "@constants/Themes.js";
 import AppearanceSection from "./AppearanceSection";
 import AdvancedSection from "./AdvancedSection";
 import LocalDevSection from "./LocalDevSection";
@@ -10,28 +12,30 @@ import NotificationsSection from "./NotificationsSection";
 import TrainingSection from "@fitness/src/views/Settings/TrainingSection.jsx";
 import FuelGoalsSection from "@fuel/views/Settings/settings/GoalsSection.jsx";
 
-export default function Settings({
-  user, signOut,
-  layoutScale, setLayoutScale,
-  gender, setGender,
-  age, setAge,
-  heightCm, setHeightCm,
-  weightKg, setWeightKg,
-  split, setSplit,
-  cycleLength, setCycleLength,
-  defaultLocation, setDefaultLocation,
-  recentDays, setRecentDays,
-  coverageThreshold, setCoverageThreshold,
-  showAdvanced, setShowAdvanced,
-  dashboardHighlighter, setDashboardHighlighter,
-  themeMode, setModeState, circLight, setCircLight, circDark, setCircDark,
-  themes, theme, setThemeState,
-  sidebarPinned, setSidebarPinned,
-  navMode, setNavMode,
-  muscleLanguage, setMuscleLanguage,
-  swipeEnabled, setSwipeEnabled,
-  mobileLayout, setMobileLayout,
-}) {
+export default function Settings({ user, signOut }) {
+  // Alle User-Settings kommen aus dem Shell-Store (SSOT) statt per Prop-Drilling.
+  const {
+    layoutScale, setLayoutScale,
+    gender, setGender,
+    age, setAge,
+    heightCm, setHeightCm,
+    weightKg, setWeightKg,
+    split, setSplit,
+    cycleLength, setCycleLength,
+    defaultLocation, setDefaultLocation,
+    recentDays, setRecentDays,
+    coverageThreshold, setCoverageThreshold,
+    showAdvanced, setShowAdvanced,
+    dashboardHighlighter, setDashboardHighlighter,
+    themeMode, setModeState, circLight, setCircLight, circDark, setCircDark,
+    theme, setThemeState,
+    sidebarPinned, setSidebarPinned,
+    muscleLanguage, setMuscleLanguage,
+    swipeEnabled, setSwipeEnabled,
+    mobileLayout, setMobileLayout,
+  } = useShellSettings()
+  const themes = THEMES
+  const navMode = 'tabs', setNavMode = () => {}
   const [health, setHealth] = useState(null)
   const [wger, setWger] = useState(null)
   const [firestoreStatus, setFirestoreStatus] = useState(null)

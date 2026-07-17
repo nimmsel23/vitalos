@@ -2,7 +2,6 @@ import { useState, useEffect, lazy, Suspense } from 'react'
 import { RefreshCw } from 'lucide-react'
 import { watchAuth, signIn, signInEmail, signUpEmail, signOut, isLocalMode, auth } from '@db'
 import { VALID_TABS, SUB_NAV } from './shell/NavigationItems.js'
-import { THEMES } from '@constants/Themes.js'
 import Settings from '@view/settings/index.jsx'
 import Sidebar from './shell/layout/Sidebar.jsx'
 import MobileShell from './shell/layout/MobileShell.jsx'
@@ -10,6 +9,7 @@ import UserProfile from '@components/common/UserProfile.jsx'
 import ErrorBoundary from './components/common/ErrorBoundary.jsx'
 import Hub from './shell/Hub.jsx'
 import { useSettings as useFuelStore } from '@fuel/store.js'
+import { useShellSettings } from './shell/store.js'
 
 const FitnessApp  = lazy(() => import('./shell/FitnessApp.jsx'))
 const FuelWrapper = lazy(() => import('./shell/FuelWrapper.jsx'))
@@ -76,28 +76,13 @@ export default function App() {
     })
   }, [])
 
-  // Settings state
-  const [theme, setThemeState]    = useState(() => localStorage.getItem('vitalos-theme') || 'nordic')
-  const [themeMode, setModeState] = useState(() => localStorage.getItem('vitalos-theme-mode') || 'manual')
-  const [circDark,  setCircDark]  = useState(() => localStorage.getItem('vitalos-circ-dark') || 'nordic')
-  const [circLight, setCircLight] = useState(() => localStorage.getItem('vitalos-circ-light') || 'honey')
-  const [gender, setGender]       = useState(() => localStorage.getItem('vitalos-gender') || 'm')
-  const [age, setAge]             = useState(() => parseInt(localStorage.getItem('vitalos-age') || '30', 10))
-  const [heightCm, setHeightCm]   = useState(() => parseInt(localStorage.getItem('vitalos-height') || '175', 10))
-  const [weightKg, setWeightKg]   = useState(() => parseFloat(localStorage.getItem('vitalos-weight') || '80'))
-  const [split, setSplit]         = useState(() => localStorage.getItem('vitalos-split') || 'PPL')
-  const [cycleLength, setCycleLength] = useState(() => parseInt(localStorage.getItem('vitalos-cycleLength') || '4', 10))
-  const [defaultLocation, setDefaultLocation] = useState(() => localStorage.getItem('vitalos-defaultLocation') || 'Home')
-  const [layoutScale, setLayoutScale] = useState(() => parseInt(localStorage.getItem('vitalos-layoutScale') || '100', 10))
-  const [recentDays, setRecentDays]   = useState(() => parseInt(localStorage.getItem('vitalos-recentDays') || '7', 10))
-  const [coverageThreshold, setCoverageThreshold] = useState(() => parseFloat(localStorage.getItem('vitalos-coverageThreshold') || '1.0'))
-  const [showAdvanced, setShowAdvanced]           = useState(() => localStorage.getItem('vitalos-showAdvanced') === 'true')
-  const [dashboardHighlighter, setDashboardHighlighter] = useState(() => localStorage.getItem('vitalos-dashboardHighlighter') || 'body')
-  const [sidebarPinned, setSidebarPinned] = useState(() => localStorage.getItem('vitalos-sidebarPinned') !== 'false')
-  const [muscleLanguage, setMuscleLanguage] = useState(() => localStorage.getItem('vitalos-muscleLanguage') || 'de')
-  const [swipeEnabled, setSwipeEnabled]     = useState(() => localStorage.getItem('vitalos-swipeEnabled') === 'true')
-  const [mobileLayout, setMobileLayoutState] = useState(() => localStorage.getItem('vitalos-mobileLayout') || 'classic')
-  const setMobileLayout = v => { setMobileLayoutState(v); localStorage.setItem('vitalos-mobileLayout', v) }
+  // Settings state — SSOT ist der Shell-Store (src/shell/store.js)
+  const {
+    theme, themeMode, circDark, circLight,
+    gender, age, layoutScale, recentDays, coverageThreshold,
+    dashboardHighlighter, sidebarPinned, setSidebarPinned,
+    muscleLanguage, mobileLayout,
+  } = useShellSettings()
   const [taxonomy, setTaxonomy] = useState(null)
 
   useEffect(() => {
@@ -128,27 +113,6 @@ export default function App() {
       document.documentElement.setAttribute('data-theme', (hour >= DAY_START && hour < DAY_END) ? circLight : circDark)
     }
   }, [theme, themeMode, circLight, circDark])
-
-  // Persist settings
-  useEffect(() => { localStorage.setItem('vitalos-theme', theme) }, [theme])
-  useEffect(() => { localStorage.setItem('vitalos-theme-mode', themeMode) }, [themeMode])
-  useEffect(() => { localStorage.setItem('vitalos-circ-dark', circDark) }, [circDark])
-  useEffect(() => { localStorage.setItem('vitalos-circ-light', circLight) }, [circLight])
-  useEffect(() => { localStorage.setItem('vitalos-gender', gender) }, [gender])
-  useEffect(() => { localStorage.setItem('vitalos-age', age) }, [age])
-  useEffect(() => { localStorage.setItem('vitalos-height', heightCm) }, [heightCm])
-  useEffect(() => { localStorage.setItem('vitalos-weight', weightKg) }, [weightKg])
-  useEffect(() => { localStorage.setItem('vitalos-split', split) }, [split])
-  useEffect(() => { localStorage.setItem('vitalos-cycleLength', cycleLength) }, [cycleLength])
-  useEffect(() => { localStorage.setItem('vitalos-defaultLocation', defaultLocation) }, [defaultLocation])
-  useEffect(() => { localStorage.setItem('vitalos-layoutScale', layoutScale) }, [layoutScale])
-  useEffect(() => { localStorage.setItem('vitalos-recentDays', recentDays) }, [recentDays])
-  useEffect(() => { localStorage.setItem('vitalos-coverageThreshold', coverageThreshold) }, [coverageThreshold])
-  useEffect(() => { localStorage.setItem('vitalos-showAdvanced', showAdvanced) }, [showAdvanced])
-  useEffect(() => { localStorage.setItem('vitalos-dashboardHighlighter', dashboardHighlighter) }, [dashboardHighlighter])
-  useEffect(() => { localStorage.setItem('vitalos-sidebarPinned', sidebarPinned) }, [sidebarPinned])
-  useEffect(() => { localStorage.setItem('vitalos-muscleLanguage', muscleLanguage) }, [muscleLanguage])
-  useEffect(() => { localStorage.setItem('vitalos-swipeEnabled', swipeEnabled) }, [swipeEnabled])
 
   // Sync tab ↔ URL hash
   useEffect(() => {
@@ -212,30 +176,7 @@ export default function App() {
         </ErrorBoundary>
       )
 
-      const settingsProps = {
-        user, signOut,
-        layoutScale, setLayoutScale,
-        recentDays, setRecentDays,
-        coverageThreshold, setCoverageThreshold,
-        showAdvanced, setShowAdvanced,
-        dashboardHighlighter, setDashboardHighlighter,
-        gender, setGender,
-        age, setAge,
-        heightCm, setHeightCm,
-        weightKg, setWeightKg,
-        split, setSplit,
-        cycleLength, setCycleLength,
-        defaultLocation, setDefaultLocation,
-        themeMode, setModeState,
-        circLight, setCircLight,
-        circDark, setCircDark,
-        themes: THEMES, theme, setThemeState,
-        sidebarPinned, setSidebarPinned,
-        navMode: 'tabs', setNavMode: () => {},
-        muscleLanguage, setMuscleLanguage,
-        swipeEnabled, setSwipeEnabled,
-        mobileLayout, setMobileLayout,
-      }
+      const settingsProps = { user, signOut }
 
       const fitnessProps = {
         user, recentDays, coverageThreshold,
