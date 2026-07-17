@@ -2,6 +2,7 @@ import { initializeApp } from "firebase/app";
 import { initializeFirestore, persistentLocalCache, persistentMultipleTabManager } from "firebase/firestore";
 import { getAuth, GoogleAuthProvider, browserLocalPersistence, setPersistence } from "firebase/auth";
 import { isSupported, getMessaging } from "firebase/messaging";
+import { getVertexAI } from "firebase/vertexai";
 import { config } from "@firebase-config";
 
 const app = initializeApp(config);
@@ -23,6 +24,10 @@ export const auth = getAuth(app);
 setPersistence(auth, browserLocalPersistence).catch(() => {});
 
 export const googleProvider = new GoogleAuthProvider();
+
+// Vertex AI — fuel-dev (ScannerModal, LogView, MicrosAiCoach) erwartet diesen
+// Export, da deren firebase.js im Firebase-Build hierauf umgeleitet wird.
+export const vertexAI = getVertexAI(app);
 
 // Messaging ist nicht in jedem Kontext verfügbar (z.B. Safari < 16.4, kein
 // installiertes PWA-Icon) — isSupported() vorher prüfen, sonst wirft
