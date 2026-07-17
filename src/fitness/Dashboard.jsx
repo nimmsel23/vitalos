@@ -7,13 +7,13 @@ import {
 import { localToday } from "@utils";
 import WeightChart from "@components/WeightChart.jsx";
 
-import DashboardHeader from "./DashboardHeader";
-import ActivityHeatmap from "./ActivityHeatmap";
-import MuscleBody from "./MuscleBody";
-import MuscleCoverage from "./MuscleCoverage";
-import SessionStatus from "./SessionStatus";
-import DashboardWidget from "./DashboardWidget";
-import { getRolling10Days } from "./utils";
+import DashboardHeader from "../components/dashboard/DashboardHeader";
+import ActivityHeatmap from "../components/dashboard/ActivityHeatmap";
+import MuscleBody from "../components/dashboard/MuscleBody";
+import MuscleCoverage from "../components/dashboard/MuscleCoverage";
+import SessionStatus from "../components/dashboard/SessionStatus";
+import DashboardWidget from "../components/dashboard/DashboardWidget";
+import { getRolling10Days } from "../components/dashboard/utils";
 
 const DEFAULT_LAYOUT = ['session', 'heatmap', 'body', 'coverage', 'weight'];
 const LAYOUT_KEY = 'vitalos-dashboard-layout';

@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { Activity, Dumbbell, BarChart3, History, Timer, ChevronRight, ClipboardList } from 'lucide-react'
-import Dashboard from '../fitness/dashboard/Dashboard.jsx'
+import Dashboard from '../fitness/Dashboard.jsx'
 import PlanView from '@view/plan/index.jsx'
 import Session from '@view/session/index.jsx'
 import WeeklyReview from '@view/review/index.jsx'

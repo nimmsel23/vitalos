@@ -1,5 +1,5 @@
 import { LayoutGrid } from "lucide-react";
-import { DARK_THEMES, LIGHT_THEMES } from "@constants/Themes";
+import { DARK_THEMES, LIGHT_THEMES } from "../themes.js";
 
 export default function AppearanceSection({
   themeMode, setModeState,
