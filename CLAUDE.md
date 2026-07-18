@@ -22,10 +22,13 @@ vitalos/src/
 ├── shell/              ← vitalorisierte App-Shell (SSOT)
 │   ├── layout/         Navigation, Sidebar, MobileShell
 │   ├── Settings/       Settings-Tab (vitalos-eigener SOT)
-│   ├── Dashboard.jsx
+│   ├── themes.js       Theme-Registry SSOT (bg/accent je Theme, 40 Themes)
 │   ├── *App.jsx        Pro Sub-Repo ein App-Wrapper
 │   └── VitalOSApps.js  Tab-Registry
+├── fitness/
+│   └── Dashboard.jsx   Einstiegs-Dashboard (@view/dashboard)
 ├── components/         vitalos-eigene UI (WeightChart, common/)
+│   └── dashboard/       Dashboard-Widgets (Header, Heatmap, MuscleBody, …)
 ├── lib → (symlink)     → fitness-dev/src/lib (via @lib Alias)
 ├── App.jsx             React Entry + Auth-Gate
 ├── main.jsx
@@ -114,8 +117,9 @@ git submodule update --remote fitness-dev   # einzelnes updaten
 
 ### ⚠️ WICHTIGE SUBMODUL-PULL-REGEL (CI-Crashes verhindern)
 * **Problem:** Wenn ein Pointer im Meta-Repo auf einen lokalen Commit zeigt, der noch nicht auf GitHub gepusht wurde, bricht der Submodule-Checkout der CI-Pipeline mit `fatal: not our ref` ab.
-* **Merkregel:** Bevor ein Submodul-Pointer im Meta-Repo committet/gepusht wird, MUSS der Submodul-Commit auf GitHub existieren (z.B. durch `git push` im Submodul).
-* **Sicherer Push im Meta-Repo:** Nutze `git push --recurse-submodules=check`, um versehentliche Verstöße vor dem Push abzufangen (bricht den Push ab, falls Submodule noch ungepushte Commits haben).
+* **Regel 1 — Erst Submodule pushen, dann Meta-Repo committen:** Bevor ein Submodul-Pointer im Meta-Repo committet/gepusht wird, MUSS der Submodul-Commit auf GitHub existieren (z.B. durch `git push` im Submodul).
+* **Regel 2 — Keine Commits auf Detached HEADs hinterlassen:** Automatisierte Commits in Submodulen müssen auf einem echten, trackenden Branch liegen (`master` oder `dev`), sonst werden sie von einem normalen `git push` im Submodul nicht erfasst. Bei Detached HEAD explizit mit Zielbranch pushen (`git push origin HEAD:master`) — sonst zeigt der Pointer im Meta-Repo auf einen Commit, der nirgendwo auf einem Branch hängt und bei nachfolgenden Force-Pushes/Garbage-Collection verloren gehen kann.
+* **Regel 3 — Push-Sicherheit im Meta-Repo erzwingen:** Nutze `git push --recurse-submodules=check`, um versehentliche Verstöße vor dem Push abzufangen (bricht den Push ab, falls Submodule noch ungepushte Commits haben). Optional `--recurse-submodules=on-demand`, um ungepushte Submodule automatisch vorab zu pushen.
 
 ---
 

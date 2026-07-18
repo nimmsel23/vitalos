@@ -10,7 +10,13 @@ SOT für alles was vitalos-spezifisch ist. Nichts hier wird aus Sub-Repos kopier
 | `NavigationItems.js` | Tab-Registry (`NAV_ITEMS`, `SUB_NAV`, `VALID_TABS`) |
 | `AppGate.jsx` | Auth-Gate — entscheidet ob Login oder App |
 | `Hub.jsx` | Haupt-Router — dispatcht auf *App.jsx je aktivem Tab |
-| `Dashboard.jsx` | Einstiegs-Dashboard (`@view/dashboard`) |
+| `themes.js` | Theme-Registry SSOT (`DARK_THEMES`/`LIGHT_THEMES`/`THEMES`, nur `bg`+`accent`) — jedes CSS-Theme aus `src/styles/themes/*.css` muss hier registriert sein, sonst im Picker unsichtbar |
+
+Das Einstiegs-Dashboard (`@view/dashboard`) liegt nicht mehr in `shell/`, sondern
+in `src/fitness/Dashboard.jsx` (die Seite) + `src/components/dashboard/*` (die
+Widgets: Header, Heatmap, MuscleBody, MuscleCoverage, SessionStatus, etc.) —
+Widgets leben unter `components/`, weil sie wiederverwendbar sind, die Seite
+selbst ist fitness-spezifisch.
 
 ## App-Wrapper Pattern
 
