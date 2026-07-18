@@ -100,14 +100,6 @@ service cloud.firestore {
       allow read, write: if owner(uid) || isCoach();
     }
 
-    // ── Klienten (klienten-dev: Coach/Klient-Tracking) ───────────────────────
-    match /klienten/{clientId} {
-      allow read, write: if authed();
-      match /{document=**} {
-        allow read, write: if authed();
-      }
-    }
-
     // ── Global Knowledge (KB-Sync via Admin SDK/CLI) ─────────────────────────
     match /knowledge/{document=**} {
       allow read: if authed();
