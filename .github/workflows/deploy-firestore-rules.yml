@@ -1,0 +1,31 @@
+# Deployt die projekt-globalen Firestore-Rules + Indexes (SSOT: Root-Dateien).
+#
+# NUR manuell auslösbar (workflow_dispatch) — bewusst kein push-Trigger:
+# Rules gelten für ALLE Apps im Projekt fitness-aos; ein Auto-Deploy würde
+# jede versehentliche Änderung an firestore.rules sofort live schieben.
+# Historie: per-App-Rules-Deploys überschrieben sich gegenseitig und brachen
+# am 16.07.2026 die Exercise-Suche (journal-Rules ohne fitness/kb-Match).
+#
+# Auslösen: gh workflow run deploy-firestore-rules.yml
+# (oder GitHub → Actions → "Deploy Firestore Rules" → Run workflow)
+# Alternativ lokal: firebase deploy --only firestore:rules,firestore:indexes
+# aus ~/vitalos (das Root-firebase.json ist das einzige mit firestore-Block).
+
+name: Deploy Firestore Rules
+
+on:
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout (ohne Submodules)
+        uses: actions/checkout@v4
+
+      - name: Deploy Firestore Rules & Indexes
+        run: |
+          echo '${{ secrets.FIREBASE_SERVICE_ACCOUNT || secrets.FIREBASE_SERVICE_ACCOUNT_FITNESS_AOS }}' > /tmp/sa.json
+          GOOGLE_APPLICATION_CREDENTIALS=/tmp/sa.json \
+            npx firebase-tools@latest deploy --only firestore:rules,firestore:indexes \
+            --project fitness-aos --non-interactive

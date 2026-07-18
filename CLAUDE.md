@@ -203,8 +203,10 @@ siehe Hook-Bereinigung unten). Ablauf für eine Sub-App:
    (`<sub>-dev/**`) den passenden `deploy-<sub>.yml` — der deployt **nur
    Hosting** (Service-Account-Secret, `firebase-tools` non-interactive).
    Shell-Änderungen (`src/`, `public/`, Root-Configs) triggern
-   `deploy-shell.yml`, das zusätzlich als **einziger** Workflow
-   `firestore:rules,indexes` deployt.
+   `deploy-shell.yml` (ebenfalls nur Hosting). Firestore-Rules deployt
+   KEIN Workflow automatisch — nur manuell via
+   `deploy-firestore-rules.yml` (workflow_dispatch) oder lokal aus
+   `~/vitalos`.
    **Rules-SSOT:** `~/vitalos/firestore.rules` + `firestore.indexes.json`
    (Root). Firestore-Rules sind PROJEKT-global (fitness-aos) — per-App-Rules
    überschrieben sich gegenseitig und brachen am 16.07.2026 die Exercise-
