@@ -8,6 +8,7 @@
  *
  *   fitness.js  → fitness-dev/src/lib/db/firestore/*   (alles)
  *   fuel.js     → fuel-dev/src/client/lib/db/firestore/* (selektiv)
+ *   notes.js    → fuel-dev/.../firestore/notes.js       (Freitext-Notizen + History)
  *   journal.js  → journal-dev/src/db.js                (Wrapper)
  *   habits.js   → habits-dev/src/db/index.js           (Wrapper)
  *   settings.js → users/{uid} & push                   (Shell-eigen)
@@ -21,6 +22,7 @@ export { db, auth, googleProvider, getMessagingIfSupported } from "../../cloud/f
 
 export * from "./fitness.js";
 export * from "./fuel.js";
+export * from "./notes.js";
 export * from "./settings.js";
 export * from "./journal.js";
 export * from "./habits.js";
@@ -28,6 +30,11 @@ export * from "./habits.js";
 // Resolve ESM wildcard conflicts
 export { getUserProfile, updateUserProfile } from "./settings.js";
 export { getMealsHistory } from "./fuel.js";
+
+// getNutritionNotesHistory kommt zusätzlich transitiv über fitness.js →
+// @fitness-db/index.firestore.js → @fuel/lib/db/firestore/index.js (dort
+// via notes.js reexportiert) — notes.js selbst soll hier gewinnen.
+export { getNutritionNotes, saveNutritionNotes, getNutritionNotesHistory } from "./notes.js";
 
 // Konflikte zwischen fitness.js und journal.js/habits.js auflösen
 // (habits.js re-exportiert komplett @fitness-db, das kollidiert hier mit

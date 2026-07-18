@@ -2,8 +2,10 @@
  * fuel-dev Firestore-Layer — selektiver Re-Export der modularen Barrels.
  *
  * Quelle: fuel-dev/src/client/lib/db/firestore/*. Nur Namen, die nicht
- * mit dem fitness-Layer kollidieren (Auth, todayISO, getJournal etc.
- * kommen aus fitness.js); fuel-Journal wird deshalb umbenannt exportiert.
+ * mit dem fitness-Layer kollidieren (Auth, todayISO etc. kommen aus
+ * fitness.js). Freitext-Notizen ("Notizen", ehem. Journal des Users) +
+ * deren History liegen in notes.js — "Journal" (App-übergreifende
+ * Kombi-Ansicht) ist journal-dev's Domäne, siehe journal.js.
  */
 
 export {
@@ -28,15 +30,3 @@ export {
   getUserSettings,
   saveUserSettings,
 } from "@fuel/lib/db/firestore/index.js";
-
-// fuel-Journal unter eigenem Namen — getJournal/saveJournal sind im
-// Shell-@db bereits durch den fitness-Layer belegt.
-export {
-  getJournal as getNutritionJournal,
-  saveJournal as saveNutritionJournal,
-} from "@fuel/lib/db/firestore/journal.js";
-
-// Stub — fuel-dev's Firestore-Journal-Layer hat keine History-Query (nur
-// getJournal für einen Tag). JournalVosView.jsx ruft dies mit .catch(() => [])
-// auf, also reicht ein leeres Array bis es echt gebraucht wird.
-export async function getNutritionJournalHistory(_limit) { return []; }
