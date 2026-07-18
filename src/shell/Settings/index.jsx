@@ -10,7 +10,7 @@ import ProfileSection from "./ProfileSection";
 import NotificationsSection from "./NotificationsSection";
 // Domain-Sektionen — fertig aus den Sub-Repos importiert (kein Doppel-Code)
 import TrainingSection from "@fitness/src/views/Settings/TrainingSection.jsx";
-import FuelGoalsSection from "@fuel/views/Settings/settings/GoalsSection.jsx";
+import FuelGoalsSection from "@fuel/views/Settings/GoalsSection.jsx";
 
 export default function Settings({ user, signOut }) {
   // Alle User-Settings kommen aus dem Shell-Store (SSOT) statt per Prop-Drilling.
