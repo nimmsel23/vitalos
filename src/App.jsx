@@ -79,7 +79,7 @@ export default function App() {
   // Settings state — SSOT ist der Shell-Store (src/shell/store.js)
   const {
     theme, themeMode, circDark, circLight,
-    gender, anatomyModel, age, layoutScale, recentDays, coverageThreshold,
+    gender, anatomyModel, age, heightCm, weightKg, layoutScale, recentDays, coverageThreshold,
     dashboardHighlighter, sidebarPinned, setSidebarPinned,
     muscleLanguage, mobileLayout,
   } = useShellSettings()
@@ -117,7 +117,9 @@ export default function App() {
   useEffect(() => {
     if (age) setFuelSetting('age', age)
     if (gender) setFuelSetting('gender', gender)
-  }, [age, gender, setFuelSetting])
+    if (heightCm) setFuelSetting('height_cm', heightCm)
+    if (weightKg) setFuelSetting('weight_kg', weightKg)
+  }, [age, gender, heightCm, weightKg, setFuelSetting])
 
   useEffect(() => {
     if (themeMode === 'manual') {
