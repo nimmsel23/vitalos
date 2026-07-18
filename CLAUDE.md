@@ -200,10 +200,17 @@ siehe Hook-Bereinigung unten). Ablauf für eine Sub-App:
 2. In vitalos den Submodule-Pointer bumpen und committen
    (`chore(submodules): ...`) + pushen.
 3. Der Pointer-Push triggert im Meta-Repo per `paths:`-Filter
-   (`<sub>-dev/**`) den passenden `deploy-<sub>.yml` — der deployt Hosting
-   **plus** `firestore:rules,indexes` der Sub-App (Service-Account-Secret,
-   `firebase-tools` non-interactive). Shell-Änderungen (`src/`, `public/`,
-   Root-Configs) triggern `deploy-shell.yml`.
+   (`<sub>-dev/**`) den passenden `deploy-<sub>.yml` — der deployt **nur
+   Hosting** (Service-Account-Secret, `firebase-tools` non-interactive).
+   Shell-Änderungen (`src/`, `public/`, Root-Configs) triggern
+   `deploy-shell.yml`, das zusätzlich als **einziger** Workflow
+   `firestore:rules,indexes` deployt.
+   **Rules-SSOT:** `~/vitalos/firestore.rules` + `firestore.indexes.json`
+   (Root). Firestore-Rules sind PROJEKT-global (fitness-aos) — per-App-Rules
+   überschrieben sich gegenseitig und brachen am 16.07.2026 die Exercise-
+   Suche (journal-Rules ohne `fitness/kb`). Deshalb haben die Sub-Repo-
+   `firebase.json` seit 2026-07-18 KEINEN `firestore`-Block mehr — dort kann
+   niemand mehr Rules deployen, auch nicht versehentlich.
 4. `pr-preview.yml` baut Preview-Channels — bewusst NUR für Shell-Dateien.
 
 ### Preview-CI in den Sub-Repos (seit 2026-07-16)

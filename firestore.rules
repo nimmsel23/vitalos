@@ -23,10 +23,13 @@ service cloud.firestore {
     function owner(uid) {
       return authed() && request.auth.uid == uid;
     }
-    // Coach = Custom Claim (set_admin.py, bestehende Konvention) ODER roles-Doc
+    // Coach = Custom Claim (set_admin.py) ODER roles-Doc ODER Alpha-UID
+    // (hartkodierte UID stammt aus den alten fitness-dev-Rules — Fallback,
+    // falls Claim/roles-Doc auf dem Account nie gesetzt wurden)
     function isCoach() {
       return authed() && (
         request.auth.token.coach == true
+        || request.auth.uid == '59ole36uNpNwml5H6VDYCXyCME92'
         || (exists(/databases/$(database)/documents/roles/$(request.auth.uid))
             && get(/databases/$(database)/documents/roles/$(request.auth.uid)).data.role == 'coach')
       );
@@ -52,9 +55,23 @@ service cloud.firestore {
       allow write: if isCoach();
     }
 
-    // Coach-Review über alle Klienten-Inboxen (collectionGroup "inbox")
+    // Coach-Review über alle Klienten-Inboxen (collectionGroup "inbox");
+    // User erreicht eigene Einträge via userId-Feld (fitness-dev PWA)
     match /{path=**}/inbox/{id} {
-      allow read: if isCoach();
+      allow read:  if isCoach() || (authed() && resource.data.userId == request.auth.uid);
+      allow write: if isCoach() || (authed() && resource.data.userId == request.auth.uid);
+    }
+
+    // collectionGroup-Queries der fitness-dev PWA (Coach-Feed + eigene Daten)
+    match /{path=**}/sessions/{sessionId} {
+      allow read: if isCoach() || (authed() && resource.data.userId == request.auth.uid);
+    }
+    match /{path=**}/profile/{doc} {
+      allow read: if authed();
+    }
+    match /{path=**}/habitJournals/{doc} {
+      allow read:  if isCoach() || (authed() && resource.data.userId == request.auth.uid);
+      allow write: if isCoach() || (authed() && resource.data.userId == request.auth.uid);
     }
 
     // ── Fuel (Nutrition & Supplements) ───────────────────────────────────────
@@ -81,6 +98,14 @@ service cloud.firestore {
     // ── Relax (dritter Tempel, gleiche Struktur) ─────────────────────────────
     match /relax/{uid}/{document=**} {
       allow read, write: if owner(uid) || isCoach();
+    }
+
+    // ── Klienten (klienten-dev: Coach/Klient-Tracking) ───────────────────────
+    match /klienten/{clientId} {
+      allow read, write: if authed();
+      match /{document=**} {
+        allow read, write: if authed();
+      }
     }
 
     // ── Global Knowledge (KB-Sync via Admin SDK/CLI) ─────────────────────────

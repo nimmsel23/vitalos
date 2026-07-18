@@ -43,6 +43,16 @@ jobs:
       - name: Build (firebase mode)
         run: npm run build:firebase
 
+      # Rules-SSOT: NUR die Shell deployt firestore:rules/indexes (Root-Dateien).
+      # Sub-App-Workflows deployen ausschließlich hosting — sonst überschreiben
+      # sich die per-App-Rules gegenseitig (Projekt-Rules sind global).
+      - name: Deploy Firestore Rules & Indexes (SSOT)
+        run: |
+          echo '${{ secrets.FIREBASE_SERVICE_ACCOUNT }}' > /tmp/sa.json
+          GOOGLE_APPLICATION_CREDENTIALS=/tmp/sa.json \
+            npx firebase-tools@latest deploy --only firestore:rules,firestore:indexes \
+            --project fitness-aos --non-interactive
+
       - name: Deploy Hosting (vitalos)
         uses: FirebaseExtended/action-hosting-deploy@v0
         with:
