@@ -140,7 +140,8 @@ export default function App() {
     </div>
   )
 
-    if (!user) return (
+    // Local-Mode hat keine Firebase-Auth — user bleibt null, Gate überspringen
+    if (!user && !isLocalMode()) return (
       <div className="min-h-screen flex items-center justify-center bg-fit-bg text-fit-ink p-6">
       <div className="w-full max-w-sm card p-8 space-y-6">
       <div className="text-center">
