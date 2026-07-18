@@ -29,7 +29,7 @@ export * from "./habits.js";
 
 // Resolve ESM wildcard conflicts
 export { getUserProfile, updateUserProfile } from "./settings.js";
-export { getMealsHistory } from "./fuel.js";
+export { getMealsHistory, getSupplementsHistory } from "./fuel.js";
 
 // getNutritionNotesHistory kommt zusätzlich transitiv über fitness.js →
 // @fitness-db/index.firestore.js → @fuel/lib/db/firestore/index.js (dort
