@@ -79,7 +79,7 @@ export default function App() {
   // Settings state — SSOT ist der Shell-Store (src/shell/store.js)
   const {
     theme, themeMode, circDark, circLight,
-    gender, age, layoutScale, recentDays, coverageThreshold,
+    gender, anatomyModel, age, layoutScale, recentDays, coverageThreshold,
     dashboardHighlighter, sidebarPinned, setSidebarPinned,
     muscleLanguage, mobileLayout,
   } = useShellSettings()
@@ -181,7 +181,7 @@ export default function App() {
 
       const fitnessProps = {
         user, recentDays, coverageThreshold,
-        gender, muscleLanguage, taxonomy, dashboardHighlighter,
+        gender: anatomyModel, muscleLanguage, taxonomy, dashboardHighlighter,
         subTab: fitnessTab, onSubTab: setFitnessTab,
         sessionDate, sessionDraft, onOpenSession: openSession,
       }

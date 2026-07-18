@@ -22,6 +22,10 @@ const FIELDS = {
   circDark:             ['vitalos-circ-dark',            () => ls('vitalos-circ-dark', 'nordic')],
   circLight:            ['vitalos-circ-light',           () => ls('vitalos-circ-light', 'honey')],
   gender:               ['vitalos-gender',               () => ls('vitalos-gender', 'm')],
+  // Anatomie-Modell (BodyMap-Visualisierung, 'male'/'female') — bewusst getrennt
+  // vom Profil-Geschlecht ('m'/'f'): ein gemeinsames Feld machte beide Settings
+  // zum Entweder-oder, da die Wertemengen inkompatibel sind.
+  anatomyModel:         ['vitalos-anatomy-model',        () => ls('vitalos-anatomy-model', ls('vitalos-gender', 'm') === 'f' ? 'female' : 'male')],
   age:                  ['vitalos-age',                  () => lsInt('vitalos-age', 30)],
   heightCm:             ['vitalos-height',               () => lsInt('vitalos-height', 175)],
   weightKg:             ['vitalos-weight',               () => lsFloat('vitalos-weight', 80)],

@@ -17,6 +17,7 @@ export default function Settings({ user, signOut }) {
   const {
     layoutScale, setLayoutScale,
     gender, setGender,
+    anatomyModel, setAnatomyModel,
     age, setAge,
     heightCm, setHeightCm,
     weightKg, setWeightKg,
@@ -132,7 +133,7 @@ export default function Settings({ user, signOut }) {
           />
           <TrainingSection
             split={split} setSplit={setSplit}
-            gender={gender} setGender={setGender}
+            gender={anatomyModel} setGender={setAnatomyModel}
             defaultLocation={defaultLocation} setDefaultLocation={setDefaultLocation}
             cycleLength={cycleLength} setCycleLength={setCycleLength}
             recentDays={recentDays} setRecentDays={setRecentDays}
