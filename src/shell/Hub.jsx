@@ -1,4 +1,9 @@
+import { Settings2 } from 'lucide-react'
 import { VOS_APPS } from './VitalOSApps.js'
+
+// Setup als sechste Kachel — kein VOS_APPS-Eintrag (das sind die Tempel),
+// aber vom Start-Hub direkt erreichbar.
+const HUB_TILES = [...VOS_APPS, { id: 'settings', label: 'Setup', Icon: Settings2, color: '#a1a1aa' }]
 
 export default function Hub({ navigate }) {
   return (
@@ -11,7 +16,7 @@ export default function Hub({ navigate }) {
       </div>
 
       <nav className="grid grid-cols-2 md:grid-cols-3 gap-4 w-full max-w-2xl animate-in fade-in zoom-in-95 duration-700 delay-100">
-        {VOS_APPS.map(({ id, label, Icon, color }) => (
+        {HUB_TILES.map(({ id, label, Icon, color }) => (
           <button
             key={id}
             onClick={() => navigate(id)}
