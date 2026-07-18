@@ -1,6 +1,6 @@
 import { useState, useEffect, lazy, Suspense } from 'react'
 import { RefreshCw } from 'lucide-react'
-import { watchAuth, signIn, signInEmail, signUpEmail, signOut, isLocalMode, auth } from '@db'
+import { watchAuth, signIn, signInEmail, signUpEmail, signOut, isLocalMode, auth, getUserProfile } from '@db'
 import { VALID_TABS, SUB_NAV } from './shell/NavigationItems.js'
 import Settings from '@view/settings/index.jsx'
 import Sidebar from './shell/layout/Sidebar.jsx'
@@ -99,6 +99,20 @@ export default function App() {
   // User-Settings global: vitalos-Profil (Alter/Geschlecht) in den Fuel-Store spiegeln,
   // damit z. B. DACH-Referenzwerte im Mikros-Tab dieselben Werte nutzen — unabhängig
   // davon, ob der Setup-Tab je geöffnet wurde.
+  // Cloud-Hydration: Firestore-Profil (users/{uid}) nach Login in den
+  // Shell-Store übernehmen — SSOT bleibt der Store, Firestore ist Backup/Sync.
+  useEffect(() => {
+    if (!user?.uid || isLocalMode()) return
+    getUserProfile(user.uid).then(p => {
+      if (!p) return
+      const s = useShellSettings.getState()
+      if (p.gender) s.setGender(p.gender)
+      if (p.age) s.setAge(p.age)
+      if (p.heightCm) s.setHeightCm(p.heightCm)
+      if (p.weightKg) s.setWeightKg(p.weightKg)
+    }).catch(() => {})
+  }, [user])
+
   const setFuelSetting = useFuelStore(s => s.setSetting)
   useEffect(() => {
     if (age) setFuelSetting('age', age)

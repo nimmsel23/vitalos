@@ -1,19 +1,22 @@
 import { useState, useEffect } from 'react';
 import { User2, Save, Check } from 'lucide-react';
 import { useUser } from '../../contexts/UserContext';
+import { useShellSettings } from '../store.js';
 import { updateUserProfile } from '@db';
 
 const inputCls = "w-full bg-fit-bg2 border border-fit-line rounded-xl px-4 py-3 text-sm font-bold text-fit-ink focus:border-fit-accent outline-none transition-colors";
 
 export default function ProfileSection() {
-  // 1. Props sind weg! Alles kommt aus unserer Daten-Blase:
+  const { user } = useUser();
+  // Profil-Werte kommen aus dem Shell-Store (SSOT, vitalos-* Keys) — nicht aus
+  // dem UserContext, der auf die alten fitness-* Keys persistierte und damit
+  // parallel zum Sidebar-Quickedit lief.
   const {
-    user,
     gender, setGender,
     age, setAge,
     heightCm, setHeightCm,
-    weightKg, setWeightKg
-  } = useUser();
+    weightKg, setWeightKg,
+  } = useShellSettings();
 
   // Lokale States für den Namen und den Speicher-Button
   const [displayName, setDisplayName] = useState("");

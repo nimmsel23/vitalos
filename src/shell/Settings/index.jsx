@@ -16,11 +16,7 @@ export default function Settings({ user, signOut }) {
   // Alle User-Settings kommen aus dem Shell-Store (SSOT) statt per Prop-Drilling.
   const {
     layoutScale, setLayoutScale,
-    gender, setGender,
     anatomyModel, setAnatomyModel,
-    age, setAge,
-    heightCm, setHeightCm,
-    weightKg, setWeightKg,
     split, setSplit,
     cycleLength, setCycleLength,
     defaultLocation, setDefaultLocation,
@@ -117,12 +113,7 @@ export default function Settings({ user, signOut }) {
 
        <AccountSection user={user} signOut={signOut} />
 
-       <ProfileSection
-         gender={gender} setGender={setGender}
-         age={age} setAge={setAge}
-         heightCm={heightCm} setHeightCm={setHeightCm}
-         weightKg={weightKg} setWeightKg={setWeightKg}
-       />
+       <ProfileSection />
 
        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
           <AppearanceSection
