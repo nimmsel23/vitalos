@@ -5,6 +5,7 @@ on:
   push:
     branches: [master]
     paths:
+      - 'fuel-dev'
       - 'fuel-dev/**'
 
 jobs:

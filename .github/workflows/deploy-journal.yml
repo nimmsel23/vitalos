@@ -5,6 +5,7 @@ on:
   push:
     branches: [master]
     paths:
+      - 'journal-dev'
       - 'journal-dev/**'
 
 jobs:

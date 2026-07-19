@@ -5,6 +5,7 @@ on:
   push:
     branches: [master]
     paths:
+      - 'learn-dev'
       - 'learn-dev/**'
 
 jobs:

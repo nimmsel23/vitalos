@@ -5,6 +5,7 @@ on:
   push:
     branches: [master]
     paths:
+      - 'habits-dev'
       - 'habits-dev/**'
 
 jobs:

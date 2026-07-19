@@ -5,6 +5,7 @@ on:
   push:
     branches: [master]
     paths:
+      - 'fitness-dev'
       - 'fitness-dev/**'
 
 jobs:
