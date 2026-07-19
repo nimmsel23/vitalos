@@ -8,6 +8,7 @@ export {
   saveRelaxSession,
   getRelaxTechniques,
   getRelaxStatsSummary,
+  getRelaxSessionHistory,
   exportRelaxCsv,
 } from "@relax-db/local/sessions.js";
 
