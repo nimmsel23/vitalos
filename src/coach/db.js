@@ -1,5 +1,16 @@
 export * from "@fitness-db";
 
+// relax-dev — lokaler Build spricht direkt mit :9123 (relax-devs eigener
+// Node-Server), genau wie relax-dev standalone. Firestore-Variante nur im
+// Firebase-Build (shell/db/relax.js → @relax-db/firestore/sessions.js).
+export {
+  getRelaxSession,
+  saveRelaxSession,
+  getRelaxTechniques,
+  getRelaxStatsSummary,
+  exportRelaxCsv,
+} from "@relax-db/local/sessions.js";
+
 // Stub — fuel-dev ist im lokalen Coach-Build kein eingebundener Daten-Layer
 // (eigener Server :9000, kein shared local store). Cloud-Build (Firestore)
 // hat die echte Implementierung in cloud/db.firestore.js.

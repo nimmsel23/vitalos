@@ -11,6 +11,7 @@
  *   notes.js    → fuel-dev/.../firestore/notes.js       (Freitext-Notizen + History)
  *   journal.js  → journal-dev/src/db.js                (Wrapper)
  *   habits.js   → habits-dev/src/db/index.js           (Wrapper)
+ *   relax.js    → relax-dev/src/lib/db/index.firestore.js (Session-Funktionen)
  *   settings.js → users/{uid} & push                   (Shell-eigen)
  */
 
@@ -26,6 +27,7 @@ export * from "./notes.js";
 export * from "./settings.js";
 export * from "./journal.js";
 export * from "./habits.js";
+export * from "./relax.js";
 
 // Resolve ESM wildcard conflicts
 export { getUserProfile, updateUserProfile } from "./settings.js";

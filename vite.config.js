@@ -41,6 +41,7 @@ export default defineConfig(({ mode }) => {
     '@utils':      resolve(FITNESS_SRC, 'lib/utils.js'),
     '@db':         resolve(VITALOS_SRC, isFirebase ? 'shell/db/index.js' : 'coach/db.js'),
     '@fitness-db': resolve(FITNESS_SRC, 'lib/db'),
+    '@relax-db':   resolve(RELAX_DEV, 'src/lib/db'),
     '@habits':              resolve(HABITS_DEV, 'src'),
     '@journal':             resolve(JOURNAL_DEV, 'src'),
     '@learn':               resolve(LEARN_DEV, 'src'),
@@ -83,6 +84,7 @@ export default defineConfig(({ mode }) => {
     resolve(FUEL_ROOT, 'src/client/lib/firebase.js'),
     resolve(JOURNAL_DEV, 'src/lib/firebase.js'),
     resolve(HABITS_DEV, 'src/lib/firebase.js'),
+    resolve(RELAX_DEV, 'src/firebase.js'),
   ])
   const firebaseRedirect = {
     name: 'vitalos:subrepo-firebase-redirect',
