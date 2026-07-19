@@ -19,6 +19,7 @@ const SUB_NAV = [
 export default function FitnessApp({ user, recentDays, coverageThreshold, gender, muscleLanguage, taxonomy, dashboardHighlighter, subTab, onSubTab, sessionDate, sessionDraft, onOpenSession }) {
   const [inspectorExercise, setInspectorExercise] = useState(null)
   const [verlaufSessions, setVerlaufSessions] = useState([])
+  const [reviewSubTab, setReviewSubTab] = useState(null)
 
   const tab = subTab || 'dash'
   const setTab = onSubTab || (() => {})
@@ -114,7 +115,7 @@ export default function FitnessApp({ user, recentDays, coverageThreshold, gender
             )}
           </div>
         )}
-        {tab === 'review'  && <WeeklyReview onOpenSession={onOpenSession} onInspectExercise={inspectExercise} muscleLanguage={muscleLanguage} taxonomy={taxonomy} gender={gender} recentDays={recentDays} />}
+        {tab === 'review'  && <WeeklyReview onOpenSession={onOpenSession} onInspectExercise={inspectExercise} muscleLanguage={muscleLanguage} taxonomy={taxonomy} gender={gender} recentDays={recentDays} subTab={reviewSubTab} onSubNav={setReviewSubTab} />}
         {tab === 'plan' && <PlanView />}
       </div>
 

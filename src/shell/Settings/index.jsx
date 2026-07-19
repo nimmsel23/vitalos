@@ -8,6 +8,7 @@ import LocalDevSection from "./LocalDevSection";
 import AccountSection from "./AccountSection";
 import ProfileSection from "./ProfileSection";
 import NotificationsSection from "./NotificationsSection";
+import UpdateSection from "./UpdateSection";
 // Domain-Sektionen — fertig aus den Sub-Repos importiert (kein Doppel-Code)
 import TrainingSection from "@fitness/src/views/Settings/TrainingSection.jsx";
 import FuelGoalsSection from "@fuel/views/Settings/GoalsSection.jsx";
@@ -40,6 +41,8 @@ export default function Settings({ user, signOut }) {
   const [swVersion, setSwVersion] = useState(null)
   const [swUpdateAvailable, setSwUpdateAvailable] = useState(false)
   const [swChecking, setSwChecking] = useState(false)
+  const [swCheckResult, setSwCheckResult] = useState(null) // 'up-to-date' | 'error' | null
+  const [swLastChecked, setSwLastChecked] = useState(null)
 
   useEffect(() => {
     if (!('serviceWorker' in navigator)) return
@@ -66,12 +69,21 @@ export default function Settings({ user, signOut }) {
 
   async function handleSwCheck() {
     setSwChecking(true)
+    setSwCheckResult(null)
     try {
       const reg = window.__swRegistration || await navigator.serviceWorker?.getRegistration()
-      if (reg) await reg.update()
-      if (reg?.waiting) setSwUpdateAvailable(true)
-    } catch {}
-    setTimeout(() => setSwChecking(false), 600)
+      if (!reg) throw new Error('no-registration')
+      await reg.update()
+      setSwLastChecked(new Date())
+      if (reg.waiting) {
+        setSwUpdateAvailable(true)
+      } else {
+        setSwCheckResult('up-to-date')
+      }
+    } catch {
+      setSwCheckResult('error')
+    }
+    setSwChecking(false)
   }
 
   function handleSwApply() {
@@ -129,7 +141,10 @@ export default function Settings({ user, signOut }) {
             cycleLength={cycleLength} setCycleLength={setCycleLength}
             recentDays={recentDays} setRecentDays={setRecentDays}
             coverageThreshold={coverageThreshold} setCoverageThreshold={setCoverageThreshold}
+          />
+          <UpdateSection
             swVersion={swVersion} swUpdateAvailable={swUpdateAvailable} swChecking={swChecking}
+            swCheckResult={swCheckResult} swLastChecked={swLastChecked}
             onSwCheck={handleSwCheck} onSwApply={handleSwApply}
           />
           <FuelGoalsSection className="card p-8 space-y-4 border-t-4 border-t-orange-400 text-fit-ink" />

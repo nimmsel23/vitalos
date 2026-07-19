@@ -110,6 +110,11 @@ export default function App() {
       if (p.age) s.setAge(p.age)
       if (p.heightCm) s.setHeightCm(p.heightCm)
       if (p.weightKg) s.setWeightKg(p.weightKg)
+      if (p.split) s.setSplit(p.split)
+      if (p.defaultLocation) s.setDefaultLocation(p.defaultLocation)
+      if (p.cycleLength) s.setCycleLength(p.cycleLength)
+      if (p.recentDays) s.setRecentDays(p.recentDays)
+      if (p.coverageThreshold) s.setCoverageThreshold(p.coverageThreshold)
     }).catch(() => {})
   }, [user])
 

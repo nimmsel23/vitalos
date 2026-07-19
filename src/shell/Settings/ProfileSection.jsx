@@ -16,6 +16,7 @@ export default function ProfileSection() {
     age, setAge,
     heightCm, setHeightCm,
     weightKg, setWeightKg,
+    split, defaultLocation, cycleLength, recentDays, coverageThreshold,
   } = useShellSettings();
 
   // Lokale States für den Namen und den Speicher-Button
@@ -39,7 +40,12 @@ export default function ProfileSection() {
         gender,
         age,
         heightCm,
-        weightKg
+        weightKg,
+        split,
+        defaultLocation,
+        cycleLength,
+        recentDays,
+        coverageThreshold,
       });
 
       if (success) {
