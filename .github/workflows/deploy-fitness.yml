@@ -5,8 +5,8 @@ on:
   push:
     branches: [master]
     paths:
-      - 'fitness-dev'
-      - 'fitness-dev/**'
+      - 'fitness-app'
+      - 'fitness-app/**'
 
 jobs:
   deploy:
@@ -32,20 +32,20 @@ jobs:
       - name: Firebase config schreiben
         run: |
           if [ -n "$FIREBASE_CONFIG" ]; then
-            echo "$FIREBASE_CONFIG" > fitness-dev/firebase.config.js
+            echo "$FIREBASE_CONFIG" > fitness-app/firebase.config.js
           fi
         env:
           FIREBASE_CONFIG: ${{ secrets.FIREBASE_CONFIG }}
 
       - name: Build Fitness
-        run: npm run build:firebase --workspace=fitness-dev
+        run: npm run build:firebase --workspace=fitness-app
 
       # KEIN firestore:rules/indexes mehr: Rules-SSOT ist ~/vitalos/firestore.rules,
       # deployed nur von deploy-shell.yml. Per-App-Rules haben sich gegenseitig
       # überschrieben (letzter Deploy gewann → fitness/kb-Reads verweigert).
       - name: Deploy Fitness to Firebase Hosting
         run: |
-          cd fitness-dev
+          cd fitness-app
           echo '${{ secrets.FIREBASE_SERVICE_ACCOUNT || secrets.FIREBASE_SERVICE_ACCOUNT_FITNESS_AOS }}' > /tmp/sa.json
           GOOGLE_APPLICATION_CREDENTIALS=/tmp/sa.json \
             npx firebase-tools@latest deploy --only hosting \

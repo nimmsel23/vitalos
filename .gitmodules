@@ -1,18 +1,18 @@
 [submodule "fitness-dev"]
-	path = fitness-dev
+	path = fitness-app
 	url = git@github.com:nimmsel23/fitness-dev.git
 [submodule "fuel-dev"]
-	path = fuel-dev
+	path = fuel-app
 	url = git@github.com:nimmsel23/fuel-dev.git
 [submodule "journal-dev"]
-	path = journal-dev
+	path = journal-app
 	url = git@github.com:nimmsel23/journal-dev.git
 [submodule "habits-dev"]
-	path = habits-dev
+	path = habit-app
 	url = git@github.com:nimmsel23/habits-dev.git
 [submodule "learn-dev"]
 	path = learn-dev
 	url = git@github.com:nimmsel23/learn-dev.git
 [submodule "relax-dev"]
-	path = relax-dev
+	path = relax-app
 	url = git@github.com:nimmsel23/relax-dev.git

@@ -5,8 +5,8 @@ on:
   push:
     branches: [master]
     paths:
-      - 'habits-dev'
-      - 'habits-dev/**'
+      - 'habit-app'
+      - 'habit-app/**'
 
 jobs:
   deploy:
@@ -30,11 +30,11 @@ jobs:
         run: npm ci
 
       - name: Build Habits
-        run: npm run build:firebase --workspace=habits-dev
+        run: npm run build:firebase --workspace=habit-app
 
       - name: Deploy Habits to Firebase Hosting
         run: |
-          cd habits-dev
+          cd habit-app
           echo '${{ secrets.FIREBASE_SERVICE_ACCOUNT || secrets.FIREBASE_SERVICE_ACCOUNT_FITNESS_AOS }}' > /tmp/sa.json
           GOOGLE_APPLICATION_CREDENTIALS=/tmp/sa.json \
             npx firebase-tools@latest deploy --only hosting \

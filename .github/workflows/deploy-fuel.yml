@@ -5,8 +5,8 @@ on:
   push:
     branches: [master]
     paths:
-      - 'fuel-dev'
-      - 'fuel-dev/**'
+      - 'fuel-app'
+      - 'fuel-app/**'
 
 jobs:
   deploy:
@@ -32,17 +32,17 @@ jobs:
       - name: Firebase config schreiben
         run: |
           if [ -n "$FIREBASE_CONFIG" ]; then
-            echo "$FIREBASE_CONFIG" > fuel-dev/src/client/lib/firebase.config.js
+            echo "$FIREBASE_CONFIG" > fuel-app/src/client/lib/firebase.config.js
           fi
         env:
           FIREBASE_CONFIG: ${{ secrets.FIREBASE_CONFIG }}
 
       - name: Build Fuel
-        run: npm run build:cloud --workspace=fuel-dev
+        run: npm run build:cloud --workspace=fuel-app
 
       - name: Deploy Fuel to Firebase Hosting
         run: |
-          cd fuel-dev
+          cd fuel-app
           echo '${{ secrets.FIREBASE_SERVICE_ACCOUNT || secrets.FIREBASE_SERVICE_ACCOUNT_FITNESS_AOS }}' > /tmp/sa.json
           GOOGLE_APPLICATION_CREDENTIALS=/tmp/sa.json \
             npx firebase-tools@latest deploy --only hosting \

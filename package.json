@@ -4,12 +4,12 @@
   "private": true,
   "type": "module",
   "workspaces": [
-    "fitness-dev",
-    "fuel-dev",
-    "journal-dev",
-    "habits-dev",
+    "fitness-app",
+    "fuel-app",
+    "journal-app",
+    "habit-app",
     "learn-dev",
-    "relax-dev",
+    "relax-app",
     "fitness-vos"
   ],
   "scripts": {

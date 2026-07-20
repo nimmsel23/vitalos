@@ -11,7 +11,7 @@
 
 import React from 'react'
 
-const JournalApp = React.lazy(() => import.meta.env.VITE_FEDERATION === 'true' ? import('journal/JournalApp') : import('../../../journal-dev/src/views/JournalVosView.jsx'))
+const JournalApp = React.lazy(() => import.meta.env.VITE_FEDERATION === 'true' ? import('journal/JournalApp') : import('../../../journal-app/src/views/JournalVosView.jsx'))
 
 export default function JournalTab() {
   return (
