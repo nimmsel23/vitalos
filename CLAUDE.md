@@ -1,6 +1,6 @@
 # VitalOS Shell
 
-VitalOS ist die übergreifende App-Shell die alle VOS-Module (fitness-dev, fuel-dev, journal-dev, habits-dev, learn-dev) zusammenhält.
+VitalOS ist die übergreifende App-Shell die alle VOS-Module (fitness-app, fuel-app, journal-app, habit-app, learn-dev) zusammenhält.
 
 **Port Dev:** 9190 (`npm run dev`)
 **Build:** `npm run build` (local) / `npm run build -- --mode firebase` (Firebase PWA)
@@ -29,7 +29,7 @@ vitalos/src/
 │   └── Dashboard.jsx   Einstiegs-Dashboard (@view/dashboard)
 ├── components/         vitalos-eigene UI (WeightChart, common/)
 │   └── dashboard/       Dashboard-Widgets (Header, Heatmap, MuscleBody, …)
-├── lib → (symlink)     → fitness-dev/src/lib (via @lib Alias)
+├── lib → (symlink)     → fitness-app/src/lib (via @lib Alias)
 ├── App.jsx             React Entry + Auth-Gate
 ├── main.jsx
 └── styles.css
@@ -58,7 +58,7 @@ plus Shell-eigene Module:
 
 | Modul | Quelle |
 |---|---|
-| `fitness.js` | `@fitness-db/index.firestore.js` → `fitness-dev/src/lib/db/firestore/*` (komplett) |
+| `fitness.js` | `@fitness-db/index.firestore.js` → `fitness-app/src/lib/db/firestore/*` (komplett) |
 | `fuel.js` | `@fuel/lib/db/firestore/*` (selektiv, Kollisionsnamen umbenannt: `getNutritionJournal`) |
 | `profile.js` | `users/{uid}` — Shell-eigen |
 | `push.js` | `fitness/{uid}/settings/push` — Shell-eigen |
@@ -67,7 +67,7 @@ Firebase-Init ist **einmalig**: `src/cloud/firebase.js`. Ein `enforce:'pre'`
 resolveId-Plugin in `vite.config.js` (`vitalos:subrepo-firebase-redirect`)
 leitet die firebase.js der Sub-Repos im Firebase-Build darauf um.
 
-Identisches Muster wie fitness-dev (`db.js` vs. `db.firestore.js`) und fuel-dev (`api.local.js` vs. `api.cloud.js`).
+Identisches Muster wie fitness-app (`db.js` vs. `db.firestore.js`) und fuel-app (`api.local.js` vs. `api.cloud.js`).
 
 ---
 
@@ -79,16 +79,16 @@ Identisches Muster wie fitness-dev (`db.js` vs. `db.firestore.js`) und fuel-dev 
 | `@shell` | `src/shell/` | vitalos |
 | `@coach` | `src/coach/` | vitalos |
 | `@cloud` | `src/cloud/` | vitalos |
-| `@lib` | `fitness-dev/src/lib/` | fitness-dev |
-| `@utils` | `fitness-dev/src/lib/utils.js` | fitness-dev |
-| `@components` | `fitness-dev/src/components/` | fitness-dev |
-| `@constants` | `fitness-dev/src/constants/` | fitness-dev |
-| `@fitness-db` | `fitness-dev/src/lib/db/` | fitness-dev |
-| `@fitness` | `fitness-dev/` | fitness-dev |
-| `@habits` | `habits-dev/src/` | habits-dev |
-| `@journal` | `journal-dev/src/` | journal-dev |
+| `@lib` | `fitness-app/src/lib/` | fitness-app |
+| `@utils` | `fitness-app/src/lib/utils.js` | fitness-app |
+| `@components` | `fitness-app/src/components/` | fitness-app |
+| `@constants` | `fitness-app/src/constants/` | fitness-app |
+| `@fitness-db` | `fitness-app/src/lib/db/` | fitness-app |
+| `@fitness` | `fitness-app/` | fitness-app |
+| `@habits` | `habit-app/src/` | habit-app |
+| `@journal` | `journal-app/src/` | journal-app |
 | `@learn` | `learn-dev/src/` | learn-dev |
-| `@fuel` | `fuel-dev/src/client/` | fuel-dev |
+| `@fuel` | `fuel-app/src/client/` | fuel-app |
 | `@view/*` | je Tab-Herkunft | siehe vite.config |
 | `@firebase-config` | `firebase.config.js` | vitalos root |
 
@@ -96,21 +96,28 @@ Identisches Muster wie fitness-dev (`db.js` vs. `db.firestore.js`) und fuel-dev 
 
 ## Git Submodules
 
-Alle Sub-Repos sind als Git Submodules eingebunden:
+Alle Sub-Repos sind als Git Submodules eingebunden. Lokaler Ordnername (in
+vitalos) und Remote-Repo-Name laufen seit der Umbenennung 2026-07-20
+bewusst auseinander — die GitHub-Remotes heißen weiterhin `*-dev`
+(`.gitmodules`-Sektionsname folgt dem Remote-Namen, NICHT dem lokalen Pfad):
 
-| Submodule | Remote | Typ |
-|---|---|---|
-| `fitness-dev` | `git@github.com:nimmsel23/fitness-dev.git` | GitHub (remote) |
-| `fuel-dev` | `git@github.com:nimmsel23/fuel-dev.git` | GitHub (remote) |
-| `journal-dev` | `git@github.com:nimmsel23/journal-dev.git` | GitHub (remote) |
-| `habits-dev` | `git@github.com:nimmsel23/habits-dev.git` | GitHub (remote) |
-| `learn-dev` | `git@github.com:nimmsel23/learn-dev.git` | GitHub (remote) |
-| `relax-dev` | `git@github.com:nimmsel23/relax-dev.git` | GitHub (remote) |
+| Lokaler Pfad | Submodule-Name (`.gitmodules`) | Remote | Typ |
+|---|---|---|---|
+| `fitness-app` | `fitness-dev` | `git@github.com:nimmsel23/fitness-dev.git` | GitHub (remote) |
+| `fuel-app` | `fuel-dev` | `git@github.com:nimmsel23/fuel-dev.git` | GitHub (remote) |
+| `journal-app` | `journal-dev` | `git@github.com:nimmsel23/journal-dev.git` | GitHub (remote) |
+| `habit-app` | `habits-dev` | `git@github.com:nimmsel23/habits-dev.git` | GitHub (remote) |
+| `learn-dev` | `learn-dev` | `git@github.com:nimmsel23/learn-dev.git` | GitHub (remote) |
+| `relax-app` | `relax-dev` | `git@github.com:nimmsel23/relax-dev.git` | GitHub (remote) |
+
+**Wichtig:** `git submodule`-Befehle (`status`, `update --remote`, ...)
+matchen auf den **lokalen Pfad**, nicht auf den Submodule-Namen — also
+`git submodule update --remote fitness-app`, nicht `fitness-dev`.
 
 ```bash
 git submodule update --init          # alle initialisieren
 git submodule update --remote        # alle auf neuesten Stand bringen
-git submodule update --remote fitness-dev   # einzelnes updaten
+git submodule update --remote fitness-app   # einzelnes updaten
 ```
 
 Änderungen in einem Submodule → dort committen, **unbedingt auf GitHub (origin) pushen**, dann erst in vitalos den neuen Commit-Pointer committen und pushen.
@@ -125,15 +132,15 @@ git submodule update --remote fitness-dev   # einzelnes updaten
 
 ## CI/CD: Dezentrale Deploy-Workflows (`.github/workflows/deploy-master.yml`)
 
-Seit 2026-07-16 nutzen **alle 4 Apps** (`vitalos`, `fitness-dev`, `fuel-dev`, `journal-dev`, `habits-dev`) vollständig eigenständige CI/CD-Pipelines:
+Seit 2026-07-16 nutzen **alle 4 Apps** (`vitalos`, `fitness-app`, `fuel-app`, `journal-app`, `habit-app`) vollständig eigenständige CI/CD-Pipelines:
 - **Trigger:** `push` auf `master` deployt in den `live` Channel, `push` auf `dev` erstellt einen `preview` Channel (gültig für 1h).
-- **Checkout-Strategie:** Die Workflows checken immer das `vitalos` Meta-Repo aus, laden via HTTPS+Token die Submodule und biegen dann den betroffenen App-Ordner (z.B. `journal-dev`) hart auf den ausgelösten `$GITHUB_SHA` um.
+- **Checkout-Strategie:** Die Workflows checken immer das `vitalos` Meta-Repo aus, laden via HTTPS+Token die Submodule und biegen dann den betroffenen App-Ordner (z.B. `journal-app`) hart auf den ausgelösten `$GITHUB_SHA` um.
 - So können alle Apps unabhängig voneinander deployt werden, haben aber beim Build Zugriff auf die Cross-Repo Imports der Geschwister-Module (Workspaces).
 
 ## PWA & Service Worker Update-Verhalten
 
-- **Fat Shell (`vitalos` / `fitness-dev`):** Nutzen einen manuellen Service Worker (`public/sw.js`). Ein neuer Build ändert das Datum im SW. Das Frontend hört auf das Event `sw-update-available` und zeigt global (unabhängig vom aktuellen Tab) einen schwebenden Update-Banner am unteren Bildschirmrand.
-- **Lean Apps (`journal-dev`, `habits-dev`, `fuel-dev`):** Diese verzichten auf komplexe Background-Syncs und nutzen rein `vite-plugin-pwa` (via `useRegisterSW()`). Bei einem Update erscheint im Header (neben dem App-Namen) automatisch ein goldener Update-Button. Es gibt keinen erzwungenen Auto-Reload mehr, der User entscheidet.
+- **Fat Shell (`vitalos` / `fitness-app`):** Nutzen einen manuellen Service Worker (`public/sw.js`). Ein neuer Build ändert das Datum im SW. Das Frontend hört auf das Event `sw-update-available` und zeigt global (unabhängig vom aktuellen Tab) einen schwebenden Update-Banner am unteren Bildschirmrand.
+- **Lean Apps (`journal-app`, `habit-app`, `fuel-app`):** Diese verzichten auf komplexe Background-Syncs und nutzen rein `vite-plugin-pwa` (via `useRegisterSW()`). Bei einem Update erscheint im Header (neben dem App-Namen) automatisch ein goldener Update-Button. Es gibt keinen erzwungenen Auto-Reload mehr, der User entscheidet.
 
 **BEHOBEN (2026-07-12, `6abbfb7`): CI war mehrere Pushes rot** — `npm ci`
 scheiterte mit `EUSAGE`, weil `package-lock.json` nicht synchron zu
@@ -152,8 +159,8 @@ Token nicht einsehbar, nur der Job-Step-Status (`gh run view <id>`).
 
 | Modul | Pfad | Standalone Port | Rolle |
 |---|---|---|---|
-| habits-dev | `@habits` | 9002 | Tägliche Gewohnheiten |
-| journal-dev | `@journal` | — | Journal + Fuel-Tabs |
+| habit-app | `@habits` | 9002 | Tägliche Gewohnheiten |
+| journal-app | `@journal` | — | Journal + Fuel-Tabs |
 | learn-dev | `@learn` | — | Fitness-Wissen |
 
 ---
@@ -164,19 +171,19 @@ Einige Hauptmodule werden durch eigenständige Knowledge Base (KB) Repositories 
 
 | Hauptmodul | Knowledge Base | Beschreibung |
 |---|---|---|
-| `fitness-dev` | `anatomy-kb` | Anatomie Wissensdatenbank |
-| `relax-dev` | `physio-dev` | Physiologie Wissensdatenbank |
+| `fitness-app` | `anatomy-kb` | Anatomie Wissensdatenbank |
+| `relax-app` | `physio-dev` | Physiologie Wissensdatenbank |
 
-Die Tempel (fitness-dev, fuel-dev, relax-dev) haben eigene Backends und sind eigenständig deployed. VitalOS embeddet sie via Aliases, ohne Code zu duplizieren.
+Die Tempel (fitness-app, fuel-app, relax-app) haben eigene Backends und sind eigenständig deployed. VitalOS embeddet sie via Aliases, ohne Code zu duplizieren.
 
 ---
 
 ## Wichtige Regeln
 
-- **Kein Doppel-Code.** Alles was in fitness-dev / fuel-dev / habits-dev existiert wird via Alias importiert, nicht kopiert.
-- **`src/shell/` ist SSOT** für Navigation, Settings, Sidebar — nicht fitness-dev.
+- **Kein Doppel-Code.** Alles was in fitness-app / fuel-app / habit-app existiert wird via Alias importiert, nicht kopiert.
+- **`src/shell/` ist SSOT** für Navigation, Settings, Sidebar — nicht fitness-app.
 - **Setup-Invariante:** Im Shell-Betrieb hat keine App einen eigenen Settings-Einstieg über App-Spezifisches hinaus — Generisches (Auth, Theme, SW, Profil) nur im VitalOS-Setup-Tab (Details: `src/shell/CLAUDE.md`).
-- **`src/components/`** nur für vitalos-eigene UI (WeightChart, UserProfile, ErrorBoundary). fitness-dev Components → via `@components`.
+- **`src/components/`** nur für vitalos-eigene UI (WeightChart, UserProfile, ErrorBoundary). fitness-app Components → via `@components`.
 - Vor Edits in shell/: prüfen ob Komponente wirklich vitalos-spezifisch ist oder aus einem Sub-Repo kommen sollte.
 
 ---
@@ -189,9 +196,9 @@ Hosting-*Site* im selben Projekt (alle `.firebaserc` → `fitness-aos`):
 | Repo | Hosting-Site | Deploy-Pfad |
 |---|---|---|
 | vitalos (Shell) | `vitalos` → vitalos.web.app | CI `deploy-shell.yml` |
-| fitness-dev | (eigene Site, siehe deren firebase.json) | CI `deploy-fitness.yml` |
-| fuel-dev | `fuel-vos` | CI `deploy-fuel.yml` |
-| journal-dev / habits-dev / learn-dev | je eigene Site | CI `deploy-journal/habits/learn.yml` |
+| fitness-app | (eigene Site, siehe deren firebase.json) | CI `deploy-fitness.yml` |
+| fuel-app | `fuel-vos` | CI `deploy-fuel.yml` |
+| journal-app / habit-app / learn-dev | je eigene Site | CI `deploy-journal/habits/learn.yml` |
 
 **Der EINZIGE aktive Deploy-Pfad ist die CI im Meta-Repo** (seit 2026-07-15,
 siehe Hook-Bereinigung unten). Ablauf für eine Sub-App:
@@ -199,8 +206,8 @@ siehe Hook-Bereinigung unten). Ablauf für eine Sub-App:
 1. Im Sub-Repo committen + zu `origin master` pushen.
 2. In vitalos den Submodule-Pointer bumpen und committen
    (`chore(submodules): ...`) + pushen.
-3. Der Pointer-Push triggert im Meta-Repo per `paths:`-Filter
-   (`<sub>-dev/**`) den passenden `deploy-<sub>.yml` — der deployt **nur
+3. Der Pointer-Push triggert im Meta-Repo per `paths:`-Filter (z.B.
+   `fitness-app/**`, `habit-app/**`) den passenden `deploy-<sub>.yml` — der deployt **nur
    Hosting** (Service-Account-Secret, `firebase-tools` non-interactive).
    Shell-Änderungen (`src/`, `public/`, Root-Configs) triggern
    `deploy-shell.yml` (ebenfalls nur Hosting). Firestore-Rules deployt
@@ -225,7 +232,7 @@ Trick gegen das Cross-Repo-Alias-Problem (weshalb die alten Workflows in
 `workflows.disabled/` liegen): der Workflow checkt **vitalos mit Submodules**
 aus, setzt das eigene Submodule auf den ausgelösten Commit und baut nur
 diesen Workspace (`npm run build:firebase --workspace=<sub>`).
-relax-dev ist standalone und hat seinen eigenen
+relax-app ist standalone und hat seinen eigenen
 `firebase-hosting-dev-preview.yml` (baut ohne Meta-Repo).
 Die lokale Pipeline (`npm run deploy:preview`) existiert parallel und
 sendet den Link seit 2026-07-16 über die **tele-CLI** (`~/.local/bin/tele`,
@@ -238,8 +245,8 @@ Sub-Repo erreicht Firebase nicht mehr.
 
 ### Git-Hooks: Ist-Zustand + Historie
 
-Meta-Repo und fitness-dev/fuel-dev haben `core.hooksPath = .githooks`
-(→ `.git/hooks/` ist dort WIRKUNGSLOS). journal/habits/learn/relax-dev haben
+Meta-Repo und fitness-app/fuel-app haben `core.hooksPath = .githooks`
+(→ `.git/hooks/` ist dort WIRKUNGSLOS). journal/habits/learn/relax-app haben
 KEIN hooksPath gesetzt — dort liegende `.githooks/post-commit`-Dateien laufen
 nie (bewusst so belassen, Stand 2026-07-16).
 
@@ -248,10 +255,10 @@ nie (bewusst so belassen, Stand 2026-07-16).
 | vitalos | `.githooks/post-commit` | aktiv, nur Info-Ausgabe (harmlos) |
 | vitalos | `.githooks/post-push.bak` | **2026-07-16 deaktiviert** — war totes Skript (Git kennt keinen post-push-Hook, nichts rief ihn auf; referenzierte zudem ein nicht existierendes npm-Script `deploy:firebase`). CI deckt den Fall ab. |
 | vitalos | `.git/hooks/post-commit` | tot (hooksPath überschreibt) |
-| fitness-dev | `.githooks/pre-commit`, `post-commit` | aktiv |
-| fitness-dev | `.githooks/pre-push.bak` | **2026-07-15 deaktiviert** (war lokaler Firebase-Deploy bei Push auf master → doppelte Arbeit zur CI) |
-| fuel-dev | `.githooks/post-commit` | aktiv |
-| fuel-dev | `.githooks/pre-push.bak` | **2026-07-15 deaktiviert** (dito) |
+| fitness-app | `.githooks/pre-commit`, `post-commit` | aktiv |
+| fitness-app | `.githooks/pre-push.bak` | **2026-07-15 deaktiviert** (war lokaler Firebase-Deploy bei Push auf master → doppelte Arbeit zur CI) |
+| fuel-app | `.githooks/post-commit` | aktiv |
+| fuel-app | `.githooks/pre-push.bak` | **2026-07-15 deaktiviert** (dito) |
 
 Die deaktivierten pre-push-Hooks hatten einen Selbst-Trigger-Schutz
 (SKIP für `public/sw.js`, `public/manifest.json`, `dist-firebase/` —
@@ -265,10 +272,10 @@ Er ruft KEINE Hooks auf.
 ### Branch-Konventionen
 
 - Überall ist **`master`** der Deploy-/Hauptbranch.
-- Sub-Repos (außer relax-dev) haben zusätzlich `dev` mit Upstream
+- Sub-Repos (außer relax-app) haben zusätzlich `dev` mit Upstream
   `origin/dev`. Stand 2026-07-16: `dev` == `master` in allen fünf (0/0
   divergiert). Workflow: auf `dev` arbeiten, nach master mergen, pushen,
-  Pointer bumpen. relax-dev hat keinen dev-Branch (bekannt, offen).
+  Pointer bumpen. relax-app hat keinen dev-Branch (bekannt, offen).
 - `.gitmodules` hat bewusst KEIN `branch=`-Feld — Submodule-Stand wird
   ausschließlich über manuell gebumpte Commit-Pointer kontrolliert.
   `git submodule update --remote` daher nur gezielt einsetzen.
@@ -281,7 +288,7 @@ Er ruft KEINE Hooks auf.
 - **learn-dev:** `dist-firebase/` und `node_modules/` sind teilweise
   eingecheckt bzw. tauchen im `git status` auf — unsauberste Stelle im
   Setup; gehören in die `.gitignore` + aus dem Index.
-- fuel-dev/learn-dev: `.firebase/hosting.*.cache` ändert sich bei jedem
+- fuel-app/learn-dev: `.firebase/hosting.*.cache` ändert sich bei jedem
   lokalen Deploy → Dauer-Dirty der Submodules im Meta-Repo (` m`-Marker).
 - `.bak`-Workflows in `.github/workflows/` (Meta + Sub-Repos) sind
   deaktivierte Historie (per-Repo-CI konnte wegen Cross-Repo-Aliases nie

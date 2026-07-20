@@ -5,8 +5,8 @@ on:
   push:
     branches: [master]
     paths:
-      - 'journal-dev'
-      - 'journal-dev/**'
+      - 'journal-app'
+      - 'journal-app/**'
 
 jobs:
   deploy:
@@ -30,14 +30,14 @@ jobs:
         run: npm ci
 
       - name: Build Journal
-        run: npm run build:cloud --workspace=journal-dev
+        run: npm run build:cloud --workspace=journal-app
 
       # KEIN firestore:rules mehr: Rules-SSOT ist ~/vitalos/firestore.rules,
       # deployed nur von deploy-shell.yml. Per-App-Rules haben sich gegenseitig
       # überschrieben (journal-Rules ohne fitness/kb → Exercise-Suche tot).
       - name: Deploy Journal to Firebase Hosting
         run: |
-          cd journal-dev
+          cd journal-app
           echo '${{ secrets.FIREBASE_SERVICE_ACCOUNT || secrets.FIREBASE_SERVICE_ACCOUNT_FITNESS_AOS }}' > /tmp/sa.json
           GOOGLE_APPLICATION_CREDENTIALS=/tmp/sa.json \
             npx firebase-tools@latest deploy --only hosting \

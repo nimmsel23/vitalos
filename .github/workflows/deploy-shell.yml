@@ -5,7 +5,7 @@
 # per-Repo-Workflows in fitness/fuel/journal/habits/learn können nie bauen
 # und wurden deshalb deaktiviert (2026-07-03).
 #
-# Submodule-Zugriff: journal-dev, habits-dev, learn-dev sind PRIVATE.
+# Submodule-Zugriff: journal-app, habit-app, learn-dev sind PRIVATE.
 # Submodule-Zugriff: alle Sub-Repos sind seit 2026-07-03 public —
 # GITHUB_TOKEN reicht. (Historie: journal/habits/learn waren private,
 # deshalb der insteadOf-Umweg statt checkout submodules: true über SSH-URLs.)
@@ -36,7 +36,7 @@ jobs:
           cache: npm
 
       # npm-workspaces (fitness/fuel/journal/habits/learn) — ein ci installiert alles.
-      # .npmrc: legacy-peer-deps wegen eslint@10-Konflikt in fitness-dev.
+      # .npmrc: legacy-peer-deps wegen eslint@10-Konflikt in fitness-app.
       - name: Install (Workspaces)
         run: npm install --legacy-peer-deps
 

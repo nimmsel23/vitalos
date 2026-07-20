@@ -1,6 +1,6 @@
 # PR-Preview für die VitalOS-Shell selbst (vitalos.web.app).
 #
-# Bewusst NUR für vitalos/src — die Submodule (fuel-dev, fitness-dev, ...)
+# Bewusst NUR für vitalos/src — die Submodule (fuel-app, fitness-app, ...)
 # haben ihre eigene lokale Preview-Pipeline (npm run deploy:preview +
 # Telegram-Link), die bleibt unangetastet. Dieser Workflow feuert nur,
 # wenn sich die Shell selbst (src/, public/, Root-Configs) ändert.

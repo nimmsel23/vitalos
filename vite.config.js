@@ -6,13 +6,13 @@ import { fileURLToPath } from 'url'
 
 const __dirname    = dirname(fileURLToPath(import.meta.url))  // ~/vitalos/
 const VITALOS_SRC  = resolve(__dirname, 'src')
-const FITNESS_DEV  = resolve(__dirname, 'fitness-dev')
+const FITNESS_DEV  = resolve(__dirname, 'fitness-app')
 const FITNESS_SRC  = resolve(FITNESS_DEV, 'src')
-const FUEL_ROOT    = resolve(__dirname, 'fuel-dev')
-const JOURNAL_DEV  = resolve(__dirname, 'journal-dev')
-const HABITS_DEV   = resolve(__dirname, 'habits-dev')
+const FUEL_ROOT    = resolve(__dirname, 'fuel-app')
+const JOURNAL_DEV  = resolve(__dirname, 'journal-app')
+const HABITS_DEV   = resolve(__dirname, 'habit-app')
 const LEARN_DEV    = resolve(__dirname, 'learn-dev')
-const RELAX_DEV    = resolve(__dirname, 'relax-dev')
+const RELAX_DEV    = resolve(__dirname, 'relax-app')
 const RELAX_BACKEND = 'http://localhost:9123'
 const BACKEND      = 'http://localhost:9100'
 
