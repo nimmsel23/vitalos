@@ -17,6 +17,7 @@ const JournalApp  = lazy(() => import('./shell/JournalApp.jsx'))
 const HabitsApp   = lazy(() => import('./shell/HabitsApp.jsx'))
 const LearnApp    = lazy(() => import('./shell/LearnApp.jsx'))
 const RelaxApp    = lazy(() => import('./shell/RelaxApp.jsx'))
+const CoachApp    = lazy(() => import('@view/coach'))
 
 const DAY_START = 8
 const DAY_END   = 20
@@ -38,6 +39,7 @@ function Views({ tab, fitnessProps, fuelTab, setFuelTab, user, settingsProps, op
     {tab === 'learn'    && <LearnApp muscleLanguage={muscleLanguage} taxonomy={taxonomy} />}
     {tab === 'relax'    && <RelaxApp />}
     {tab === 'settings' && <div className={`${p} max-w-[1600px] mx-auto`}><Settings {...settingsProps} /></div>}
+    {tab === 'coach'    && <div className={`${p} max-w-[1600px] mx-auto`}><CoachApp /></div>}
     </Suspense>
   )
 }

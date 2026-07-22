@@ -13,7 +13,10 @@ export const NAV_ITEMS = [
   { id: 'settings', label: 'Setup',   Icon: Settings2 },
 ]
 
-export const VALID_TABS = new Set(NAV_ITEMS.map(i => i.id))
+// 'coach' ist absichtlich nicht in NAV_ITEMS (eigener, bedingt sichtbarer
+// Sidebar-Button außerhalb der Haupt-Nav-Schleife, siehe Sidebar.jsx) — muss
+// aber trotzdem als gültiger Tab gelten, sonst verwirft navigate() den Klick.
+export const VALID_TABS = new Set([...NAV_ITEMS.map(i => i.id), 'coach'])
 
 export const SUB_NAV = {
   fitness: [
