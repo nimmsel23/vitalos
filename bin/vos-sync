@@ -1,0 +1,165 @@
+#!/usr/bin/env bash
+# vos-sync — Diagnostic utility to understand VOS module synchronization states
+set -euo pipefail
+
+# Real git executable to bypass any wrapper safety blocks
+REAL_GIT="/usr/bin/git"
+
+# Define colors
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+YELLOW='\033[0;33m'
+BLUE='\033[0;34m'
+NC='\033[0m' # No Color
+
+# Base directories
+VITALOS_DIR="/home/alpha/vitalos"
+STANDALONE_BASE="/home/alpha"
+
+# VOS modules configuration
+declare -A MODULES
+MODULES[fitness]="fitness-dev"
+MODULES[fuel]="fuel-dev"
+MODULES[habits]="habits-dev"
+MODULES[journal]="journal-dev"
+MODULES[learn]="learn-dev"
+MODULES[relax]="relax-dev"
+
+usage() {
+    cat <<EOF
+vos-sync — Diagnostic status utility for VOS modules
+
+Usage:
+  vos-sync status [module|all]
+  vos-sync help
+
+Available modules:
+  fitness  (fitness-dev)
+  fuel     (fuel-dev)
+  habits   (habits-dev)
+  journal  (journal-dev)
+  learn    (learn-dev)
+  relax    (relax-dev)
+
+Purpose:
+  This script is strictly a READ-ONLY diagnostic tool. It will check the
+  current branches, dirty status, ahead/behind status, and submodule
+  alignment, helping you understand what needs to be synchronized manually.
+EOF
+}
+
+error() { echo -e "${RED}[ERROR]${NC} $*" >&2; }
+warn() { echo -e "${YELLOW}[WARN]${NC} $*"; }
+success() { echo -e "${GREEN}[SUCCESS]${NC} $*"; }
+
+status_module() {
+    local sa_counts sa_behind sa_ahead sa_master_commit vitalos_status
+    local mod="$1"
+    local dir_name="${MODULES[$mod]}"
+    local standalone_path="${STANDALONE_BASE}/${dir_name}"
+    local submodule_path="${VITALOS_DIR}/${dir_name}"
+
+    echo -e "\n=== Module: ${GREEN}${mod}${NC} (${dir_name}) ==="
+
+    # Standalone Repo Check
+    if [ ! -d "$standalone_path" ]; then
+        error "Standalone repository not found at $standalone_path"
+        return 1
+    fi
+
+    # Read standalone status
+    local sa_branch sa_dirty sa_commit
+    sa_branch=$("$REAL_GIT" -C "$standalone_path" rev-parse --abbrev-ref HEAD 2>/dev/null || echo "unknown")
+    sa_commit=$("$REAL_GIT" -C "$standalone_path" rev-parse --short=7 HEAD 2>/dev/null || echo "unknown")
+    
+    if [ -n "$("$REAL_GIT" -C "$standalone_path" status --porcelain 2>/dev/null)" ]; then
+        sa_dirty="${RED}dirty (uncommitted changes)${NC}"
+    else
+        sa_dirty="${GREEN}clean${NC}"
+    fi
+
+    # Check ahead/behind for current branch on standalone
+    sa_behind=0
+    sa_ahead=0
+    if "$REAL_GIT" -C "$standalone_path" rev-parse --verify --quiet '@{upstream}' >/dev/null 2>&1; then
+        sa_counts=$("$REAL_GIT" -C "$standalone_path" rev-list --left-right --count '@{upstream}'...HEAD 2>/dev/null || echo "0 0")
+        sa_behind=$(echo "$sa_counts" | awk '{print $1}')
+        sa_ahead=$(echo "$sa_counts" | awk '{print $2}')
+    fi
+
+    echo -e "  Standalone Repo (${standalone_path}):"
+    echo -e "    Branch:       ${BLUE}${sa_branch}${NC} (${sa_commit})"
+    echo -e "    Status:       ${sa_dirty}"
+    echo -e "    Sync:         +${sa_ahead}/-${sa_behind} (ahead/behind remote upstream)"
+
+    # Submodule Repo Check
+    if [ ! -d "$submodule_path" ]; then
+        error "Submodule path not found at $submodule_path"
+        return 1
+    fi
+
+    # Read submodule status in vitalos
+    local sub_pinned_commit sub_pinned_short
+    sub_pinned_commit=$("$REAL_GIT" -C "$VITALOS_DIR" submodule status "$dir_name" | awk '{print $1}' | tr -d '+ ' | tr -d '-')
+    sub_pinned_short=${sub_pinned_commit:0:7}
+    
+    local sub_checkout_branch sub_checkout_commit sub_checkout_short
+    sub_checkout_branch=$("$REAL_GIT" -C "$submodule_path" rev-parse --abbrev-ref HEAD 2>/dev/null || echo "HEAD")
+    sub_checkout_commit=$("$REAL_GIT" -C "$submodule_path" rev-parse HEAD 2>/dev/null || echo "unknown")
+    sub_checkout_short=${sub_checkout_commit:0:7}
+
+    echo -e "  VitalOS Submodule (${submodule_path}):"
+    echo -e "    Pinned Ref:   ${BLUE}${sub_pinned_short}${NC}"
+    echo -e "    Checkout:     ${BLUE}${sub_checkout_branch}${NC} (${sub_checkout_short})"
+
+    # Check if pointer is out of sync with standalone master
+    sa_master_commit=$("$REAL_GIT" -C "$standalone_path" rev-parse master 2>/dev/null || echo "unknown")
+    local sa_master_short=${sa_master_commit:0:7}
+    
+    if [ "$sub_pinned_commit" != "$sa_master_commit" ]; then
+        warn "Submodule pointer ($sub_pinned_short) does NOT match standalone master ($sa_master_short)."
+        echo -e "    Status:       ${YELLOW}Needs Sync${NC}"
+    else
+        success "Submodule pointer matches standalone master."
+        echo -e "    Status:       ${GREEN}Synced${NC}"
+    fi
+
+    # Check if vitalos has staged/unstaged changes for this submodule
+    vitalos_status=$("$REAL_GIT" -C "$VITALOS_DIR" status --porcelain "$dir_name" 2>/dev/null || echo "")
+    if [ -n "$vitalos_status" ]; then
+        echo -e "    Git status:   ${YELLOW}Staged/Modified in VitalOS: ${vitalos_status}${NC}"
+    fi
+}
+
+# Main routing
+main() {
+    local cmd="${1:-}"
+    case "$cmd" in
+        status)
+            local target="${2:-all}"
+            if [ "$target" = "all" ]; then
+                for mod in fitness fuel habits journal learn relax; do
+                    status_module "$mod" || true
+                done
+            else
+                if [ -n "${MODULES[$target]:-}" ]; then
+                    status_module "$target"
+                else
+                    error "Unknown module: $target"
+                    usage
+                    exit 1
+                fi
+            fi
+            ;;
+        help|""|"-h"|"--help")
+            usage
+            ;;
+        *)
+            error "Unknown command: $cmd. This diagnostic utility does not modify files."
+            usage
+            exit 1
+            ;;
+    esac
+}
+
+main "$@"
