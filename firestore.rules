@@ -59,7 +59,9 @@ service cloud.firestore {
     // User erreicht eigene Einträge via userId-Feld (fitness-dev PWA)
     match /{path=**}/inbox/{id} {
       allow read:  if isCoach() || (authed() && resource.data.userId == request.auth.uid);
-      allow write: if isCoach() || (authed() && resource.data.userId == request.auth.uid);
+      // Users write inbox via direct path /fitness/{uid}/inbox (per-user rule above).
+      // CollectionGroup write = coach only (approve/reject).
+      allow write: if isCoach();
     }
 
     // collectionGroup-Queries der fitness-dev PWA (Coach-Feed + eigene Daten)
@@ -67,11 +69,15 @@ service cloud.firestore {
       allow read: if isCoach() || (authed() && resource.data.userId == request.auth.uid);
     }
     match /{path=**}/profile/{doc} {
-      allow read: if authed();
+      // Own profile accessible via /fitness/{uid}/... (per-user rule above).
+      // CollectionGroup: coach-only — prevents cross-user profile leaks.
+      allow read: if isCoach();
     }
     match /{path=**}/habitJournals/{doc} {
       allow read:  if isCoach() || (authed() && resource.data.userId == request.auth.uid);
-      allow write: if isCoach() || (authed() && resource.data.userId == request.auth.uid);
+      // request.resource.data = incoming doc (works on create + update).
+      // resource.data = existing doc (fails on create).
+      allow write: if isCoach() || (authed() && request.resource.data.userId == request.auth.uid);
     }
 
     // ── Fuel (Nutrition & Supplements) ───────────────────────────────────────
