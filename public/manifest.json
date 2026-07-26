@@ -1,12 +1,13 @@
 {
   "name": "VitalOS",
   "short_name": "VitalOS",
-  "description": "VitalOS — Fitness, Fuel, Journal, Habits, Learn",
+  "description": "VitalOS — Fitness, Ernährung, Entspannung",
   "theme_color": "#0a0a0f",
   "background_color": "#0a0a0f",
   "display": "standalone",
   "start_url": "/",
   "scope": "/",
+  "gcm_sender_id": "103953800507",
   "version": "150",
   "icons": [
     {
