@@ -1,9 +1,13 @@
 import admin from 'firebase-admin';
-import { readFileSync } from 'fs';
+import { existsSync, readFileSync } from 'fs';
+import { homedir } from 'os';
+import { join } from 'path';
 
-// Pfad zum Service Account Key aus der Firebase Console
-// (Firebase Console -> Project Settings -> Service Accounts -> Generate new private key)
-const SERVICE_ACCOUNT_PATH = './serviceAccountKey.json';
+// Pfad zum Service Account Key (prüft zuerst den lokalen Key, sonst ~/.env/firebase-fitness.json)
+const LOCAL_KEY = './serviceAccountKey.json';
+const ENV_KEY = join(homedir(), '.env', 'firebase-fitness.json');
+
+const SERVICE_ACCOUNT_PATH = existsSync(LOCAL_KEY) ? LOCAL_KEY : (existsSync(ENV_KEY) ? ENV_KEY : LOCAL_KEY);
 
 try {
   const serviceAccount = JSON.parse(readFileSync(SERVICE_ACCOUNT_PATH, 'utf8'));
@@ -12,7 +16,7 @@ try {
     credential: admin.credential.cert(serviceAccount)
   });
 
-  console.log('✅ Firebase Admin SDK erfolgreich initialisiert.');
+  console.log(`✅ Firebase Admin SDK erfolgreich initialisiert (Key: ${SERVICE_ACCOUNT_PATH}).`);
 
   async function sendTestPush(targetToken) {
     if (!targetToken) {
@@ -50,6 +54,5 @@ try {
   sendTestPush(tokenFromArgs);
 
 } catch (e) {
-  console.error(`❌ Konnte ${SERVICE_ACCOUNT_PATH} nicht finden oder lesen.`);
-  console.log('Bitte lade deinen Service Account Key aus der Firebase Console herunter und speichere ihn als serviceAccountKey.json im Repo-Root.');
+  console.error(`❌ Konnte ${SERVICE_ACCOUNT_PATH} nicht finden oder lesen:`, e.message);
 }
