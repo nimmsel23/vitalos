@@ -42,6 +42,8 @@ export default defineConfig(({ mode }) => {
     '@db':         resolve(VITALOS_SRC, isFirebase ? 'shell/db/index.js' : 'coach/db.js'),
     '@fitness-db': resolve(FITNESS_SRC, 'lib/db'),
     '@relax-db':   resolve(RELAX_DEV, 'src/lib/db'),
+    '@habits-db':  resolve(HABITS_DEV, 'src/db'),
+    '@journal-db': resolve(JOURNAL_DEV, 'src/db'),
     '@habits':              resolve(HABITS_DEV, 'src'),
     '@journal':             resolve(JOURNAL_DEV, 'src'),
     '@learn':               resolve(LEARN_DEV, 'src'),
