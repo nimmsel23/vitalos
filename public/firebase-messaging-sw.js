@@ -20,11 +20,14 @@ firebase.initializeApp({
 const messaging = firebase.messaging();
 
 messaging.onBackgroundMessage((payload) => {
-  const { title, body, icon } = payload.notification || {};
+  const title = payload.data?.title || payload.notification?.title || 'VitalOS';
+  const body = payload.data?.body || payload.notification?.body || '';
+  const icon = payload.data?.icon || payload.notification?.icon || '/icon-192.png';
   const tab = payload.data?.tab || '';
-  self.registration.showNotification(title || 'VitalOS', {
-    body: body || '',
-    icon: icon || '/icon-192.png',
+
+  self.registration.showNotification(title, {
+    body: body,
+    icon: icon,
     badge: '/icon-192.png',
     data: { tab },
   });

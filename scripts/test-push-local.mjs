@@ -27,18 +27,14 @@ try {
 
     const message = {
       token: targetToken,
-      notification: {
+      data: {
         title: 'VitalOS (Local Dev Test)',
         body: 'Test-Push-Benachrichtigung von deinem lokalen Server!',
-      },
-      data: {
-        tab: 'habits'
+        tab: 'habits',
+        icon: '/icon-192.png'
       },
       android: {
-        priority: 'high',
-        notification: {
-          color: '#7e57c2',
-        }
+        priority: 'high'
       }
     };
 
@@ -50,8 +46,15 @@ try {
     }
   }
 
-  const tokenFromArgs = process.argv[2];
-  sendTestPush(tokenFromArgs);
+  // Liest FCM Token aus CLI-Argumenten ODER aus ~/.env/fitness.env als Fallback
+  let targetToken = process.argv[2];
+  if (!targetToken && existsSync(join(homedir(), '.env', 'fitness.env'))) {
+    const envContent = readFileSync(join(homedir(), '.env', 'fitness.env'), 'utf8');
+    const match = envContent.match(/TEST_FCM_TOKEN=["']?([^"'\n]+)["']?/);
+    if (match) targetToken = match[1];
+  }
+
+  sendTestPush(targetToken);
 
 } catch (e) {
   console.error(`❌ Konnte ${SERVICE_ACCOUNT_PATH} nicht finden oder lesen:`, e.message);
