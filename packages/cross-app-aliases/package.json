@@ -1,0 +1,7 @@
+{
+  "name": "@vos/cross-app-aliases",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "main": "index.mjs"
+}

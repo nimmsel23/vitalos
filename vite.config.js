@@ -3,6 +3,7 @@ import react from '@vitejs/plugin-react'
 import tailwindcss from 'tailwindcss'
 import { resolve, dirname } from 'path'
 import { fileURLToPath } from 'url'
+import { crossAppAliases } from '@vos/cross-app-aliases'
 
 const __dirname    = dirname(fileURLToPath(import.meta.url))  // ~/vitalos/
 const VITALOS_SRC  = resolve(__dirname, 'src')
@@ -31,6 +32,8 @@ export default defineConfig(({ mode }) => {
   const isFirebase = mode === 'firebase'
 
   const aliases = {
+    ...crossAppAliases(),
+
     '@src':        VITALOS_SRC,
     '@shell':      resolve(VITALOS_SRC, 'shell'),
     '@coach':      resolve(VITALOS_SRC, 'coach'),
@@ -40,17 +43,6 @@ export default defineConfig(({ mode }) => {
     '@constants':  resolve(FITNESS_SRC, 'constants'),
     '@utils':      resolve(FITNESS_SRC, 'lib/utils.js'),
     '@db':         resolve(VITALOS_SRC, isFirebase ? 'shell/db/index.js' : 'coach/db.js'),
-    '@fitness-db': resolve(FITNESS_SRC, 'lib/db'),
-    '@relax-db':   resolve(RELAX_DEV, 'src/lib/db'),
-    '@habits-db':  resolve(HABITS_DEV, 'src/db'),
-    '@journal-db': resolve(JOURNAL_DEV, 'src/db'),
-    '@habits':              resolve(HABITS_DEV, 'src'),
-    '@journal':             resolve(JOURNAL_DEV, 'src'),
-    '@learn':               resolve(LEARN_DEV, 'src'),
-    '@relax':               resolve(RELAX_DEV, 'src'),
-    '@fitness/components':  resolve(FITNESS_SRC, 'components'),
-    '@fitness/constants':   resolve(FITNESS_SRC, 'constants'),
-    '@fitness':             FITNESS_DEV,
 
     // ── Tab Sources (eine Zeile = ein Tab, Herkunft sofort sichtbar) ───────────
     '@view/dashboard':  resolve(VITALOS_SRC,         'shell/Dashboard.jsx'),  // Shell-SSOT: bündelt Fitness + Fuel (analog Settings-Tab)
@@ -67,7 +59,6 @@ export default defineConfig(({ mode }) => {
     '@firebase-config': resolve(__dirname, 'firebase.config.js'),
 
     'fuel/FuelApp':     resolve(VITALOS_SRC, 'shell/FuelApp.jsx'),
-    '@fuel':            resolve(FUEL_ROOT, 'src/client'),
     '@fuel-shared':     resolve(FUEL_ROOT, 'src/shared'),
     '@api':             resolve(FUEL_ROOT, 'src/client/lib/api.js'),
   }
