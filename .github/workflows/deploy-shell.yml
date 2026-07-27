@@ -22,7 +22,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout (ohne Submodules)
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Submodules via HTTPS + Token
         run: |
@@ -30,7 +30,7 @@ jobs:
           git submodule sync
           git submodule update --init --recursive
 
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v5
         with:
           node-version: 22
           cache: npm
