@@ -30,7 +30,12 @@ export * from "./habits.js";
 export * from "./relax.js";
 
 // Resolve ESM wildcard conflicts
-export { getUserProfile, updateUserProfile } from "./settings.js";
+export {
+  getUserProfile,
+  updateUserProfile,
+  getPushSettings,
+  savePushSettings,
+} from "./settings.js";
 export { getMealsHistory, getSupplementsHistory } from "./fuel.js";
 
 // getNutritionNotesHistory kommt zusätzlich transitiv über fitness.js →
