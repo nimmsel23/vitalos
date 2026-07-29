@@ -95,7 +95,13 @@ export default function MuscleBody({ allSessions, enrichedRecent, recentDays = 7
   const groupScores = useMemo(() => {
     const sessions = allSessions || enrichedRecent || [];
     const lastTrained = buildLastTrainedMap(sessions);
-    const today = new Date().toISOString().slice(0, 10);
+    // Lokales Kalenderdatum, nicht UTC — s.date wird beim Speichern ebenfalls
+    // lokal erzeugt (todayISO()). Ein UTC-Datum liegt in Zeitzonen östlich von
+    // UTC kurz nach lokaler Mitternacht noch auf dem Vortag und lässt
+    // daysSince um 1 zu klein erscheinen (kippt z.B. 4 echte Tage auf
+    // score=1 "Stark belastet" statt score=2 "Erholung").
+    const now = new Date();
+    const today = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
     const scores = {};
     for (const [group, { date, isCardio }] of Object.entries(lastTrained)) {
       const daysSince = Math.round((new Date(today) - new Date(date)) / 86400000);
