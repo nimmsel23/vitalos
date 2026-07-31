@@ -198,8 +198,9 @@ async function sendReminder(pushRef, tokens, payload) {
   return response;
 }
 
-exports.scheduledPushReminders = functions.pubsub
-  .schedule("every 5 minutes")
+exports.scheduledPushReminders = functions
+  .region("europe-west1")
+  .pubsub.schedule("every 5 minutes")
   .timeZone(TIME_ZONE)
   .onRun(async () => {
     const now = getLocalDateParts();
