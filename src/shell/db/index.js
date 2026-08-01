@@ -52,6 +52,14 @@ export {
   getAllHabitJournalsForDate,
 } from "./journal.js";
 
+// localToday: habits.js re-exportiert es transitiv über @fitness-db, journal.js
+// definiert es direkt (journal-app/src/lib/db/core.js) — beide Namen kollidieren
+// wortwörtlich (Rollup verwirft sonst BEIDE, "Conflicting namespaces"-Warning
+// wird beim Build zum Hard-Error, sobald irgendwer named importiert, z.B.
+// fitness-app/src/views/Plan/AssignedPlans.jsx). journal.js gewinnt, da es die
+// direkte Quelle ist statt einer transitiven Re-Export-Kette.
+export { localToday } from "./journal.js";
+
 // Core/Auth/Sessions Konflikte auflösen (alle Repos exportieren core.js, wir nutzen fitness als SSOT)
 export { 
   getUid, watchAuth, signIn, signInEmail, signUpEmail, signOut, isLocalMode, api,
