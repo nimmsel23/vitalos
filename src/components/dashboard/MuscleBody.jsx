@@ -114,13 +114,18 @@ export default function MuscleBody({ allSessions, enrichedRecent, recentDays = 7
   const isMuscles = highlighterMode === 'muscles';
   const sharedProps = { onGroupClick: setSelectedMuscleId };
 
+  // min(160px, 40vw): auf schmalen Handys (~360px) sind zwei Silhouetten +
+  // Gap sonst breiter als der Viewport und werden von overflow-x:hidden
+  // in der Shell abgeschnitten statt sichtbar zu scrollen.
+  const bodyMaxWidth = 'min(160px, 40vw)';
+
   const frontProps = isMuscles
-    ? { groupScores, gender, side: 'front', ...sharedProps }
-    : { groupScores, highlightedColors: SUPERKOMP_COLORS, style: { maxWidth: 160 }, ...sharedProps };
+    ? { groupScores, gender, side: 'front', style: { maxWidth: bodyMaxWidth }, ...sharedProps }
+    : { groupScores, highlightedColors: SUPERKOMP_COLORS, style: { maxWidth: bodyMaxWidth }, ...sharedProps };
 
   const backProps = isMuscles
-    ? { groupScores, gender, side: 'back', ...sharedProps }
-    : { groupScores, highlightedColors: SUPERKOMP_COLORS, style: { maxWidth: 160 }, ...sharedProps };
+    ? { groupScores, gender, side: 'back', style: { maxWidth: bodyMaxWidth }, ...sharedProps }
+    : { groupScores, highlightedColors: SUPERKOMP_COLORS, style: { maxWidth: bodyMaxWidth }, ...sharedProps };
 
   const HighlighterFront = isMuscles ? DetailedMuscleMap : BodyMap;
   const HighlighterBack  = isMuscles ? DetailedMuscleMap : BodyMap;
@@ -134,7 +139,7 @@ export default function MuscleBody({ allSessions, enrichedRecent, recentDays = 7
         </span>
       </div>
 
-      <div className="flex flex-1 justify-center items-center gap-16 scale-110 origin-center">
+      <div className="flex flex-1 justify-center items-center gap-4 sm:gap-16 scale-100 sm:scale-110 origin-center">
         <HighlighterFront {...frontProps} />
         <HighlighterBack  {...backProps}  />
       </div>

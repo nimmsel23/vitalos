@@ -1,9 +1,57 @@
+import { useState, useEffect } from 'react'
 import { Settings2 } from 'lucide-react'
+import { getSession, getPlan, getRelaxStatsSummary } from '@db'
+import { localToday } from '@utils'
 import { VOS_APPS } from './VitalOSApps.js'
+import FuelHubStat from './FuelHubStat.jsx'
 
 // Setup als sechste Kachel — kein VOS_APPS-Eintrag (das sind die Tempel),
 // aber vom Start-Hub direkt erreichbar.
 const HUB_TILES = [...VOS_APPS, { id: 'settings', label: 'Setup', Icon: Settings2, color: '#a1a1aa' }]
+
+// Live-Stat pro Tempel-Kachel. Bewusst best-effort: schlägt ein Fetch fehl
+// oder eine App hat (noch) keinen sinnvollen Tages-Wert (Journal/Habits/
+// Lernen), bleibt die Kachel einfach ohne Stat-Zeile statt den Hub zu
+// crashen — der Hub ist der Einstiegsscreen, hier darf nichts hart brechen.
+function useFitnessStat() {
+  const [stat, setStat] = useState(null)
+  useEffect(() => {
+    let alive = true
+    Promise.all([getSession(localToday()), getPlan()]).then(([session, plan]) => {
+      if (!alive) return
+      const doneCount = (session?.exercises || []).filter(e => e.done).length
+      const plannedCount = Array.isArray(plan?.today?.exercises) ? plan.today.exercises.length : 0
+      if (doneCount > 0) setStat(`${doneCount} Übungen heute`)
+      else if (plannedCount > 0) setStat(`${plannedCount} Übungen geplant`)
+      else setStat('Kein Training heute')
+    }).catch(() => {})
+    return () => { alive = false }
+  }, [])
+  return stat
+}
+
+function useRelaxStat() {
+  const [stat, setStat] = useState(null)
+  useEffect(() => {
+    let alive = true
+    getRelaxStatsSummary?.().then((summary) => {
+      if (!alive || !summary) return
+      if (summary.streakDays) setStat(`${summary.streakDays} Tage Streak`)
+    }).catch(() => {})
+    return () => { alive = false }
+  }, [])
+  return stat
+}
+
+function TileStat({ appId }) {
+  const fitnessStat = useFitnessStat()
+  const relaxStat = useRelaxStat()
+
+  if (appId === 'fitness') return fitnessStat ? <span>{fitnessStat}</span> : null
+  if (appId === 'fuel') return <FuelHubStat />
+  if (appId === 'relax') return relaxStat ? <span>{relaxStat}</span> : null
+  return null
+}
 
 export default function Hub({ navigate }) {
   return (
@@ -43,6 +91,9 @@ export default function Hub({ navigate }) {
                 className="h-0.5 w-0 group-hover:w-8 transition-all duration-500 rounded-full"
                 style={{ background: color }}
               />
+              <span className="text-[9px] font-bold text-fit-dim/60 tracking-wide min-h-[12px] text-center">
+                <TileStat appId={id} />
+              </span>
             </div>
           </button>
         ))}

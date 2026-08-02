@@ -45,7 +45,6 @@ export default defineConfig(({ mode }) => {
     '@db':         resolve(VITALOS_SRC, isFirebase ? 'shell/db/index.js' : 'coach/db.js'),
 
     // ── Tab Sources (eine Zeile = ein Tab, Herkunft sofort sichtbar) ───────────
-    '@view/dashboard':  resolve(VITALOS_SRC,         'shell/Dashboard.jsx'),  // Shell-SSOT: bündelt Fitness + Fuel (analog Settings-Tab)
     '@view/session':    resolve(FITNESS_SRC,          'views/Session'),        // fitness-dev
     '@view/review':     resolve(FITNESS_SRC,          'views/WeeklyReview'),   // fitness-dev
     '@view/muscles':    resolve(FITNESS_SRC,          'views/Muscles'),        // fitness-dev

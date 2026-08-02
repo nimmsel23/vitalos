@@ -1,4 +1,5 @@
 import { useState, useRef, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import { ExternalLink, Maximize2 } from 'lucide-react';
 
 export default function DashboardWidget({ 
@@ -63,7 +64,7 @@ export default function DashboardWidget({
         )}
       </div>
 
-      {isModalOpen && (
+      {isModalOpen && createPortal(
         <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/60 backdrop-blur-md animate-in fade-in duration-300" onClick={() => setIsModalOpen(false)}>
           <div 
             className="bg-fit-card border border-fit-line w-full max-w-2xl rounded-[32px] overflow-hidden shadow-2xl"
@@ -95,7 +96,8 @@ export default function DashboardWidget({
               </button>
             </div>
           </div>
-        </div>
+        </div>,
+        document.body
       )}
     </>
   );

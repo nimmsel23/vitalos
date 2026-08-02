@@ -59,7 +59,7 @@ function FuelInner() {
           <NutritionHeatmap selectedDate={activeDate} onSelectDate={setActiveDate} />
 
           <nav className="flex flex-wrap gap-2">
-            {TAB_CONFIG.map(({ key, label, Icon }) => (
+            {TAB_CONFIG.filter((t) => !t.embeddedHidden).map(({ key, label, Icon }) => (
               <motion.button
                 whileTap={{ scale: 0.96 }}
                 key={key}
