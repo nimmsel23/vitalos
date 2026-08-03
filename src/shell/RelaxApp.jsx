@@ -6,7 +6,7 @@
  * relax-scope.css, Views sind prop-los.
  */
 
-import { useState, lazy, Suspense } from 'react'
+import { useEffect, useState, lazy, Suspense } from 'react'
 import { Activity, MoonStar, BookOpen, BarChart3, Zap, Beaker } from 'lucide-react'
 import Journal from '@view/journal'
 import './relax-scope.css'
@@ -25,11 +25,19 @@ const TABS = [
 
 const NAV_TABS = [...TABS.slice(0, 2), { id: 'journal', label: 'Journal', Icon: BookOpen }, ...TABS.slice(2)]
 
-export default function RelaxApp({ onOpenSession, runtimeDate, onRuntimeDateChange }) {
-  const [tab, setTab] = useState('dash')
+export default function RelaxApp({ subTab = 'dash', onSubTab, onOpenSession, runtimeDate, onRuntimeDateChange }) {
+  const [tab, setTab] = useState(subTab || 'dash')
   const active = TABS.find(t => t.id === tab)
   const View = active?.View ?? null
   const fullBleed = tab === 'physio' || tab === 'catalog' || tab === 'journal'
+
+  useEffect(() => {
+    if (subTab && subTab !== tab) setTab(subTab)
+  }, [subTab, tab])
+
+  useEffect(() => {
+    if (tab && onSubTab && tab !== subTab) onSubTab(tab)
+  }, [onSubTab, subTab, tab])
 
   return (
     <div className="relax-scope flex flex-col h-full">

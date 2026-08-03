@@ -1,4 +1,5 @@
 import { useMemo, useState } from 'react'
+import { CalendarDays } from 'lucide-react'
 import Session from '@view/session/index.jsx'
 import WeeklyReview from '@view/review/index.jsx'
 import Learn from '@view/learn/index.jsx'
@@ -7,7 +8,7 @@ import Inbox from '@fitness/src/views/Inbox/index.js'
 import Settings from '@fitness/src/views/Settings/index.jsx'
 import ExerciseInsightModal from '@fitness/components/ExerciseInsightModal.jsx'
 import { NAV_ITEMS as FITNESS_NAV_ITEMS } from '@constants/NavigationItems.js'
-import { getAnatomy } from '@db'
+import { getAnatomy, getPlan } from '@db'
 import FitnessAppGate from './FitnessAppGate.jsx'
 
 function resolveFitnessRoute(id) {
@@ -36,14 +37,29 @@ export default function FitnessApp({ recentDays, coverageThreshold, gender, musc
   const gateItems = useMemo(
     () => FITNESS_NAV_ITEMS
       .filter(({ id }) => id !== 'settings')
-      .flatMap(({ id, label, Icon, sub = [] }) => [
-        { id, label, Icon },
-        ...sub.map((item) => ({ ...item })),
-      ]),
+      .flatMap(({ id, sub = [] }) => {
+        if (id === 'session') {
+          return sub.map((item) => (
+            item.id === 'today'
+              ? { ...item, label: 'Heute', Icon: CalendarDays }
+              : { ...item }
+          ))
+        }
+        return sub.map((item) => ({ ...item }))
+      }),
     [],
   )
 
-  function handleGateSelect(id) {
+  async function handleGateSelect(id) {
+    if (id === 'today' || id === 'session') {
+      try {
+        const plan = await getPlan()
+        const hasTodayPlan = Array.isArray(plan?.today?.exercises) && plan.today.exercises.length > 0
+        setTab(hasTodayPlan ? 'plan' : 'session')
+        return
+      } catch {}
+    }
+
     const next = resolveFitnessRoute(id)
     if (next.reviewSubTab !== null) setReviewSubTab(next.reviewSubTab)
     if (next.learnSubTab !== null) setLearnSubTab(next.learnSubTab)

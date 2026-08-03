@@ -1,5 +1,5 @@
 import { useState, useEffect, lazy, Suspense } from 'react'
-import { RefreshCw } from 'lucide-react'
+import { CalendarDays, RefreshCw } from 'lucide-react'
 import { watchAuth, signIn, signInEmail, signUpEmail, signOut, isLocalMode, auth, getUserProfile } from '@db'
 import { VALID_TABS, SUB_NAV } from './shell/NavigationItems.js'
 import Settings from '@view/settings/index.jsx'
@@ -12,10 +12,11 @@ import Dashboard from './shell/Dashboard.jsx'
 import { useApp as useFuelAppStore, useSettings as useFuelStore } from '@fuel/store.js'
 import ShellHeader from './shell/ShellHeader.jsx'
 import { useShellSettings } from './shell/store.js'
+import FitnessAppGate from './shell/FitnessAppGate.jsx'
+import { NAV_ITEMS as FITNESS_NAV_ITEMS } from '@constants/NavigationItems.js'
 
 const FitnessApp  = lazy(() => import('./shell/FitnessApp.jsx'))
 const FuelWrapper = lazy(() => import('./shell/FuelWrapper.jsx'))
-const JournalApp  = lazy(() => import('./shell/JournalApp.jsx'))
 const HabitsApp   = lazy(() => import('./shell/HabitsApp.jsx'))
 const RelaxApp    = lazy(() => import('./shell/RelaxApp.jsx'))
 const CoachApp    = lazy(() => import('@view/coach'))
@@ -29,11 +30,36 @@ const Loader = ({ label }) => (
   </div>
 )
 
+function getFitnessGateItems() {
+  return FITNESS_NAV_ITEMS
+    .filter(({ id }) => id !== 'settings')
+    .flatMap(({ id, sub = [] }) => {
+      if (id === 'session') {
+        return sub.map((item) => (
+          item.id === 'today'
+            ? { ...item, label: 'Heute', Icon: CalendarDays }
+            : { ...item }
+        ))
+      }
+      return sub.map((item) => ({ ...item }))
+    })
+}
+
+function HomeFitnessGate({ onSelect }) {
+  return (
+    <div className="absolute inset-0 z-20 overflow-y-auto bg-[linear-gradient(180deg,rgba(10,10,12,0.58),rgba(10,10,12,0.88))] backdrop-blur-sm">
+      <FitnessAppGate navigate={onSelect} items={getFitnessGateItems()} title="Fitness" />
+    </div>
+  )
+}
+
 function readHashState() {
   const raw = window.location.hash.replace(/^#\/?/, '')
   const [mainTab = 'hub', subTab = null] = raw.split('/')
+  if (mainTab === 'dashboard') return { tab: 'home', subTab: null }
   if (mainTab === 'learn') return { tab: 'fitness', subTab: 'learn' }
-  if (mainTab === 'fuel' && subTab === 'journal') return { tab: 'journal', subTab: null }
+  if (mainTab === 'journal') return { tab: 'relax', subTab: 'journal' }
+  if (mainTab === 'fuel' && subTab === 'journal') return { tab: 'relax', subTab: 'journal' }
   if (mainTab === 'fuel' && subTab === 'habits') return { tab: 'habits', subTab: null }
   if (mainTab === 'fuel' && subTab === 'settings') return { tab: 'settings', subTab: null }
   return {
@@ -42,17 +68,21 @@ function readHashState() {
   }
 }
 
-function Views({ tab, fitnessProps, fuelTab, setFuelTab, user, settingsProps, openSession, compact, muscleLanguage, taxonomy, runtimeDate, onRuntimeDateChange, navigate }) {
+function Views({ tab, fitnessProps, fuelTab, setFuelTab, relaxTab, setRelaxTab, homeGate, onHomeGateSelect, user, settingsProps, openSession, compact, muscleLanguage, taxonomy, runtimeDate, onRuntimeDateChange, navigate }) {
   const p = compact ? 'p-4' : 'p-4 sm:p-8 lg:p-12'
   return (
     <Suspense fallback={<Loader label={tab} />}>
     {tab === 'hub'      && <Hub navigate={navigate} openSession={openSession} runtimeDate={runtimeDate} />}
-    {tab === 'dashboard' && <Dashboard navigate={navigate} openSession={openSession} runtimeDate={runtimeDate} />}
+    {tab === 'home'     && (
+      <div className="relative min-h-[100dvh]">
+        <Dashboard navigate={navigate} openSession={openSession} runtimeDate={runtimeDate} />
+        {homeGate === 'fitness' ? <HomeFitnessGate onSelect={onHomeGateSelect} /> : null}
+      </div>
+    )}
     {tab === 'fitness'  && <FitnessApp  {...fitnessProps} />}
     {tab === 'fuel'     && <FuelWrapper user={user} subTab={fuelTab} onSubTab={setFuelTab} onNavigateShell={navigate} />}
-    {tab === 'journal'  && <JournalApp onOpenSession={openSession} runtimeDate={runtimeDate} onRuntimeDateChange={onRuntimeDateChange} />}
     {tab === 'habits'   && <HabitsApp runtimeDate={runtimeDate} onRuntimeDateChange={onRuntimeDateChange} />}
-    {tab === 'relax'    && <RelaxApp onOpenSession={openSession} runtimeDate={runtimeDate} onRuntimeDateChange={onRuntimeDateChange} />}
+    {tab === 'relax'    && <RelaxApp subTab={relaxTab} onSubTab={setRelaxTab} onOpenSession={openSession} runtimeDate={runtimeDate} onRuntimeDateChange={onRuntimeDateChange} />}
     {tab === 'settings' && <div className={`${p} max-w-[1600px] mx-auto`}><Settings {...settingsProps} /></div>}
     {tab === 'coach'    && <div className={`${p} max-w-[1600px] mx-auto`}><CoachApp /></div>}
     </Suspense>
@@ -68,6 +98,14 @@ export default function App() {
   const [fuelTab, setFuelTab] = useState(() => {
     const { tab: hashTab, subTab } = readHashState()
     return hashTab === 'fuel' && subTab ? subTab : 'food'
+  })
+  const [homeGate, setHomeGate] = useState(() => {
+    const { tab: hashTab, subTab } = readHashState()
+    return hashTab === 'home' ? (subTab || null) : null
+  })
+  const [relaxTab, setRelaxTab] = useState(() => {
+    const { tab: hashTab, subTab } = readHashState()
+    return hashTab === 'relax' && subTab ? subTab : 'dash'
   })
   const [sessionDate,   setSessionDate]   = useState(null)
   const [sessionDraft,  setSessionDraft]  = useState(null)
@@ -166,18 +204,24 @@ export default function App() {
   useEffect(() => {
     const nextHash = tab === 'fitness'
       ? (fitnessTab ? `#${tab}/${fitnessTab}` : `#${tab}`)
+      : tab === 'home'
+        ? (homeGate ? `#${tab}/${homeGate}` : `#${tab}`)
       : tab === 'fuel'
         ? `#${tab}/${fuelTab || 'food'}`
+        : tab === 'relax'
+          ? `#${tab}/${relaxTab || 'dash'}`
         : `#${tab}`
     if (window.location.hash !== nextHash) history.pushState(null, '', nextHash)
-  }, [tab, fitnessTab, fuelTab])
+  }, [tab, fitnessTab, homeGate, fuelTab, relaxTab])
 
   useEffect(() => {
     function syncFromLocation() {
       const { tab: nextTab, subTab } = readHashState()
       setTab(nextTab)
+      if (nextTab === 'home') setHomeGate(subTab || null)
       if (nextTab === 'fitness') setFitnessTab(subTab || null)
       if (nextTab === 'fuel' && subTab) setFuelTab(subTab)
+      if (nextTab === 'relax') setRelaxTab(subTab || 'dash')
     }
 
     window.addEventListener('popstate', syncFromLocation)
@@ -189,14 +233,33 @@ export default function App() {
   }, [])
 
   function navigate(id, subTab = null) {
+    if (tab === 'hub' && id === 'fitness') {
+      setHomeGate('fitness')
+      setTab('home')
+      return
+    }
     if (!VALID_TABS.has(id)) return
+    if (id === 'home') {
+      setHomeGate(subTab || null)
+    } else if (tab !== 'home') {
+      setHomeGate(null)
+    }
     if (id === 'fitness') {
       setFitnessTab(subTab || null)
     }
     if (id === 'fuel') {
       setFuelTab(subTab || 'food')
     }
+    if (id === 'relax') {
+      setRelaxTab(subTab || 'dash')
+    }
     setTab(id)
+  }
+
+  function handleHomeGateSelect(id) {
+    setHomeGate(null)
+    setFitnessTab(id)
+    setTab('fitness')
   }
 
   async function handleAuthSubmit(e) {
@@ -290,13 +353,13 @@ export default function App() {
           {showDesktopChrome ? shellHeader : null}
           <main className="relative min-h-[100dvh]">
           <Views tab={tab} fitnessProps={fitnessProps} fuelTab={fuelTab} setFuelTab={setFuelTab} muscleLanguage={muscleLanguage} taxonomy={taxonomy}
-          user={user} settingsProps={settingsProps} openSession={openSession} runtimeDate={runtimeDate} onRuntimeDateChange={setRuntimeDate} navigate={navigate} />
+          user={user} settingsProps={settingsProps} openSession={openSession} runtimeDate={runtimeDate} onRuntimeDateChange={setRuntimeDate} navigate={navigate} relaxTab={relaxTab} setRelaxTab={setRelaxTab} homeGate={homeGate} onHomeGateSelect={handleHomeGateSelect} />
           </main>
           </div>
           {/* Mobile: Fuel-Layout */}
           <MobileShell tab={tab} navigate={navigate} mobileLayout="fuel" header={mobileShellHeader}>
           <Views tab={tab} fitnessProps={fitnessProps} fuelTab={fuelTab} setFuelTab={setFuelTab} muscleLanguage={muscleLanguage} taxonomy={taxonomy}
-          user={user} settingsProps={settingsProps} openSession={openSession} compact runtimeDate={runtimeDate} onRuntimeDateChange={setRuntimeDate} navigate={navigate} />
+          user={user} settingsProps={settingsProps} openSession={openSession} compact runtimeDate={runtimeDate} onRuntimeDateChange={setRuntimeDate} navigate={navigate} relaxTab={relaxTab} setRelaxTab={setRelaxTab} homeGate={homeGate} onHomeGateSelect={handleHomeGateSelect} />
           </MobileShell>
           </>
         ) : (
@@ -305,12 +368,12 @@ export default function App() {
           {showDesktopChrome ? shellHeader : null}
           <main className="relative min-h-[100dvh]">
           <Views tab={tab} fitnessProps={fitnessProps} fuelTab={fuelTab} setFuelTab={setFuelTab} muscleLanguage={muscleLanguage} taxonomy={taxonomy}
-          user={user} settingsProps={settingsProps} openSession={openSession} runtimeDate={runtimeDate} onRuntimeDateChange={setRuntimeDate} navigate={navigate} />
+          user={user} settingsProps={settingsProps} openSession={openSession} runtimeDate={runtimeDate} onRuntimeDateChange={setRuntimeDate} navigate={navigate} relaxTab={relaxTab} setRelaxTab={setRelaxTab} homeGate={homeGate} onHomeGateSelect={handleHomeGateSelect} />
           </main>
           </div>
           <MobileShell tab={tab} navigate={navigate} mobileLayout="classic" header={mobileShellHeader}>
           <Views tab={tab} fitnessProps={fitnessProps} fuelTab={fuelTab} setFuelTab={setFuelTab} muscleLanguage={muscleLanguage} taxonomy={taxonomy}
-          user={user} settingsProps={settingsProps} openSession={openSession} compact runtimeDate={runtimeDate} onRuntimeDateChange={setRuntimeDate} navigate={navigate} />
+          user={user} settingsProps={settingsProps} openSession={openSession} compact runtimeDate={runtimeDate} onRuntimeDateChange={setRuntimeDate} navigate={navigate} relaxTab={relaxTab} setRelaxTab={setRelaxTab} homeGate={homeGate} onHomeGateSelect={handleHomeGateSelect} />
           </MobileShell>
           </>
         )}

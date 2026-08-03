@@ -4,6 +4,7 @@ import { isLocalMode } from "@db";
 
 export default function Sidebar({ tab, navigate, pinned, setPinned, children, user, subNav, subTab, onSubTab }) {
   const inSubApp = !!subNav
+  const visibleNavItems = NAV_ITEMS.filter(({ id }) => id !== 'hub')
 
   return (
     <aside className={`hidden lg:flex flex-col alpha-glass fixed left-3 top-3 bottom-3 z-50 rounded-[2rem] border border-fit-line/70 shadow-2xl shadow-black/20 transition-all duration-500 ease-in-out ${pinned ? 'w-[280px]' : 'w-24'}`}>
@@ -29,7 +30,7 @@ export default function Sidebar({ tab, navigate, pinned, setPinned, children, us
 
         {/* Haupt-Nav — fett im Shell-Modus, schlank im Sub-App-Modus */}
         <nav className={`${inSubApp ? 'flex gap-1 flex-wrap justify-center mb-4 pb-4 border-b border-fit-line/30' : 'space-y-1 flex-1'}`}>
-          {NAV_ITEMS.map(({ id, label, Icon }) => {
+          {visibleNavItems.map(({ id, label, Icon }) => {
             const isActive = tab === id
             if (inSubApp) {
               // Kompakt: nur Icon + Tooltip
