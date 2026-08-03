@@ -8,6 +8,7 @@
 
 import { useState, lazy, Suspense } from 'react'
 import { Activity, MoonStar, BookOpen, BarChart3, Zap, Beaker } from 'lucide-react'
+import Journal from '@view/journal'
 import './relax-scope.css'
 
 // Muss vor dem ersten lazy-Import der Views gesetzt sein — relax' api.js
@@ -17,20 +18,18 @@ if (typeof window !== 'undefined') window.__RELAX_API_BASE__ = '/relax-api'
 const TABS = [
   { id: 'dash',    label: 'Heute',   Icon: Activity,  View: lazy(() => import('@relax/views/Dashboard.jsx')) },
   { id: 'session', label: 'Session', Icon: MoonStar,  View: lazy(() => import('@relax/views/Session.jsx')) },
-  // Geteiltes Kern-Journal (journal-dev), nicht relax' eigenes Journal.jsx —
-  // aggregiert bereits Journal-Text + Habit-Memoirs + Fitness-Sessions.
-  // relax' /journal-Backend (:9123, api.js) bleibt für den Standalone-Modus
-  // unverändert bestehen, wird hier nur nicht mehr genutzt.
-  { id: 'journal', label: 'Journal', Icon: BookOpen,  View: lazy(() => import('@view/journal')) },
   { id: 'stats',   label: 'Stats',   Icon: BarChart3, View: lazy(() => import('@relax/views/Stats.jsx')) },
   { id: 'physio',  label: 'Physio',  Icon: Zap,       View: lazy(() => import('@relax/views/PhysioTimeline.jsx')) },
   { id: 'catalog', label: 'Catalog', Icon: Beaker,    View: lazy(() => import('@relax/views/SubstanceCatalog.jsx')) },
 ]
 
-export default function RelaxApp() {
+const NAV_TABS = [...TABS.slice(0, 2), { id: 'journal', label: 'Journal', Icon: BookOpen }, ...TABS.slice(2)]
+
+export default function RelaxApp({ onOpenSession, runtimeDate, onRuntimeDateChange }) {
   const [tab, setTab] = useState('dash')
-  const { View } = TABS.find(t => t.id === tab)
-  const fullBleed = tab === 'physio' || tab === 'catalog'
+  const active = TABS.find(t => t.id === tab)
+  const View = active?.View ?? null
+  const fullBleed = tab === 'physio' || tab === 'catalog' || tab === 'journal'
 
   return (
     <div className="relax-scope flex flex-col h-full">
@@ -44,9 +43,13 @@ export default function RelaxApp() {
 
       <main className="flex-1 overflow-y-auto overflow-x-hidden" style={{ WebkitOverflowScrolling: 'touch' }}>
         <div className={fullBleed ? 'h-full flex flex-col' : 'max-w-2xl mx-auto px-4 py-4 pb-28'}>
-          <Suspense fallback={<div className="p-8 text-center" style={{ color: 'var(--dim)' }}>Laden…</div>}>
-            <View />
-          </Suspense>
+          {tab === 'journal' ? (
+            <Journal embedded onOpenSession={onOpenSession} date={runtimeDate} onDateChange={onRuntimeDateChange} />
+          ) : (
+            <Suspense fallback={<div className="p-8 text-center" style={{ color: 'var(--dim)' }}>Laden…</div>}>
+              <View />
+            </Suspense>
+          )}
         </div>
       </main>
 
@@ -54,7 +57,7 @@ export default function RelaxApp() {
         style={{ background: 'var(--glass)', borderTop: '1px solid var(--glass-border)', backdropFilter: 'blur(20px)' }}
         className="flex shrink-0 px-2 pb-safe z-20"
       >
-        {TABS.map(({ id, label, Icon }) => (
+        {NAV_TABS.map(({ id, label, Icon }) => (
           <button
             key={id}
             onClick={() => setTab(id)}

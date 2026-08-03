@@ -17,7 +17,6 @@ const FitnessApp  = lazy(() => import('./shell/FitnessApp.jsx'))
 const FuelWrapper = lazy(() => import('./shell/FuelWrapper.jsx'))
 const JournalApp  = lazy(() => import('./shell/JournalApp.jsx'))
 const HabitsApp   = lazy(() => import('./shell/HabitsApp.jsx'))
-const LearnApp    = lazy(() => import('./shell/LearnApp.jsx'))
 const RelaxApp    = lazy(() => import('./shell/RelaxApp.jsx'))
 const CoachApp    = lazy(() => import('@view/coach'))
 
@@ -33,6 +32,7 @@ const Loader = ({ label }) => (
 function readHashState() {
   const raw = window.location.hash.replace(/^#\/?/, '')
   const [mainTab = 'hub', subTab = null] = raw.split('/')
+  if (mainTab === 'learn') return { tab: 'fitness', subTab: 'learn' }
   if (mainTab === 'fuel' && subTab === 'journal') return { tab: 'journal', subTab: null }
   if (mainTab === 'fuel' && subTab === 'habits') return { tab: 'habits', subTab: null }
   if (mainTab === 'fuel' && subTab === 'settings') return { tab: 'settings', subTab: null }
@@ -52,8 +52,7 @@ function Views({ tab, fitnessProps, fuelTab, setFuelTab, user, settingsProps, op
     {tab === 'fuel'     && <FuelWrapper user={user} subTab={fuelTab} onSubTab={setFuelTab} onNavigateShell={navigate} />}
     {tab === 'journal'  && <JournalApp onOpenSession={openSession} runtimeDate={runtimeDate} onRuntimeDateChange={onRuntimeDateChange} />}
     {tab === 'habits'   && <HabitsApp runtimeDate={runtimeDate} onRuntimeDateChange={onRuntimeDateChange} />}
-    {tab === 'learn'    && <LearnApp muscleLanguage={muscleLanguage} taxonomy={taxonomy} />}
-    {tab === 'relax'    && <RelaxApp />}
+    {tab === 'relax'    && <RelaxApp onOpenSession={openSession} runtimeDate={runtimeDate} onRuntimeDateChange={onRuntimeDateChange} />}
     {tab === 'settings' && <div className={`${p} max-w-[1600px] mx-auto`}><Settings {...settingsProps} /></div>}
     {tab === 'coach'    && <div className={`${p} max-w-[1600px] mx-auto`}><CoachApp /></div>}
     </Suspense>

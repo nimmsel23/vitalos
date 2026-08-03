@@ -11,7 +11,6 @@ export const NAV_ITEMS = [
   { id: 'relax',    label: 'Relax',   Icon: MoonStar },
   { id: 'journal',  label: 'Journal', Icon: BookOpen },
   { id: 'habits',   label: 'Habits',  Icon: CheckSquare },
-  { id: 'learn',    label: 'Lernen',  Icon: Brain },
   { id: 'settings', label: 'Setup',   Icon: Settings2 },
 ]
 

@@ -1,5 +1,4 @@
-import { useState } from 'react'
-import { Dumbbell, BarChart3, Brain } from 'lucide-react'
+import { useMemo, useState } from 'react'
 import Session from '@view/session/index.jsx'
 import WeeklyReview from '@view/review/index.jsx'
 import Learn from '@view/learn/index.jsx'
@@ -7,20 +6,49 @@ import Coach from '@fitness/src/views/Coach/index.jsx'
 import Inbox from '@fitness/src/views/Inbox/index.js'
 import Settings from '@fitness/src/views/Settings/index.jsx'
 import ExerciseInsightModal from '@fitness/components/ExerciseInsightModal.jsx'
+import { NAV_ITEMS as FITNESS_NAV_ITEMS } from '@constants/NavigationItems.js'
 import { getAnatomy } from '@db'
 import FitnessAppGate from './FitnessAppGate.jsx'
+
+function resolveFitnessRoute(id) {
+  if (!id || id === 'gate') return { tab: 'gate', sessionSubTab: null, reviewSubTab: null, learnSubTab: null }
+  if (id === 'session') return { tab: 'session', sessionSubTab: null, reviewSubTab: null, learnSubTab: null }
+  if (id === 'today') return { tab: 'session', sessionSubTab: null, reviewSubTab: null, learnSubTab: null }
+  if (id === 'plan' || id === 'history') return { tab: 'session', sessionSubTab: id, reviewSubTab: null, learnSubTab: null }
+  if (id === 'review') return { tab: 'review', sessionSubTab: null, reviewSubTab: null, learnSubTab: null }
+  if (id === 'report') return { tab: 'review', sessionSubTab: null, reviewSubTab: 'report', learnSubTab: null }
+  if (id === 'muscles' || id === 'readiness') return { tab: 'review', sessionSubTab: null, reviewSubTab: id, learnSubTab: null }
+  if (id === 'learn') return { tab: 'learn', sessionSubTab: null, reviewSubTab: null, learnSubTab: 'exercises' }
+  if (id === 'exercises' || id === 'anatomy' || id === 'quiz') return { tab: 'learn', sessionSubTab: null, reviewSubTab: null, learnSubTab: id }
+  return { tab: id, sessionSubTab: null, reviewSubTab: null, learnSubTab: null }
+}
 
 export default function FitnessApp({ recentDays, coverageThreshold, gender, muscleLanguage, taxonomy, subTab, onSubTab, sessionDate, sessionDraft, onOpenSession, onRuntimeDateChange }) {
   const [inspectorExercise, setInspectorExercise] = useState(null)
   const [reviewSubTab, setReviewSubTab] = useState(null)
+  const [learnSubTab, setLearnSubTab] = useState('exercises')
 
-  const tab = subTab || 'gate'
   const setTab = onSubTab || (() => {})
-  const gateItems = [
-    { id: 'session', label: 'Training', Icon: Dumbbell },
-    { id: 'review', label: 'Review', Icon: BarChart3 },
-    { id: 'learn', label: 'Learn', Icon: Brain },
-  ]
+  const route = resolveFitnessRoute(subTab)
+  const tab = route.tab
+  const activeReviewSubTab = route.reviewSubTab ?? reviewSubTab
+  const activeLearnSubTab = route.learnSubTab ?? learnSubTab
+  const gateItems = useMemo(
+    () => FITNESS_NAV_ITEMS
+      .filter(({ id }) => id !== 'settings')
+      .flatMap(({ id, label, Icon, sub = [] }) => [
+        { id, label, Icon },
+        ...sub.map((item) => ({ ...item })),
+      ]),
+    [],
+  )
+
+  function handleGateSelect(id) {
+    const next = resolveFitnessRoute(id)
+    if (next.reviewSubTab !== null) setReviewSubTab(next.reviewSubTab)
+    if (next.learnSubTab !== null) setLearnSubTab(next.learnSubTab)
+    setTab(id)
+  }
 
   async function inspectExercise(exercise) {
     if (!exercise) return
@@ -37,7 +65,7 @@ export default function FitnessApp({ recentDays, coverageThreshold, gender, musc
     <div className="flex flex-col h-full">
       <div className="relative flex-1 overflow-hidden">
         <div className={`transition-all duration-700 ease-[cubic-bezier(0.32,0.72,0,1)] max-w-[1600px] mx-auto min-h-[100dvh] flex flex-col ${tab !== 'gate' ? 'scale-[0.98] opacity-30 blur-[2px] pointer-events-none' : 'scale-100 opacity-100'}`}>
-          <FitnessAppGate navigate={setTab} items={gateItems} title="Fitness" />
+          <FitnessAppGate navigate={handleGateSelect} items={gateItems} title="Fitness" />
         </div>
 
         <div
@@ -59,9 +87,9 @@ export default function FitnessApp({ recentDays, coverageThreshold, gender, musc
             )}
 
             <div className={`animate-in fade-in duration-500 ${tab !== 'gate' ? 'p-4 pb-20 sm:p-8 lg:p-12' : ''}`}>
-              {tab === 'session' && <Session key={sessionDate || 'today'} initialDate={sessionDate} initialDraft={sessionDraft} onInspectExercise={inspectExercise} recentDays={recentDays} coverageThreshold={coverageThreshold} onDateChange={onRuntimeDateChange} />}
-              {tab === 'review'  && <WeeklyReview onOpenSession={onOpenSession} onInspectExercise={inspectExercise} muscleLanguage={muscleLanguage} taxonomy={taxonomy} gender={gender} recentDays={recentDays} subTab={reviewSubTab} onSubNav={setReviewSubTab} />}
-              {tab === 'learn'   && <Learn onInspectExercise={inspectExercise} muscleLanguage={muscleLanguage} taxonomy={taxonomy} />}
+              {tab === 'session' && <Session key={sessionDate || 'today'} initialDate={sessionDate} initialDraft={sessionDraft} onInspectExercise={inspectExercise} recentDays={recentDays} coverageThreshold={coverageThreshold} subTab={route.sessionSubTab} onDateChange={onRuntimeDateChange} />}
+              {tab === 'review'  && <WeeklyReview onOpenSession={onOpenSession} onInspectExercise={inspectExercise} muscleLanguage={muscleLanguage} taxonomy={taxonomy} gender={gender} recentDays={recentDays} subTab={activeReviewSubTab} onSubNav={setReviewSubTab} />}
+              {tab === 'learn'   && <Learn subTab={activeLearnSubTab} onInspectExercise={inspectExercise} muscleLanguage={muscleLanguage} taxonomy={taxonomy} />}
               {tab === 'inbox'   && <Inbox />}
               {tab === 'coach'   && <Coach onInspectExercise={inspectExercise} />}
               {tab === 'settings' && <Settings />}
