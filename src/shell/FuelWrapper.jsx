@@ -4,12 +4,12 @@ import { useApp } from '@fuel/store.js'
 const FuelApp = lazy(() => import('fuel/FuelApp'))
 const SHELL_TAB_REDIRECTS = {
   dashboard: { type: 'fuel', tab: 'food' },
-  journal: { type: 'shell', tab: 'journal' },
+  journal: { type: 'shell', tab: 'relax', subTab: 'journal' },
   habits: { type: 'shell', tab: 'habits' },
   settings: { type: 'shell', tab: 'settings' },
 }
 
-export default function FuelWrapper({ user, subTab, onSubTab, onNavigateShell }) {
+export default function FuelWrapper({ user, subTab, onSubTab, onNavigateShell, embedded = false }) {
   const setActiveTab = useApp(s => s.setActiveTab)
   const activeTab    = useApp(s => s.activeTab)
 
@@ -17,7 +17,7 @@ export default function FuelWrapper({ user, subTab, onSubTab, onNavigateShell })
     const redirect = SHELL_TAB_REDIRECTS[activeTab]
     if (!redirect) return
     if (redirect.type === 'fuel') setActiveTab(redirect.tab)
-    if (redirect.type === 'shell') onNavigateShell?.(redirect.tab)
+    if (redirect.type === 'shell') onNavigateShell?.(redirect.tab, redirect.subTab || null)
   }, [activeTab, onNavigateShell, setActiveTab])
 
   // Sidebar → Fuel: subTab-Änderung in Store schreiben
@@ -29,7 +29,7 @@ export default function FuelWrapper({ user, subTab, onSubTab, onNavigateShell })
       return
     }
     if (redirect?.type === 'shell') {
-      onNavigateShell?.(redirect.tab)
+      onNavigateShell?.(redirect.tab, redirect.subTab || null)
       return
     }
     if (subTab !== activeTab) setActiveTab(subTab)
@@ -52,7 +52,7 @@ export default function FuelWrapper({ user, subTab, onSubTab, onNavigateShell })
         Fuel lädt…
       </div>
     }>
-      <FuelApp />
+      <FuelApp embedded={embedded} />
     </Suspense>
   )
 }

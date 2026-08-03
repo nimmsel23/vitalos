@@ -55,7 +55,7 @@ function HomeFitnessGate({ onSelect }) {
 
 function readHashState() {
   const raw = window.location.hash.replace(/^#\/?/, '')
-  const [mainTab = 'hub', subTab = null] = raw.split('/')
+  const [mainTab = 'hub', subTab = null, date = null] = raw.split('/')
   if (mainTab === 'dashboard') return { tab: 'home', subTab: null }
   if (mainTab === 'learn') return { tab: 'fitness', subTab: 'learn' }
   if (mainTab === 'journal') return { tab: 'relax', subTab: 'journal' }
@@ -65,6 +65,7 @@ function readHashState() {
   return {
     tab: VALID_TABS.has(mainTab) ? mainTab : 'hub',
     subTab: subTab || null,
+    date: date || null,
   }
 }
 
@@ -80,7 +81,7 @@ function Views({ tab, fitnessProps, fuelTab, setFuelTab, relaxTab, setRelaxTab, 
       </div>
     )}
     {tab === 'fitness'  && <FitnessApp  {...fitnessProps} />}
-    {tab === 'fuel'     && <FuelWrapper user={user} subTab={fuelTab} onSubTab={setFuelTab} onNavigateShell={navigate} />}
+    {tab === 'fuel'     && <FuelWrapper user={user} subTab={fuelTab} onSubTab={setFuelTab} onNavigateShell={navigate} embedded />}
     {tab === 'habits'   && <HabitsApp runtimeDate={runtimeDate} onRuntimeDateChange={onRuntimeDateChange} />}
     {tab === 'relax'    && <RelaxApp subTab={relaxTab} onSubTab={setRelaxTab} onOpenSession={openSession} runtimeDate={runtimeDate} onRuntimeDateChange={onRuntimeDateChange} />}
     {tab === 'settings' && <div className={`${p} max-w-[1600px] mx-auto`}><Settings {...settingsProps} /></div>}
@@ -202,12 +203,17 @@ export default function App() {
   }, [theme, themeMode, circLight, circDark])
 
   useEffect(() => {
+    const { tab: hashTab, date } = readHashState()
+    if (hashTab === 'fuel' && date && date !== runtimeDate) setRuntimeDate(date)
+  }, [])
+
+  useEffect(() => {
     const nextHash = tab === 'fitness'
       ? (fitnessTab ? `#${tab}/${fitnessTab}` : `#${tab}`)
       : tab === 'home'
         ? (homeGate ? `#${tab}/${homeGate}` : `#${tab}`)
       : tab === 'fuel'
-        ? `#${tab}/${fuelTab || 'food'}`
+        ? `#${tab}/${fuelTab || 'food'}/${runtimeDate}`
         : tab === 'relax'
           ? `#${tab}/${relaxTab || 'dash'}`
         : `#${tab}`
@@ -216,11 +222,12 @@ export default function App() {
 
   useEffect(() => {
     function syncFromLocation() {
-      const { tab: nextTab, subTab } = readHashState()
+      const { tab: nextTab, subTab, date } = readHashState()
       setTab(nextTab)
       if (nextTab === 'home') setHomeGate(subTab || null)
       if (nextTab === 'fitness') setFitnessTab(subTab || null)
       if (nextTab === 'fuel' && subTab) setFuelTab(subTab)
+      if (nextTab === 'fuel' && date) setRuntimeDate(date)
       if (nextTab === 'relax') setRelaxTab(subTab || 'dash')
     }
 
@@ -345,7 +352,7 @@ export default function App() {
         </Sidebar>
         )}
 
-        <div className={`flex-1 min-w-0 transition-all duration-500 ease-in-out ${showDesktopChrome ? (sidebarPinned ? 'lg:ml-[280px]' : 'lg:ml-24') : ''}`}>
+        <div className={`flex-1 min-w-0 transition-all duration-500 ease-in-out ${showDesktopChrome ? (sidebarPinned ? 'lg:ml-[304px]' : 'lg:ml-[108px]') : ''}`}>
         {mobileLayout === 'fuel' ? (
           <>
           {/* Desktop: klassisches Layout */}
