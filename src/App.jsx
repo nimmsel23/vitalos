@@ -36,7 +36,7 @@ function Views({ tab, fitnessProps, fuelTab, setFuelTab, user, settingsProps, op
     {tab === 'fitness'  && <FitnessApp  {...fitnessProps} />}
     {tab === 'fuel'     && <FuelWrapper user={user} subTab={fuelTab} onSubTab={setFuelTab} />}
     {tab === 'journal'  && <JournalApp onOpenSession={openSession} runtimeDate={runtimeDate} onRuntimeDateChange={onRuntimeDateChange} />}
-    {tab === 'habits'   && <HabitsApp />}
+    {tab === 'habits'   && <HabitsApp runtimeDate={runtimeDate} onRuntimeDateChange={onRuntimeDateChange} />}
     {tab === 'learn'    && <LearnApp muscleLanguage={muscleLanguage} taxonomy={taxonomy} />}
     {tab === 'relax'    && <RelaxApp />}
     {tab === 'settings' && <div className={`${p} max-w-[1600px] mx-auto`}><Settings {...settingsProps} /></div>}
@@ -50,7 +50,7 @@ export default function App() {
     const hash = window.location.hash.replace(/^#\/?/, '')
     return VALID_TABS.has(hash) ? hash : 'hub'
   })
-  const [fitnessTab,    setFitnessTab]    = useState('dash')
+  const [fitnessTab,    setFitnessTab]    = useState('session')
   const [fuelTab,       setFuelTab]       = useState('dashboard')
   const [sessionDate,   setSessionDate]   = useState(null)
   const [sessionDraft,  setSessionDraft]  = useState(null)
@@ -154,7 +154,7 @@ export default function App() {
   function navigate(id) {
     if (!VALID_TABS.has(id)) return
     if (id === 'fitness') {
-      setFitnessTab(fitnessTab === 'gate' ? 'gate' : fitnessTab)
+      setFitnessTab('session')
     }
     setTab(id)
   }
@@ -221,6 +221,7 @@ export default function App() {
         subTab: fitnessTab, onSubTab: setFitnessTab,
         sessionDate: sessionDate || runtimeDate, sessionDraft, onOpenSession: openSession,
         onRuntimeDateChange: setRuntimeDate,
+        onNavigateShell: navigate,
       }
       const shellHeader = <ShellHeader tab={tab} runtimeDate={runtimeDate} setRuntimeDate={setRuntimeDate} />
       const mobileShellHeader = <ShellHeader tab={tab} runtimeDate={runtimeDate} setRuntimeDate={setRuntimeDate} compact />

@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Activity, Dumbbell, BarChart3, ClipboardList } from 'lucide-react'
+import { Activity, Dumbbell, BarChart3, ClipboardList, Brain } from 'lucide-react'
 import Dashboard from '../fitness/Dashboard.jsx'
 import PlanView from '@view/plan/index.jsx'
 import Session from '@view/session/index.jsx'
@@ -15,12 +15,18 @@ const SUB_NAV = [
   { id: 'plan',    label: 'Plan',     Icon: ClipboardList },
 ]
 
-export default function FitnessApp({ user, recentDays, coverageThreshold, gender, muscleLanguage, taxonomy, dashboardHighlighter, subTab, onSubTab, sessionDate, sessionDraft, onOpenSession, onRuntimeDateChange }) {
+export default function FitnessApp({ user, recentDays, coverageThreshold, gender, muscleLanguage, taxonomy, dashboardHighlighter, subTab, onSubTab, sessionDate, sessionDraft, onOpenSession, onRuntimeDateChange, onNavigateShell }) {
   const [inspectorExercise, setInspectorExercise] = useState(null)
   const [reviewSubTab, setReviewSubTab] = useState(null)
 
   const tab = subTab || 'gate'
   const setTab = onSubTab || (() => {})
+  const gateItems = [
+    { id: 'session', label: 'Training', Icon: Dumbbell },
+    { id: 'review', label: 'Review', Icon: BarChart3 },
+    { id: 'plan', label: 'Plan', Icon: ClipboardList },
+    { id: 'learn', label: 'Learn', Icon: Brain, onSelect: () => onNavigateShell?.('learn') },
+  ]
 
   async function inspectExercise(exercise) {
     if (!exercise) return
@@ -37,7 +43,7 @@ export default function FitnessApp({ user, recentDays, coverageThreshold, gender
     <div className="flex flex-col h-full">
       <div className="relative flex-1 overflow-hidden">
         <div className={`transition-all duration-700 ease-[cubic-bezier(0.32,0.72,0,1)] max-w-[1600px] mx-auto min-h-[100dvh] flex flex-col ${tab !== 'gate' ? 'scale-[0.98] opacity-30 blur-[2px] pointer-events-none' : 'scale-100 opacity-100'}`}>
-          <FitnessAppGate navigate={setTab} items={SUB_NAV} title="Fitness" />
+          <FitnessAppGate navigate={setTab} items={gateItems} title="Fitness" />
         </div>
 
         <div

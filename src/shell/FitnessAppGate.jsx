@@ -11,10 +11,10 @@ export default function AppGate({ navigate, items = NAV_ITEMS, title = null }) {
       
       {/* Navigation Grid */}
       <nav className="grid grid-cols-2 md:grid-cols-3 gap-4 w-full max-w-2xl animate-in fade-in zoom-in-95 duration-700">
-        {items.map(({ id, label, Icon }) => (
+        {items.map(({ id, label, Icon, onSelect }) => (
           <button
             key={id}
-            onClick={() => navigate(id)}
+            onClick={() => (onSelect ? onSelect() : navigate(id))}
             className="relative group p-6 rounded-[32px] bg-fit-card border border-fit-line/50 active:scale-95 transition-all overflow-hidden flex flex-col items-center gap-4 shadow-sm hover:shadow-2xl hover:shadow-fit-accent/10 hover:border-fit-accent/40"
           >
             {/* Glow */}
