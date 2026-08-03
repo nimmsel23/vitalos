@@ -1,4 +1,5 @@
 import { create } from 'zustand'
+import { localISO } from './runtimeDate.js'
 
 /**
  * Shell-Settings-Store (Zustand) — SSOT für alle vitalos-weiten User-Settings.
@@ -37,6 +38,7 @@ const FIELDS = {
   coverageThreshold:    ['vitalos-coverageThreshold',    () => lsFloat('vitalos-coverageThreshold', 1.0)],
   showAdvanced:         ['vitalos-showAdvanced',         () => ls('vitalos-showAdvanced', 'false') === 'true'],
   dashboardHighlighter: ['vitalos-dashboardHighlighter', () => ls('vitalos-dashboardHighlighter', 'body')],
+  runtimeDate:          ['vitalos-runtimeDate',          () => ls('vitalos-runtimeDate', localISO())],
   sidebarPinned:        ['vitalos-sidebarPinned',        () => ls('vitalos-sidebarPinned', 'true') !== 'false'],
   muscleLanguage:       ['vitalos-muscleLanguage',       () => ls('vitalos-muscleLanguage', 'de')],
   swipeEnabled:         ['vitalos-swipeEnabled',         () => ls('vitalos-swipeEnabled', 'false') === 'true'],

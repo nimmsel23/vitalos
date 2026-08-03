@@ -8,7 +8,8 @@ import MobileShell from './shell/layout/MobileShell.jsx'
 import UserProfile from './components/common/UserProfile.jsx'
 import ErrorBoundary from './components/common/ErrorBoundary.jsx'
 import Hub from './shell/Hub.jsx'
-import { useSettings as useFuelStore } from '@fuel/store.js'
+import { useApp as useFuelAppStore, useSettings as useFuelStore } from '@fuel/store.js'
+import ShellHeader from './shell/ShellHeader.jsx'
 import { useShellSettings } from './shell/store.js'
 
 const FitnessApp  = lazy(() => import('./shell/FitnessApp.jsx'))
@@ -28,13 +29,13 @@ const Loader = ({ label }) => (
   </div>
 )
 
-function Views({ tab, fitnessProps, fuelTab, setFuelTab, user, settingsProps, openSession, compact, muscleLanguage, taxonomy }) {
+function Views({ tab, fitnessProps, fuelTab, setFuelTab, user, settingsProps, openSession, compact, muscleLanguage, taxonomy, runtimeDate, onRuntimeDateChange }) {
   const p = compact ? 'p-4' : 'p-4 sm:p-8 lg:p-12'
   return (
     <Suspense fallback={<Loader label={tab} />}>
     {tab === 'fitness'  && <FitnessApp  {...fitnessProps} />}
     {tab === 'fuel'     && <FuelWrapper user={user} subTab={fuelTab} onSubTab={setFuelTab} />}
-    {tab === 'journal'  && <JournalApp onOpenSession={openSession} />}
+    {tab === 'journal'  && <JournalApp onOpenSession={openSession} runtimeDate={runtimeDate} onRuntimeDateChange={onRuntimeDateChange} />}
     {tab === 'habits'   && <HabitsApp />}
     {tab === 'learn'    && <LearnApp muscleLanguage={muscleLanguage} taxonomy={taxonomy} />}
     {tab === 'relax'    && <RelaxApp />}
@@ -82,9 +83,11 @@ export default function App() {
   const {
     theme, themeMode, circDark, circLight,
     gender, anatomyModel, age, heightCm, weightKg, layoutScale, recentDays, coverageThreshold,
-    dashboardHighlighter, sidebarPinned, setSidebarPinned,
+    dashboardHighlighter, runtimeDate, setRuntimeDate, sidebarPinned, setSidebarPinned,
     muscleLanguage, mobileLayout,
   } = useShellSettings()
+  const fuelActiveDate = useFuelAppStore(s => s.activeDate)
+  const setFuelActiveDate = useFuelAppStore(s => s.setActiveDate)
   const [taxonomy, setTaxonomy] = useState(null)
 
   useEffect(() => {
@@ -97,6 +100,12 @@ export default function App() {
   }, [])
 
   useEffect(() => { document.documentElement.style.fontSize = `${layoutScale}%` }, [layoutScale])
+  useEffect(() => {
+    if (runtimeDate && fuelActiveDate !== runtimeDate) setFuelActiveDate(runtimeDate)
+  }, [runtimeDate, fuelActiveDate, setFuelActiveDate])
+  useEffect(() => {
+    if (tab === 'fuel' && fuelActiveDate && fuelActiveDate !== runtimeDate) setRuntimeDate(fuelActiveDate)
+  }, [tab, fuelActiveDate, runtimeDate, setRuntimeDate])
 
   // User-Settings global: vitalos-Profil (Alter/Geschlecht) in den Fuel-Store spiegeln,
   // damit z. B. DACH-Referenzwerte im Mikros-Tab dieselben Werte nutzen — unabhängig
@@ -210,8 +219,10 @@ export default function App() {
         user, recentDays, coverageThreshold,
         gender: anatomyModel, muscleLanguage, taxonomy, dashboardHighlighter,
         subTab: fitnessTab, onSubTab: setFitnessTab,
-        sessionDate, sessionDraft, onOpenSession: openSession,
+        sessionDate: sessionDate || runtimeDate, sessionDraft, onOpenSession: openSession,
       }
+      const shellHeader = <ShellHeader tab={tab} runtimeDate={runtimeDate} setRuntimeDate={setRuntimeDate} />
+      const mobileShellHeader = <ShellHeader tab={tab} runtimeDate={runtimeDate} setRuntimeDate={setRuntimeDate} compact />
 
       return (
         <ErrorBoundary>
@@ -236,23 +247,32 @@ export default function App() {
         {mobileLayout === 'fuel' ? (
           <>
           {/* Desktop: klassisches Layout */}
-          <main className="hidden lg:block relative min-h-[100dvh]">
+          <div className="hidden lg:block">
+          {shellHeader}
+          <main className="relative min-h-[100dvh]">
           <Views tab={tab} fitnessProps={fitnessProps} fuelTab={fuelTab} setFuelTab={setFuelTab} muscleLanguage={muscleLanguage} taxonomy={taxonomy}
-          user={user} settingsProps={settingsProps} openSession={openSession} />
+          user={user} settingsProps={settingsProps} openSession={openSession} runtimeDate={runtimeDate} onRuntimeDateChange={setRuntimeDate} />
           </main>
+          </div>
           {/* Mobile: Fuel-Layout */}
-          <MobileShell tab={tab} navigate={navigate} mobileLayout="fuel">
+          <MobileShell tab={tab} navigate={navigate} mobileLayout="fuel" header={mobileShellHeader}>
           <Views tab={tab} fitnessProps={fitnessProps} fuelTab={fuelTab} setFuelTab={setFuelTab} muscleLanguage={muscleLanguage} taxonomy={taxonomy}
-          user={user} settingsProps={settingsProps} openSession={openSession} compact />
+          user={user} settingsProps={settingsProps} openSession={openSession} compact runtimeDate={runtimeDate} onRuntimeDateChange={setRuntimeDate} />
           </MobileShell>
           </>
         ) : (
           <>
-          <main className="relative pb-28 sm:pb-10 lg:pb-0 min-h-[100dvh]">
+          <div className="hidden lg:block">
+          {shellHeader}
+          <main className="relative min-h-[100dvh]">
           <Views tab={tab} fitnessProps={fitnessProps} fuelTab={fuelTab} setFuelTab={setFuelTab} muscleLanguage={muscleLanguage} taxonomy={taxonomy}
-          user={user} settingsProps={settingsProps} openSession={openSession} />
+          user={user} settingsProps={settingsProps} openSession={openSession} runtimeDate={runtimeDate} onRuntimeDateChange={setRuntimeDate} />
           </main>
-          <MobileShell tab={tab} navigate={navigate} mobileLayout="classic" />
+          </div>
+          <MobileShell tab={tab} navigate={navigate} mobileLayout="classic" header={mobileShellHeader}>
+          <Views tab={tab} fitnessProps={fitnessProps} fuelTab={fuelTab} setFuelTab={setFuelTab} muscleLanguage={muscleLanguage} taxonomy={taxonomy}
+          user={user} settingsProps={settingsProps} openSession={openSession} compact runtimeDate={runtimeDate} onRuntimeDateChange={setRuntimeDate} />
+          </MobileShell>
           </>
         )}
         </div>

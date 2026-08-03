@@ -8,17 +8,24 @@ import FuelMobileLayout from './FuelMobileLayout.jsx'
  * Nur auf Mobile aktiv (lg:hidden via FuelMobileLayout / MobileNav).
  * Desktop-Layout bleibt unverändert in App.jsx.
  */
-export default function MobileShell({ tab, navigate, mobileLayout, swipeHint, children }) {
+export default function MobileShell({ tab, navigate, mobileLayout, swipeHint, header, children }) {
   if (mobileLayout === 'fuel') {
     return (
       <div className="lg:hidden mobile-shell">
-        <FuelMobileLayout tab={tab} navigate={navigate}>
+        <FuelMobileLayout tab={tab} navigate={navigate} header={header}>
           {children}
         </FuelMobileLayout>
       </div>
     )
   }
 
-  // Classic: Content kommt von App.jsx main, wir rendern nur die Bottom-Nav
-  return <div className="mobile-shell"><MobileNav tab={tab} navigate={navigate} swipeHint={swipeHint} /></div>
+  return (
+    <div className="mobile-shell lg:hidden flex min-h-[100dvh] flex-col bg-fit-bg text-fit-ink">
+      {header}
+      <div className="flex-1 overflow-y-auto">
+        {children}
+      </div>
+      <MobileNav tab={tab} navigate={navigate} swipeHint={swipeHint} />
+    </div>
+  )
 }
