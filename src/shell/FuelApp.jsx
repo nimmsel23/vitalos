@@ -3,7 +3,7 @@
  * Rendert Fuels natives UI (Header + Tabs + Content) ohne SW/createRoot.
  */
 
-import { Suspense } from 'react'
+import { Suspense, useEffect } from 'react'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Sparkles } from 'lucide-react'
@@ -22,6 +22,10 @@ const qc = new QueryClient({
 function FuelInner() {
   const { activeTab, setActiveTab, activeDate, setActiveDate } = useApp()
   const { nutrition, sup, suppCatalog, suppLog, journal, macroTrend } = useAppData(activeDate)
+
+  useEffect(() => {
+    if (activeTab === 'dashboard') setActiveTab('food')
+  }, [activeTab, setActiveTab])
 
   const meals = nutrition?.meals || []
   const totalKcal = sumMetric(meals, 'kcal')
@@ -59,7 +63,7 @@ function FuelInner() {
           <NutritionHeatmap selectedDate={activeDate} onSelectDate={setActiveDate} />
 
           <nav className="flex flex-wrap gap-2">
-            {TAB_CONFIG.filter((t) => !t.embeddedHidden).map(({ key, label, Icon }) => (
+            {TAB_CONFIG.filter((t) => !t.embeddedHidden && t.key !== 'dashboard').map(({ key, label, Icon }) => (
               <motion.button
                 whileTap={{ scale: 0.96 }}
                 key={key}

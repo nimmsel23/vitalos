@@ -7,6 +7,10 @@ export default function FuelWrapper({ user, subTab, onSubTab }) {
   const setActiveTab = useApp(s => s.setActiveTab)
   const activeTab    = useApp(s => s.activeTab)
 
+  useEffect(() => {
+    if (activeTab === 'dashboard') setActiveTab('food')
+  }, [activeTab, setActiveTab])
+
   // Sidebar → Fuel: subTab-Änderung in Store schreiben
   useEffect(() => {
     if (subTab && subTab !== activeTab) setActiveTab(subTab)

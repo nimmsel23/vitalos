@@ -29,6 +29,15 @@ const Loader = ({ label }) => (
   </div>
 )
 
+function readHashState() {
+  const raw = window.location.hash.replace(/^#\/?/, '')
+  const [mainTab = 'hub', subTab = null] = raw.split('/')
+  return {
+    tab: VALID_TABS.has(mainTab) ? mainTab : 'hub',
+    subTab: subTab || null,
+  }
+}
+
 function Views({ tab, fitnessProps, fuelTab, setFuelTab, user, settingsProps, openSession, compact, muscleLanguage, taxonomy, runtimeDate, onRuntimeDateChange }) {
   const p = compact ? 'p-4' : 'p-4 sm:p-8 lg:p-12'
   return (
@@ -46,12 +55,15 @@ function Views({ tab, fitnessProps, fuelTab, setFuelTab, user, settingsProps, op
 }
 
 export default function App() {
-  const [tab, setTab] = useState(() => {
-    const hash = window.location.hash.replace(/^#\/?/, '')
-    return VALID_TABS.has(hash) ? hash : 'hub'
+  const [tab, setTab] = useState(() => readHashState().tab)
+  const [fitnessTab, setFitnessTab] = useState(() => {
+    const { tab: hashTab, subTab } = readHashState()
+    return hashTab === 'fitness' && subTab ? subTab : 'session'
   })
-  const [fitnessTab,    setFitnessTab]    = useState('session')
-  const [fuelTab,       setFuelTab]       = useState('dashboard')
+  const [fuelTab, setFuelTab] = useState(() => {
+    const { tab: hashTab, subTab } = readHashState()
+    return hashTab === 'fuel' && subTab ? subTab : 'food'
+  })
   const [sessionDate,   setSessionDate]   = useState(null)
   const [sessionDraft,  setSessionDraft]  = useState(null)
 
@@ -146,15 +158,38 @@ export default function App() {
     }
   }, [theme, themeMode, circLight, circDark])
 
-  // Sync tab ↔ URL hash
   useEffect(() => {
-    if (window.location.hash.slice(1) !== tab) history.pushState(null, '', `#${tab}`)
-  }, [tab])
+    const nextHash = tab === 'fitness'
+      ? `#${tab}/${fitnessTab || 'session'}`
+      : tab === 'fuel'
+        ? `#${tab}/${fuelTab || 'dashboard'}`
+        : `#${tab}`
+    if (window.location.hash !== nextHash) history.pushState(null, '', nextHash)
+  }, [tab, fitnessTab, fuelTab])
+
+  useEffect(() => {
+    function syncFromLocation() {
+      const { tab: nextTab, subTab } = readHashState()
+      setTab(nextTab)
+      if (nextTab === 'fitness' && subTab) setFitnessTab(subTab)
+      if (nextTab === 'fuel' && subTab) setFuelTab(subTab)
+    }
+
+    window.addEventListener('popstate', syncFromLocation)
+    window.addEventListener('hashchange', syncFromLocation)
+    return () => {
+      window.removeEventListener('popstate', syncFromLocation)
+      window.removeEventListener('hashchange', syncFromLocation)
+    }
+  }, [])
 
   function navigate(id) {
     if (!VALID_TABS.has(id)) return
     if (id === 'fitness') {
       setFitnessTab('session')
+    }
+    if (id === 'fuel') {
+      setFuelTab('food')
     }
     setTab(id)
   }
@@ -231,7 +266,7 @@ export default function App() {
         {/* HIER ist die app-shell Klasse wieder an Ort und Stelle */}
         <div className="app-shell flex min-h-screen overflow-x-hidden w-full bg-fit-bg text-fit-ink font-sans transition-colors duration-500">
         <Sidebar tab={tab} navigate={navigate} pinned={sidebarPinned} setPinned={setSidebarPinned} user={user}
-        subNav={tab === 'fitness' ? null : (SUB_NAV[tab] || null)}
+        subNav={SUB_NAV[tab] || null}
         subTab={tab === 'fitness' ? fitnessTab : tab === 'fuel' ? fuelTab : null}
         onSubTab={tab === 'fitness' ? setFitnessTab : tab === 'fuel' ? setFuelTab : null}>
         <UserProfile user={user} subtitle={isLocalMode() ? `${user?.email || 'localhost'} · localhost` : (user?.email || '')} onOpenSettings={() => navigate('settings')} />
