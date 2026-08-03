@@ -22,7 +22,7 @@ export default function Sidebar({ tab, navigate, pinned, setPinned, children, us
           )}
           <button
             onClick={() => setPinned(!pinned)}
-            className={`absolute top-1 z-10 flex h-8 w-8 items-center justify-center rounded-full border border-fit-line bg-fit-card text-fit-dim shadow-lg transition-all hover:scale-110 hover:text-fit-accent active:scale-90 ${pinned ? '-right-12' : '-right-4 translate-x-full'}`}
+            className={`absolute top-1 right-0 z-10 flex h-8 w-8 items-center justify-center rounded-full border border-fit-line bg-fit-card text-fit-dim shadow-lg transition-all hover:scale-110 hover:text-fit-accent active:scale-90 ${pinned ? '' : ''}`}
           >
             {pinned ? <ChevronLeft size={14} /> : <ChevronRight size={14} />}
           </button>

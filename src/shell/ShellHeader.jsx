@@ -1,6 +1,9 @@
 import { useEffect, useMemo, useState } from 'react'
 import { CalendarRange, ChevronLeft, ChevronRight, Dumbbell, Flame, BookOpen, CheckSquare } from 'lucide-react'
 import { getRecentSessions, getMealsHistory, getJournalHistory, getAllHabitJournalsHistory } from '@db'
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
+import { useAppData } from '@fuel/hooks/useAppData.js'
+import { formatMetric, sumMetric } from '@fuel-shared/utils/utils.js'
 import { NAV_ITEMS } from './NavigationItems.js'
 import { formatRuntimeDate, localISO, shiftISODate, weekDates } from './runtimeDate.js'
 
@@ -11,6 +14,10 @@ const DOMAIN_META = [
   { key: 'habits', label: 'Habits', color: '#84cc16', Icon: CheckSquare },
 ]
 
+const fuelHeaderQueryClient = new QueryClient({
+  defaultOptions: { queries: { staleTime: 60_000 } },
+})
+
 function buildDayMap(sessions, meals, journal, habits) {
   return {
     fitness: new Set((sessions || []).map((entry) => entry?.date).filter(Boolean)),
@@ -18,6 +25,35 @@ function buildDayMap(sessions, meals, journal, habits) {
     journal: new Set((journal || []).map((entry) => entry?.date).filter(Boolean)),
     habits: new Set((habits || []).map((entry) => entry?.date).filter(Boolean)),
   }
+}
+
+function FuelHeaderSummaryInner({ runtimeDate, compact = false }) {
+  const { nutrition } = useAppData(runtimeDate)
+  const meals = nutrition?.meals || []
+  const totalKcal = sumMetric(meals, 'kcal')
+  const totalProtein = sumMetric(meals, 'protein')
+  const totalCarbs = sumMetric(meals, 'carbs')
+  const totalFat = sumMetric(meals, 'fat')
+
+  return (
+    <div className={`rounded-2xl border border-white/10 bg-slate-950/45 ${compact ? 'px-3 py-3' : 'px-4 py-4'} text-right`}>
+      <div className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">Fuel Summe</div>
+      <div className={`mt-2 font-black text-orange-300 ${compact ? 'text-xl' : 'text-3xl'}`}>{formatMetric(totalKcal)} kcal</div>
+      <div className={`mt-1 flex justify-end gap-3 ${compact ? 'text-xs' : 'text-sm'} text-slate-400`}>
+        <span><span className="text-emerald-300">{formatMetric(totalProtein)}</span> P</span>
+        <span><span className="text-sky-300">{formatMetric(totalCarbs)}</span> K</span>
+        <span><span className="text-violet-300">{formatMetric(totalFat)}</span> F</span>
+      </div>
+    </div>
+  )
+}
+
+function FuelHeaderSummary(props) {
+  return (
+    <QueryClientProvider client={fuelHeaderQueryClient}>
+      <FuelHeaderSummaryInner {...props} />
+    </QueryClientProvider>
+  )
 }
 
 export default function ShellHeader({ tab, runtimeDate, setRuntimeDate, compact = false }) {
@@ -68,6 +104,7 @@ export default function ShellHeader({ tab, runtimeDate, setRuntimeDate, compact 
         </div>
 
         <div className={`${compact ? 'space-y-3' : 'space-y-3 xl:min-w-[560px]'}`}>
+          {tab === 'fuel' ? <FuelHeaderSummary runtimeDate={runtimeDate} compact={compact} /> : null}
           <div className="flex items-center justify-between gap-2">
             <div className="text-[10px] font-black uppercase tracking-[0.24em] text-fit-dim">Shell Date</div>
             <div className="flex items-center gap-2">
