@@ -20,15 +20,17 @@ export const NAV_ITEMS = [
 // aber trotzdem als gültiger Tab gelten, sonst verwirft navigate() den Klick.
 export const VALID_TABS = new Set([...NAV_ITEMS.map(i => i.id), 'coach'])
 
+// Sidebar/Subnav ist bewusst NICHT identisch zum Fitness-Gate.
+// Das Gate ist die reduzierte Card-Einstiegsfläche; die Desktop-Sidebar bleibt
+// eine eigene Navigationsschicht und wird separat gepflegt.
+const FITNESS_SIDEBAR_NAV = [
+  { id: 'session', label: 'Training', Icon: Dumbbell },
+  { id: 'review',  label: 'Review',   Icon: BarChart3 },
+  { id: 'learn',   label: 'Learn',    Icon: Brain },
+]
+
 export const SUB_NAV = {
-  fitness: [
-    { id: 'session', label: 'Training', Icon: Dumbbell },
-    { id: 'review',  label: 'Review',   Icon: BarChart3 },
-    { id: 'learn',   label: 'Lernen',   Icon: Brain },
-    { id: 'inbox',   label: 'Inbox',    Icon: Bell },
-    { id: 'coach',   label: 'Coach',    Icon: Shield },
-    { id: 'settings', label: 'Setup',   Icon: Settings2 },
-  ],
+  fitness: FITNESS_SIDEBAR_NAV,
   fuel: [
     { id: 'food',        label: 'Food',      Icon: UtensilsCrossed },
     { id: 'log',         label: 'Log',       Icon: NotebookPen },

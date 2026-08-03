@@ -1,11 +1,12 @@
-import { useEffect, useState } from 'react'
-import { Settings2 } from 'lucide-react'
+import { useEffect, useMemo, useState } from 'react'
+import { ChevronLeft, ChevronRight, Settings2 } from 'lucide-react'
 import { getSession, getPlan, getRelaxStatsSummary } from '@db'
 import { localToday } from '@utils'
 import { VOS_APPS } from './VitalOSApps.js'
 import FuelHubStat from './FuelHubStat.jsx'
 
 const HUB_TILES = [...VOS_APPS, { id: 'settings', label: 'Setup', Icon: Settings2, color: '#a1a1aa' }]
+const PAGE_SIZE = 4
 
 function useFitnessStat() {
   const [stat, setStat] = useState(null)
@@ -48,6 +49,14 @@ function TileStat({ appId }) {
 }
 
 export default function Hub({ navigate }) {
+  const [page, setPage] = useState(0)
+  const totalPages = Math.max(1, Math.ceil(HUB_TILES.length / PAGE_SIZE))
+  const safePage = Math.min(page, totalPages - 1)
+  const visibleTiles = useMemo(
+    () => HUB_TILES.slice(safePage * PAGE_SIZE, safePage * PAGE_SIZE + PAGE_SIZE),
+    [safePage],
+  )
+
   return (
     <div className="min-h-screen flex flex-col items-center justify-center p-6 bg-gradient-to-br from-fit-bg to-fit-bg2 text-fit-ink">
       <div className="mb-12 text-center animate-in fade-in duration-700">
@@ -57,8 +66,8 @@ export default function Hub({ navigate }) {
         </p>
       </div>
 
-      <nav className="grid grid-cols-2 md:grid-cols-3 gap-4 w-full max-w-2xl animate-in fade-in zoom-in-95 duration-700 delay-100">
-        {HUB_TILES.map(({ id, label, Icon, color }) => (
+      <nav className="grid grid-cols-2 gap-4 w-full max-w-xl animate-in fade-in zoom-in-95 duration-700 delay-100">
+        {visibleTiles.map(({ id, label, Icon, color }) => (
           <button
             key={id}
             onClick={() => navigate(id)}
@@ -83,6 +92,35 @@ export default function Hub({ navigate }) {
           </button>
         ))}
       </nav>
+
+      {totalPages > 1 && (
+        <div className="mt-8 flex items-center gap-3">
+          <button
+            onClick={() => setPage((current) => Math.max(0, current - 1))}
+            disabled={safePage === 0}
+            className="flex h-10 w-10 items-center justify-center rounded-full border border-fit-line bg-fit-card text-fit-dim transition hover:text-fit-accent disabled:opacity-30"
+          >
+            <ChevronLeft size={16} />
+          </button>
+          <div className="flex items-center gap-2">
+            {Array.from({ length: totalPages }).map((_, index) => (
+              <button
+                key={index}
+                onClick={() => setPage(index)}
+                className={`h-2.5 rounded-full transition-all ${index === safePage ? 'w-8 bg-fit-accent' : 'w-2.5 bg-fit-line hover:bg-fit-dim'}`}
+                aria-label={`Seite ${index + 1}`}
+              />
+            ))}
+          </div>
+          <button
+            onClick={() => setPage((current) => Math.min(totalPages - 1, current + 1))}
+            disabled={safePage === totalPages - 1}
+            className="flex h-10 w-10 items-center justify-center rounded-full border border-fit-line bg-fit-card text-fit-dim transition hover:text-fit-accent disabled:opacity-30"
+          >
+            <ChevronRight size={16} />
+          </button>
+        </div>
+      )}
     </div>
   )
 }

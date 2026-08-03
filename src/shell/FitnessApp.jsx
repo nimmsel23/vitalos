@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Dumbbell, BarChart3, Brain, Bell, Shield, Settings2 } from 'lucide-react'
+import { Dumbbell, BarChart3, Brain } from 'lucide-react'
 import Session from '@view/session/index.jsx'
 import WeeklyReview from '@view/review/index.jsx'
 import Learn from '@view/learn/index.jsx'
@@ -20,9 +20,6 @@ export default function FitnessApp({ recentDays, coverageThreshold, gender, musc
     { id: 'session', label: 'Training', Icon: Dumbbell },
     { id: 'review', label: 'Review', Icon: BarChart3 },
     { id: 'learn', label: 'Learn', Icon: Brain },
-    { id: 'inbox', label: 'Inbox', Icon: Bell },
-    { id: 'coach', label: 'Coach', Icon: Shield },
-    { id: 'settings', label: 'Setup', Icon: Settings2 },
   ]
 
   async function inspectExercise(exercise) {

@@ -59,7 +59,7 @@ export default function Sidebar({ tab, navigate, pinned, setPinned, children, us
           )}
         </nav>
 
-        {/* Sub-Nav — fette primäre Nav wenn Sub-App aktiv */}
+        {/* Sub-Nav — reine App-Navigation ohne Shell/Gate-Ziele */}
         {inSubApp && (
           <nav className="flex-1 space-y-1.5">
             {subNav.map(({ id, label, Icon }) => (
@@ -69,14 +69,6 @@ export default function Sidebar({ tab, navigate, pinned, setPinned, children, us
                 {pinned && <span className="text-sm truncate animate-in fade-in slide-in-from-left-4 duration-500">{label}</span>}
               </button>
             ))}
-
-            {(isLocalMode() || user?.email?.includes('alpha') || user?.uid === '59ole36uNpNwml5H6VDYCXyCME92') && (
-              <button onClick={() => navigate('coach')} title={!pinned ? 'Coach' : ''}
-                className={`w-full flex items-center transition-all duration-300 mt-2 ${pinned ? 'gap-4 px-5 py-4 rounded-2xl' : 'justify-center p-4 rounded-2xl'} ${tab === 'coach' ? 'bg-red-500 text-white shadow-xl shadow-red-500/20 font-black scale-[1.02]' : 'text-fit-dim hover:bg-red-500/10 font-bold'}`}>
-                <Shield size={20} />
-                {pinned && <span className="text-sm truncate animate-in fade-in slide-in-from-left-4 duration-500">Coach</span>}
-              </button>
-            )}
           </nav>
         )}
 
