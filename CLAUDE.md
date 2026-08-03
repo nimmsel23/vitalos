@@ -120,13 +120,17 @@ git submodule update --remote        # alle auf neuesten Stand bringen
 git submodule update --remote fitness-app   # einzelnes updaten
 ```
 
-Änderungen in einem Submodule → dort committen, **unbedingt auf GitHub (origin) pushen**, dann erst in vitalos den neuen Commit-Pointer committen und pushen.
+Änderungen in einem Submodule → dort committen, auf `origin` pushen, dann erst in `~/vitalos` den neuen Pointer committen.
 
-### ⚠️ WICHTIGE SUBMODUL-PULL-REGEL (CI-Crashes verhindern)
-* **Problem:** Wenn ein Pointer im Meta-Repo auf einen lokalen Commit zeigt, der noch nicht auf GitHub gepusht wurde, bricht der Submodule-Checkout der CI-Pipeline mit `fatal: not our ref` ab.
-* **Regel 1 — Erst Submodule pushen, dann Meta-Repo committen:** Bevor ein Submodul-Pointer im Meta-Repo committet/gepusht wird, MUSS der Submodul-Commit auf GitHub existieren (z.B. durch `git push` im Submodul).
-* **Regel 2 — Keine Commits auf Detached HEADs hinterlassen:** Automatisierte Commits in Submodulen müssen auf einem echten, trackenden Branch liegen (`master` oder `dev`), sonst werden sie von einem normalen `git push` im Submodul nicht erfasst. Bei Detached HEAD explizit mit Zielbranch pushen (`git push origin HEAD:master`) — sonst zeigt der Pointer im Meta-Repo auf einen Commit, der nirgendwo auf einem Branch hängt und bei nachfolgenden Force-Pushes/Garbage-Collection verloren gehen kann.
-* **Regel 3 — Push-Sicherheit im Meta-Repo erzwingen:** Nutze `git push --recurse-submodules=check`, um versehentliche Verstöße vor dem Push abzufangen (bricht den Push ab, falls Submodule noch ungepushte Commits haben). Optional `--recurse-submodules=on-demand`, um ungepushte Submodule automatisch vorab zu pushen.
+Die festen `dev`-Arbeitskopien leben bewusst außerhalb des Meta-Repos unter
+`~/fitness-dev`, `~/fuel-dev`, `~/journal-dev`, `~/habits-dev`, `~/learn-dev`
+und `~/relax-dev`. `~/vitalos/*-app` sind die integrierten Submodule-Checkouts
+für Build/CI und Pointer-Management, nicht die primären `dev`-Worktrees.
+
+### Submodule-Regel
+* Pointer im Meta-Repo dürfen nie auf lokale-only Submodule-Commits zeigen, sonst scheitert CI mit `fatal: not our ref`.
+* Standard im Meta-Repo ist `push.recurseSubmodules=on-demand`: normales `git push` aus `~/vitalos` pusht referenzierte Submodule automatisch vorab.
+* Detached-HEAD-Commits in Submodulen vermeiden. Falls doch nötig: explizit auf einen echten Zielbranch pushen, z. B. `git push origin HEAD:master`.
 
 ---
 
@@ -246,24 +250,16 @@ Sub-Repo erreicht Firebase nicht mehr.
 ### Git-Hooks: Ist-Zustand + Historie
 
 Meta-Repo und fitness-app/fuel-app haben `core.hooksPath = .githooks`
-(→ `.git/hooks/` ist dort WIRKUNGSLOS). journal/habits/learn/relax-app haben
-KEIN hooksPath gesetzt — dort liegende `.githooks/post-commit`-Dateien laufen
-nie (bewusst so belassen, Stand 2026-07-16).
+(→ `.git/hooks/` ist dort wirkungslos). journal/habits/learn/relax-app haben
+kein `hooksPath` gesetzt.
 
 | Repo | Hook | Status |
 |---|---|---|
-| vitalos | `.githooks/post-commit` | aktiv, nur Info-Ausgabe (harmlos) |
-| vitalos | `.githooks/post-push.bak` | **2026-07-16 deaktiviert** — war totes Skript (Git kennt keinen post-push-Hook, nichts rief ihn auf; referenzierte zudem ein nicht existierendes npm-Script `deploy:firebase`). CI deckt den Fall ab. |
-| vitalos | `.git/hooks/post-commit` | tot (hooksPath überschreibt) |
+| vitalos | `.githooks/post-commit` | aktiv, nur Info-Ausgabe |
+| vitalos | `.githooks/pre-push` | nicht vorhanden; Schutz läuft über `push.recurseSubmodules=on-demand` |
+| vitalos | `.git/hooks/*` | wirkungslos, weil `core.hooksPath=.githooks` |
 | fitness-app | `.githooks/pre-commit`, `post-commit` | aktiv |
-| fitness-app | `.githooks/pre-push.bak` | **2026-07-15 deaktiviert** (war lokaler Firebase-Deploy bei Push auf master → doppelte Arbeit zur CI) |
 | fuel-app | `.githooks/post-commit` | aktiv |
-| fuel-app | `.githooks/pre-push.bak` | **2026-07-15 deaktiviert** (dito) |
-
-Die deaktivierten pre-push-Hooks hatten einen Selbst-Trigger-Schutz
-(SKIP für `public/sw.js`, `public/manifest.json`, `dist-firebase/` —
-Build-Outputs des vorherigen Laufs). Falls je reaktiviert: dieses Pattern
-beibehalten, sonst Endlos-Bump-Spirale.
 
 `git` ist systemweit ein Wrapper (`~/aos/bin/git`): blockt `git restore` und
 `git checkout --` (Datenverlust-Schutz), Override via `AOS_GIT_ALLOW_DISCARD=1`.
