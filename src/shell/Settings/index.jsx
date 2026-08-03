@@ -28,7 +28,6 @@ export default function Settings({ user, signOut }) {
     themeMode, setModeState, circLight, setCircLight, circDark, setCircDark,
     theme, setThemeState,
     sidebarPinned, setSidebarPinned,
-    navMode, setNavMode,
     muscleLanguage, setMuscleLanguage,
     swipeEnabled, setSwipeEnabled,
     mobileLayout, setMobileLayout,
@@ -173,7 +172,6 @@ export default function Settings({ user, signOut }) {
            swipeEnabled={swipeEnabled} setSwipeEnabled={setSwipeEnabled}
            dashboardHighlighter={dashboardHighlighter} setDashboardHighlighter={setDashboardHighlighter}
            mobileLayout={mobileLayout} setMobileLayout={setMobileLayout}
-           navMode={navMode} setNavMode={setNavMode}
            sidebarPinned={sidebarPinned} setSidebarPinned={setSidebarPinned}
            layoutScale={layoutScale} setLayoutScale={setLayoutScale}
            muscleLanguage={muscleLanguage} setMuscleLanguage={setMuscleLanguage}

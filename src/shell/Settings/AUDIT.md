@@ -8,7 +8,7 @@ Konfigurationsansicht für Appearance, Training-Präferenzen, SW-Updates, Firest
 | Datei | Zweck | Zeilen |
 |-------|-------|--------|
 | `index.jsx` | Orchestrierung: hält SW-State + Firestore-State, fetcht Health/Wger/Firestore beim Mount, rendert Sections | 138 |
-| `AppearanceSection.jsx` | Theme-Picker (manual/circadian), Layout-Scale-Slider, NavMode (tabs/home), Sidebar-Toggle | 146 |
+| `AppearanceSection.jsx` | Theme-Picker (manual/circadian), Layout-Scale-Slider, Sidebar-Toggle | 146 |
 | `TrainingSection.jsx` | Split/Gender/Location/MuscleLanguage-Picker, Analyse-Sliders (collapsible), SW-Update-Panel, Advanced-Toggle | 177 |
 | `AdvancedSection.jsx` | Swipe-Navigation, Dashboard-Highlighter-Modus, Firestore-Status-Badge | 73 |
 | `LocalDevSection.jsx` | Firestore-Sync-Button, Node-API/wger/Storage-Diagnose — nur sichtbar wenn `isLocalMode()` | 64 |
@@ -32,10 +32,10 @@ Konfigurationsansicht für Appearance, Training-Präferenzen, SW-Updates, Firest
 - `swChecking` — `bool`
 
 **Props die index.jsx von außen bekommt (alle geliftet, kein eigener Persist):**
-`layoutScale/setLayoutScale`, `gender/setGender`, `split/setSplit`, `cycleLength/setCycleLength`, `defaultLocation/setDefaultLocation`, `recentDays/setRecentDays`, `coverageThreshold/setCoverageThreshold`, `showAdvanced/setShowAdvanced`, `dashboardHighlighter/setDashboardHighlighter`, `themeMode/setModeState`, `circLight/setCircLight`, `circDark/setCircDark`, `themes/theme/setThemeState`, `sidebarPinned/setSidebarPinned`, `navMode/setNavMode`, `muscleLanguage/setMuscleLanguage`, `swipeEnabled/setSwipeEnabled`
+`layoutScale/setLayoutScale`, `gender/setGender`, `split/setSplit`, `cycleLength/setCycleLength`, `defaultLocation/setDefaultLocation`, `recentDays/setRecentDays`, `coverageThreshold/setCoverageThreshold`, `showAdvanced/setShowAdvanced`, `dashboardHighlighter/setDashboardHighlighter`, `themeMode/setModeState`, `circLight/setCircLight`, `circDark/setCircDark`, `themes/theme/setThemeState`, `sidebarPinned/setSidebarPinned`, `muscleLanguage/setMuscleLanguage`, `swipeEnabled/setSwipeEnabled`
 
 **Props-Weitergabe:**
-- `AppearanceSection` — bekommt alles Appearance-relevante (navMode, sidebarPinned, layoutScale, themeMode, circLight/Dark, themes/theme)
+- `AppearanceSection` — bekommt alles Appearance-relevante (sidebarPinned, layoutScale, themeMode, circLight/Dark, themes/theme)
 - `TrainingSection` — bekommt Training-Prefs + SW-State + SW-Handler-Callbacks
 - `LocalDevSection` — bekommt firestoreStatus, syncing, onSync, health, wger
 - `AdvancedSection` — bekommt swipeEnabled, dashboardHighlighter, firestoreStatus (Status-only, kein Sync-Button)
@@ -66,7 +66,7 @@ Konfigurationsansicht für Appearance, Training-Präferenzen, SW-Updates, Firest
 - **`swChecking` Reset per `setTimeout(..., 600)`** in `handleSwCheck` — kein Cleanup wenn Komponente vorher unmountet. Kleines Memory-Leak-Risiko.
 - **`layoutOpen` und `slidersOpen`** sind lokale Collapsible-States in AppearanceSection/TrainingSection — werden nicht persistiert, resetten bei Tab-Wechsel auf closed. Eventuell absichtlich, aber nach Refactoring leicht vergessen.
 - **`themes` Prop**: wird in `AppearanceSection` als Objekt genutzt (`Object.keys(themes).length`, `themes[id]`), aber nie in `index.jsx` selbst — kommt direkt vom App-Root durch.
-- **`navMode`-Toggle ist `lg:hidden`**: Die Mobile-Navigation-Sektion in AppearanceSection ist CSS-hidden auf Desktop. Ein Desktop-User sieht die Option nicht — kein Bug, aber unklar ob Absicht oder vergessen.
+- Fitness läuft in VitalOS fest im Home-Gate-Modus; es gibt keinen Shell-`navMode`-Toggle mehr.
 - **`AdvancedSection` hat keinen Sync-Button** obwohl `firestoreStatus` übergeben wird — die Prop könnte dort komplett entfallen und der Status reicht aus.
 - **Keine Error-States für Health/Wger**: `health?.ok` und `wger` zeigen `FAIL` auch wenn noch `null` (loading). Beim initialem Render sieht man kurz `FAIL` bevor die Fetch-Responses kommen — kein Loading-State.
 

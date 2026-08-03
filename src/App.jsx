@@ -82,7 +82,7 @@ export default function App() {
   const {
     theme, themeMode, circDark, circLight,
     gender, anatomyModel, age, heightCm, weightKg, layoutScale, recentDays, coverageThreshold,
-    dashboardHighlighter, sidebarPinned, setSidebarPinned, navMode,
+    dashboardHighlighter, sidebarPinned, setSidebarPinned,
     muscleLanguage, mobileLayout,
   } = useShellSettings()
   const [taxonomy, setTaxonomy] = useState(null)
@@ -137,10 +137,6 @@ export default function App() {
     }
   }, [theme, themeMode, circLight, circDark])
 
-  useEffect(() => {
-    if (navMode === 'tabs' && fitnessTab === 'gate') setFitnessTab('dash')
-  }, [navMode, fitnessTab])
-
   // Sync tab ↔ URL hash
   useEffect(() => {
     if (window.location.hash.slice(1) !== tab) history.pushState(null, '', `#${tab}`)
@@ -149,7 +145,7 @@ export default function App() {
   function navigate(id) {
     if (!VALID_TABS.has(id)) return
     if (id === 'fitness') {
-      setFitnessTab(navMode === 'home' ? 'gate' : (fitnessTab === 'gate' ? 'dash' : fitnessTab))
+      setFitnessTab(fitnessTab === 'gate' ? 'gate' : fitnessTab)
     }
     setTab(id)
   }
@@ -213,7 +209,6 @@ export default function App() {
       const fitnessProps = {
         user, recentDays, coverageThreshold,
         gender: anatomyModel, muscleLanguage, taxonomy, dashboardHighlighter,
-        navMode,
         subTab: fitnessTab, onSubTab: setFitnessTab,
         sessionDate, sessionDraft, onOpenSession: openSession,
       }
@@ -223,7 +218,7 @@ export default function App() {
         {/* HIER ist die app-shell Klasse wieder an Ort und Stelle */}
         <div className="app-shell flex min-h-screen overflow-x-hidden w-full bg-fit-bg text-fit-ink font-sans transition-colors duration-500">
         <Sidebar tab={tab} navigate={navigate} pinned={sidebarPinned} setPinned={setSidebarPinned} user={user}
-        subNav={tab === 'fitness' && navMode === 'home' ? null : (SUB_NAV[tab] || null)}
+        subNav={tab === 'fitness' ? null : (SUB_NAV[tab] || null)}
         subTab={tab === 'fitness' ? fitnessTab : tab === 'fuel' ? fuelTab : null}
         onSubTab={tab === 'fitness' ? setFitnessTab : tab === 'fuel' ? setFuelTab : null}>
         <UserProfile user={user} subtitle={isLocalMode() ? `${user?.email || 'localhost'} · localhost` : (user?.email || '')} onOpenSettings={() => navigate('settings')} />

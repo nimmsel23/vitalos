@@ -13,7 +13,6 @@ function formatJoinDate(ts) {
 export default function AdvancedSection({
   swipeEnabled, setSwipeEnabled,
   dashboardHighlighter, setDashboardHighlighter,
-  navMode, setNavMode,
   sidebarPinned, setSidebarPinned,
   layoutScale, setLayoutScale,
   muscleLanguage, setMuscleLanguage,
@@ -78,17 +77,6 @@ export default function AdvancedSection({
              <LayoutGrid size={18} className="text-fit-accent" />
              <h4 className="text-sm font-black text-fit-ink uppercase tracking-widest">Layout & Navigation</h4>
           </div>
-
-          <SegmentedControl
-            label="Navigation Modus"
-            options={[
-              { id: 'tabs', label: 'Tabs + Navbar' },
-              { id: 'home', label: 'Home Menü' },
-            ]}
-            value={navMode}
-            onChange={setNavMode}
-          />
-
           {/* Desktop Sidebar Toggle */}
           <div className="hidden lg:flex items-center justify-between">
              <div>
