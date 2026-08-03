@@ -8,6 +8,7 @@ import MobileShell from './shell/layout/MobileShell.jsx'
 import UserProfile from './components/common/UserProfile.jsx'
 import ErrorBoundary from './components/common/ErrorBoundary.jsx'
 import Hub from './shell/Hub.jsx'
+import Dashboard from './shell/Dashboard.jsx'
 import { useApp as useFuelAppStore, useSettings as useFuelStore } from '@fuel/store.js'
 import ShellHeader from './shell/ShellHeader.jsx'
 import { useShellSettings } from './shell/store.js'
@@ -46,6 +47,7 @@ function Views({ tab, fitnessProps, fuelTab, setFuelTab, user, settingsProps, op
   return (
     <Suspense fallback={<Loader label={tab} />}>
     {tab === 'hub'      && <Hub navigate={navigate} openSession={openSession} runtimeDate={runtimeDate} />}
+    {tab === 'dashboard' && <Dashboard navigate={navigate} openSession={openSession} runtimeDate={runtimeDate} />}
     {tab === 'fitness'  && <FitnessApp  {...fitnessProps} />}
     {tab === 'fuel'     && <FuelWrapper user={user} subTab={fuelTab} onSubTab={setFuelTab} onNavigateShell={navigate} />}
     {tab === 'journal'  && <JournalApp onOpenSession={openSession} runtimeDate={runtimeDate} onRuntimeDateChange={onRuntimeDateChange} />}
@@ -62,7 +64,7 @@ export default function App() {
   const [tab, setTab] = useState(() => readHashState().tab)
   const [fitnessTab, setFitnessTab] = useState(() => {
     const { tab: hashTab, subTab } = readHashState()
-    return hashTab === 'fitness' && subTab ? subTab : 'session'
+    return hashTab === 'fitness' ? (subTab || null) : null
   })
   const [fuelTab, setFuelTab] = useState(() => {
     const { tab: hashTab, subTab } = readHashState()
@@ -164,7 +166,7 @@ export default function App() {
 
   useEffect(() => {
     const nextHash = tab === 'fitness'
-      ? `#${tab}/${fitnessTab || 'session'}`
+      ? (fitnessTab ? `#${tab}/${fitnessTab}` : `#${tab}`)
       : tab === 'fuel'
         ? `#${tab}/${fuelTab || 'food'}`
         : `#${tab}`
@@ -175,7 +177,7 @@ export default function App() {
     function syncFromLocation() {
       const { tab: nextTab, subTab } = readHashState()
       setTab(nextTab)
-      if (nextTab === 'fitness' && subTab) setFitnessTab(subTab)
+      if (nextTab === 'fitness') setFitnessTab(subTab || null)
       if (nextTab === 'fuel' && subTab) setFuelTab(subTab)
     }
 
@@ -190,7 +192,7 @@ export default function App() {
   function navigate(id, subTab = null) {
     if (!VALID_TABS.has(id)) return
     if (id === 'fitness') {
-      setFitnessTab(subTab || 'session')
+      setFitnessTab(subTab || null)
     }
     if (id === 'fuel') {
       setFuelTab(subTab || 'food')
@@ -247,6 +249,7 @@ export default function App() {
     )
 
       const settingsProps = { user, signOut }
+      const showDesktopChrome = tab !== 'hub'
 
       const fitnessProps = {
         recentDays, coverageThreshold,
@@ -263,8 +266,9 @@ export default function App() {
         <ErrorBoundary>
         {/* HIER ist die app-shell Klasse wieder an Ort und Stelle */}
         <div className="app-shell flex min-h-screen overflow-x-hidden w-full bg-fit-bg text-fit-ink font-sans transition-colors duration-500">
+        {showDesktopChrome && (
         <Sidebar tab={tab} navigate={navigate} pinned={sidebarPinned} setPinned={setSidebarPinned} user={user}
-        subNav={SUB_NAV[tab] || null}
+        subNav={tab === 'fitness' ? SUB_NAV.fitness : tab === 'fuel' ? SUB_NAV.fuel : null}
         subTab={tab === 'fitness' ? fitnessTab : tab === 'fuel' ? fuelTab : null}
         onSubTab={tab === 'fitness' ? setFitnessTab : tab === 'fuel' ? setFuelTab : null}>
         <UserProfile user={user} subtitle={isLocalMode() ? `${user?.email || 'localhost'} · localhost` : (user?.email || '')} onOpenSettings={() => navigate('settings')} />
@@ -277,13 +281,14 @@ export default function App() {
         <RefreshCw size={14} /> Refresh
         </button>
         </Sidebar>
+        )}
 
-        <div className={`flex-1 min-w-0 transition-all duration-500 ease-in-out ${sidebarPinned ? 'lg:ml-[280px]' : 'lg:ml-24'}`}>
+        <div className={`flex-1 min-w-0 transition-all duration-500 ease-in-out ${showDesktopChrome ? (sidebarPinned ? 'lg:ml-[280px]' : 'lg:ml-24') : ''}`}>
         {mobileLayout === 'fuel' ? (
           <>
           {/* Desktop: klassisches Layout */}
           <div className="hidden lg:block">
-          {shellHeader}
+          {showDesktopChrome ? shellHeader : null}
           <main className="relative min-h-[100dvh]">
           <Views tab={tab} fitnessProps={fitnessProps} fuelTab={fuelTab} setFuelTab={setFuelTab} muscleLanguage={muscleLanguage} taxonomy={taxonomy}
           user={user} settingsProps={settingsProps} openSession={openSession} runtimeDate={runtimeDate} onRuntimeDateChange={setRuntimeDate} navigate={navigate} />
@@ -298,7 +303,7 @@ export default function App() {
         ) : (
           <>
           <div className="hidden lg:block">
-          {shellHeader}
+          {showDesktopChrome ? shellHeader : null}
           <main className="relative min-h-[100dvh]">
           <Views tab={tab} fitnessProps={fitnessProps} fuelTab={fuelTab} setFuelTab={setFuelTab} muscleLanguage={muscleLanguage} taxonomy={taxonomy}
           user={user} settingsProps={settingsProps} openSession={openSession} runtimeDate={runtimeDate} onRuntimeDateChange={setRuntimeDate} navigate={navigate} />
