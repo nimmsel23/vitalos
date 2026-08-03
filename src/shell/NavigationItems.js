@@ -1,9 +1,10 @@
 import {
   Dumbbell, Flame, BookOpen, CheckSquare, Brain, Settings2,
-  Activity, BarChart3, UtensilsCrossed, Pill, Microscope, ClipboardList, NotebookPen, MoonStar,
+  Home, BarChart3, UtensilsCrossed, Pill, Microscope, ClipboardList, NotebookPen, MoonStar,
 } from 'lucide-react'
 
 export const NAV_ITEMS = [
+  { id: 'hub',      label: 'Heute',   Icon: Home },
   { id: 'fitness',  label: 'Fitness', Icon: Dumbbell },
   { id: 'fuel',     label: 'Fuel',    Icon: Flame },
   { id: 'relax',    label: 'Relax',   Icon: MoonStar },
@@ -20,7 +21,6 @@ export const VALID_TABS = new Set([...NAV_ITEMS.map(i => i.id), 'coach'])
 
 export const SUB_NAV = {
   fitness: [
-    { id: 'dash',    label: 'Heute',    Icon: Activity },
     { id: 'session', label: 'Training', Icon: Dumbbell },
     { id: 'review',  label: 'Review',   Icon: BarChart3 },
     { id: 'plan',    label: 'Plan',     Icon: ClipboardList },

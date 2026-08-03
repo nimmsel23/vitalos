@@ -6,8 +6,8 @@ export default function Sidebar({ tab, navigate, pinned, setPinned, children, us
   const inSubApp = !!subNav
 
   return (
-    <aside className={`hidden lg:flex flex-col alpha-glass border-r border-fit-line fixed inset-y-0 z-50 transition-all duration-500 ease-in-out ${pinned ? 'w-[280px]' : 'w-24'}`}>
-      <div className={`p-6 flex flex-col h-full ${!pinned ? 'items-center' : ''}`}>
+    <aside className={`hidden lg:flex flex-col alpha-glass fixed left-3 top-3 bottom-3 z-50 rounded-[2rem] border border-fit-line/70 shadow-2xl shadow-black/20 transition-all duration-500 ease-in-out ${pinned ? 'w-[280px]' : 'w-24'}`}>
+      <div className={`flex h-full flex-col p-5 ${!pinned ? 'items-center' : ''}`}>
 
         {/* Logo */}
         <div className="flex items-center gap-4 mb-8 relative">
@@ -21,7 +21,7 @@ export default function Sidebar({ tab, navigate, pinned, setPinned, children, us
           )}
           <button
             onClick={() => setPinned(!pinned)}
-            className={`absolute top-1 w-7 h-7 rounded-full bg-fit-card border border-fit-line flex items-center justify-center text-fit-dim hover:text-fit-accent transition-all z-10 shadow-lg hover:scale-110 active:scale-90 ${pinned ? '-right-10' : '-right-3 translate-x-full'}`}
+            className={`absolute top-1 z-10 flex h-8 w-8 items-center justify-center rounded-full border border-fit-line bg-fit-card text-fit-dim shadow-lg transition-all hover:scale-110 hover:text-fit-accent active:scale-90 ${pinned ? '-right-12' : '-right-4 translate-x-full'}`}
           >
             {pinned ? <ChevronLeft size={14} /> : <ChevronRight size={14} />}
           </button>

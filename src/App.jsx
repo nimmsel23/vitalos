@@ -38,10 +38,11 @@ function readHashState() {
   }
 }
 
-function Views({ tab, fitnessProps, fuelTab, setFuelTab, user, settingsProps, openSession, compact, muscleLanguage, taxonomy, runtimeDate, onRuntimeDateChange }) {
+function Views({ tab, fitnessProps, fuelTab, setFuelTab, user, settingsProps, openSession, compact, muscleLanguage, taxonomy, runtimeDate, onRuntimeDateChange, navigate }) {
   const p = compact ? 'p-4' : 'p-4 sm:p-8 lg:p-12'
   return (
     <Suspense fallback={<Loader label={tab} />}>
+    {tab === 'hub'      && <Hub navigate={navigate} openSession={openSession} runtimeDate={runtimeDate} />}
     {tab === 'fitness'  && <FitnessApp  {...fitnessProps} />}
     {tab === 'fuel'     && <FuelWrapper user={user} subTab={fuelTab} onSubTab={setFuelTab} />}
     {tab === 'journal'  && <JournalApp onOpenSession={openSession} runtimeDate={runtimeDate} onRuntimeDateChange={onRuntimeDateChange} />}
@@ -162,7 +163,7 @@ export default function App() {
     const nextHash = tab === 'fitness'
       ? `#${tab}/${fitnessTab || 'session'}`
       : tab === 'fuel'
-        ? `#${tab}/${fuelTab || 'dashboard'}`
+        ? `#${tab}/${fuelTab || 'food'}`
         : `#${tab}`
     if (window.location.hash !== nextHash) history.pushState(null, '', nextHash)
   }, [tab, fitnessTab, fuelTab])
@@ -183,13 +184,13 @@ export default function App() {
     }
   }, [])
 
-  function navigate(id) {
+  function navigate(id, subTab = null) {
     if (!VALID_TABS.has(id)) return
     if (id === 'fitness') {
-      setFitnessTab('session')
+      setFitnessTab(subTab || 'session')
     }
     if (id === 'fuel') {
-      setFuelTab('food')
+      setFuelTab(subTab || 'food')
     }
     setTab(id)
   }
@@ -242,12 +243,6 @@ export default function App() {
       </div>
     )
 
-      if (tab === 'hub') return (
-        <ErrorBoundary>
-        <Hub navigate={navigate} />
-        </ErrorBoundary>
-      )
-
       const settingsProps = { user, signOut }
 
       const fitnessProps = {
@@ -288,13 +283,13 @@ export default function App() {
           {shellHeader}
           <main className="relative min-h-[100dvh]">
           <Views tab={tab} fitnessProps={fitnessProps} fuelTab={fuelTab} setFuelTab={setFuelTab} muscleLanguage={muscleLanguage} taxonomy={taxonomy}
-          user={user} settingsProps={settingsProps} openSession={openSession} runtimeDate={runtimeDate} onRuntimeDateChange={setRuntimeDate} />
+          user={user} settingsProps={settingsProps} openSession={openSession} runtimeDate={runtimeDate} onRuntimeDateChange={setRuntimeDate} navigate={navigate} />
           </main>
           </div>
           {/* Mobile: Fuel-Layout */}
           <MobileShell tab={tab} navigate={navigate} mobileLayout="fuel" header={mobileShellHeader}>
           <Views tab={tab} fitnessProps={fitnessProps} fuelTab={fuelTab} setFuelTab={setFuelTab} muscleLanguage={muscleLanguage} taxonomy={taxonomy}
-          user={user} settingsProps={settingsProps} openSession={openSession} compact runtimeDate={runtimeDate} onRuntimeDateChange={setRuntimeDate} />
+          user={user} settingsProps={settingsProps} openSession={openSession} compact runtimeDate={runtimeDate} onRuntimeDateChange={setRuntimeDate} navigate={navigate} />
           </MobileShell>
           </>
         ) : (
@@ -303,12 +298,12 @@ export default function App() {
           {shellHeader}
           <main className="relative min-h-[100dvh]">
           <Views tab={tab} fitnessProps={fitnessProps} fuelTab={fuelTab} setFuelTab={setFuelTab} muscleLanguage={muscleLanguage} taxonomy={taxonomy}
-          user={user} settingsProps={settingsProps} openSession={openSession} runtimeDate={runtimeDate} onRuntimeDateChange={setRuntimeDate} />
+          user={user} settingsProps={settingsProps} openSession={openSession} runtimeDate={runtimeDate} onRuntimeDateChange={setRuntimeDate} navigate={navigate} />
           </main>
           </div>
           <MobileShell tab={tab} navigate={navigate} mobileLayout="classic" header={mobileShellHeader}>
           <Views tab={tab} fitnessProps={fitnessProps} fuelTab={fuelTab} setFuelTab={setFuelTab} muscleLanguage={muscleLanguage} taxonomy={taxonomy}
-          user={user} settingsProps={settingsProps} openSession={openSession} compact runtimeDate={runtimeDate} onRuntimeDateChange={setRuntimeDate} />
+          user={user} settingsProps={settingsProps} openSession={openSession} compact runtimeDate={runtimeDate} onRuntimeDateChange={setRuntimeDate} navigate={navigate} />
           </MobileShell>
           </>
         )}
