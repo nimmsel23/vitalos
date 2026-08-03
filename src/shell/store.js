@@ -38,6 +38,7 @@ const FIELDS = {
   showAdvanced:         ['vitalos-showAdvanced',         () => ls('vitalos-showAdvanced', 'false') === 'true'],
   dashboardHighlighter: ['vitalos-dashboardHighlighter', () => ls('vitalos-dashboardHighlighter', 'body')],
   sidebarPinned:        ['vitalos-sidebarPinned',        () => ls('vitalos-sidebarPinned', 'true') !== 'false'],
+  navMode:              ['vitalos-navMode',              () => ls('vitalos-navMode', 'tabs')],
   muscleLanguage:       ['vitalos-muscleLanguage',       () => ls('vitalos-muscleLanguage', 'de')],
   swipeEnabled:         ['vitalos-swipeEnabled',         () => ls('vitalos-swipeEnabled', 'false') === 'true'],
   mobileLayout:         ['vitalos-mobileLayout',         () => ls('vitalos-mobileLayout', 'classic')],

@@ -28,12 +28,12 @@ export default function Settings({ user, signOut }) {
     themeMode, setModeState, circLight, setCircLight, circDark, setCircDark,
     theme, setThemeState,
     sidebarPinned, setSidebarPinned,
+    navMode, setNavMode,
     muscleLanguage, setMuscleLanguage,
     swipeEnabled, setSwipeEnabled,
     mobileLayout, setMobileLayout,
   } = useShellSettings()
   const themes = THEMES
-  const navMode = 'tabs', setNavMode = () => {}
   const [health, setHealth] = useState(null)
   const [wger, setWger] = useState(null)
   const [firestoreStatus, setFirestoreStatus] = useState(null)

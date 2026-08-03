@@ -1,13 +1,17 @@
 import { NAV_ITEMS } from '@shell/NavigationItems.js';
-import { localToday } from "@utils";
 
-export default function AppGate({ navigate }) {
+export default function AppGate({ navigate, items = NAV_ITEMS, title = null }) {
   return (
     <div className="min-h-screen flex flex-col items-center justify-center p-6 bg-gradient-to-br from-fit-bg to-fit-bg2 text-fit-ink">
+      {title && (
+        <div className="mb-10 text-center animate-in fade-in duration-700">
+          <h2 className="text-3xl font-black tracking-tight text-fit-ink">{title}</h2>
+        </div>
+      )}
       
       {/* Navigation Grid */}
       <nav className="grid grid-cols-2 md:grid-cols-3 gap-4 w-full max-w-2xl animate-in fade-in zoom-in-95 duration-700">
-        {NAV_ITEMS.map(({ id, label, Icon }) => (
+        {items.map(({ id, label, Icon }) => (
           <button
             key={id}
             onClick={() => navigate(id)}
