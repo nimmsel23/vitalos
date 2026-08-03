@@ -15,7 +15,7 @@ const SUB_NAV = [
   { id: 'plan',    label: 'Plan',     Icon: ClipboardList },
 ]
 
-export default function FitnessApp({ user, recentDays, coverageThreshold, gender, muscleLanguage, taxonomy, dashboardHighlighter, subTab, onSubTab, sessionDate, sessionDraft, onOpenSession }) {
+export default function FitnessApp({ user, recentDays, coverageThreshold, gender, muscleLanguage, taxonomy, dashboardHighlighter, subTab, onSubTab, sessionDate, sessionDraft, onOpenSession, onRuntimeDateChange }) {
   const [inspectorExercise, setInspectorExercise] = useState(null)
   const [reviewSubTab, setReviewSubTab] = useState(null)
 
@@ -60,7 +60,7 @@ export default function FitnessApp({ user, recentDays, coverageThreshold, gender
 
             <div className={`animate-in fade-in duration-500 ${tab !== 'gate' ? 'p-4 pb-20 sm:p-8 lg:p-12' : ''}`}>
               {tab === 'dash'    && <Dashboard user={user} onOpenSession={onOpenSession} onInspectExercise={inspectExercise} onOpenReview={() => setTab('review')} recentDays={recentDays} coverageThreshold={coverageThreshold} dashboardHighlighter={dashboardHighlighter} gender={gender} muscleLanguage={muscleLanguage} taxonomy={taxonomy} navigate={setTab} />}
-              {tab === 'session' && <Session key={sessionDate || 'today'} initialDate={sessionDate} initialDraft={sessionDraft} onInspectExercise={inspectExercise} recentDays={recentDays} coverageThreshold={coverageThreshold} />}
+              {tab === 'session' && <Session key={sessionDate || 'today'} initialDate={sessionDate} initialDraft={sessionDraft} onInspectExercise={inspectExercise} recentDays={recentDays} coverageThreshold={coverageThreshold} onDateChange={onRuntimeDateChange} />}
               {tab === 'review'  && <WeeklyReview onOpenSession={onOpenSession} onInspectExercise={inspectExercise} muscleLanguage={muscleLanguage} taxonomy={taxonomy} gender={gender} recentDays={recentDays} subTab={reviewSubTab} onSubNav={setReviewSubTab} />}
               {tab === 'plan'    && <PlanView />}
             </div>

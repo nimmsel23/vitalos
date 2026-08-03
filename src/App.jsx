@@ -220,6 +220,7 @@ export default function App() {
         gender: anatomyModel, muscleLanguage, taxonomy, dashboardHighlighter,
         subTab: fitnessTab, onSubTab: setFitnessTab,
         sessionDate: sessionDate || runtimeDate, sessionDraft, onOpenSession: openSession,
+        onRuntimeDateChange: setRuntimeDate,
       }
       const shellHeader = <ShellHeader tab={tab} runtimeDate={runtimeDate} setRuntimeDate={setRuntimeDate} />
       const mobileShellHeader = <ShellHeader tab={tab} runtimeDate={runtimeDate} setRuntimeDate={setRuntimeDate} compact />
