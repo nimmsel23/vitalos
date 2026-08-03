@@ -1,13 +1,16 @@
 import { useState } from 'react'
-import { Dumbbell, BarChart3, ClipboardList, Brain } from 'lucide-react'
-import PlanView from '@view/plan/index.jsx'
+import { Dumbbell, BarChart3, Brain, Bell, Shield, Settings2 } from 'lucide-react'
 import Session from '@view/session/index.jsx'
 import WeeklyReview from '@view/review/index.jsx'
+import Learn from '@view/learn/index.jsx'
+import Coach from '@fitness/src/views/Coach/index.jsx'
+import Inbox from '@fitness/src/views/Inbox/index.js'
+import Settings from '@fitness/src/views/Settings/index.jsx'
 import ExerciseInsightModal from '@fitness/components/ExerciseInsightModal.jsx'
 import { getAnatomy } from '@db'
 import FitnessAppGate from './FitnessAppGate.jsx'
 
-export default function FitnessApp({ recentDays, coverageThreshold, gender, muscleLanguage, taxonomy, subTab, onSubTab, sessionDate, sessionDraft, onOpenSession, onRuntimeDateChange, onNavigateShell }) {
+export default function FitnessApp({ recentDays, coverageThreshold, gender, muscleLanguage, taxonomy, subTab, onSubTab, sessionDate, sessionDraft, onOpenSession, onRuntimeDateChange }) {
   const [inspectorExercise, setInspectorExercise] = useState(null)
   const [reviewSubTab, setReviewSubTab] = useState(null)
 
@@ -16,8 +19,10 @@ export default function FitnessApp({ recentDays, coverageThreshold, gender, musc
   const gateItems = [
     { id: 'session', label: 'Training', Icon: Dumbbell },
     { id: 'review', label: 'Review', Icon: BarChart3 },
-    { id: 'plan', label: 'Plan', Icon: ClipboardList },
-    { id: 'learn', label: 'Learn', Icon: Brain, onSelect: () => onNavigateShell?.('learn') },
+    { id: 'learn', label: 'Learn', Icon: Brain },
+    { id: 'inbox', label: 'Inbox', Icon: Bell },
+    { id: 'coach', label: 'Coach', Icon: Shield },
+    { id: 'settings', label: 'Setup', Icon: Settings2 },
   ]
 
   async function inspectExercise(exercise) {
@@ -59,7 +64,10 @@ export default function FitnessApp({ recentDays, coverageThreshold, gender, musc
             <div className={`animate-in fade-in duration-500 ${tab !== 'gate' ? 'p-4 pb-20 sm:p-8 lg:p-12' : ''}`}>
               {tab === 'session' && <Session key={sessionDate || 'today'} initialDate={sessionDate} initialDraft={sessionDraft} onInspectExercise={inspectExercise} recentDays={recentDays} coverageThreshold={coverageThreshold} onDateChange={onRuntimeDateChange} />}
               {tab === 'review'  && <WeeklyReview onOpenSession={onOpenSession} onInspectExercise={inspectExercise} muscleLanguage={muscleLanguage} taxonomy={taxonomy} gender={gender} recentDays={recentDays} subTab={reviewSubTab} onSubNav={setReviewSubTab} />}
-              {tab === 'plan'    && <PlanView />}
+              {tab === 'learn'   && <Learn onInspectExercise={inspectExercise} muscleLanguage={muscleLanguage} taxonomy={taxonomy} />}
+              {tab === 'inbox'   && <Inbox />}
+              {tab === 'coach'   && <Coach onInspectExercise={inspectExercise} />}
+              {tab === 'settings' && <Settings />}
             </div>
           </div>
         </div>

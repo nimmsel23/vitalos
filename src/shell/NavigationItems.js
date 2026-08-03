@@ -1,6 +1,6 @@
 import {
   Dumbbell, Flame, BookOpen, CheckSquare, Brain, Settings2,
-  Home, BarChart3, UtensilsCrossed, Pill, Microscope, ClipboardList, NotebookPen, MoonStar,
+  Home, BarChart3, UtensilsCrossed, Pill, Microscope, NotebookPen, MoonStar, Bell, Shield,
 } from 'lucide-react'
 
 export const NAV_ITEMS = [
@@ -23,7 +23,10 @@ export const SUB_NAV = {
   fitness: [
     { id: 'session', label: 'Training', Icon: Dumbbell },
     { id: 'review',  label: 'Review',   Icon: BarChart3 },
-    { id: 'plan',    label: 'Plan',     Icon: ClipboardList },
+    { id: 'learn',   label: 'Lernen',   Icon: Brain },
+    { id: 'inbox',   label: 'Inbox',    Icon: Bell },
+    { id: 'coach',   label: 'Coach',    Icon: Shield },
+    { id: 'settings', label: 'Setup',   Icon: Settings2 },
   ],
   fuel: [
     { id: 'food',        label: 'Food',      Icon: UtensilsCrossed },
