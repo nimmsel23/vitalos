@@ -24,7 +24,6 @@ export default function Settings({ user, signOut }) {
     recentDays, setRecentDays,
     coverageThreshold, setCoverageThreshold,
     showAdvanced, setShowAdvanced,
-    dashboardHighlighter, setDashboardHighlighter,
     themeMode, setModeState, circLight, setCircLight, circDark, setCircDark,
     theme, setThemeState,
     sidebarPinned, setSidebarPinned,
@@ -170,7 +169,6 @@ export default function Settings({ user, signOut }) {
        {showAdvanced && (
          <AdvancedSection
            swipeEnabled={swipeEnabled} setSwipeEnabled={setSwipeEnabled}
-           dashboardHighlighter={dashboardHighlighter} setDashboardHighlighter={setDashboardHighlighter}
            mobileLayout={mobileLayout} setMobileLayout={setMobileLayout}
            sidebarPinned={sidebarPinned} setSidebarPinned={setSidebarPinned}
            layoutScale={layoutScale} setLayoutScale={setLayoutScale}

@@ -7,7 +7,7 @@ import ExerciseInsightModal from '@fitness/components/ExerciseInsightModal.jsx'
 import { getAnatomy } from '@db'
 import FitnessAppGate from './FitnessAppGate.jsx'
 
-export default function FitnessApp({ user, recentDays, coverageThreshold, gender, muscleLanguage, taxonomy, dashboardHighlighter, subTab, onSubTab, sessionDate, sessionDraft, onOpenSession, onRuntimeDateChange, onNavigateShell }) {
+export default function FitnessApp({ recentDays, coverageThreshold, gender, muscleLanguage, taxonomy, subTab, onSubTab, sessionDate, sessionDraft, onOpenSession, onRuntimeDateChange, onNavigateShell }) {
   const [inspectorExercise, setInspectorExercise] = useState(null)
   const [reviewSubTab, setReviewSubTab] = useState(null)
 

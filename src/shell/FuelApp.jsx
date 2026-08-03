@@ -22,10 +22,11 @@ const qc = new QueryClient({
 function FuelInner() {
   const { activeTab, setActiveTab, activeDate, setActiveDate } = useApp()
   const { nutrition, sup, suppCatalog, suppLog, journal, macroTrend } = useAppData(activeDate)
+  const availableTabs = new Set(TAB_CONFIG.map((tab) => tab.key))
 
   useEffect(() => {
-    if (activeTab === 'dashboard') setActiveTab('food')
-  }, [activeTab, setActiveTab])
+    if (!availableTabs.has(activeTab)) setActiveTab('food')
+  }, [activeTab, availableTabs, setActiveTab])
 
   const meals = nutrition?.meals || []
   const totalKcal = sumMetric(meals, 'kcal')
@@ -63,7 +64,7 @@ function FuelInner() {
           <NutritionHeatmap selectedDate={activeDate} onSelectDate={setActiveDate} />
 
           <nav className="flex flex-wrap gap-2">
-            {TAB_CONFIG.filter((t) => !t.embeddedHidden && t.key !== 'dashboard').map(({ key, label, Icon }) => (
+            {TAB_CONFIG.map(({ key, label, Icon }) => (
               <motion.button
                 whileTap={{ scale: 0.96 }}
                 key={key}

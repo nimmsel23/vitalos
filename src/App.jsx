@@ -32,6 +32,9 @@ const Loader = ({ label }) => (
 function readHashState() {
   const raw = window.location.hash.replace(/^#\/?/, '')
   const [mainTab = 'hub', subTab = null] = raw.split('/')
+  if (mainTab === 'fuel' && subTab === 'journal') return { tab: 'journal', subTab: null }
+  if (mainTab === 'fuel' && subTab === 'habits') return { tab: 'habits', subTab: null }
+  if (mainTab === 'fuel' && subTab === 'settings') return { tab: 'settings', subTab: null }
   return {
     tab: VALID_TABS.has(mainTab) ? mainTab : 'hub',
     subTab: subTab || null,
@@ -44,7 +47,7 @@ function Views({ tab, fitnessProps, fuelTab, setFuelTab, user, settingsProps, op
     <Suspense fallback={<Loader label={tab} />}>
     {tab === 'hub'      && <Hub navigate={navigate} openSession={openSession} runtimeDate={runtimeDate} />}
     {tab === 'fitness'  && <FitnessApp  {...fitnessProps} />}
-    {tab === 'fuel'     && <FuelWrapper user={user} subTab={fuelTab} onSubTab={setFuelTab} />}
+    {tab === 'fuel'     && <FuelWrapper user={user} subTab={fuelTab} onSubTab={setFuelTab} onNavigateShell={navigate} />}
     {tab === 'journal'  && <JournalApp onOpenSession={openSession} runtimeDate={runtimeDate} onRuntimeDateChange={onRuntimeDateChange} />}
     {tab === 'habits'   && <HabitsApp runtimeDate={runtimeDate} onRuntimeDateChange={onRuntimeDateChange} />}
     {tab === 'learn'    && <LearnApp muscleLanguage={muscleLanguage} taxonomy={taxonomy} />}
@@ -96,7 +99,7 @@ export default function App() {
   const {
     theme, themeMode, circDark, circLight,
     gender, anatomyModel, age, heightCm, weightKg, layoutScale, recentDays, coverageThreshold,
-    dashboardHighlighter, runtimeDate, setRuntimeDate, sidebarPinned, setSidebarPinned,
+    runtimeDate, setRuntimeDate, sidebarPinned, setSidebarPinned,
     muscleLanguage, mobileLayout,
   } = useShellSettings()
   const fuelActiveDate = useFuelAppStore(s => s.activeDate)
@@ -246,8 +249,8 @@ export default function App() {
       const settingsProps = { user, signOut }
 
       const fitnessProps = {
-        user, recentDays, coverageThreshold,
-        gender: anatomyModel, muscleLanguage, taxonomy, dashboardHighlighter,
+        recentDays, coverageThreshold,
+        gender: anatomyModel, muscleLanguage, taxonomy,
         subTab: fitnessTab, onSubTab: setFitnessTab,
         sessionDate: sessionDate || runtimeDate, sessionDraft, onOpenSession: openSession,
         onRuntimeDateChange: setRuntimeDate,

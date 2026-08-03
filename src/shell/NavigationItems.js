@@ -27,8 +27,6 @@ export const SUB_NAV = {
   ],
   fuel: [
     { id: 'food',        label: 'Food',      Icon: UtensilsCrossed },
-    { id: 'journal',     label: 'Journal',   Icon: BookOpen },
-    { id: 'habits',      label: 'Habits',    Icon: CheckSquare },
     { id: 'log',         label: 'Log',       Icon: NotebookPen },
     { id: 'supplements', label: 'Supps',     Icon: Pill },
     { id: 'micros',      label: 'Mikros',    Icon: Microscope },

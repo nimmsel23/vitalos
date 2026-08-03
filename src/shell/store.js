@@ -37,7 +37,6 @@ const FIELDS = {
   recentDays:           ['vitalos-recentDays',           () => lsInt('vitalos-recentDays', 7)],
   coverageThreshold:    ['vitalos-coverageThreshold',    () => lsFloat('vitalos-coverageThreshold', 1.0)],
   showAdvanced:         ['vitalos-showAdvanced',         () => ls('vitalos-showAdvanced', 'false') === 'true'],
-  dashboardHighlighter: ['vitalos-dashboardHighlighter', () => ls('vitalos-dashboardHighlighter', 'body')],
   runtimeDate:          ['vitalos-runtimeDate',          () => ls('vitalos-runtimeDate', localISO())],
   sidebarPinned:        ['vitalos-sidebarPinned',        () => ls('vitalos-sidebarPinned', 'true') !== 'false'],
   muscleLanguage:       ['vitalos-muscleLanguage',       () => ls('vitalos-muscleLanguage', 'de')],
