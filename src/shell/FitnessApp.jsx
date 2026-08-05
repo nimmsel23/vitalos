@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { CalendarDays } from 'lucide-react'
 import Session from '@view/session/index.jsx'
 import WeeklyReview from '@view/review/index.jsx'
@@ -8,7 +8,7 @@ import Inbox from '@fitness/src/views/Inbox/index.js'
 import Settings from '@fitness/src/views/Settings/index.jsx'
 import ExerciseInsightModal from '@fitness/components/ExerciseInsightModal.jsx'
 import { NAV_ITEMS as FITNESS_NAV_ITEMS } from '@constants/NavigationItems.js'
-import { getAnatomy, getPlan } from '@db'
+import { getAnatomy, getAllMuscles, getPlan } from '@db'
 import FitnessAppGate from './FitnessAppGate.jsx'
 
 function resolveFitnessRoute(id) {
@@ -30,6 +30,19 @@ export default function FitnessApp({ recentDays, coverageThreshold, gender, musc
   const [learnSubTab, setLearnSubTab] = useState('exercises')
 
   const setTab = onSubTab || (() => {})
+
+  // fitness-app/src/App.jsx bootstrapt setKBMuscles() (shared/muscle.js) via
+  // getAllMuscles() beim Mount — die Shell mountet fitness-apps eigenes
+  // App.jsx nie, sondern rendert Session/WeeklyReview/Muscles direkt über
+  // @view/*. Ohne diesen Aufruf bleibt der In-Memory-KB-Cache leer und
+  // muscleToRegion() (genutzt von getWeeklyReport() UND Muscles/index.jsx)
+  // gibt jede Muskel-ID unverändert statt gruppiert zurück — Ursache für
+  // fragmentierte "Relative Muskelbelastung" und fehlende Treffer im
+  // Muscles-Tab innerhalb der VitalOS Shell.
+  useEffect(() => {
+    getAllMuscles().catch(() => {})
+  }, [])
+
   const route = resolveFitnessRoute(subTab)
   const tab = route.tab
   const activeReviewSubTab = route.reviewSubTab ?? reviewSubTab
