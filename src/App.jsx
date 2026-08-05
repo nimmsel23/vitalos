@@ -327,6 +327,7 @@ export default function App() {
         sessionDate: sessionDate || runtimeDate, sessionDraft, onOpenSession: openSession,
         onRuntimeDateChange: setRuntimeDate,
         onNavigateShell: navigate,
+        sidebarPinned, showDesktopChrome,
       }
       const shellHeader = <ShellHeader tab={tab} runtimeDate={runtimeDate} setRuntimeDate={setRuntimeDate} />
       const mobileShellHeader = <ShellHeader tab={tab} runtimeDate={runtimeDate} setRuntimeDate={setRuntimeDate} compact />

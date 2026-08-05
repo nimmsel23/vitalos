@@ -24,7 +24,7 @@ function resolveFitnessRoute(id) {
   return { tab: id, sessionSubTab: null, reviewSubTab: null, learnSubTab: null }
 }
 
-export default function FitnessApp({ recentDays, coverageThreshold, gender, muscleLanguage, taxonomy, subTab, onSubTab, sessionDate, sessionDraft, onOpenSession, onRuntimeDateChange }) {
+export default function FitnessApp({ recentDays, coverageThreshold, gender, muscleLanguage, taxonomy, subTab, onSubTab, sessionDate, sessionDraft, onOpenSession, onRuntimeDateChange, sidebarPinned, showDesktopChrome }) {
   const [inspectorExercise, setInspectorExercise] = useState(null)
   const [reviewSubTab, setReviewSubTab] = useState(null)
   const [learnSubTab, setLearnSubTab] = useState('exercises')
@@ -99,7 +99,8 @@ export default function FitnessApp({ recentDays, coverageThreshold, gender, musc
 
         <div
           className={`
-            fixed inset-0 z-30 transform transition-transform duration-500 ease-[cubic-bezier(0.32,0.72,0,1)]
+            fixed inset-0 z-30 transform transition-all duration-500 ease-[cubic-bezier(0.32,0.72,0,1)]
+            ${showDesktopChrome ? (sidebarPinned ? 'lg:left-[304px]' : 'lg:left-[108px]') : ''}
             ${tab === 'gate' ? 'translate-y-full pointer-events-none' : 'translate-y-0'}
           `}
         >
