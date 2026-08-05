@@ -5,23 +5,6 @@ import AnatomyDetailModal from "@components/AnatomyDetailModal";
 import { getMuscle } from "@db";
 import { ACTIVITY_MUSCLE_GROUPS } from "@constants/ActivityConstants";
 
-// Normalisiert Session-Muskelnamen auf interne Gruppen-IDs
-function toGroup(m) {
-  const g = String(m || '').toLowerCase().trim();
-  const MAP = {
-    chest: 'chest', pec: 'chest', pectoralis: 'chest',
-    back: 'back', lat: 'back', lats: 'back', latissimus: 'back', trap: 'back', traps: 'back', rhomboid: 'back',
-    shoulders: 'shoulders', shoulder: 'shoulders', delt: 'shoulders', delts: 'shoulders', deltoid: 'shoulders',
-    arms: 'arms', arm: 'arms', bicep: 'arms', biceps: 'arms', tricep: 'arms', triceps: 'arms', forearm: 'arms',
-    core: 'core', abs: 'core', ab: 'core', obliques: 'core',
-    glutes: 'glutes', glute: 'glutes', gluteal: 'glutes', gluteus: 'glutes',
-    quads: 'quads', quad: 'quads', quadriceps: 'quads', legs: 'quads', leg: 'quads',
-    hamstrings: 'hamstrings', hamstring: 'hamstrings',
-    calves: 'calves', calf: 'calves', gastrocnemius: 'calves',
-  };
-  return MAP[g] || null;
-}
-
 const ACTIVITY_MUSCLES = ACTIVITY_MUSCLE_GROUPS;
 
 // Tage seit letztem Training → Superkompensationsphase
@@ -41,13 +24,20 @@ function superKompFreq(daysSince, isCardio = false) {
   return 0;
 }
 
-// Berechnet lastTrainedDate + isCardio pro Muskelgruppe aus Session-Array
+// Berechnet lastTrainedDate + isCardio pro Muskel aus Session-Array. Trackt
+// bewusst auf Einzelmuskel-Ebene (rohe primaryMuscles/secondaryMuscles-IDs),
+// nicht vorab auf grobe Region kollabiert — das Downsampling auf die jeweils
+// gröbere Zielsprache (RBH-Slug, RMH-Slug, ...) übernehmen die Highlighter
+// selbst (muscleToRbhSlug()/muscleToRmhSlug() in translations.js). Cardio
+// kennt naturgemäß nur grobe Aktivitäts-Gruppen (ACTIVITY_MUSCLE_GROUPS) —
+// die landen als Wort-Keys im selben Dict, die Highlighter lösen Wörter
+// genauso auf wie Einzel-IDs.
 function buildLastTrainedMap(sessions) {
-  const last = {}; // { [group]: { date, isCardio } }
-  const update = (date, group, isCardio) => {
-    if (!last[group] || date > last[group].date) last[group] = { date, isCardio };
+  const last = {}; // { [muscleIdOrGroupWord]: { date, isCardio } }
+  const update = (date, key, isCardio) => {
+    if (!last[key] || date > last[key].date) last[key] = { date, isCardio };
     // Kraft überschreibt Cardio wenn gleicher Tag
-    else if (date === last[group].date && !isCardio) last[group].isCardio = false;
+    else if (date === last[key].date && !isCardio) last[key].isCardio = false;
   };
   for (const s of sessions || []) {
     if (!s?.date) continue;
@@ -55,8 +45,7 @@ function buildLastTrainedMap(sessions) {
     for (const ex of s.exercises || []) {
       if (ex.done === false) continue;
       for (const m of [...(ex.primaryMuscles || []), ...(ex.secondaryMuscles || [])]) {
-        const g = toGroup(m);
-        if (g) update(s.date, g, false);
+        if (m) update(s.date, m, false);
       }
     }
     // Cardio-Activity
