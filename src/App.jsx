@@ -1,7 +1,7 @@
 import { useState, useEffect, lazy, Suspense } from 'react'
-import { CalendarDays, RefreshCw } from 'lucide-react'
+import { RefreshCw } from 'lucide-react'
 import { watchAuth, signIn, signInEmail, signUpEmail, signOut, isLocalMode, auth, getUserProfile } from '@db'
-import { VALID_TABS, SUB_NAV } from './shell/NavigationItems.js'
+import { VALID_TABS, SUB_NAV, buildFitnessGateItems } from './shell/NavigationItems.js'
 import Settings from '@view/settings/index.jsx'
 import Sidebar from './shell/layout/Sidebar.jsx'
 import MobileShell from './shell/layout/MobileShell.jsx'
@@ -13,7 +13,6 @@ import { useApp as useFuelAppStore, useSettings as useFuelStore } from '@fuel/st
 import ShellHeader from './shell/ShellHeader.jsx'
 import { useShellSettings } from './shell/store.js'
 import FitnessAppGate from './shell/FitnessAppGate.jsx'
-import { NAV_ITEMS as FITNESS_NAV_ITEMS } from '@constants/NavigationItems.js'
 
 const FitnessApp  = lazy(() => import('./shell/FitnessApp.jsx'))
 const FuelWrapper = lazy(() => import('./shell/FuelWrapper.jsx'))
@@ -30,25 +29,10 @@ const Loader = ({ label }) => (
   </div>
 )
 
-function getFitnessGateItems() {
-  return FITNESS_NAV_ITEMS
-    .filter(({ id }) => id !== 'settings')
-    .flatMap(({ id, sub = [] }) => {
-      if (id === 'session') {
-        return sub.map((item) => (
-          item.id === 'today'
-            ? { ...item, label: 'Heute', Icon: CalendarDays }
-            : { ...item }
-        ))
-      }
-      return sub.map((item) => ({ ...item }))
-    })
-}
-
 function HomeFitnessGate({ onSelect }) {
   return (
     <div className="absolute inset-0 z-20 overflow-y-auto bg-[linear-gradient(180deg,rgba(10,10,12,0.58),rgba(10,10,12,0.88))] backdrop-blur-sm">
-      <FitnessAppGate navigate={onSelect} items={getFitnessGateItems()} title="Fitness" />
+      <FitnessAppGate navigate={onSelect} items={buildFitnessGateItems()} title="Fitness" />
     </div>
   )
 }
