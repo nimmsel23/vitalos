@@ -138,7 +138,7 @@ export default function App() {
   // Settings state — SSOT ist der Shell-Store (src/shell/store.js)
   const {
     theme, themeMode, circDark, circLight,
-    gender, anatomyModel, age, heightCm, weightKg, layoutScale, recentDays, coverageThreshold,
+    gender, anatomyModel, age, heightCm, weightKg, recentDays, coverageThreshold,
     runtimeDate, setRuntimeDate, sidebarPinned, setSidebarPinned,
     muscleLanguage, mobileLayout,
   } = useShellSettings()
@@ -155,7 +155,6 @@ export default function App() {
     }
   }, [])
 
-  useEffect(() => { document.documentElement.style.fontSize = `${layoutScale}%` }, [layoutScale])
   useEffect(() => {
     if (runtimeDate && fuelActiveDate !== runtimeDate) setFuelActiveDate(runtimeDate)
   }, [runtimeDate, fuelActiveDate, setFuelActiveDate])

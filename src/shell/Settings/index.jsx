@@ -16,7 +16,6 @@ import FuelGoalsSection from "@fuel/views/Settings/GoalsSection.jsx";
 export default function Settings({ user, signOut }) {
   // Alle User-Settings kommen aus dem Shell-Store (SSOT) statt per Prop-Drilling.
   const {
-    layoutScale, setLayoutScale,
     anatomyModel, setAnatomyModel,
     split, setSplit,
     cycleLength, setCycleLength,
@@ -171,7 +170,6 @@ export default function Settings({ user, signOut }) {
            swipeEnabled={swipeEnabled} setSwipeEnabled={setSwipeEnabled}
            mobileLayout={mobileLayout} setMobileLayout={setMobileLayout}
            sidebarPinned={sidebarPinned} setSidebarPinned={setSidebarPinned}
-           layoutScale={layoutScale} setLayoutScale={setLayoutScale}
            muscleLanguage={muscleLanguage} setMuscleLanguage={setMuscleLanguage}
            user={user}
          />
