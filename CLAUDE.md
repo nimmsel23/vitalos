@@ -189,6 +189,7 @@ Die Tempel (fitness-app, fuel-app, relax-app) haben eigene Backends und sind eig
 - **Setup-Invariante:** Im Shell-Betrieb hat keine App einen eigenen Settings-Einstieg über App-Spezifisches hinaus — Generisches (Auth, Theme, SW, Profil) nur im VitalOS-Setup-Tab (Details: `src/shell/CLAUDE.md`).
 - **`src/components/`** nur für vitalos-eigene UI (WeightChart, UserProfile, ErrorBoundary). fitness-app Components → via `@components`.
 - Vor Edits in shell/: prüfen ob Komponente wirklich vitalos-spezifisch ist oder aus einem Sub-Repo kommen sollte.
+- **Immer committen, nie fragen.** Sobald eine Aufgabe (eigene oder die eines Subagents) einen funktionierenden Zwischen- oder Endstand erreicht hat: sofort committen (Submodule zuerst, dann Meta-Repo-Pointer-Bump), ohne vorher nachzufragen. Grund: verlorene Arbeit, wenn der Agent-Context vor dem Commit endet (2026-08-06 Vorfall). Das überschreibt die generelle "nie ohne Erlaubnis committen"-Regel für dieses Repo. **Push bleibt separat** — nur committen, NICHT pushen, außer der User sagt es explizit.
 
 ---
 
