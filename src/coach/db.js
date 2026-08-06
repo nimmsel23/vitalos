@@ -18,6 +18,11 @@ export {
 export async function getMealsHistory(_limit) { return []; }
 export async function getSupplementsHistory(_limit) { return []; }
 
+// Stub — habitJournals-Collection existiert nur in Firestore (journal-dev
+// lib/db/journal.js), kein lokales Pendant. Cloud-Build hat die echte
+// Implementierung.
+export async function getAllHabitJournalsHistory(_limit) { return []; }
+
 // Stub — users/{uid} Profil existiert nur im Firebase-Build (Multi-User).
 // Lokaler Coach-Build ist Single-User, UserContext nutzt isLocalMode()-Guard.
 export async function getUserProfile(_uid) { return null; }
