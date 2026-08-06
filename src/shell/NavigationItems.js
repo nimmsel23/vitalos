@@ -1,6 +1,7 @@
 import {
   Dumbbell, Flame, CheckSquare, Brain, Settings2,
   Home, LayoutDashboard, BarChart3, UtensilsCrossed, Pill, Microscope, NotebookPen, MoonStar, Bell, Shield,
+  Layers, Zap, History,
 } from 'lucide-react'
 
 export const NAV_ITEMS = [
@@ -21,9 +22,17 @@ export const VALID_TABS = new Set([...NAV_ITEMS.map(i => i.id), 'coach'])
 // Sidebar/Subnav ist bewusst NICHT identisch zum Fitness-Gate.
 // Das Gate ist die reduzierte Card-Einstiegsfläche; die Desktop-Sidebar bleibt
 // eine eigene Navigationsschicht und wird separat gepflegt.
+// Struktur bewusst identisch zu fitness-apps eigener NAV_ITEMS (@fitness/src/
+// constants/NavigationItems.js) — 'review' hat dieselben verschachtelten
+// Nebenansichten (Muskeln/Readiness/Verlauf), 'Bericht' selbst ist keine davon
+// (noDefaultSub: true, siehe dortiger Kommentar) sondern der Review-Tab selbst.
 const FITNESS_SIDEBAR_NAV = [
   { id: 'session', label: 'Training', Icon: Dumbbell },
-  { id: 'review',  label: 'Review',   Icon: BarChart3 },
+  { id: 'review',  label: 'Review',   Icon: BarChart3, noDefaultSub: true, sub: [
+    { id: 'muscles',   label: 'Muskeln',   Icon: Layers },
+    { id: 'readiness', label: 'Readiness', Icon: Zap },
+    { id: 'verlauf',   label: 'Verlauf',   Icon: History },
+  ]},
   { id: 'learn',   label: 'Learn',    Icon: Brain },
 ]
 

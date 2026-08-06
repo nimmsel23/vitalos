@@ -60,16 +60,43 @@ export default function Sidebar({ tab, navigate, pinned, setPinned, children, us
           )}
         </nav>
 
-        {/* Sub-Nav — reine App-Navigation ohne Shell/Gate-Ziele */}
+        {/* Sub-Nav — reine App-Navigation ohne Shell/Gate-Ziele. Struktur
+            identisch zu fitness-apps eigener Sidebar (@fitness/src/components/
+            layout/Sidebar.jsx): Item mit `sub` klappt bei Aktivität eine
+            zweite Ebene auf (z.B. Review -> Muskeln/Readiness/Verlauf),
+            `noDefaultSub` verhindert dass der erste Sub-Eintrag fälschlich
+            als aktiv markiert wird, wenn eigentlich der Tab selbst (Bericht)
+            angezeigt wird. */}
         {inSubApp && (
           <nav className="flex-1 space-y-1.5">
-            {subNav.map(({ id, label, Icon }) => (
-              <button key={id} onClick={() => onSubTab?.(id)}
-                className={`w-full flex items-center transition-all duration-200 ${pinned ? 'gap-4 px-5 py-4 rounded-2xl' : 'justify-center p-4 rounded-2xl'} ${subTab === id ? 'bg-fit-accent text-black shadow-xl shadow-fit-accent/20 font-black scale-[1.02]' : 'text-fit-dim hover:bg-white/5 font-bold hover:translate-x-1'}`}>
-                <Icon size={20} className={subTab === id ? 'stroke-[3]' : ''} />
-                {pinned && <span className="text-sm truncate animate-in fade-in slide-in-from-left-4 duration-500">{label}</span>}
-              </button>
-            ))}
+            {subNav.map(({ id, label, Icon, sub, noDefaultSub }) => {
+              const isChildActive = sub?.some((s) => s.id === subTab)
+              const isActive = subTab === id || isChildActive
+              return (
+                <div key={id}>
+                  <button onClick={() => onSubTab?.(id)}
+                    className={`w-full flex items-center transition-all duration-200 ${pinned ? 'gap-4 px-5 py-4 rounded-2xl' : 'justify-center p-4 rounded-2xl'} ${isActive ? 'bg-fit-accent text-black shadow-xl shadow-fit-accent/20 font-black scale-[1.02]' : 'text-fit-dim hover:bg-white/5 font-bold hover:translate-x-1'}`}>
+                    <Icon size={20} className={isActive ? 'stroke-[3]' : ''} />
+                    {pinned && <span className="text-sm truncate animate-in fade-in slide-in-from-left-4 duration-500">{label}</span>}
+                  </button>
+
+                  {isActive && pinned && sub?.length > 0 && (
+                    <div className="ml-4 mt-1 mb-1 space-y-0.5 border-l-2 border-fit-accent/20 pl-3 animate-in fade-in slide-in-from-top-2 duration-300">
+                      {sub.map(({ id: subId, label: subLabel, Icon: SubIcon }) => {
+                        const isSubActive = subTab === subId || (!isChildActive && !noDefaultSub && sub[0].id === subId)
+                        return (
+                          <button key={subId} onClick={() => onSubTab?.(subId)}
+                            className={`w-full flex items-center gap-3 px-4 py-2.5 rounded-xl text-[11px] font-black uppercase tracking-[0.15em] transition-all ${isSubActive ? 'bg-fit-accent/15 text-fit-accent' : 'text-fit-dim/60 hover:text-fit-dim hover:bg-white/5'}`}>
+                            <SubIcon size={13} />
+                            {subLabel}
+                          </button>
+                        )
+                      })}
+                    </div>
+                  )}
+                </div>
+              )
+            })}
           </nav>
         )}
 
