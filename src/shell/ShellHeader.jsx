@@ -4,7 +4,7 @@ import { getRecentSessions, getMealsHistory, getJournalHistory, getAllHabitJourn
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { useAppData } from '@fuel/hooks/useAppData.js'
 import { formatMetric, sumMetric } from '@fuel-shared/utils/utils.js'
-import { NAV_ITEMS } from './NavigationItems.js'
+import { NAV_ITEMS, SUB_NAV } from './NavigationItems.js'
 import { formatRuntimeDate, localISO, shiftISODate, weekDates } from './runtimeDate.js'
 
 const DOMAIN_META = [
@@ -56,7 +56,20 @@ function FuelHeaderSummary(props) {
   )
 }
 
-export default function ShellHeader({ tab, runtimeDate, setRuntimeDate, compact = false }) {
+function findSubTabLabel(tab, subTab) {
+  if (!subTab) return null
+  const navItems = SUB_NAV[tab] || []
+  for (const item of navItems) {
+    if (item.id === subTab) return item.label
+    const child = item.sub?.find((entry) => entry.id === subTab)
+    if (child) return child.label
+  }
+  if (tab === 'home' && subTab === 'fitness') return 'Fitness Gate'
+  if (tab === 'relax' && subTab === 'dash') return 'Dashboard'
+  return null
+}
+
+export default function ShellHeader({ tab, subTab = null, runtimeDate, setRuntimeDate, compact = false, subNav = null, onSubTab = null }) {
   const [activity, setActivity] = useState(() => buildDayMap([], [], [], []))
 
   useEffect(() => {
@@ -77,12 +90,14 @@ export default function ShellHeader({ tab, runtimeDate, setRuntimeDate, compact 
   }, [])
 
   const current = NAV_ITEMS.find((item) => item.id === tab) || NAV_ITEMS[0]
+  const currentSubTabLabel = findSubTabLabel(tab, subTab)
   const dates = useMemo(() => weekDates(runtimeDate), [runtimeDate])
   const todayIso = localISO()
   const isToday = runtimeDate === todayIso
   const containerClass = compact
     ? 'mx-3 mt-3 rounded-[2rem] border border-white/10 bg-white/5 px-4 py-4 shadow-lg backdrop-blur-xl'
     : 'mx-auto mb-6 max-w-[1600px] rounded-[2rem] border border-white/10 bg-white/5 px-5 py-5 shadow-lg backdrop-blur-xl lg:px-7'
+  const showSubNav = Array.isArray(subNav) && subNav.length > 0 && (compact || tab === 'relax')
 
   return (
     <header className={containerClass}>
@@ -94,7 +109,14 @@ export default function ShellHeader({ tab, runtimeDate, setRuntimeDate, compact 
             </div>
             <div className="min-w-0">
               <div className="text-[10px] font-black uppercase tracking-[0.28em] text-fit-dim">VitalOS Runtime</div>
-              <div className={`${compact ? 'text-base' : 'text-xl lg:text-2xl'} truncate font-black text-fit-ink`}>{current.label}</div>
+              <div className="flex min-w-0 flex-wrap items-center gap-2">
+                <div className={`${compact ? 'text-base' : 'text-xl lg:text-2xl'} truncate font-black text-fit-ink`}>{current.label}</div>
+                {currentSubTabLabel ? (
+                  <span className="rounded-full border border-white/10 bg-white/5 px-2.5 py-1 text-[9px] font-black uppercase tracking-[0.18em] text-fit-dim">
+                    {currentSubTabLabel}
+                  </span>
+                ) : null}
+              </div>
             </div>
           </div>
           <div className="flex items-center gap-2 text-fit-dim">
@@ -105,9 +127,9 @@ export default function ShellHeader({ tab, runtimeDate, setRuntimeDate, compact 
 
         <div className={`${compact ? 'space-y-3' : 'space-y-3 xl:min-w-[560px]'}`}>
           {tab === 'fuel' ? <FuelHeaderSummary runtimeDate={runtimeDate} compact={compact} /> : null}
-          <div className="flex items-center justify-between gap-2">
+          <div className={`flex gap-2 ${compact ? 'flex-col items-stretch' : 'items-center justify-between'}`}>
             <div className="text-[10px] font-black uppercase tracking-[0.24em] text-fit-dim">Shell Date</div>
-            <div className="flex items-center gap-2">
+            <div className={`flex gap-2 ${compact ? 'flex-wrap items-center' : 'items-center justify-end'}`}>
               <button
                 onClick={() => setRuntimeDate(shiftISODate(runtimeDate, -1))}
                 className="flex h-9 w-9 items-center justify-center rounded-xl border border-white/10 bg-fit-bg2 text-fit-dim transition hover:text-fit-accent"
@@ -122,6 +144,12 @@ export default function ShellHeader({ tab, runtimeDate, setRuntimeDate, compact 
               >
                 Heute
               </button>
+              <input
+                type="date"
+                value={runtimeDate}
+                onChange={(event) => setRuntimeDate(event.target.value)}
+                className={`${compact ? 'flex-1 min-w-[9.5rem]' : 'w-[10.5rem]'} h-9 rounded-xl border border-white/10 bg-fit-bg2 px-3 text-xs font-black uppercase tracking-[0.1em] text-fit-ink outline-none transition focus:border-fit-accent`}
+              />
               <button
                 onClick={() => setRuntimeDate(shiftISODate(runtimeDate, 1))}
                 disabled={isToday}
@@ -172,6 +200,28 @@ export default function ShellHeader({ tab, runtimeDate, setRuntimeDate, compact 
           </div>
         </div>
       </div>
+
+      {showSubNav ? (
+        <nav className={`mt-4 flex gap-2 overflow-x-auto pb-1 ${compact ? '' : 'xl:max-w-[560px] xl:ml-auto'}`}>
+          {subNav.map(({ id, label, Icon }) => {
+            const active = subTab === id
+            return (
+              <button
+                key={id}
+                onClick={() => onSubTab?.(id)}
+                className={`inline-flex shrink-0 items-center gap-2 rounded-full border px-3 py-2 text-[10px] font-black uppercase tracking-[0.16em] transition ${
+                  active
+                    ? 'border-fit-accent/30 bg-fit-accent text-black'
+                    : 'border-white/10 bg-fit-bg2 text-fit-dim hover:text-fit-ink'
+                }`}
+              >
+                <Icon size={13} />
+                {label}
+              </button>
+            )
+          })}
+        </nav>
+      ) : null}
     </header>
   )
 }

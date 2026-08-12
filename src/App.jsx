@@ -40,7 +40,10 @@ function HomeFitnessGate({ onSelect }) {
 
 function readHashState() {
   const raw = window.location.hash.replace(/^#\/?/, '')
-  const [mainTab = 'hub', subTab = null, date = null] = raw.split('/')
+  const [mainTab = 'hub', second = null, third = null] = raw.split('/')
+  const dateLike = /^\d{4}-\d{2}-\d{2}$/
+  const subTab = second && !dateLike.test(second) ? second : null
+  const date = dateLike.test(second || '') ? second : third
   if (mainTab === 'dashboard') return { tab: 'home', subTab: null }
   if (mainTab === 'learn') return { tab: 'fitness', subTab: 'learn' }
   if (mainTab === 'journal') return { tab: 'journal', subTab: null }
@@ -52,6 +55,13 @@ function readHashState() {
     subTab: subTab || null,
     date: date || null,
   }
+}
+
+function buildHashState({ tab, subTab = null, date = null }) {
+  const parts = [tab]
+  if (subTab) parts.push(subTab)
+  if (date) parts.push(date)
+  return `#${parts.join('/')}`
 }
 
 function Views({ tab, fitnessProps, fuelTab, setFuelTab, relaxTab, setRelaxTab, homeGate, onHomeGateSelect, user, settingsProps, openSession, compact, muscleLanguage, taxonomy, runtimeDate, onRuntimeDateChange, navigate }) {
@@ -189,21 +199,28 @@ export default function App() {
 
   useEffect(() => {
     const { tab: hashTab, date } = readHashState()
-    if (hashTab === 'fuel' && date && date !== runtimeDate) setRuntimeDate(date)
+    if ((hashTab === 'fuel' || hashTab === 'journal' || hashTab === 'habits' || hashTab === 'relax') && date && date !== runtimeDate) {
+      setRuntimeDate(date)
+    }
+    if (hashTab === 'fitness' && readHashState().subTab === 'session' && date) {
+      setSessionDate(date)
+    }
   }, [])
 
   useEffect(() => {
     const nextHash = tab === 'fitness'
-      ? (fitnessTab ? `#${tab}/${fitnessTab}` : `#${tab}`)
+      ? buildHashState({ tab, subTab: fitnessTab, date: fitnessTab === 'session' ? (sessionDate || runtimeDate) : null })
       : tab === 'home'
-        ? (homeGate ? `#${tab}/${homeGate}` : `#${tab}`)
+        ? buildHashState({ tab, subTab: homeGate })
       : tab === 'fuel'
-        ? `#${tab}/${fuelTab || 'food'}/${runtimeDate}`
-        : tab === 'relax'
-          ? `#${tab}/${relaxTab || 'dash'}`
-        : `#${tab}`
+        ? buildHashState({ tab, subTab: fuelTab || 'food', date: runtimeDate })
+      : tab === 'relax'
+        ? buildHashState({ tab, subTab: relaxTab || 'dash', date: runtimeDate })
+      : tab === 'journal' || tab === 'habits'
+        ? buildHashState({ tab, date: runtimeDate })
+        : buildHashState({ tab })
     if (window.location.hash !== nextHash) history.pushState(null, '', nextHash)
-  }, [tab, fitnessTab, homeGate, fuelTab, relaxTab])
+  }, [tab, fitnessTab, homeGate, fuelTab, relaxTab, runtimeDate, sessionDate])
 
   useEffect(() => {
     function syncFromLocation() {
@@ -211,8 +228,10 @@ export default function App() {
       setTab(nextTab)
       if (nextTab === 'home') setHomeGate(subTab || null)
       if (nextTab === 'fitness') setFitnessTab(subTab || null)
+      if (nextTab === 'fitness' && subTab === 'session') setSessionDate(date || runtimeDate)
       if (nextTab === 'fuel' && subTab) setFuelTab(subTab)
       if (nextTab === 'fuel' && date) setRuntimeDate(date)
+      if ((nextTab === 'journal' || nextTab === 'habits' || nextTab === 'relax') && date) setRuntimeDate(date)
       if (nextTab === 'relax') setRelaxTab(subTab || 'dash')
     }
 
@@ -304,6 +323,15 @@ export default function App() {
 
       const settingsProps = { user, signOut }
       const showDesktopChrome = tab !== 'hub'
+      const shellSubTab = tab === 'fitness'
+        ? fitnessTab
+        : tab === 'fuel'
+          ? fuelTab
+          : tab === 'relax'
+            ? relaxTab
+            : tab === 'home'
+              ? homeGate
+              : null
 
       const fitnessProps = {
         recentDays, coverageThreshold,
@@ -314,8 +342,22 @@ export default function App() {
         onNavigateShell: navigate,
         sidebarPinned, showDesktopChrome,
       }
-      const shellHeader = <ShellHeader tab={tab} runtimeDate={runtimeDate} setRuntimeDate={setRuntimeDate} />
-      const mobileShellHeader = <ShellHeader tab={tab} runtimeDate={runtimeDate} setRuntimeDate={setRuntimeDate} compact />
+      const shellSubNav = tab === 'fitness'
+        ? SUB_NAV.fitness
+        : tab === 'fuel'
+          ? SUB_NAV.fuel
+          : tab === 'relax'
+            ? SUB_NAV.relax
+            : null
+      const shellSubTabSetter = tab === 'fitness'
+        ? setFitnessTab
+        : tab === 'fuel'
+          ? setFuelTab
+          : tab === 'relax'
+            ? setRelaxTab
+            : null
+      const shellHeader = <ShellHeader tab={tab} subTab={shellSubTab} runtimeDate={runtimeDate} setRuntimeDate={setRuntimeDate} subNav={shellSubNav} onSubTab={shellSubTabSetter} />
+      const mobileShellHeader = <ShellHeader tab={tab} subTab={shellSubTab} runtimeDate={runtimeDate} setRuntimeDate={setRuntimeDate} compact subNav={shellSubNav} onSubTab={shellSubTabSetter} />
 
       return (
         <ErrorBoundary>
@@ -323,9 +365,9 @@ export default function App() {
         <div className="app-shell flex min-h-screen overflow-x-hidden w-full bg-fit-bg text-fit-ink font-sans transition-colors duration-500">
         {showDesktopChrome && (
         <Sidebar tab={tab} navigate={navigate} pinned={sidebarPinned} setPinned={setSidebarPinned} user={user}
-        subNav={tab === 'fitness' ? SUB_NAV.fitness : tab === 'fuel' ? SUB_NAV.fuel : null}
-        subTab={tab === 'fitness' ? fitnessTab : tab === 'fuel' ? fuelTab : null}
-        onSubTab={tab === 'fitness' ? setFitnessTab : tab === 'fuel' ? setFuelTab : null}>
+        subNav={tab === 'fitness' ? SUB_NAV.fitness : tab === 'fuel' ? SUB_NAV.fuel : tab === 'relax' ? SUB_NAV.relax : null}
+        subTab={tab === 'fitness' ? fitnessTab : tab === 'fuel' ? fuelTab : tab === 'relax' ? relaxTab : null}
+        onSubTab={tab === 'fitness' ? setFitnessTab : tab === 'fuel' ? setFuelTab : tab === 'relax' ? setRelaxTab : null}>
         <UserProfile user={user} subtitle={isLocalMode() ? `${user?.email || 'localhost'} · localhost` : (user?.email || '')} onOpenSettings={() => navigate('settings')} />
         {!isLocalMode() && (
           <button onClick={signOut} className="w-full flex items-center justify-center gap-2 py-2 text-[10px] font-black uppercase tracking-widest text-fit-red bg-fit-red/5 border border-fit-red/10 rounded-xl hover:bg-fit-red/10 transition-all">

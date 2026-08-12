@@ -7,7 +7,6 @@ import { NAV_ITEMS as FITNESS_NAV_ITEMS } from '@constants/NavigationItems.js'
 
 export const NAV_ITEMS = [
   { id: 'hub',      label: 'Hub',     Icon: Home },
-  { id: 'home',     label: 'Home',    Icon: LayoutDashboard },
   { id: 'fitness',  label: 'Fitness', Icon: Dumbbell },
   { id: 'fuel',     label: 'Fuel',    Icon: Flame },
   { id: 'journal',  label: 'Journal', Icon: NotebookPen },
@@ -47,6 +46,14 @@ export const SUB_NAV = {
     { id: 'food',        label: 'Food',      Icon: UtensilsCrossed },
     { id: 'supplements', label: 'Supps',     Icon: Pill },
     { id: 'micros',      label: 'Mikros',    Icon: Microscope },
+  ],
+  relax: [
+    { id: 'dash',    label: 'Heute',   Icon: Home },
+    { id: 'session', label: 'Session', Icon: MoonStar },
+    { id: 'journal', label: 'Journal', Icon: NotebookPen },
+    { id: 'stats',   label: 'Stats',   Icon: BarChart3 },
+    { id: 'physio',  label: 'Physio',  Icon: Zap },
+    { id: 'catalog', label: 'Catalog', Icon: Microscope },
   ],
 }
 

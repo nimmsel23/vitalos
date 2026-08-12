@@ -23,8 +23,6 @@ const TABS = [
   { id: 'catalog', label: 'Catalog', Icon: Beaker,    View: lazy(() => import('@relax/views/SubstanceCatalog.jsx')) },
 ]
 
-const NAV_TABS = [...TABS.slice(0, 2), { id: 'journal', label: 'Journal', Icon: BookOpen }, ...TABS.slice(2)]
-
 export default function RelaxApp({ subTab = 'dash', onSubTab, onOpenSession, runtimeDate, onRuntimeDateChange }) {
   const [tab, setTab] = useState(subTab || 'dash')
   const active = TABS.find(t => t.id === tab)
@@ -41,16 +39,8 @@ export default function RelaxApp({ subTab = 'dash', onSubTab, onOpenSession, run
 
   return (
     <div className="relax-scope flex flex-col h-full">
-      <header
-        style={{ background: 'var(--glass)', borderBottom: '1px solid var(--glass-border)', backdropFilter: 'blur(20px)' }}
-        className="flex items-center gap-2 px-4 py-2.5 z-20 shrink-0 font-extrabold text-base tracking-tight"
-      >
-        <MoonStar size={22} style={{ color: 'var(--accent)' }} />
-        Relax
-      </header>
-
       <main className="flex-1 overflow-y-auto overflow-x-hidden" style={{ WebkitOverflowScrolling: 'touch' }}>
-        <div className={fullBleed ? 'h-full flex flex-col' : 'max-w-2xl mx-auto px-4 py-4 pb-28'}>
+        <div className={fullBleed ? 'h-full flex flex-col' : 'max-w-2xl mx-auto px-4 py-4 pb-8'}>
           {tab === 'journal' ? (
             <Journal embedded onOpenSession={onOpenSession} date={runtimeDate} onDateChange={onRuntimeDateChange} />
           ) : (
@@ -60,23 +50,6 @@ export default function RelaxApp({ subTab = 'dash', onSubTab, onOpenSession, run
           )}
         </div>
       </main>
-
-      <nav
-        style={{ background: 'var(--glass)', borderTop: '1px solid var(--glass-border)', backdropFilter: 'blur(20px)' }}
-        className="flex shrink-0 px-2 pb-safe z-20"
-      >
-        {NAV_TABS.map(({ id, label, Icon }) => (
-          <button
-            key={id}
-            onClick={() => setTab(id)}
-            className="flex-1 flex flex-col items-center gap-0.5 py-2 rounded-xl text-[10px] font-semibold tracking-wide transition-all"
-            style={{ color: tab === id ? 'var(--accent)' : 'var(--dim)', background: 'none', border: 'none' }}
-          >
-            <Icon size={22} />
-            {label}
-          </button>
-        ))}
-      </nav>
     </div>
   )
 }
