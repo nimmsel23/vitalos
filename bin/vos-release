@@ -1,0 +1,359 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+REAL_GIT="/usr/bin/git"
+VITALOS_DIR="/home/alpha/vitalos"
+ENSURE_LINKS_SCRIPT="$VITALOS_DIR/bin/ensure-node-modules-symlinks.sh"
+
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+YELLOW='\033[0;33m'
+BLUE='\033[0;34m'
+NC='\033[0m'
+
+declare -A STANDALONE_DIRS
+declare -A SUBMODULE_DIRS
+declare -A SOURCE_BRANCHES
+declare -A NOISE_PATTERNS
+
+STANDALONE_DIRS[fitness]="/home/alpha/fitness-dev"
+STANDALONE_DIRS[fuel]="/home/alpha/fuel-dev"
+STANDALONE_DIRS[habits]="/home/alpha/habits-dev"
+STANDALONE_DIRS[journal]="/home/alpha/journal-dev"
+STANDALONE_DIRS[learn]="/home/alpha/learn-dev"
+STANDALONE_DIRS[relax]="/home/alpha/vitalos/relax-app"
+
+SUBMODULE_DIRS[fitness]="/home/alpha/vitalos/fitness-app"
+SUBMODULE_DIRS[fuel]="/home/alpha/vitalos/fuel-app"
+SUBMODULE_DIRS[habits]="/home/alpha/vitalos/habit-app"
+SUBMODULE_DIRS[journal]="/home/alpha/vitalos/journal-app"
+SUBMODULE_DIRS[learn]="/home/alpha/vitalos/learn-dev"
+SUBMODULE_DIRS[relax]="/home/alpha/vitalos/relax-app"
+
+SOURCE_BRANCHES[fitness]="dev"
+SOURCE_BRANCHES[fuel]="dev"
+SOURCE_BRANCHES[habits]="dev"
+SOURCE_BRANCHES[journal]="dev"
+SOURCE_BRANCHES[learn]="dev"
+SOURCE_BRANCHES[relax]="master"
+
+NOISE_PATTERNS[fitness]='^\?\? (node_modules|functions/node_modules)$'
+NOISE_PATTERNS[fuel]='^(D .+\.bak([.].*)?|D .+\.baks.*|D .+\.mjs\.bak-.*|\?\? (node_modules|functions/node_modules))$'
+NOISE_PATTERNS[habits]='^(D .+\.bak([.].*)?|D .+\.baks.*|D .+\.mjs\.bak-.*|\?\? node_modules)$'
+NOISE_PATTERNS[journal]='^(D .+\.bak([.].*)?|D .+\.baks.*|D .+\.mjs\.bak-.*|\?\? (node_modules|functions/node_modules))$'
+NOISE_PATTERNS[learn]='^(D .+\.bak([.].*)?|D .+\.baks.*|D .+\.mjs\.bak-.*|\?\? node_modules)$'
+NOISE_PATTERNS[relax]='^$'
+
+MODULE_ORDER=(fitness fuel habits journal learn relax)
+SELECTED_MODULES=()
+PARENT_BUMPS=()
+DRY_RUN=0
+AUTO_YES=0
+
+usage() {
+    cat <<EOF
+vos-release — push standalone repos, merge into vitalos submodule masters, bump vitalos pointers
+
+Usage:
+  vos-release [module ...]
+  vos-release --all
+  vos-release --dry-run [module ...]
+  vos-release --help
+
+Modules:
+  fitness fuel habits journal learn relax
+
+Behavior:
+  - For fitness/fuel/habits/journal/learn: push standalone dev -> origin/dev,
+    merge dev into the corresponding vitalos submodule master, push master.
+  - For relax: push relax-app master directly (no dev->master merge).
+  - At the end: stage changed submodule pointers in /home/alpha/vitalos,
+    create one parent commit, and push vitalos master.
+
+Interactive:
+  - If no module is given and gum is installed, an interactive multi-select opens.
+  - Without gum, you must pass modules explicitly or use --all.
+
+Options:
+  --all       Release every known module
+  --dry-run   Print what would run, but do not change git state
+  --yes       Skip interactive confirmations
+  -h, --help  Show this help
+EOF
+}
+
+info() { echo -e "${BLUE}[INFO]${NC} $*"; }
+warn() { echo -e "${YELLOW}[WARN]${NC} $*"; }
+success() { echo -e "${GREEN}[OK]${NC} $*"; }
+error() { echo -e "${RED}[ERROR]${NC} $*" >&2; }
+
+have_gum() { command -v gum >/dev/null 2>&1; }
+
+run() {
+    if [[ "$DRY_RUN" -eq 1 ]]; then
+        printf '[dry-run] '
+        printf '%q ' "$@"
+        printf '\n'
+        return 0
+    fi
+    "$@"
+}
+
+confirm() {
+    local prompt="$1"
+    if [[ "$AUTO_YES" -eq 1 || "$DRY_RUN" -eq 1 ]]; then
+        return 0
+    fi
+    if have_gum; then
+        gum confirm "$prompt"
+        return $?
+    fi
+    printf '%s [y/N] ' "$prompt"
+    read -r reply
+    [[ "${reply,,}" == "y" ]]
+}
+
+require_dir() {
+    local dir="$1"
+    [[ -d "$dir" ]] || { error "Required directory missing: $dir"; exit 1; }
+}
+
+module_exists() {
+    [[ -n "${STANDALONE_DIRS[$1]:-}" ]]
+}
+
+status_filtered() {
+    local module="$1"
+    local repo="$2"
+    local pattern="${NOISE_PATTERNS[$module]}"
+    local status
+    status="$("$REAL_GIT" -C "$repo" status --short 2>/dev/null || true)"
+    if [[ -z "$status" ]]; then
+        return 0
+    fi
+    if [[ -n "$pattern" && "$pattern" != '^$' ]]; then
+        printf '%s\n' "$status" | grep -vE "$pattern" || true
+    else
+        printf '%s\n' "$status"
+    fi
+}
+
+require_clean_repo() {
+    local module="$1"
+    local repo="$2"
+    local label="$3"
+    local filtered
+    filtered="$(status_filtered "$module" "$repo")"
+    if [[ -n "$filtered" ]]; then
+        error "$label has unexpected changes:"
+        printf '%s\n' "$filtered" >&2
+        exit 1
+    fi
+}
+
+expect_branch() {
+    local repo="$1"
+    local branch_expected="$2"
+    local label="$3"
+    local branch
+    branch="$("$REAL_GIT" -C "$repo" branch --show-current)"
+    [[ "$branch" == "$branch_expected" ]] || {
+        error "Expected $label on branch $branch_expected, found $branch"
+        exit 1
+    }
+}
+
+select_modules_interactive() {
+    if have_gum; then
+        mapfile -t SELECTED_MODULES < <(printf '%s\n' "${MODULE_ORDER[@]}" | gum choose --no-limit --header "Select modules to release")
+        return
+    fi
+    error "No modules given and gum is not available. Pass modules explicitly or use --all."
+    exit 1
+}
+
+resolve_modules() {
+    local all=0
+    while (($#)); do
+        case "$1" in
+            --all)
+                all=1
+                ;;
+            --dry-run)
+                DRY_RUN=1
+                ;;
+            --yes)
+                AUTO_YES=1
+                ;;
+            -h|--help)
+                usage
+                exit 0
+                ;;
+            *)
+                module_exists "$1" || { error "Unknown module: $1"; usage; exit 1; }
+                SELECTED_MODULES+=("$1")
+                ;;
+        esac
+        shift
+    done
+
+    if [[ "$all" -eq 1 ]]; then
+        SELECTED_MODULES=("${MODULE_ORDER[@]}")
+    fi
+
+    if [[ "${#SELECTED_MODULES[@]}" -eq 0 ]]; then
+        select_modules_interactive
+    fi
+}
+
+ensure_symlinks_if_available() {
+    if [[ -x "$ENSURE_LINKS_SCRIPT" ]]; then
+        for module in "${SELECTED_MODULES[@]}"; do
+            local standalone_name
+            standalone_name="$(basename "${STANDALONE_DIRS[$module]}")"
+            run "$ENSURE_LINKS_SCRIPT" "$standalone_name"
+        done
+    fi
+}
+
+resolve_backup_conflicts() {
+    local repo="$1"
+    local unresolved
+    unresolved="$("$REAL_GIT" -C "$repo" diff --name-only --diff-filter=U || true)"
+    [[ -n "$unresolved" ]] || return 0
+
+    local file
+    while IFS= read -r file; do
+        [[ -n "$file" ]] || continue
+        if [[ ! "$file" =~ \.bak($|[.]) && ! "$file" =~ \.baks && ! "$file" =~ \.mjs\.bak- ]]; then
+            error "Non-backup merge conflict remains in $repo: $file"
+            return 1
+        fi
+        run "$REAL_GIT" -C "$repo" rm -- "$file"
+    done <<< "$unresolved"
+}
+
+merge_module() {
+    local module="$1"
+    local standalone="${STANDALONE_DIRS[$module]}"
+    local submodule="${SUBMODULE_DIRS[$module]}"
+    local source_branch="${SOURCE_BRANCHES[$module]}"
+    local submodule_name
+    submodule_name="$(basename "$submodule")"
+
+    require_dir "$standalone"
+    require_dir "$submodule"
+
+    if [[ "$module" != "relax" ]]; then
+        expect_branch "$standalone" "$source_branch" "$standalone"
+        expect_branch "$submodule" "master" "$submodule"
+        require_clean_repo "$module" "$standalone" "$standalone"
+        require_clean_repo "$module" "$submodule" "$submodule"
+
+        info "[$module] Push $source_branch -> origin/$source_branch"
+        run "$REAL_GIT" -C "$standalone" push origin "$source_branch"
+
+        info "[$module] Pull submodule master"
+        run "$REAL_GIT" -C "$submodule" pull origin master
+
+        info "[$module] Merge $source_branch into submodule master"
+        if ! run "$REAL_GIT" -C "$submodule" merge "$source_branch" --no-edit; then
+            if [[ "$DRY_RUN" -eq 1 ]]; then
+                error "Dry-run cannot auto-resolve merge failures for $module"
+                exit 1
+            fi
+            resolve_backup_conflicts "$submodule" || exit 1
+            run "$REAL_GIT" -C "$submodule" commit --no-edit
+        fi
+
+        info "[$module] Push submodule master -> origin/master"
+        run "$REAL_GIT" -C "$submodule" push origin master
+    else
+        expect_branch "$standalone" "master" "$standalone"
+        expect_branch "$submodule" "master" "$submodule"
+        require_clean_repo "$module" "$standalone" "$standalone"
+        info "[$module] Push master -> origin/master"
+        run "$REAL_GIT" -C "$standalone" push origin master
+    fi
+
+    PARENT_BUMPS+=("$submodule_name")
+}
+
+parent_status_filtered() {
+    "$REAL_GIT" -C "$VITALOS_DIR" status --short 2>/dev/null | grep -vE '^ \? (fitness-app|fuel-app|habit-app|journal-app|learn-dev|relax-app)$' || true
+}
+
+commit_parent_bumps() {
+    local filtered
+    filtered="$(parent_status_filtered)"
+    if [[ -n "$filtered" ]]; then
+        error "$VITALOS_DIR has unexpected changes:"
+        printf '%s\n' "$filtered" >&2
+        exit 1
+    fi
+
+    local unique=()
+    local seen=""
+    local item
+    for item in "${PARENT_BUMPS[@]}"; do
+        if [[ " $seen " != *" $item "* ]]; then
+            unique+=("$item")
+            seen+=" $item"
+        fi
+    done
+
+    [[ "${#unique[@]}" -gt 0 ]] || { warn "No submodule bumps collected"; return 0; }
+
+    info "Staging parent submodule pointers"
+    run "$REAL_GIT" -C "$VITALOS_DIR" add "${unique[@]}"
+
+    local joined
+    joined="$(IFS=', '; echo "${SELECTED_MODULES[*]}")"
+    local message="chore(submodules): bump ${joined} after release"
+
+    if [[ "$DRY_RUN" -eq 1 ]]; then
+        printf '[dry-run] %q ' "$REAL_GIT" -C "$VITALOS_DIR" commit -m "$message" -- "${unique[@]}"
+        printf '\n'
+        printf '[dry-run] %q ' "$REAL_GIT" -C "$VITALOS_DIR" push origin master
+        printf '\n'
+        return 0
+    fi
+
+    if "$REAL_GIT" -C "$VITALOS_DIR" diff --cached --quiet -- "${unique[@]}"; then
+        warn "No parent submodule pointer changes detected"
+    else
+        "$REAL_GIT" -C "$VITALOS_DIR" commit -m "$message" -- "${unique[@]}"
+    fi
+
+    info "Pushing vitalos master -> origin/master"
+    run "$REAL_GIT" -C "$VITALOS_DIR" push origin master
+}
+
+main() {
+    resolve_modules "$@"
+    require_dir "$VITALOS_DIR"
+    expect_branch "$VITALOS_DIR" "master" "$VITALOS_DIR"
+
+    if [[ "${#SELECTED_MODULES[@]}" -eq 0 ]]; then
+        error "No modules selected"
+        exit 1
+    fi
+
+    info "Selected modules: ${SELECTED_MODULES[*]}"
+    confirm "Run release flow for: ${SELECTED_MODULES[*]}?" || {
+        warn "Aborted."
+        exit 1
+    }
+
+    ensure_symlinks_if_available
+
+    local module
+    for module in "${SELECTED_MODULES[@]}"; do
+        merge_module "$module"
+    done
+
+    commit_parent_bumps
+    success "vos release flow complete"
+}
+
+main "$@"
