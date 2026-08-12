@@ -17,6 +17,7 @@ import FitnessAppGate from './shell/FitnessAppGate.jsx'
 const FitnessApp  = lazy(() => import('./shell/FitnessApp.jsx'))
 const FuelWrapper = lazy(() => import('./shell/FuelWrapper.jsx'))
 const HabitsApp   = lazy(() => import('./shell/HabitsApp.jsx'))
+const JournalApp  = lazy(() => import('./shell/JournalApp.jsx'))
 const RelaxApp    = lazy(() => import('./shell/RelaxApp.jsx'))
 const CoachApp    = lazy(() => import('@view/coach'))
 
@@ -42,8 +43,8 @@ function readHashState() {
   const [mainTab = 'hub', subTab = null, date = null] = raw.split('/')
   if (mainTab === 'dashboard') return { tab: 'home', subTab: null }
   if (mainTab === 'learn') return { tab: 'fitness', subTab: 'learn' }
-  if (mainTab === 'journal') return { tab: 'relax', subTab: 'journal' }
-  if (mainTab === 'fuel' && subTab === 'journal') return { tab: 'relax', subTab: 'journal' }
+  if (mainTab === 'journal') return { tab: 'journal', subTab: null }
+  if (mainTab === 'fuel' && subTab === 'journal') return { tab: 'journal', subTab: null }
   if (mainTab === 'fuel' && subTab === 'habits') return { tab: 'habits', subTab: null }
   if (mainTab === 'fuel' && subTab === 'settings') return { tab: 'settings', subTab: null }
   return {
@@ -66,6 +67,7 @@ function Views({ tab, fitnessProps, fuelTab, setFuelTab, relaxTab, setRelaxTab, 
     )}
     {tab === 'fitness'  && <FitnessApp  {...fitnessProps} />}
     {tab === 'fuel'     && <FuelWrapper user={user} subTab={fuelTab} onSubTab={setFuelTab} onNavigateShell={navigate} embedded />}
+    {tab === 'journal'  && <JournalApp onOpenSession={openSession} runtimeDate={runtimeDate} onRuntimeDateChange={onRuntimeDateChange} />}
     {tab === 'habits'   && <HabitsApp runtimeDate={runtimeDate} onRuntimeDateChange={onRuntimeDateChange} />}
     {tab === 'relax'    && <RelaxApp subTab={relaxTab} onSubTab={setRelaxTab} onOpenSession={openSession} runtimeDate={runtimeDate} onRuntimeDateChange={onRuntimeDateChange} />}
     {tab === 'settings' && <div className={`${p} max-w-[1600px] mx-auto`}><Settings {...settingsProps} /></div>}

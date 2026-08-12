@@ -4,7 +4,7 @@ import { useApp } from '@fuel/store.js'
 const FuelApp = lazy(() => import('fuel/FuelApp'))
 const SHELL_TAB_REDIRECTS = {
   dashboard: { type: 'fuel', tab: 'food' },
-  journal: { type: 'shell', tab: 'relax', subTab: 'journal' },
+  journal: { type: 'shell', tab: 'journal' },
   habits: { type: 'shell', tab: 'habits' },
   settings: { type: 'shell', tab: 'settings' },
 }

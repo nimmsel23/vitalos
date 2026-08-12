@@ -10,6 +10,7 @@ export const NAV_ITEMS = [
   { id: 'home',     label: 'Home',    Icon: LayoutDashboard },
   { id: 'fitness',  label: 'Fitness', Icon: Dumbbell },
   { id: 'fuel',     label: 'Fuel',    Icon: Flame },
+  { id: 'journal',  label: 'Journal', Icon: NotebookPen },
   { id: 'relax',    label: 'Relax',   Icon: MoonStar },
   { id: 'habits',   label: 'Habits',  Icon: CheckSquare },
   { id: 'settings', label: 'Setup',   Icon: Settings2 },
