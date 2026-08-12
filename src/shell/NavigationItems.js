@@ -6,7 +6,7 @@ import {
 import { NAV_ITEMS as FITNESS_NAV_ITEMS } from '@constants/NavigationItems.js'
 
 export const NAV_ITEMS = [
-  { id: 'hub',      label: 'Hub',     Icon: Home },
+  { id: 'home',     label: 'Home',    Icon: LayoutDashboard },
   { id: 'fitness',  label: 'Fitness', Icon: Dumbbell },
   { id: 'fuel',     label: 'Fuel',    Icon: Flame },
   { id: 'journal',  label: 'Journal', Icon: NotebookPen },
@@ -18,7 +18,7 @@ export const NAV_ITEMS = [
 // 'coach' ist absichtlich nicht in NAV_ITEMS (eigener, bedingt sichtbarer
 // Sidebar-Button außerhalb der Haupt-Nav-Schleife, siehe Sidebar.jsx) — muss
 // aber trotzdem als gültiger Tab gelten, sonst verwirft navigate() den Klick.
-export const VALID_TABS = new Set([...NAV_ITEMS.map(i => i.id), 'coach'])
+export const VALID_TABS = new Set(['hub', ...NAV_ITEMS.map(i => i.id), 'coach'])
 
 // Sidebar/Subnav ist bewusst NICHT identisch zum Fitness-Gate.
 // Das Gate ist die reduzierte Card-Einstiegsfläche; die Desktop-Sidebar bleibt

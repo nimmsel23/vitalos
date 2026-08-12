@@ -30,10 +30,20 @@ const Loader = ({ label }) => (
   </div>
 )
 
-function HomeFitnessGate({ onSelect }) {
+function HomeFitnessGate({ onSelect, onDismiss }) {
   return (
-    <div className="absolute inset-0 z-20 overflow-y-auto bg-[linear-gradient(180deg,rgba(10,10,12,0.58),rgba(10,10,12,0.88))] backdrop-blur-sm">
-      <FitnessAppGate navigate={onSelect} items={buildFitnessGateItems()} title="Fitness" />
+    <div className="fixed inset-0 z-40 flex items-end bg-[linear-gradient(180deg,rgba(10,10,12,0.28),rgba(10,10,12,0.68))] backdrop-blur-sm">
+      <button
+        aria-label="Fitness Gate schließen"
+        className="absolute inset-0"
+        onClick={onDismiss}
+      />
+      <div className="relative w-full translate-y-0 animate-in slide-in-from-bottom-8 duration-500">
+        <div className="mx-auto w-full max-w-[1600px] rounded-t-[2.5rem] border border-white/10 bg-[linear-gradient(180deg,rgba(18,18,22,0.98),rgba(10,10,14,0.98))] px-4 pb-8 pt-3 shadow-[0_-30px_80px_rgba(0,0,0,0.45)] sm:px-6 lg:px-8">
+          <div className="mx-auto mb-5 h-1.5 w-14 rounded-full bg-white/15" />
+          <FitnessAppGate navigate={onSelect} items={buildFitnessGateItems()} title="Fitness" variant="sheet" />
+        </div>
+      </div>
     </div>
   )
 }
@@ -72,7 +82,7 @@ function Views({ tab, fitnessProps, fuelTab, setFuelTab, relaxTab, setRelaxTab, 
     {tab === 'home'     && (
       <div className="relative min-h-[100dvh]">
         <Dashboard navigate={navigate} openSession={openSession} runtimeDate={runtimeDate} />
-        {homeGate === 'fitness' ? <HomeFitnessGate onSelect={onHomeGateSelect} /> : null}
+        {homeGate === 'fitness' ? <HomeFitnessGate onSelect={onHomeGateSelect} onDismiss={() => setHomeGate(null)} /> : null}
       </div>
     )}
     {tab === 'fitness'  && <FitnessApp  {...fitnessProps} />}
