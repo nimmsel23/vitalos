@@ -96,12 +96,12 @@ export default function ShellHeader({ tab, subTab = null, runtimeDate, setRuntim
   const isToday = runtimeDate === todayIso
   const containerClass = compact
     ? 'mx-3 mt-3 rounded-[2rem] border border-white/10 bg-white/5 px-4 py-4 shadow-lg backdrop-blur-xl'
-    : 'mx-auto mb-6 max-w-[1600px] rounded-[2rem] border border-white/10 bg-white/5 px-5 py-5 shadow-lg backdrop-blur-xl lg:px-7'
+    : 'mx-4 mb-4 mt-3 rounded-[2rem] border border-white/10 bg-white/5 px-5 py-5 shadow-lg backdrop-blur-xl lg:px-7'
   const showSubNav = Array.isArray(subNav) && subNav.length > 0 && (compact || tab === 'relax')
 
   return (
     <header className={containerClass}>
-      <div className={`flex ${compact ? 'flex-col gap-4' : 'flex-col gap-5 xl:flex-row xl:items-end xl:justify-between'}`}>
+      <div className={`flex ${compact ? 'flex-col gap-4' : 'flex-col gap-4 xl:flex-row xl:items-end xl:justify-between'}`}>
         <div className="min-w-0">
           <div className="mb-2 flex items-center gap-3">
             <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-fit-accent/15 text-fit-accent">
@@ -125,7 +125,7 @@ export default function ShellHeader({ tab, subTab = null, runtimeDate, setRuntim
           </div>
         </div>
 
-        <div className={`${compact ? 'space-y-3' : 'space-y-3 xl:min-w-[560px]'}`}>
+        <div className={`${compact ? 'space-y-3' : 'space-y-3 xl:min-w-[520px] xl:max-w-[720px]'}`}>
           {tab === 'fuel' ? <FuelHeaderSummary runtimeDate={runtimeDate} compact={compact} /> : null}
           <div className={`flex gap-2 ${compact ? 'flex-col items-stretch' : 'items-center justify-between'}`}>
             <div className="text-[10px] font-black uppercase tracking-[0.24em] text-fit-dim">Shell Date</div>
@@ -202,7 +202,7 @@ export default function ShellHeader({ tab, subTab = null, runtimeDate, setRuntim
       </div>
 
       {showSubNav ? (
-        <nav className={`mt-4 flex gap-2 overflow-x-auto pb-1 ${compact ? '' : 'xl:max-w-[560px] xl:ml-auto'}`}>
+        <nav className={`mt-4 flex gap-2 overflow-x-auto pb-1 ${compact ? '' : 'xl:ml-auto xl:max-w-[720px]'}`}>
           {subNav.map(({ id, label, Icon }) => {
             const active = subTab === id
             return (

@@ -3,15 +3,16 @@ import { NAV_ITEMS } from '@shell/NavigationItems';
 import { isLocalMode } from "@db";
 
 export default function Sidebar({ tab, navigate, pinned, setPinned, children, user, subNav, subTab, onSubTab }) {
-  const inSubApp = !!subNav
+  const hasSubNav = Array.isArray(subNav) && subNav.length > 0
+  const compactRail = !['home', 'settings', 'coach'].includes(tab)
   const visibleNavItems = NAV_ITEMS.filter(({ id }) => id !== 'hub')
 
   return (
-    <aside className={`hidden lg:flex flex-col alpha-glass fixed left-3 top-3 bottom-3 z-50 rounded-[2rem] border border-fit-line/70 shadow-2xl shadow-black/20 transition-all duration-500 ease-in-out ${pinned ? 'w-[280px]' : 'w-24'}`}>
-      <div className={`flex h-full flex-col p-5 ${!pinned ? 'items-center' : ''}`}>
+    <aside className={`hidden lg:flex flex-col alpha-glass fixed left-3 top-4 bottom-4 z-50 rounded-[2rem] border border-fit-line/70 shadow-2xl shadow-black/20 transition-all duration-500 ease-in-out ${pinned ? 'w-[280px]' : 'w-24'}`}>
+      <div className={`flex h-full flex-col p-4 ${!pinned ? 'items-center' : ''}`}>
 
         {/* Logo */}
-        <div className="flex items-center gap-4 mb-8 relative">
+        <div className="relative mb-6 flex items-center gap-4">
           <div className="w-10 h-10 shrink-0 rounded-xl bg-fit-accent text-black flex items-center justify-center shadow-xl shadow-fit-accent/30 transition-transform hover:scale-105">
             <Zap size={20} />
           </div>
@@ -28,11 +29,12 @@ export default function Sidebar({ tab, navigate, pinned, setPinned, children, us
           </button>
         </div>
 
-        {/* Haupt-Nav — fett im Shell-Modus, schlank im Sub-App-Modus */}
-        <nav className={`${inSubApp ? 'flex gap-1 flex-wrap justify-center mb-4 pb-4 border-b border-fit-line/30' : 'space-y-1 flex-1'}`}>
+        {/* Haupt-Nav bleibt in App-Views immer kompakt, damit die Rail nicht
+            zwischen Journal/Habits und Apps mit eigener Sub-Navigation springt. */}
+        <nav className={`${compactRail ? 'mb-4 flex flex-wrap justify-center gap-1 border-b border-fit-line/30 pb-4' : 'flex-1 space-y-1'}`}>
           {visibleNavItems.map(({ id, label, Icon }) => {
             const isActive = tab === id
-            if (inSubApp) {
+            if (compactRail) {
               // Kompakt: nur Icon + Tooltip
               return (
                 <button key={id} onClick={() => navigate(id)} title={label}
@@ -51,12 +53,19 @@ export default function Sidebar({ tab, navigate, pinned, setPinned, children, us
             )
           })}
 
-          {!inSubApp && (isLocalMode() || user?.email?.includes('alpha') || user?.uid === '59ole36uNpNwml5H6VDYCXyCME92') && (
-            <button onClick={() => navigate('coach')} title={!pinned ? 'Coach' : ''}
-              className={`w-full flex items-center transition-all duration-300 mt-2 ${pinned ? 'gap-4 px-5 py-4 rounded-2xl' : 'justify-center p-4 rounded-2xl'} ${tab === 'coach' ? 'bg-red-500 text-white shadow-xl shadow-red-500/20 font-black scale-[1.02]' : 'text-fit-dim hover:bg-red-500/10 font-bold'}`}>
-              <Shield size={20} className={tab === 'coach' ? 'stroke-[3]' : ''} />
-              {pinned && <span className="text-sm truncate animate-in fade-in slide-in-from-left-4 duration-500">Coach</span>}
-            </button>
+          {(isLocalMode() || user?.email?.includes('alpha') || user?.uid === '59ole36uNpNwml5H6VDYCXyCME92') && (
+            compactRail ? (
+              <button key="coach" onClick={() => navigate('coach')} title="Coach"
+                className={`p-2.5 rounded-xl transition-all duration-200 ${tab === 'coach' ? 'bg-red-500 text-white shadow-lg shadow-red-500/20' : 'text-fit-dim hover:bg-red-500/10'}`}>
+                <Shield size={16} className={tab === 'coach' ? 'stroke-[3]' : ''} />
+              </button>
+            ) : (
+              <button onClick={() => navigate('coach')} title={!pinned ? 'Coach' : ''}
+                className={`w-full flex items-center transition-all duration-300 mt-2 ${pinned ? 'gap-4 px-5 py-4 rounded-2xl' : 'justify-center p-4 rounded-2xl'} ${tab === 'coach' ? 'bg-red-500 text-white shadow-xl shadow-red-500/20 font-black scale-[1.02]' : 'text-fit-dim hover:bg-red-500/10 font-bold'}`}>
+                <Shield size={20} className={tab === 'coach' ? 'stroke-[3]' : ''} />
+                {pinned && <span className="text-sm truncate animate-in fade-in slide-in-from-left-4 duration-500">Coach</span>}
+              </button>
+            )
           )}
         </nav>
 
@@ -67,7 +76,7 @@ export default function Sidebar({ tab, navigate, pinned, setPinned, children, us
             `noDefaultSub` verhindert dass der erste Sub-Eintrag fälschlich
             als aktiv markiert wird, wenn eigentlich der Tab selbst (Bericht)
             angezeigt wird. */}
-        {inSubApp && (
+        {hasSubNav && (
           <nav className="flex-1 space-y-1.5">
             {subNav.map(({ id, label, Icon, sub, noDefaultSub }) => {
               const isChildActive = sub?.some((s) => s.id === subTab)
@@ -101,7 +110,7 @@ export default function Sidebar({ tab, navigate, pinned, setPinned, children, us
         )}
 
         {/* Footer */}
-        <div className={`mt-auto space-y-3 pt-5 border-t border-fit-line/30 ${!pinned ? 'w-full flex flex-col items-center overflow-hidden' : ''}`}>
+        <div className={`mt-auto space-y-3 border-t border-fit-line/30 pt-4 ${!pinned ? 'w-full flex flex-col items-center overflow-hidden' : ''}`}>
           {pinned ? children : (
             <div className="w-9 h-9 rounded-full bg-fit-bg2 border border-fit-line" />
           )}
