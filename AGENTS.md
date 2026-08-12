@@ -15,6 +15,14 @@ Endstand erreicht hat: sofort committen, ohne vorher um Erlaubnis zu fragen.
 - **Push des Meta-Repos bleibt separat** — nur committen, NICHT pushen, außer
   der User fordert es explizit an.
 
+## Release-Regel
+
+- Standardweg für VOS-Releases: `bin/vos-release`.
+- Interaktiv ohne Argumente oder gezielt z. B. `vos-release fitness fuel`.
+- `fitness-release` ist nur noch der schmale Alias für `vos-release fitness`.
+- Zweck: Standalone-Repo pushen, in `vitalos/<app>` nach `master` mergen, dann
+  im Parent-Repo den Submodule-Pointer bumpen.
+
 **Grund:** Ein Agent hat am 2026-08-06 seinen Context aufgegeben, bevor
 committed wurde — die Arbeit ging verloren, der User musste manuell
 nachfassen. Diese Regel überschreibt für dieses Repo das generelle
