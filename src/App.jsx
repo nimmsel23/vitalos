@@ -30,39 +30,50 @@ const Loader = ({ label }) => (
   </div>
 )
 
-function HomeFitnessGate({ onSelect, onDismiss }) {
+function HomeSheet({ label, onDismiss, children }) {
   return (
-    <div className="fixed inset-0 z-40 flex items-end bg-[linear-gradient(180deg,rgba(10,10,12,0.28),rgba(10,10,12,0.68))] backdrop-blur-sm">
+    <div className="fixed inset-0 z-50 flex items-end bg-[rgba(0,0,0,0.62)] backdrop-blur-sm">
       <button
-        aria-label="Fitness Gate schließen"
+        aria-label={`${label} schließen`}
         className="absolute inset-0"
         onClick={onDismiss}
       />
       <div className="relative w-full translate-y-0 animate-in slide-in-from-bottom-8 duration-500">
-        <div className="mx-auto w-full max-w-[1600px] rounded-t-[2.5rem] border border-white/10 bg-[linear-gradient(180deg,rgba(18,18,22,0.98),rgba(10,10,14,0.98))] px-4 pb-8 pt-3 shadow-[0_-30px_80px_rgba(0,0,0,0.45)] sm:px-6 lg:px-8">
-          <div className="mx-auto mb-5 h-1.5 w-14 rounded-full bg-white/15" />
-          <FitnessAppGate navigate={onSelect} items={buildFitnessGateItems()} title="Fitness" variant="sheet" />
+        <div className="mx-auto flex max-h-[88dvh] w-full max-w-[1600px] flex-col overflow-hidden rounded-t-[2.5rem] border border-white/10 bg-black shadow-[0_-30px_80px_rgba(0,0,0,0.45)]">
+          <div className="flex shrink-0 flex-col gap-3 px-4 pb-3 pt-3 sm:px-6 lg:px-8">
+            <div className="mx-auto h-1.5 w-14 rounded-full bg-white/15" />
+            <div className="flex items-center justify-between gap-4">
+              <div className="text-[10px] font-black uppercase tracking-[0.22em] text-fit-dim">{label}</div>
+              <button
+                onClick={onDismiss}
+                className="rounded-full border border-white/10 bg-white/5 px-3 py-1.5 text-[10px] font-black uppercase tracking-[0.18em] text-fit-dim transition hover:text-fit-ink"
+              >
+                Schließen
+              </button>
+            </div>
+          </div>
+          <div className="min-h-0 flex-1 overflow-y-auto px-4 pb-8 sm:px-6 lg:px-8">
+            {children}
+          </div>
         </div>
       </div>
     </div>
   )
 }
 
+function HomeFitnessGate({ onSelect, onDismiss }) {
+  return (
+    <HomeSheet label="Fitness Gate" onDismiss={onDismiss}>
+      <FitnessAppGate navigate={onSelect} items={buildFitnessGateItems()} title="Fitness" variant="sheet" />
+    </HomeSheet>
+  )
+}
+
 function HomeHubGate({ onSelect, onDismiss }) {
   return (
-    <div className="fixed inset-0 z-50 flex items-end bg-[linear-gradient(180deg,rgba(10,10,12,0.2),rgba(10,10,12,0.62))] backdrop-blur-sm">
-      <button
-        aria-label="Hub schließen"
-        className="absolute inset-0"
-        onClick={onDismiss}
-      />
-      <div className="relative w-full translate-y-0 animate-in slide-in-from-bottom-10 duration-500">
-        <div className="mx-auto w-full max-w-[1600px] rounded-t-[2.75rem] border border-white/10 bg-[linear-gradient(180deg,rgba(16,16,20,0.98),rgba(8,8,12,0.98))] px-4 pb-8 pt-3 shadow-[0_-30px_90px_rgba(0,0,0,0.48)] sm:px-6 lg:px-8">
-          <div className="mx-auto mb-5 h-1.5 w-14 rounded-full bg-white/15" />
-          <Hub navigate={onSelect} variant="sheet" />
-        </div>
-      </div>
-    </div>
+    <HomeSheet label="Hub" onDismiss={onDismiss}>
+      <Hub navigate={onSelect} variant="sheet" />
+    </HomeSheet>
   )
 }
 
@@ -96,7 +107,6 @@ function Views({ tab, fitnessProps, fuelTab, setFuelTab, relaxTab, setRelaxTab, 
   const p = compact ? 'p-4' : 'p-4 sm:p-8 lg:p-12'
   return (
     <Suspense fallback={<Loader label={tab} />}>
-    {tab === 'hub'      && <Hub navigate={navigate} openSession={openSession} runtimeDate={runtimeDate} />}
     {tab === 'home'     && (
       <div className="relative min-h-[100dvh]">
         <Dashboard navigate={navigate} openSession={openSession} runtimeDate={runtimeDate} />
@@ -280,6 +290,12 @@ export default function App() {
   }, [])
 
   function navigate(id, subTab = null) {
+    if (id === 'hub') {
+      setHomeGate(null)
+      setHubGateOpen(true)
+      setTab('home')
+      return
+    }
     if (hubGateOpen && id === 'fitness') {
       setHubGateOpen(false)
       setHomeGate('fitness')
@@ -361,6 +377,9 @@ export default function App() {
 
       const settingsProps = { user, signOut }
       const showDesktopChrome = true
+      const showShellHeader = tab !== 'coach'
+      const gateOpen = hubGateOpen || Boolean(homeGate)
+      const showSidebar = showDesktopChrome && !gateOpen
       const shellSubTab = tab === 'fitness'
         ? fitnessTab
         : tab === 'fuel'
@@ -401,7 +420,7 @@ export default function App() {
         <ErrorBoundary>
         {/* HIER ist die app-shell Klasse wieder an Ort und Stelle */}
         <div className="app-shell flex min-h-screen overflow-x-hidden w-full bg-fit-bg text-fit-ink font-sans transition-colors duration-500">
-        {showDesktopChrome && (
+        {showSidebar && (
         <Sidebar tab={tab} navigate={navigate} pinned={sidebarPinned} setPinned={setSidebarPinned} user={user}
         subNav={tab === 'fitness' ? SUB_NAV.fitness : tab === 'fuel' ? SUB_NAV.fuel : tab === 'relax' ? SUB_NAV.relax : null}
         subTab={tab === 'fitness' ? fitnessTab : tab === 'fuel' ? fuelTab : tab === 'relax' ? relaxTab : null}
@@ -418,12 +437,12 @@ export default function App() {
         </Sidebar>
         )}
 
-        <div className={`flex-1 min-w-0 transition-all duration-500 ease-in-out ${showDesktopChrome ? (sidebarPinned ? 'lg:ml-[304px]' : 'lg:ml-[108px]') : ''}`}>
+        <div className={`flex-1 min-w-0 transition-all duration-500 ease-in-out ${showSidebar ? (sidebarPinned ? 'lg:ml-[304px]' : 'lg:ml-[108px]') : ''}`}>
         {mobileLayout === 'fuel' ? (
           <>
           {/* Desktop: klassisches Layout */}
           <div className="hidden lg:block">
-          {showDesktopChrome ? shellHeader : null}
+          {showShellHeader ? shellHeader : null}
           <main className="relative min-h-[100dvh]">
           <Views tab={tab} fitnessProps={fitnessProps} fuelTab={fuelTab} setFuelTab={setFuelTab} muscleLanguage={muscleLanguage} taxonomy={taxonomy}
           user={user} settingsProps={settingsProps} openSession={openSession} runtimeDate={runtimeDate} onRuntimeDateChange={setRuntimeDate} navigate={navigate} relaxTab={relaxTab} setRelaxTab={setRelaxTab} homeGate={homeGate} onHomeGateSelect={handleHomeGateSelect} />
@@ -431,7 +450,7 @@ export default function App() {
           </main>
           </div>
           {/* Mobile: Fuel-Layout */}
-          <MobileShell tab={tab} navigate={navigate} mobileLayout="fuel" header={mobileShellHeader}>
+          <MobileShell tab={tab} navigate={navigate} mobileLayout="fuel" header={showShellHeader ? mobileShellHeader : null}>
           <Views tab={tab} fitnessProps={fitnessProps} fuelTab={fuelTab} setFuelTab={setFuelTab} muscleLanguage={muscleLanguage} taxonomy={taxonomy}
           user={user} settingsProps={settingsProps} openSession={openSession} compact runtimeDate={runtimeDate} onRuntimeDateChange={setRuntimeDate} navigate={navigate} relaxTab={relaxTab} setRelaxTab={setRelaxTab} homeGate={homeGate} onHomeGateSelect={handleHomeGateSelect} />
           {tab === 'home' && hubGateOpen ? <HomeHubGate onSelect={navigate} onDismiss={() => setHubGateOpen(false)} /> : null}
@@ -440,14 +459,14 @@ export default function App() {
         ) : (
           <>
           <div className="hidden lg:block">
-          {showDesktopChrome ? shellHeader : null}
+          {showShellHeader ? shellHeader : null}
           <main className="relative min-h-[100dvh]">
           <Views tab={tab} fitnessProps={fitnessProps} fuelTab={fuelTab} setFuelTab={setFuelTab} muscleLanguage={muscleLanguage} taxonomy={taxonomy}
           user={user} settingsProps={settingsProps} openSession={openSession} runtimeDate={runtimeDate} onRuntimeDateChange={setRuntimeDate} navigate={navigate} relaxTab={relaxTab} setRelaxTab={setRelaxTab} homeGate={homeGate} onHomeGateSelect={handleHomeGateSelect} />
           {tab === 'home' && hubGateOpen ? <HomeHubGate onSelect={navigate} onDismiss={() => setHubGateOpen(false)} /> : null}
           </main>
           </div>
-          <MobileShell tab={tab} navigate={navigate} mobileLayout="classic" header={mobileShellHeader}>
+          <MobileShell tab={tab} navigate={navigate} mobileLayout="classic" header={showShellHeader ? mobileShellHeader : null}>
           <Views tab={tab} fitnessProps={fitnessProps} fuelTab={fuelTab} setFuelTab={setFuelTab} muscleLanguage={muscleLanguage} taxonomy={taxonomy}
           user={user} settingsProps={settingsProps} openSession={openSession} compact runtimeDate={runtimeDate} onRuntimeDateChange={setRuntimeDate} navigate={navigate} relaxTab={relaxTab} setRelaxTab={setRelaxTab} homeGate={homeGate} onHomeGateSelect={handleHomeGateSelect} />
           {tab === 'home' && hubGateOpen ? <HomeHubGate onSelect={navigate} onDismiss={() => setHubGateOpen(false)} /> : null}

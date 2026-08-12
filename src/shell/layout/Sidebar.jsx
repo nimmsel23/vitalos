@@ -4,7 +4,6 @@ import { isLocalMode } from "@db";
 
 export default function Sidebar({ tab, navigate, pinned, setPinned, children, user, subNav, subTab, onSubTab }) {
   const hasSubNav = Array.isArray(subNav) && subNav.length > 0
-  const compactRail = !['home', 'settings', 'coach'].includes(tab)
   const visibleNavItems = NAV_ITEMS.filter(({ id }) => id !== 'hub')
 
   return (
@@ -23,7 +22,7 @@ export default function Sidebar({ tab, navigate, pinned, setPinned, children, us
           )}
           <button
             onClick={() => setPinned(!pinned)}
-            className={`absolute top-1 right-0 z-10 flex h-8 w-8 items-center justify-center rounded-full border border-fit-line bg-fit-card text-fit-dim shadow-lg transition-all hover:scale-110 hover:text-fit-accent active:scale-90 ${pinned ? '' : ''}`}
+            className="absolute top-1 right-0 z-10 flex h-8 w-8 items-center justify-center rounded-full border border-white/10 bg-white/8 text-fit-dim shadow-lg backdrop-blur transition-all hover:scale-110 hover:text-fit-accent active:scale-90"
           >
             {pinned ? <ChevronLeft size={14} /> : <ChevronRight size={14} />}
           </button>
@@ -31,41 +30,22 @@ export default function Sidebar({ tab, navigate, pinned, setPinned, children, us
 
         {/* Haupt-Nav bleibt in App-Views immer kompakt, damit die Rail nicht
             zwischen Journal/Habits und Apps mit eigener Sub-Navigation springt. */}
-        <nav className={`${compactRail ? 'mb-4 flex flex-wrap justify-center gap-1 border-b border-fit-line/30 pb-4' : 'flex-1 space-y-1'}`}>
+        <nav className="mb-4 flex flex-wrap justify-center gap-1 border-b border-fit-line/30 pb-4">
           {visibleNavItems.map(({ id, label, Icon }) => {
             const isActive = tab === id
-            if (compactRail) {
-              // Kompakt: nur Icon + Tooltip
-              return (
-                <button key={id} onClick={() => navigate(id)} title={label}
-                  className={`p-2.5 rounded-xl transition-all duration-200 ${isActive ? 'bg-fit-accent text-black shadow-lg shadow-fit-accent/20' : 'text-fit-dim hover:bg-white/5'}`}>
-                  <Icon size={16} className={isActive ? 'stroke-[3]' : ''} />
-                </button>
-              )
-            }
-            // Normal: fett
             return (
-              <button key={id} onClick={() => navigate(id)} title={!pinned ? label : ''}
-                className={`w-full flex items-center transition-all duration-300 ${pinned ? 'gap-4 px-5 py-4 rounded-2xl' : 'justify-center p-4 rounded-2xl'} ${isActive ? 'bg-fit-accent text-black shadow-xl shadow-fit-accent/20 font-black scale-[1.02]' : 'text-fit-dim hover:bg-white/5 font-bold hover:translate-x-1'}`}>
-                <Icon size={20} className={isActive ? 'stroke-[3]' : ''} />
-                {pinned && <span className="text-sm truncate animate-in fade-in slide-in-from-left-4 duration-500">{label}</span>}
+              <button key={id} onClick={() => navigate(id)} title={label}
+                className={`rounded-xl border p-2.5 transition-all duration-200 ${isActive ? 'border-fit-accent/30 bg-fit-accent/14 text-fit-accent shadow-lg shadow-fit-accent/10 backdrop-blur' : 'border-transparent text-fit-dim hover:border-white/10 hover:bg-white/5 hover:text-fit-ink'}`}>
+                <Icon size={16} className={isActive ? 'stroke-[3]' : ''} />
               </button>
             )
           })}
 
           {(isLocalMode() || user?.email?.includes('alpha') || user?.uid === '59ole36uNpNwml5H6VDYCXyCME92') && (
-            compactRail ? (
-              <button key="coach" onClick={() => navigate('coach')} title="Coach"
-                className={`p-2.5 rounded-xl transition-all duration-200 ${tab === 'coach' ? 'bg-red-500 text-white shadow-lg shadow-red-500/20' : 'text-fit-dim hover:bg-red-500/10'}`}>
-                <Shield size={16} className={tab === 'coach' ? 'stroke-[3]' : ''} />
-              </button>
-            ) : (
-              <button onClick={() => navigate('coach')} title={!pinned ? 'Coach' : ''}
-                className={`w-full flex items-center transition-all duration-300 mt-2 ${pinned ? 'gap-4 px-5 py-4 rounded-2xl' : 'justify-center p-4 rounded-2xl'} ${tab === 'coach' ? 'bg-red-500 text-white shadow-xl shadow-red-500/20 font-black scale-[1.02]' : 'text-fit-dim hover:bg-red-500/10 font-bold'}`}>
-                <Shield size={20} className={tab === 'coach' ? 'stroke-[3]' : ''} />
-                {pinned && <span className="text-sm truncate animate-in fade-in slide-in-from-left-4 duration-500">Coach</span>}
-              </button>
-            )
+            <button key="coach" onClick={() => navigate('coach')} title="Coach"
+              className={`rounded-xl border p-2.5 transition-all duration-200 ${tab === 'coach' ? 'border-red-500/30 bg-red-500/16 text-red-200 shadow-lg shadow-red-500/10 backdrop-blur' : 'border-transparent text-fit-dim hover:border-red-500/20 hover:bg-red-500/10 hover:text-red-200'}`}>
+              <Shield size={16} className={tab === 'coach' ? 'stroke-[3]' : ''} />
+            </button>
           )}
         </nav>
 
@@ -84,7 +64,7 @@ export default function Sidebar({ tab, navigate, pinned, setPinned, children, us
               return (
                 <div key={id}>
                   <button onClick={() => onSubTab?.(id)}
-                    className={`w-full flex items-center transition-all duration-200 ${pinned ? 'gap-4 px-5 py-4 rounded-2xl' : 'justify-center p-4 rounded-2xl'} ${isActive ? 'bg-fit-accent text-black shadow-xl shadow-fit-accent/20 font-black scale-[1.02]' : 'text-fit-dim hover:bg-white/5 font-bold hover:translate-x-1'}`}>
+                    className={`w-full border transition-all duration-200 ${pinned ? 'gap-4 px-5 py-4 rounded-2xl' : 'justify-center p-4 rounded-2xl'} ${isActive ? 'border-fit-accent/25 bg-white/10 text-fit-ink shadow-xl shadow-black/10 backdrop-blur font-black' : 'border-transparent text-fit-dim hover:border-white/10 hover:bg-white/5 font-bold'} flex items-center`}>
                     <Icon size={20} className={isActive ? 'stroke-[3]' : ''} />
                     {pinned && <span className="text-sm truncate animate-in fade-in slide-in-from-left-4 duration-500">{label}</span>}
                   </button>
@@ -95,7 +75,7 @@ export default function Sidebar({ tab, navigate, pinned, setPinned, children, us
                         const isSubActive = subTab === subId || (!isChildActive && !noDefaultSub && sub[0].id === subId)
                         return (
                           <button key={subId} onClick={() => onSubTab?.(subId)}
-                            className={`w-full flex items-center gap-3 px-4 py-2.5 rounded-xl text-[11px] font-black uppercase tracking-[0.15em] transition-all ${isSubActive ? 'bg-fit-accent/15 text-fit-accent' : 'text-fit-dim/60 hover:text-fit-dim hover:bg-white/5'}`}>
+                            className={`w-full flex items-center gap-3 rounded-xl border px-4 py-2.5 text-[11px] font-black uppercase tracking-[0.15em] transition-all ${isSubActive ? 'border-fit-accent/20 bg-fit-accent/12 text-fit-accent backdrop-blur' : 'border-transparent text-fit-dim/60 hover:border-white/10 hover:bg-white/5 hover:text-fit-dim'}`}>
                             <SubIcon size={13} />
                             {subLabel}
                           </button>
@@ -112,7 +92,7 @@ export default function Sidebar({ tab, navigate, pinned, setPinned, children, us
         {/* Footer */}
         <div className={`mt-auto space-y-3 border-t border-fit-line/30 pt-4 ${!pinned ? 'w-full flex flex-col items-center overflow-hidden' : ''}`}>
           {pinned ? children : (
-            <div className="w-9 h-9 rounded-full bg-fit-bg2 border border-fit-line" />
+            <div className="h-9 w-9 rounded-full border border-white/10 bg-white/6 backdrop-blur" />
           )}
         </div>
       </div>
