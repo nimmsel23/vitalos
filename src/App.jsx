@@ -32,14 +32,14 @@ const Loader = ({ label }) => (
 
 function HomeSheet({ label, onDismiss, children }) {
   return (
-    <div className="fixed inset-0 z-50 flex items-end bg-[rgba(0,0,0,0.62)] backdrop-blur-sm">
+    <div className="fixed inset-0 z-50 flex items-end bg-[linear-gradient(180deg,rgba(8,10,14,0.16),rgba(8,10,14,0.5))] backdrop-blur-md">
       <button
         aria-label={`${label} schließen`}
         className="absolute inset-0"
         onClick={onDismiss}
       />
       <div className="relative w-full translate-y-0 animate-in slide-in-from-bottom-8 duration-500">
-        <div className="mx-auto flex max-h-[88dvh] w-full max-w-[1600px] flex-col overflow-hidden rounded-t-[2.5rem] border border-white/10 bg-black shadow-[0_-30px_80px_rgba(0,0,0,0.45)]">
+        <div className="mx-auto flex max-h-[88dvh] w-full max-w-[1600px] flex-col overflow-hidden rounded-t-[2.5rem] border border-white/12 bg-[linear-gradient(180deg,rgba(20,24,32,0.72),rgba(10,12,18,0.82))] shadow-[0_-30px_80px_rgba(0,0,0,0.35)] backdrop-blur-2xl">
           <div className="flex shrink-0 flex-col gap-3 px-4 pb-3 pt-3 sm:px-6 lg:px-8">
             <div className="mx-auto h-1.5 w-14 rounded-full bg-white/15" />
             <div className="flex items-center justify-between gap-4">
