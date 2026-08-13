@@ -1,7 +1,6 @@
-import { lazy, Suspense, useEffect } from 'react'
+import { useEffect } from 'react'
 import { useApp } from '@fuel/store.js'
-
-const FuelApp = lazy(() => import('fuel/FuelApp'))
+import FuelApp from './FuelApp.jsx'
 const SHELL_TAB_REDIRECTS = {
   dashboard: { type: 'fuel', tab: 'food' },
   journal: { type: 'shell', tab: 'journal' },
@@ -46,13 +45,5 @@ export default function FuelWrapper({ user, subTab, onSubTab, onNavigateShell, e
     </div>
   )
 
-  return (
-    <Suspense fallback={
-      <div className="flex items-center justify-center h-full text-fit-dim text-xs font-black uppercase tracking-widest">
-        Fuel lädt…
-      </div>
-    }>
-      <FuelApp embedded={embedded} />
-    </Suspense>
-  )
+  return <FuelApp embedded={embedded} />
 }

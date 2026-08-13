@@ -108,7 +108,7 @@ export default function ShellHeader({ tab, subTab = null, runtimeDate, setRuntim
               <current.Icon size={18} />
             </div>
             <div className="min-w-0">
-              <div className="text-[10px] font-black uppercase tracking-[0.28em] text-fit-dim">VitalOS Runtime</div>
+              <div className="text-[10px] font-black uppercase tracking-[0.28em] text-fit-dim">Bereich</div>
               <div className="flex min-w-0 flex-wrap items-center gap-2">
                 <div className={`${compact ? 'text-base' : 'text-xl lg:text-2xl'} truncate font-black text-fit-ink`}>{current.label}</div>
                 {currentSubTabLabel ? (
@@ -128,7 +128,7 @@ export default function ShellHeader({ tab, subTab = null, runtimeDate, setRuntim
         <div className={`${compact ? 'space-y-3' : 'min-w-0 space-y-3'}`}>
           {tab === 'fuel' ? <FuelHeaderSummary runtimeDate={runtimeDate} compact={compact} /> : null}
           <div className={`${compact ? 'flex flex-col gap-2 items-stretch' : 'grid gap-3 xl:grid-cols-[auto_minmax(0,1fr)] xl:items-center'}`}>
-            <div className="text-[10px] font-black uppercase tracking-[0.24em] text-fit-dim">Shell Date</div>
+            <div className="text-[10px] font-black uppercase tracking-[0.24em] text-fit-dim">Datum</div>
             <div className={`${compact ? 'flex flex-wrap items-center gap-2' : 'grid min-w-0 grid-cols-[auto_auto_minmax(0,1fr)_auto] items-center gap-2'}`}>
               <button
                 onClick={() => setRuntimeDate(shiftISODate(runtimeDate, -1))}

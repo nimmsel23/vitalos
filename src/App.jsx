@@ -1,4 +1,4 @@
-import { useState, useEffect, lazy, Suspense } from 'react'
+import { useState, useEffect } from 'react'
 import { RefreshCw } from 'lucide-react'
 import { watchAuth, signIn, signInEmail, signUpEmail, signOut, isLocalMode, auth, getUserProfile } from '@db'
 import { VALID_TABS, SUB_NAV, buildFitnessGateItems } from './shell/NavigationItems.js'
@@ -13,22 +13,15 @@ import { useApp as useFuelAppStore, useSettings as useFuelStore } from '@fuel/st
 import ShellHeader from './shell/ShellHeader.jsx'
 import { useShellSettings } from './shell/store.js'
 import FitnessAppGate from './shell/FitnessAppGate.jsx'
-
-const FitnessApp  = lazy(() => import('./shell/FitnessApp.jsx'))
-const FuelWrapper = lazy(() => import('./shell/FuelWrapper.jsx'))
-const HabitsApp   = lazy(() => import('./shell/HabitsApp.jsx'))
-const JournalApp  = lazy(() => import('./shell/JournalApp.jsx'))
-const RelaxApp    = lazy(() => import('./shell/RelaxApp.jsx'))
-const CoachApp    = lazy(() => import('@view/coach'))
+import FitnessApp from './shell/FitnessApp.jsx'
+import FuelWrapper from './shell/FuelWrapper.jsx'
+import HabitsApp from './shell/HabitsApp.jsx'
+import JournalApp from './shell/JournalApp.jsx'
+import RelaxApp from './shell/RelaxApp.jsx'
+import CoachApp from '@view/coach'
 
 const DAY_START = 8
 const DAY_END   = 20
-
-const Loader = ({ label }) => (
-  <div className="flex items-center justify-center h-full text-fit-dim text-xs font-black uppercase tracking-widest">
-  {label}…
-  </div>
-)
 
 function HomeSheet({ label, onDismiss, children }) {
   return (
@@ -108,7 +101,7 @@ function buildHashState({ tab, subTab = null, date = null }) {
 function Views({ tab, fitnessProps, fuelTab, setFuelTab, relaxTab, setRelaxTab, homeGate, onHomeGateSelect, user, settingsProps, openSession, compact, muscleLanguage, taxonomy, runtimeDate, onRuntimeDateChange, navigate }) {
   const p = compact ? 'p-4' : 'p-4 sm:p-8 lg:p-12'
   return (
-    <Suspense fallback={<Loader label={tab} />}>
+    <>
     {tab === 'home'     && (
       <div className="relative min-h-[100dvh]">
         <Dashboard navigate={navigate} openSession={openSession} runtimeDate={runtimeDate} />
@@ -122,7 +115,7 @@ function Views({ tab, fitnessProps, fuelTab, setFuelTab, relaxTab, setRelaxTab, 
     {tab === 'relax'    && <RelaxApp subTab={relaxTab} onSubTab={setRelaxTab} onOpenSession={openSession} runtimeDate={runtimeDate} onRuntimeDateChange={onRuntimeDateChange} />}
     {tab === 'settings' && <div className={`${p} max-w-[1600px] mx-auto`}><Settings {...settingsProps} /></div>}
     {tab === 'coach'    && <div className={`${p} max-w-[1600px] mx-auto`}><CoachApp /></div>}
-    </Suspense>
+    </>
   )
 }
 

@@ -124,11 +124,11 @@ export default function Dashboard({ navigate, openSession, runtimeDate }) {
             <div className="max-w-3xl">
               <div className="mb-3 inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-3 py-1.5 text-[10px] font-black uppercase tracking-[0.24em] text-fit-accent">
                 <Sparkles size={12} />
-                Shell Dashboard
+                Überblick
               </div>
               <h1 className="text-3xl font-black tracking-tight text-fit-ink md:text-5xl">Heute</h1>
               <p className="mt-3 max-w-2xl text-sm text-fit-dim md:text-base">
-                Ein gemeinsamer Einstieg für Training, Essen und den Rest der Shell.
+                Ein gemeinsamer Einstieg für Training, Essen und den Tag.
               </p>
             </div>
 

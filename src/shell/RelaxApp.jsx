@@ -6,9 +6,14 @@
  * relax-scope.css, Views sind prop-los.
  */
 
-import { useEffect, useState, lazy, Suspense } from 'react'
+import { useEffect, useState } from 'react'
 import { Activity, MoonStar, BookOpen, BarChart3, Zap, Beaker } from 'lucide-react'
 import Journal from '@view/journal'
+import DashboardView from '@relax/views/Dashboard.jsx'
+import SessionView from '@relax/views/Session.jsx'
+import StatsView from '@relax/views/Stats.jsx'
+import PhysioTimelineView from '@relax/views/PhysioTimeline.jsx'
+import SubstanceCatalogView from '@relax/views/SubstanceCatalog.jsx'
 import './relax-scope.css'
 
 // Muss vor dem ersten lazy-Import der Views gesetzt sein — relax' api.js
@@ -16,11 +21,11 @@ import './relax-scope.css'
 if (typeof window !== 'undefined') window.__RELAX_API_BASE__ = '/relax-api'
 
 const TABS = [
-  { id: 'dash',    label: 'Heute',   Icon: Activity,  View: lazy(() => import('@relax/views/Dashboard.jsx')) },
-  { id: 'session', label: 'Session', Icon: MoonStar,  View: lazy(() => import('@relax/views/Session.jsx')) },
-  { id: 'stats',   label: 'Stats',   Icon: BarChart3, View: lazy(() => import('@relax/views/Stats.jsx')) },
-  { id: 'physio',  label: 'Physio',  Icon: Zap,       View: lazy(() => import('@relax/views/PhysioTimeline.jsx')) },
-  { id: 'catalog', label: 'Catalog', Icon: Beaker,    View: lazy(() => import('@relax/views/SubstanceCatalog.jsx')) },
+  { id: 'dash',    label: 'Heute',   Icon: Activity,  View: DashboardView },
+  { id: 'session', label: 'Session', Icon: MoonStar,  View: SessionView },
+  { id: 'stats',   label: 'Stats',   Icon: BarChart3, View: StatsView },
+  { id: 'physio',  label: 'Physio',  Icon: Zap,       View: PhysioTimelineView },
+  { id: 'catalog', label: 'Catalog', Icon: Beaker,    View: SubstanceCatalogView },
 ]
 
 export default function RelaxApp({ subTab = 'dash', onSubTab, onOpenSession, runtimeDate, onRuntimeDateChange }) {
@@ -44,9 +49,7 @@ export default function RelaxApp({ subTab = 'dash', onSubTab, onOpenSession, run
           {tab === 'journal' ? (
             <Journal embedded onOpenSession={onOpenSession} date={runtimeDate} onDateChange={onRuntimeDateChange} />
           ) : (
-            <Suspense fallback={<div className="p-8 text-center" style={{ color: 'var(--dim)' }}>Laden…</div>}>
-              <View />
-            </Suspense>
+            <View />
           )}
         </div>
       </main>
