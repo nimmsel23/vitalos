@@ -101,7 +101,7 @@ export default function ShellHeader({ tab, subTab = null, runtimeDate, setRuntim
 
   return (
     <header className={containerClass}>
-      <div className={`flex ${compact ? 'flex-col gap-4' : 'flex-col gap-4 xl:flex-row xl:items-end xl:justify-between'}`}>
+      <div className={compact ? 'flex flex-col gap-4' : 'grid gap-5 xl:grid-cols-[minmax(0,0.95fr)_minmax(0,1.45fr)] xl:items-end 2xl:grid-cols-[minmax(0,0.9fr)_minmax(0,1.6fr)]'}>
         <div className="min-w-0">
           <div className="mb-2 flex items-center gap-3">
             <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-fit-accent/15 text-fit-accent">
@@ -125,11 +125,11 @@ export default function ShellHeader({ tab, subTab = null, runtimeDate, setRuntim
           </div>
         </div>
 
-        <div className={`${compact ? 'space-y-3' : 'space-y-3 xl:min-w-[520px] xl:max-w-[720px]'}`}>
+        <div className={`${compact ? 'space-y-3' : 'min-w-0 space-y-3'}`}>
           {tab === 'fuel' ? <FuelHeaderSummary runtimeDate={runtimeDate} compact={compact} /> : null}
-          <div className={`flex gap-2 ${compact ? 'flex-col items-stretch' : 'items-center justify-between'}`}>
+          <div className={`${compact ? 'flex flex-col gap-2 items-stretch' : 'grid gap-3 xl:grid-cols-[auto_minmax(0,1fr)] xl:items-center'}`}>
             <div className="text-[10px] font-black uppercase tracking-[0.24em] text-fit-dim">Shell Date</div>
-            <div className={`flex gap-2 ${compact ? 'flex-wrap items-center' : 'items-center justify-end'}`}>
+            <div className={`${compact ? 'flex flex-wrap items-center gap-2' : 'grid min-w-0 grid-cols-[auto_auto_minmax(0,1fr)_auto] items-center gap-2'}`}>
               <button
                 onClick={() => setRuntimeDate(shiftISODate(runtimeDate, -1))}
                 className="flex h-9 w-9 items-center justify-center rounded-xl border border-white/10 bg-fit-bg2 text-fit-dim transition hover:text-fit-accent"
@@ -148,7 +148,7 @@ export default function ShellHeader({ tab, subTab = null, runtimeDate, setRuntim
                 type="date"
                 value={runtimeDate}
                 onChange={(event) => setRuntimeDate(event.target.value)}
-                className={`${compact ? 'flex-1 min-w-[9.5rem]' : 'w-[10.5rem]'} h-9 rounded-xl border border-white/10 bg-fit-bg2 px-3 text-xs font-black uppercase tracking-[0.1em] text-fit-ink outline-none transition focus:border-fit-accent`}
+                className={`${compact ? 'min-w-[9.5rem] flex-1' : 'w-full min-w-0'} h-9 rounded-xl border border-white/10 bg-fit-bg2 px-3 text-xs font-black uppercase tracking-[0.1em] text-fit-ink outline-none transition focus:border-fit-accent`}
               />
               <button
                 onClick={() => setRuntimeDate(shiftISODate(runtimeDate, 1))}
@@ -202,7 +202,7 @@ export default function ShellHeader({ tab, subTab = null, runtimeDate, setRuntim
       </div>
 
       {showSubNav ? (
-        <nav className={`mt-4 flex gap-2 overflow-x-auto pb-1 ${compact ? '' : 'xl:ml-auto xl:max-w-[720px]'}`}>
+        <nav className={`mt-4 flex gap-2 overflow-x-auto pb-1 ${compact ? '' : 'xl:ml-auto xl:w-full'}`}>
           {subNav.map(({ id, label, Icon }) => {
             const active = subTab === id
             return (
