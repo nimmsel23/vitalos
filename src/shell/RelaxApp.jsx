@@ -17,8 +17,16 @@ import SubstanceCatalogView from '@relax/views/SubstanceCatalog.jsx'
 import './relax-scope.css'
 
 // Muss vor dem ersten lazy-Import der Views gesetzt sein — relax' api.js
-// liest window.__RELAX_API_BASE__ auf Modulebene. Shell-Proxy: /relax-api → :9123
-if (typeof window !== 'undefined') window.__RELAX_API_BASE__ = '/relax-api'
+// liest window.__RELAX_API_BASE__ auf Modulebene.
+// Lokal/ts.net (Vite-Dev-Proxy /relax-api → :9123 in vite.config.js): relativ.
+// Firebase Hosting hat keinen Backend-Proxy (statisches Hosting) — dort direkt
+// über den Tailscale Funnel ansprechen (`tailscale funnel --set-path=/relax-api/ :9123`).
+if (typeof window !== 'undefined') {
+  const host = window.location.hostname
+  window.__RELAX_API_BASE__ = (host.includes('web.app') || host.includes('firebaseapp.com'))
+    ? 'https://ideapad.tail7a15d6.ts.net/relax-api'
+    : '/relax-api'
+}
 
 const TABS = [
   { id: 'dash',    label: 'Heute',   Icon: Activity,  View: DashboardView },
