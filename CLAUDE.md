@@ -250,17 +250,21 @@ Sub-Repo erreicht Firebase nicht mehr.
 
 ### Git-Hooks: Ist-Zustand + Historie
 
-Meta-Repo und fitness-app/fuel-app haben `core.hooksPath = .githooks`
-(→ `.git/hooks/` ist dort wirkungslos). journal/habits/learn/relax-app haben
-kein `hooksPath` gesetzt.
+**Update 2026-08-16:** journal-app und habit-app haben inzwischen ebenfalls
+`core.hooksPath = .githooks` gesetzt. Einziges Repo ohne `hooksPath` UND
+ohne `.githooks/`-Verzeichnis ist **relax-app** — offener Punkt.
 
 | Repo | Hook | Status |
 |---|---|---|
 | vitalos | `.githooks/post-commit` | aktiv, nur Info-Ausgabe |
 | vitalos | `.githooks/pre-push` | nicht vorhanden; Schutz läuft über `push.recurseSubmodules=on-demand` |
 | vitalos | `.git/hooks/*` | wirkungslos, weil `core.hooksPath=.githooks` |
-| fitness-app | `.githooks/pre-commit`, `post-commit` | aktiv |
+| fitness-app | `.githooks/pre-commit`, `post-commit`, `pre-push`, `post-checkout`, `post-merge` | aktiv |
 | fuel-app | `.githooks/post-commit` | aktiv |
+| journal-app | `.githooks` | aktiv (Stand 2026-08-16) |
+| habit-app | `.githooks` | aktiv (Stand 2026-08-16) |
+| learn-dev | `.githooks` | aktiv (Stand 2026-08-16) |
+| relax-app | — | kein hooksPath, kein `.githooks/`-Ordner — offen |
 
 `git` ist systemweit ein Wrapper (`~/aos/bin/git`): blockt `git restore` und
 `git checkout --` (Datenverlust-Schutz), Override via `AOS_GIT_ALLOW_DISCARD=1`.
@@ -269,26 +273,31 @@ Er ruft KEINE Hooks auf.
 ### Branch-Konventionen
 
 - Überall ist **`master`** der Deploy-/Hauptbranch.
-- Sub-Repos (außer relax-app) haben zusätzlich `dev` mit Upstream
-  `origin/dev`. Stand 2026-07-16: `dev` == `master` in allen fünf (0/0
-  divergiert). Workflow: auf `dev` arbeiten, nach master mergen, pushen,
-  Pointer bumpen. relax-app hat keinen dev-Branch (bekannt, offen).
+- Sub-Repos haben zusätzlich `dev` mit Upstream `origin/dev` — inzwischen
+  **auch relax-app** (Stand 2026-08-16, seit 2026-07-16 nachgezogen).
+  Workflow: auf `dev` arbeiten, nach master mergen, pushen, Pointer bumpen.
 - `.gitmodules` hat bewusst KEIN `branch=`-Feld — Submodule-Stand wird
   ausschließlich über manuell gebumpte Commit-Pointer kontrolliert.
   `git submodule update --remote` daher nur gezielt einsetzen.
-- Meta-Repo-Altlasten: lokale Branches `merge` und
-  `mobile/mobile-optimizations-safe-area` (letzter auch auf origin) —
-  Status ungeklärt, vor Löschung Merge-Stand prüfen.
 
-### Bekannte Baustellen (Stand 2026-07-16)
+### Bekannte Baustellen (Stand 2026-08-16)
 
-- **learn-dev:** `dist-firebase/` und `node_modules/` sind teilweise
-  eingecheckt bzw. tauchen im `git status` auf — unsauberste Stelle im
-  Setup; gehören in die `.gitignore` + aus dem Index.
 - fuel-app/learn-dev: `.firebase/hosting.*.cache` ändert sich bei jedem
   lokalen Deploy → Dauer-Dirty der Submodules im Meta-Repo (` m`-Marker).
-- `.bak`-Workflows in `.github/workflows/` (Meta + Sub-Repos) sind
+- `.bak`-Workflows (`workflows.disabled/`) in allen 5 Sub-Repos sind
   deaktivierte Historie (per-Repo-CI konnte wegen Cross-Repo-Aliases nie
-  bauen, deshalb zentralisiert 2026-07-03). GitHub ignoriert `.yml.bak`.
-- Hook-Bereinigung Punkte 1/2/4/5 aus dem Audit (post-push archivieren,
-  hooksPath-Inkonsistenz, .bak-Workflows, alte Branches) noch offen.
+  bauen, deshalb zentralisiert 2026-07-03). GitHub ignoriert sie, aber
+  Aufräumen steht noch aus.
+- relax-app hat weder `core.hooksPath` noch ein `.githooks/`-Verzeichnis
+  (siehe Git-Hooks-Tabelle oben) — einziges Sub-Repo ohne Hook-Absicherung.
+- Hub.jsx zeigt für Journal/Habits/Learn bewusst keine Live-Stats, weil
+  `@habits-db` hart `@fitness-db/index.firestore.js` importiert (auch im
+  Coach/Local-Build) — 3 von 6 Tempeln ohne sauberen eigenen Datenpfad zum
+  Hub (siehe `src/shell/CLAUDE.md`).
+- Behoben seit 2026-07-16 (aus dieser Liste entfernt): learn-dev hatte
+  `dist-firebase/`/`node_modules/` eingecheckt (jetzt 0 getrackte Dateien).
+- Meta-Repo-Branch-Leichen `merge` (0 commits ahead, voll gemerged),
+  `mobile/mobile-optimizations-safe-area` (uralter Snapshot vor der
+  fitness-vos → fitness-app Umbenennung, klar überholt) und
+  `rename/local-app-dirs` (identisch zu master) — Löschung ausstehend,
+  User-Bestätigung angefragt (2026-08-16).
