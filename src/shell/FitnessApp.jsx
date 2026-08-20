@@ -14,10 +14,14 @@ function resolveFitnessRoute(id) {
   if (!id || id === 'gate') return { tab: 'gate', sessionSubTab: null, reviewSubTab: null, learnSubTab: null }
   if (id === 'session') return { tab: 'session', sessionSubTab: null, reviewSubTab: null, learnSubTab: null }
   if (id === 'today') return { tab: 'session', sessionSubTab: null, reviewSubTab: null, learnSubTab: null }
-  if (id === 'plan' || id === 'history') return { tab: 'session', sessionSubTab: id, reviewSubTab: null, learnSubTab: null }
+  if (id === 'timer' || id === 'skills' || id === 'plan' || id === 'history') {
+    return { tab: 'session', sessionSubTab: id, reviewSubTab: null, learnSubTab: null }
+  }
   if (id === 'review') return { tab: 'review', sessionSubTab: null, reviewSubTab: null, learnSubTab: null }
   if (id === 'report') return { tab: 'review', sessionSubTab: null, reviewSubTab: 'report', learnSubTab: null }
-  if (id === 'muscles' || id === 'readiness' || id === 'verlauf') return { tab: 'review', sessionSubTab: null, reviewSubTab: id, learnSubTab: null }
+  if (id === 'muscles' || id === 'readiness' || id === 'strength' || id === 'verlauf') {
+    return { tab: 'review', sessionSubTab: null, reviewSubTab: id, learnSubTab: null }
+  }
   if (id === 'learn') return { tab: 'learn', sessionSubTab: null, reviewSubTab: null, learnSubTab: 'exercises' }
   if (id === 'exercises' || id === 'anatomy' || id === 'quiz') return { tab: 'learn', sessionSubTab: null, reviewSubTab: null, learnSubTab: id }
   return { tab: id, sessionSubTab: null, reviewSubTab: null, learnSubTab: null }

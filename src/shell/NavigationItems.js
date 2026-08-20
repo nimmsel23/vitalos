@@ -1,7 +1,7 @@
 import {
-  Dumbbell, Flame, CheckSquare, Brain, Settings2,
-  Home, LayoutDashboard, BarChart3, UtensilsCrossed, Pill, Microscope, NotebookPen, MoonStar, Bell, Shield,
-  Layers, Zap, History, CalendarDays,
+  Dumbbell, Flame, CheckSquare, Settings2,
+  Home, LayoutDashboard, UtensilsCrossed, Pill, Microscope, NotebookPen, MoonStar, Shield,
+  CalendarDays,
 } from 'lucide-react'
 import { NAV_ITEMS as FITNESS_NAV_ITEMS } from '@constants/NavigationItems.js'
 
@@ -20,22 +20,11 @@ export const NAV_ITEMS = [
 // aber trotzdem als gültiger Tab gelten, sonst verwirft navigate() den Klick.
 export const VALID_TABS = new Set(['hub', ...NAV_ITEMS.map(i => i.id), 'coach'])
 
-// Sidebar/Subnav ist bewusst NICHT identisch zum Fitness-Gate.
-// Das Gate ist die reduzierte Card-Einstiegsfläche; die Desktop-Sidebar bleibt
-// eine eigene Navigationsschicht und wird separat gepflegt.
-// Struktur bewusst identisch zu fitness-apps eigener NAV_ITEMS (@fitness/src/
-// constants/NavigationItems.js) — 'review' hat dieselben verschachtelten
-// Nebenansichten (Muskeln/Readiness/Verlauf), 'Bericht' selbst ist keine davon
-// (noDefaultSub: true, siehe dortiger Kommentar) sondern der Review-Tab selbst.
-const FITNESS_SIDEBAR_NAV = [
-  { id: 'session', label: 'Training', Icon: Dumbbell },
-  { id: 'review',  label: 'Review',   Icon: BarChart3, noDefaultSub: true, sub: [
-    { id: 'readiness', label: 'Readiness', Icon: Zap },
-    { id: 'muscles',   label: 'Muskeln',   Icon: Layers },
-    { id: 'verlauf',   label: 'Verlauf',   Icon: History },
-  ]},
-  { id: 'learn',   label: 'Learn',    Icon: Brain },
-]
+// Die Shell nutzt dieselbe Fitness-Subnav-Struktur wie fitness-app selbst,
+// damit neue Untertabs nicht erneut manuell nachgezogen werden muessen.
+const FITNESS_SIDEBAR_NAV = FITNESS_NAV_ITEMS
+  .filter(({ id }) => id === 'session' || id === 'review' || id === 'learn')
+  .map((item) => ({ ...item }))
 
 // Log zuerst — die tägliche Kernaktion (analog zu Training bei Fitness),
 // Food/Supps/Mikros sind Nachschlagewerke, die man seltener direkt ansteuert.
