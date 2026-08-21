@@ -1,6 +1,7 @@
 import {
   Dumbbell, Flame, CheckSquare, Settings2,
   Home, UtensilsCrossed, Pill, Microscope, NotebookPen, MoonStar, Shield,
+  BarChart3, Zap,
   CalendarDays,
 } from 'lucide-react'
 import { NAV_ITEMS as FITNESS_NAV_ITEMS } from '@constants/NavigationItems.js'
