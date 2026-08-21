@@ -2,7 +2,7 @@ import { initializeApp, getApps, getApp } from "firebase/app";
 import { initializeFirestore, persistentLocalCache, persistentMultipleTabManager, getFirestore } from "firebase/firestore";
 import { getAuth, GoogleAuthProvider, browserLocalPersistence, setPersistence } from "firebase/auth";
 import { isSupported, getMessaging } from "firebase/messaging";
-import { getVertexAI } from "firebase/vertexai";
+import { getVertexAI as createVertexAI } from "firebase/vertexai";
 import { config } from "@firebase-config";
 
 // Guard gegen Doppel-Init: im Local-Build können Sub-Repo-firebase.js-Module
@@ -33,7 +33,12 @@ export const googleProvider = new GoogleAuthProvider();
 
 // Vertex AI — fuel-dev (ScannerModal, LogView, MicrosAiCoach) erwartet diesen
 // Export, da deren firebase.js im Firebase-Build hierauf umgeleitet wird.
-export const vertexAI = getVertexAI(app);
+export const vertexAI = createVertexAI(app);
+// fitness-apps Firebase-Layer importiert im Shell-Build weiterhin getVertexAI
+// aus ../firebase.js. Die Shell stellt deshalb denselben Entry-Point bereit.
+export function getVertexAI() {
+  return vertexAI;
+}
 
 // Messaging ist nicht in jedem Kontext verfügbar (z.B. Safari < 16.4, kein
 // installiertes PWA-Icon) — isSupported() vorher prüfen, sonst wirft
