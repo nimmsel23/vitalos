@@ -8,7 +8,6 @@ import MobileShell from './shell/layout/MobileShell.jsx'
 import UserProfile from './components/common/UserProfile.jsx'
 import ErrorBoundary from './components/common/ErrorBoundary.jsx'
 import Hub from './shell/Hub.jsx'
-import Dashboard from './shell/Dashboard.jsx'
 import { useApp as useFuelAppStore, useSettings as useFuelStore } from '@fuel/store.js'
 import ShellHeader from './shell/ShellHeader.jsx'
 import { useShellSettings } from './shell/store.js'
@@ -62,10 +61,10 @@ function HomeFitnessGate({ onSelect, onDismiss }) {
   )
 }
 
-function HomeHubGate({ onSelect, onDismiss }) {
+function HomeHubGate({ onSelect, onDismiss, runtimeDate, openSession }) {
   return (
     <HomeSheet label="Hub" onDismiss={onDismiss}>
-      <Hub navigate={onSelect} variant="sheet" />
+      <Hub navigate={onSelect} variant="sheet" runtimeDate={runtimeDate} openSession={openSession} />
     </HomeSheet>
   )
 }
@@ -80,8 +79,8 @@ function readHashState() {
   if (mainTab === 'hub') return { tab: 'home', subTab: 'hub', date: null }
   if (mainTab === 'dashboard') return { tab: 'home', subTab: null }
   if (mainTab === 'learn') return { tab: 'fitness', subTab: 'learn' }
-  if (mainTab === 'journal') return { tab: 'journal', subTab: null }
-  if (mainTab === 'fuel' && subTab === 'journal') return { tab: 'journal', subTab: null }
+  if (mainTab === 'journal') return { tab: 'home', subTab: null, date: date || null }
+  if (mainTab === 'fuel' && subTab === 'journal') return { tab: 'home', subTab: null, date: date || null }
   if (mainTab === 'fuel' && subTab === 'habits') return { tab: 'habits', subTab: null }
   if (mainTab === 'fuel' && subTab === 'settings') return { tab: 'settings', subTab: null }
   return {
@@ -104,13 +103,13 @@ function Views({ tab, fitnessProps, fuelTab, setFuelTab, relaxTab, setRelaxTab, 
     <>
     {tab === 'home'     && (
       <div className="relative min-h-[100dvh]">
-        <Dashboard navigate={navigate} openSession={openSession} runtimeDate={runtimeDate} />
+        <JournalApp onOpenSession={openSession} onNavigateShell={navigate} runtimeDate={runtimeDate} onRuntimeDateChange={onRuntimeDateChange} />
         {homeGate === 'fitness' ? <HomeFitnessGate onSelect={onHomeGateSelect} onDismiss={() => setHomeGate(null)} /> : null}
       </div>
     )}
     {tab === 'fitness'  && <FitnessApp  {...fitnessProps} />}
     {tab === 'fuel'     && <FuelWrapper user={user} subTab={fuelTab} onSubTab={setFuelTab} onNavigateShell={navigate} embedded />}
-    {tab === 'journal'  && <JournalApp onOpenSession={openSession} runtimeDate={runtimeDate} onRuntimeDateChange={onRuntimeDateChange} />}
+    {tab === 'journal'  && <JournalApp onOpenSession={openSession} onNavigateShell={navigate} runtimeDate={runtimeDate} onRuntimeDateChange={onRuntimeDateChange} />}
     {tab === 'habits'   && <HabitsApp runtimeDate={runtimeDate} onRuntimeDateChange={onRuntimeDateChange} />}
     {tab === 'relax'    && <RelaxApp subTab={relaxTab} onSubTab={setRelaxTab} onOpenSession={openSession} runtimeDate={runtimeDate} onRuntimeDateChange={onRuntimeDateChange} />}
     {tab === 'settings' && <div className={`${p} max-w-[1600px] mx-auto`}><Settings {...settingsProps} /></div>}
@@ -232,7 +231,7 @@ export default function App() {
 
   useEffect(() => {
     const { tab: hashTab, date } = readHashState()
-    if ((hashTab === 'fuel' || hashTab === 'journal' || hashTab === 'habits' || hashTab === 'relax') && date && date !== runtimeDate) {
+    if ((hashTab === 'home' || hashTab === 'fuel' || hashTab === 'journal' || hashTab === 'habits' || hashTab === 'relax') && date && date !== runtimeDate) {
       setRuntimeDate(date)
     }
     if (hashTab === 'fitness' && readHashState().subTab === 'session' && date) {
@@ -244,7 +243,7 @@ export default function App() {
     const nextHash = tab === 'fitness'
       ? buildHashState({ tab, subTab: fitnessTab, date: fitnessTab === 'session' ? (sessionDate || runtimeDate) : null })
       : tab === 'home'
-        ? buildHashState({ tab, subTab: homeGate })
+        ? buildHashState({ tab, subTab: homeGate, date: homeGate ? null : runtimeDate })
       : tab === 'fuel'
         ? buildHashState({ tab, subTab: fuelTab || 'food', date: runtimeDate })
       : tab === 'relax'
@@ -260,6 +259,7 @@ export default function App() {
       const { tab: nextTab, subTab, date } = readHashState()
       setTab(nextTab)
       if (nextTab === 'home') setHomeGate(subTab || null)
+      if (nextTab === 'home' && date) setRuntimeDate(date)
       if (nextTab === 'fitness') setFitnessTab(subTab || null)
       if (nextTab === 'fitness' && subTab === 'session') setSessionDate(date || runtimeDate)
       if (nextTab === 'fuel' && subTab) setFuelTab(subTab)
@@ -277,6 +277,11 @@ export default function App() {
   }, [])
 
   function navigate(id, subTab = null) {
+    if (id === 'journal') {
+      setHomeGate(null)
+      setTab('home')
+      return
+    }
     if (id === 'hub') {
       setTab('home')
       setHomeGate('hub')
@@ -432,14 +437,14 @@ export default function App() {
           <main className="relative min-h-[100dvh]">
           <Views tab={tab} fitnessProps={fitnessProps} fuelTab={fuelTab} setFuelTab={setFuelTab} muscleLanguage={muscleLanguage} taxonomy={taxonomy}
           user={user} settingsProps={settingsProps} openSession={openSession} runtimeDate={runtimeDate} onRuntimeDateChange={setRuntimeDate} navigate={navigate} relaxTab={relaxTab} setRelaxTab={setRelaxTab} homeGate={homeGate} onHomeGateSelect={handleHomeGateSelect} />
-          {tab === 'home' && homeGate === 'hub' ? <HomeHubGate onSelect={navigate} onDismiss={() => setHomeGate(null)} /> : null}
+          {tab === 'home' && homeGate === 'hub' ? <HomeHubGate onSelect={navigate} onDismiss={() => setHomeGate(null)} runtimeDate={runtimeDate} openSession={openSession} /> : null}
           </main>
           </div>
           {/* Mobile: Fuel-Layout */}
           <MobileShell tab={tab} navigate={navigate} mobileLayout="fuel" header={showShellHeader ? mobileShellHeader : null}>
           <Views tab={tab} fitnessProps={fitnessProps} fuelTab={fuelTab} setFuelTab={setFuelTab} muscleLanguage={muscleLanguage} taxonomy={taxonomy}
           user={user} settingsProps={settingsProps} openSession={openSession} compact runtimeDate={runtimeDate} onRuntimeDateChange={setRuntimeDate} navigate={navigate} relaxTab={relaxTab} setRelaxTab={setRelaxTab} homeGate={homeGate} onHomeGateSelect={handleHomeGateSelect} />
-          {tab === 'home' && homeGate === 'hub' ? <HomeHubGate onSelect={navigate} onDismiss={() => setHomeGate(null)} /> : null}
+          {tab === 'home' && homeGate === 'hub' ? <HomeHubGate onSelect={navigate} onDismiss={() => setHomeGate(null)} runtimeDate={runtimeDate} openSession={openSession} /> : null}
           </MobileShell>
           </>
         ) : (
@@ -449,13 +454,13 @@ export default function App() {
           <main className="relative min-h-[100dvh]">
           <Views tab={tab} fitnessProps={fitnessProps} fuelTab={fuelTab} setFuelTab={setFuelTab} muscleLanguage={muscleLanguage} taxonomy={taxonomy}
           user={user} settingsProps={settingsProps} openSession={openSession} runtimeDate={runtimeDate} onRuntimeDateChange={setRuntimeDate} navigate={navigate} relaxTab={relaxTab} setRelaxTab={setRelaxTab} homeGate={homeGate} onHomeGateSelect={handleHomeGateSelect} />
-          {tab === 'home' && homeGate === 'hub' ? <HomeHubGate onSelect={navigate} onDismiss={() => setHomeGate(null)} /> : null}
+          {tab === 'home' && homeGate === 'hub' ? <HomeHubGate onSelect={navigate} onDismiss={() => setHomeGate(null)} runtimeDate={runtimeDate} openSession={openSession} /> : null}
           </main>
           </div>
           <MobileShell tab={tab} navigate={navigate} mobileLayout="classic" header={showShellHeader ? mobileShellHeader : null}>
           <Views tab={tab} fitnessProps={fitnessProps} fuelTab={fuelTab} setFuelTab={setFuelTab} muscleLanguage={muscleLanguage} taxonomy={taxonomy}
           user={user} settingsProps={settingsProps} openSession={openSession} compact runtimeDate={runtimeDate} onRuntimeDateChange={setRuntimeDate} navigate={navigate} relaxTab={relaxTab} setRelaxTab={setRelaxTab} homeGate={homeGate} onHomeGateSelect={handleHomeGateSelect} />
-          {tab === 'home' && homeGate === 'hub' ? <HomeHubGate onSelect={navigate} onDismiss={() => setHomeGate(null)} /> : null}
+          {tab === 'home' && homeGate === 'hub' ? <HomeHubGate onSelect={navigate} onDismiss={() => setHomeGate(null)} runtimeDate={runtimeDate} openSession={openSession} /> : null}
           </MobileShell>
           </>
         )}

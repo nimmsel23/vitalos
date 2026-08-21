@@ -3,6 +3,7 @@ import { getSession, getPlan, getRelaxStatsSummary } from '@db'
 import { localToday } from '@utils'
 import { VOS_APPS } from './VitalOSApps.js'
 import FuelHubStat from './FuelHubStat.jsx'
+import { DashboardSections } from './Dashboard.jsx'
 
 const HUB_TILES = VOS_APPS
 
@@ -46,7 +47,7 @@ function TileStat({ appId }) {
   return null
 }
 
-export default function Hub({ navigate, variant = 'page' }) {
+export default function Hub({ navigate, variant = 'page', runtimeDate, openSession }) {
   const isSheet = variant === 'sheet'
   const wrapperClass = isSheet
     ? 'flex flex-col text-fit-ink'
@@ -57,6 +58,7 @@ export default function Hub({ navigate, variant = 'page' }) {
   const navClass = isSheet
     ? 'grid grid-cols-2 gap-4 w-full'
     : 'grid grid-cols-2 gap-4 w-full max-w-xl animate-in fade-in zoom-in-95 duration-700 delay-100'
+  const handleNavigate = (id) => navigate(id === 'journal' ? 'home' : id)
 
   return (
     <div className={wrapperClass}>
@@ -71,7 +73,7 @@ export default function Hub({ navigate, variant = 'page' }) {
         {HUB_TILES.map(({ id, label, Icon, color }) => (
           <button
             key={id}
-            onClick={() => navigate(id)}
+            onClick={() => handleNavigate(id)}
             className={`relative group overflow-hidden rounded-[32px] bg-fit-card border border-fit-line/50 active:scale-95 transition-all flex flex-col items-center gap-4 shadow-sm hover:shadow-2xl hover:border-white/20 ${isSheet ? 'p-5' : 'p-6'}`}
           >
             <div
@@ -93,6 +95,18 @@ export default function Hub({ navigate, variant = 'page' }) {
           </button>
         ))}
       </nav>
+
+      {isSheet ? (
+        <div className="mt-8">
+          <DashboardSections
+            navigate={handleNavigate}
+            openSession={openSession}
+            runtimeDate={runtimeDate}
+            showHero
+            showQuickLinks={false}
+          />
+        </div>
+      ) : null}
     </div>
   )
 }

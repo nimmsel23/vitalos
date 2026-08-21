@@ -1,15 +1,14 @@
 import {
   Dumbbell, Flame, CheckSquare, Settings2,
-  Home, LayoutDashboard, UtensilsCrossed, Pill, Microscope, NotebookPen, MoonStar, Shield,
+  Home, UtensilsCrossed, Pill, Microscope, NotebookPen, MoonStar, Shield,
   CalendarDays,
 } from 'lucide-react'
 import { NAV_ITEMS as FITNESS_NAV_ITEMS } from '@constants/NavigationItems.js'
 
 export const NAV_ITEMS = [
-  { id: 'home',     label: 'Home',    Icon: LayoutDashboard },
+  { id: 'home',     label: 'Journal', Icon: NotebookPen },
   { id: 'fitness',  label: 'Fitness', Icon: Dumbbell },
   { id: 'fuel',     label: 'Fuel',    Icon: Flame },
-  { id: 'journal',  label: 'Journal', Icon: NotebookPen },
   { id: 'relax',    label: 'Relax',   Icon: MoonStar },
   { id: 'habits',   label: 'Habits',  Icon: CheckSquare },
   { id: 'settings', label: 'Setup',   Icon: Settings2 },
@@ -18,7 +17,7 @@ export const NAV_ITEMS = [
 // 'coach' ist absichtlich nicht in NAV_ITEMS (eigener, bedingt sichtbarer
 // Sidebar-Button außerhalb der Haupt-Nav-Schleife, siehe Sidebar.jsx) — muss
 // aber trotzdem als gültiger Tab gelten, sonst verwirft navigate() den Klick.
-export const VALID_TABS = new Set(['hub', ...NAV_ITEMS.map(i => i.id), 'coach'])
+export const VALID_TABS = new Set(['hub', 'journal', ...NAV_ITEMS.map(i => i.id), 'coach'])
 
 // Die Shell nutzt dieselbe Fitness-Subnav-Struktur wie fitness-app selbst,
 // damit neue Untertabs nicht erneut manuell nachgezogen werden muessen.

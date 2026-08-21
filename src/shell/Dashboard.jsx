@@ -115,10 +115,10 @@ function FitnessTodayWidget({ runtimeDate, openSession, navigate }) {
   )
 }
 
-export default function Dashboard({ navigate, openSession, runtimeDate }) {
+export function DashboardSections({ navigate, openSession, runtimeDate, showHero = true, showQuickLinks = true }) {
   return (
-    <div className="px-4 pb-20 pt-2 sm:px-8 lg:px-12">
-      <div className="mx-auto flex max-w-[1600px] flex-col gap-8">
+    <div className="flex flex-col gap-8">
+      {showHero ? (
         <section className="overflow-hidden rounded-[2rem] border border-white/10 bg-[radial-gradient(circle_at_top_left,rgba(255,140,66,0.14),transparent_30%),radial-gradient(circle_at_top_right,rgba(249,115,22,0.16),transparent_28%),linear-gradient(180deg,rgba(255,255,255,0.03),rgba(255,255,255,0.01))] p-6 md:p-8">
           <div className="flex flex-col gap-8 xl:flex-row xl:items-end xl:justify-between">
             <div className="max-w-3xl">
@@ -132,42 +132,46 @@ export default function Dashboard({ navigate, openSession, runtimeDate }) {
               </p>
             </div>
 
-            <div className="grid gap-3 sm:grid-cols-3">
-              <button onClick={() => openSession?.(runtimeDate || localToday())} className="rounded-[1.5rem] border border-white/10 bg-fit-bg2/70 px-4 py-4 text-left transition hover:border-fit-accent/30 hover:bg-fit-bg2">
-                <div className="text-[10px] font-black uppercase tracking-[0.22em] text-fit-dim">Fitness</div>
-                <div className="mt-2 text-lg font-black text-fit-ink">Session</div>
-              </button>
-              <button onClick={() => navigate?.('fuel', 'food')} className="rounded-[1.5rem] border border-white/10 bg-fit-bg2/70 px-4 py-4 text-left transition hover:border-fit-accent/30 hover:bg-fit-bg2">
-                <div className="text-[10px] font-black uppercase tracking-[0.22em] text-fit-dim">Fuel</div>
-                <div className="mt-2 text-lg font-black text-fit-ink">Food</div>
-              </button>
-              <button onClick={() => navigate?.('fitness', 'review')} className="rounded-[1.5rem] border border-white/10 bg-fit-bg2/70 px-4 py-4 text-left transition hover:border-fit-accent/30 hover:bg-fit-bg2">
-                <div className="text-[10px] font-black uppercase tracking-[0.22em] text-fit-dim">Review</div>
-                <div className="mt-2 text-lg font-black text-fit-ink">Wochenblick</div>
-              </button>
-            </div>
+            {showQuickLinks ? (
+              <div className="grid gap-3 sm:grid-cols-3">
+                <button onClick={() => openSession?.(runtimeDate || localToday())} className="rounded-[1.5rem] border border-white/10 bg-fit-bg2/70 px-4 py-4 text-left transition hover:border-fit-accent/30 hover:bg-fit-bg2">
+                  <div className="text-[10px] font-black uppercase tracking-[0.22em] text-fit-dim">Fitness</div>
+                  <div className="mt-2 text-lg font-black text-fit-ink">Session</div>
+                </button>
+                <button onClick={() => navigate?.('fuel', 'food')} className="rounded-[1.5rem] border border-white/10 bg-fit-bg2/70 px-4 py-4 text-left transition hover:border-fit-accent/30 hover:bg-fit-bg2">
+                  <div className="text-[10px] font-black uppercase tracking-[0.22em] text-fit-dim">Fuel</div>
+                  <div className="mt-2 text-lg font-black text-fit-ink">Food</div>
+                </button>
+                <button onClick={() => navigate?.('fitness', 'review')} className="rounded-[1.5rem] border border-white/10 bg-fit-bg2/70 px-4 py-4 text-left transition hover:border-fit-accent/30 hover:bg-fit-bg2">
+                  <div className="text-[10px] font-black uppercase tracking-[0.22em] text-fit-dim">Review</div>
+                  <div className="mt-2 text-lg font-black text-fit-ink">Wochenblick</div>
+                </button>
+              </div>
+            ) : null}
           </div>
         </section>
+      ) : null}
 
-        <FitnessTodayWidget runtimeDate={runtimeDate} openSession={openSession} navigate={navigate} />
+      <FitnessTodayWidget runtimeDate={runtimeDate} openSession={openSession} navigate={navigate} />
 
-        <section className="grid gap-6 xl:grid-cols-[1.1fr_0.9fr]">
-          <div className="alpha-card p-6 md:p-8">
-            <div className="mb-6 flex items-center justify-between gap-4">
-              <div>
-                <div className="text-[10px] font-black uppercase tracking-[0.28em] text-fit-dim">Fuel</div>
-                <h2 className="mt-2 text-2xl font-black tracking-tight text-fit-ink">Heute im Essen</h2>
-              </div>
-              <button
-                onClick={() => navigate?.('fuel', 'food')}
-                className="inline-flex items-center gap-2 rounded-2xl border border-white/10 bg-fit-bg2 px-4 py-3 text-[10px] font-black uppercase tracking-[0.2em] text-fit-ink transition hover:text-fit-accent"
-              >
-                Öffnen <Flame size={14} />
-              </button>
+      <section className={`grid gap-6 ${showQuickLinks ? 'xl:grid-cols-[1.1fr_0.9fr]' : ''}`}>
+        <div className="alpha-card p-6 md:p-8">
+          <div className="mb-6 flex items-center justify-between gap-4">
+            <div>
+              <div className="text-[10px] font-black uppercase tracking-[0.28em] text-fit-dim">Fuel</div>
+              <h2 className="mt-2 text-2xl font-black tracking-tight text-fit-ink">Heute im Essen</h2>
             </div>
-            <FuelDashboardWidget navigate={() => navigate?.('fuel', 'food')} />
+            <button
+              onClick={() => navigate?.('fuel', 'food')}
+              className="inline-flex items-center gap-2 rounded-2xl border border-white/10 bg-fit-bg2 px-4 py-3 text-[10px] font-black uppercase tracking-[0.2em] text-fit-ink transition hover:text-fit-accent"
+            >
+              Öffnen <Flame size={14} />
+            </button>
           </div>
+          <FuelDashboardWidget navigate={() => navigate?.('fuel', 'food')} />
+        </div>
 
+        {showQuickLinks ? (
           <div className="alpha-card p-6 md:p-8">
             <div className="mb-6 flex items-center gap-3">
               <CalendarDays size={18} className="text-fit-accent" />
@@ -202,7 +206,17 @@ export default function Dashboard({ navigate, openSession, runtimeDate }) {
               ))}
             </nav>
           </div>
-        </section>
+        ) : null}
+      </section>
+    </div>
+  )
+}
+
+export default function Dashboard(props) {
+  return (
+    <div className="px-4 pb-20 pt-2 sm:px-8 lg:px-12">
+      <div className="mx-auto max-w-[1600px]">
+        <DashboardSections {...props} />
       </div>
     </div>
   )
