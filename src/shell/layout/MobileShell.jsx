@@ -8,7 +8,7 @@ import FuelMobileLayout from './FuelMobileLayout.jsx'
  * Nur auf Mobile aktiv (lg:hidden via FuelMobileLayout / MobileNav).
  * Desktop-Layout bleibt unverändert in App.jsx.
  */
-export default function MobileShell({ tab, navigate, mobileLayout, swipeHint, header, children }) {
+export default function MobileShell({ tab, navigate, mobileLayout, swipeHint, header, subNav = null, subTab = null, onSubTab = null, children }) {
   if (mobileLayout === 'fuel') {
     return (
       <div className="lg:hidden mobile-shell">
@@ -25,7 +25,7 @@ export default function MobileShell({ tab, navigate, mobileLayout, swipeHint, he
       <div className="flex-1 overflow-y-auto">
         {children}
       </div>
-      <MobileNav tab={tab} navigate={navigate} swipeHint={swipeHint} />
+      <MobileNav tab={tab} navigate={navigate} swipeHint={swipeHint} subNav={subNav} subTab={subTab} onSubTab={onSubTab} />
     </div>
   )
 }

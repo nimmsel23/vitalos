@@ -1,65 +1,181 @@
-import { NAV_ITEMS } from '@shell/NavigationItems';
+import { useMemo, useState } from 'react'
+import { Home, MoreHorizontal, X } from 'lucide-react'
+import { NAV_ITEMS } from '@shell/NavigationItems'
 
-export default function MobileNav({ tab, navigate, swipeHint }) {
-  const currentIndex = NAV_ITEMS.findIndex(i => i.id === tab);
-  const swipeTargetId =
-    swipeHint === 'left'  ? NAV_ITEMS[currentIndex + 1]?.id :
-    swipeHint === 'right' ? NAV_ITEMS[currentIndex - 1]?.id : null;
+function normalizeActiveAppId(tab) {
+  if (tab === 'home' || tab === 'journal') return 'journal'
+  return tab
+}
+
+function flattenSubNav(subNav = []) {
+  return subNav.flatMap((item) => {
+    const base = [{ id: item.id, label: item.label, Icon: item.Icon, parentId: null, noDefaultSub: item.noDefaultSub }]
+    const nested = (item.sub || []).map((child) => ({
+      id: child.id,
+      label: child.label,
+      Icon: child.Icon,
+      parentId: item.id,
+    }))
+    return [...base, ...nested]
+  })
+}
+
+function isEntryActive(entry, subTab, subNav) {
+  if (!subTab) return false
+  if (entry.id === subTab) return true
+  if (entry.parentId) return false
+  const parent = subNav.find((item) => item.id === entry.id)
+  return Boolean(parent?.sub?.some((child) => child.id === subTab))
+}
+
+function findApp(id) {
+  return NAV_ITEMS.find((item) => item.id === id)
+}
+
+export default function MobileNav({ tab, navigate, subNav = null, subTab = null, onSubTab = null }) {
+  const [overflowOpen, setOverflowOpen] = useState(false)
+  const activeAppId = normalizeActiveAppId(tab)
+  const activeApp = findApp(activeAppId) || NAV_ITEMS[0]
+  const navEntries = useMemo(() => flattenSubNav(subNav || []), [subNav])
+  const overflowItems = NAV_ITEMS.filter((item) => item.id !== 'home' && item.id !== activeAppId)
+
+  function openApp(id) {
+    setOverflowOpen(false)
+    navigate(id)
+  }
+
+  function openHome() {
+    setOverflowOpen(false)
+    navigate('home')
+  }
+
+  function openActiveApp() {
+    setOverflowOpen(false)
+    navigate(activeAppId)
+  }
+
+  function openSubEntry(id) {
+    setOverflowOpen(false)
+    onSubTab?.(id)
+  }
 
   return (
-    <nav
-      className="lg:hidden fixed bottom-0 left-0 right-0 z-50"
-      style={{ paddingBottom: 'env(safe-area-inset-bottom)' }}
-    >
-      {/* Swipe direction indicator — thin accent line at top */}
-      <div className={`absolute top-0 left-0 right-0 h-[2px] transition-all duration-200 ${
-        swipeHint === 'left'
-          ? 'bg-gradient-to-l from-fit-accent via-[var(--accent)]/40 to-transparent opacity-80'
-          : swipeHint === 'right'
-            ? 'bg-gradient-to-r from-fit-accent via-[var(--accent)]/40 to-transparent opacity-80'
-            : 'opacity-0'
-      }`} />
+    <>
+      {overflowOpen ? (
+        <button
+          aria-label="Menü schließen"
+          className="fixed inset-0 z-40 bg-black/30 backdrop-blur-[2px] lg:hidden"
+          onClick={() => setOverflowOpen(false)}
+        />
+      ) : null}
 
-      <div className="bg-fit-card/90 backdrop-blur-2xl border-t border-fit-line/40 px-2 pt-2 pb-3">
-        <div className="flex items-end justify-around">
-          {NAV_ITEMS.map(({ id, label, Icon }) => {
-            const isActive = tab === id;
-            const isSwipeTarget = id === swipeTargetId;
-
-            return (
-              <button
-                key={id}
-                onClick={() => navigate(id)}
-                className="flex flex-col items-center gap-[5px] px-1 active:scale-90 transition-transform duration-150 min-w-[40px]"
-              >
-                <div className={`flex items-center justify-center rounded-2xl transition-all duration-300 ${
-                  isActive
-                    ? 'bg-fit-accent w-12 h-8 shadow-lg shadow-fit-accent/30'
-                    : isSwipeTarget
-                      ? 'ring-1 ring-fit-accent/60 bg-fit-accent/10 w-10 h-8'
-                      : 'w-10 h-8'
-                }`}>
-                  <Icon
-                    size={isActive ? 17 : 19}
-                    className={
-                      isActive       ? 'text-black stroke-[2.5]' :
-                      isSwipeTarget  ? 'text-fit-accent stroke-[2]' :
-                                       'text-fit-dim stroke-[1.8]'
-                    }
-                  />
-                </div>
-                <span className={`text-[7.5px] font-black uppercase tracking-wide leading-none transition-all duration-300 ${
-                  isActive      ? 'text-fit-accent opacity-100' :
-                  isSwipeTarget ? 'text-fit-accent/70 opacity-100' :
-                                  'text-fit-dim opacity-50'
-                }`}>
-                  {label}
-                </span>
-              </button>
-            );
-          })}
+      {overflowOpen ? (
+        <div className="fixed inset-x-3 bottom-[5.5rem] z-50 rounded-[2rem] border border-white/10 bg-fit-card/95 p-3 shadow-2xl shadow-black/35 backdrop-blur-2xl lg:hidden">
+          <div className="mb-2 flex items-center justify-between px-2">
+            <div className="text-[10px] font-black uppercase tracking-[0.22em] text-fit-dim">Mehr</div>
+            <button
+              onClick={() => setOverflowOpen(false)}
+              className="flex h-8 w-8 items-center justify-center rounded-full border border-white/10 bg-white/5 text-fit-dim"
+            >
+              <X size={14} />
+            </button>
+          </div>
+          <div className="grid grid-cols-2 gap-2">
+            {overflowItems.map(({ id, label, Icon }) => {
+              const active = tab === id
+              return (
+                <button
+                  key={id}
+                  onClick={() => openApp(id)}
+                  className={`flex items-center gap-3 rounded-2xl border px-4 py-3 text-left transition ${
+                    active
+                      ? 'border-fit-accent/30 bg-fit-accent/14 text-fit-accent'
+                      : 'border-white/10 bg-fit-bg2/70 text-fit-ink'
+                  }`}
+                >
+                  <Icon size={16} />
+                  <span className="text-[10px] font-black uppercase tracking-[0.16em]">{label}</span>
+                </button>
+              )
+            })}
+          </div>
         </div>
-      </div>
-    </nav>
-  );
+      ) : null}
+
+      <nav
+        className="lg:hidden fixed bottom-0 left-0 right-0 z-50"
+        style={{ paddingBottom: 'env(safe-area-inset-bottom)' }}
+      >
+        <div className="border-t border-fit-line/40 bg-fit-card/92 px-3 pt-2 pb-3 backdrop-blur-2xl">
+          <div className="flex items-end gap-2">
+            <button
+              onClick={openHome}
+              className={`flex shrink-0 flex-col items-center gap-[5px] rounded-[1.2rem] px-2 py-1.5 transition ${
+                tab === 'home'
+                  ? 'text-fit-accent'
+                  : 'text-fit-dim'
+              }`}
+            >
+              <div className={`flex h-8 w-11 items-center justify-center rounded-2xl ${tab === 'home' ? 'bg-fit-accent shadow-lg shadow-fit-accent/30' : 'bg-white/5'}`}>
+                <Home size={17} className={tab === 'home' ? 'text-black stroke-[2.5]' : 'stroke-[2]'} />
+              </div>
+              <span className="text-[7.5px] font-black uppercase tracking-wide leading-none">Home</span>
+            </button>
+
+            <button
+              onClick={openActiveApp}
+              className={`flex shrink-0 flex-col items-center gap-[5px] rounded-[1.2rem] px-2 py-1.5 transition ${
+                tab !== 'home' && tab === activeAppId
+                  ? 'text-fit-accent'
+                  : 'text-fit-ink'
+              }`}
+            >
+              <div className={`flex h-8 min-w-[3.2rem] items-center justify-center rounded-2xl px-3 ${
+                tab !== 'home' && tab === activeAppId
+                  ? 'bg-fit-accent shadow-lg shadow-fit-accent/30'
+                  : 'bg-white/7'
+              }`}>
+                <activeApp.Icon size={17} className={tab !== 'home' && tab === activeAppId ? 'text-black stroke-[2.5]' : 'stroke-[2]'} />
+              </div>
+              <span className="text-[7.5px] font-black uppercase tracking-wide leading-none">{activeApp.label}</span>
+            </button>
+
+            <div className="min-w-0 flex-1 overflow-x-auto no-scrollbar">
+              <div className="flex min-w-max items-center gap-1 pb-1">
+                {navEntries.map((entry) => {
+                  const active = isEntryActive(entry, subTab, subNav || [])
+                  return (
+                    <button
+                      key={`${entry.parentId || 'root'}-${entry.id}`}
+                      onClick={() => openSubEntry(entry.id)}
+                      className={`inline-flex h-9 shrink-0 items-center gap-1.5 rounded-full border px-3 text-[9px] font-black uppercase tracking-[0.14em] transition ${
+                        active
+                          ? 'border-fit-accent/30 bg-fit-accent text-black'
+                          : 'border-white/10 bg-fit-bg2/80 text-fit-dim'
+                      }`}
+                    >
+                      <entry.Icon size={12} />
+                      <span>{entry.label}</span>
+                    </button>
+                  )
+                })}
+              </div>
+            </div>
+
+            <button
+              onClick={() => setOverflowOpen((open) => !open)}
+              className={`flex shrink-0 flex-col items-center gap-[5px] rounded-[1.2rem] px-2 py-1.5 transition ${
+                overflowOpen ? 'text-fit-accent' : 'text-fit-dim'
+              }`}
+            >
+              <div className={`flex h-8 w-11 items-center justify-center rounded-2xl ${overflowOpen ? 'bg-fit-accent shadow-lg shadow-fit-accent/30' : 'bg-white/5'}`}>
+                <MoreHorizontal size={17} className={overflowOpen ? 'text-black stroke-[2.5]' : 'stroke-[2]'} />
+              </div>
+              <span className="text-[7.5px] font-black uppercase tracking-wide leading-none">Mehr</span>
+            </button>
+          </div>
+        </div>
+      </nav>
+    </>
+  )
 }

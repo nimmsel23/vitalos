@@ -441,7 +441,15 @@ export default function App() {
           </main>
           </div>
           {/* Mobile: Fuel-Layout */}
-          <MobileShell tab={tab} navigate={navigate} mobileLayout="fuel" header={showShellHeader ? mobileShellHeader : null}>
+          <MobileShell
+            tab={tab}
+            navigate={navigate}
+            mobileLayout="fuel"
+            header={showShellHeader ? mobileShellHeader : null}
+            subNav={shellSubNav}
+            subTab={shellSubTab}
+            onSubTab={shellSubTabSetter}
+          >
           <Views tab={tab} fitnessProps={fitnessProps} fuelTab={fuelTab} setFuelTab={setFuelTab} muscleLanguage={muscleLanguage} taxonomy={taxonomy}
           user={user} settingsProps={settingsProps} openSession={openSession} compact runtimeDate={runtimeDate} onRuntimeDateChange={setRuntimeDate} navigate={navigate} relaxTab={relaxTab} setRelaxTab={setRelaxTab} homeGate={homeGate} onHomeGateSelect={handleHomeGateSelect} onHomeGateDismiss={() => setHomeGate(null)} />
           {tab === 'home' && homeGate === 'hub' ? <HomeHubGate onSelect={navigate} onDismiss={() => setHomeGate(null)} runtimeDate={runtimeDate} openSession={openSession} /> : null}
@@ -457,7 +465,15 @@ export default function App() {
           {tab === 'home' && homeGate === 'hub' ? <HomeHubGate onSelect={navigate} onDismiss={() => setHomeGate(null)} runtimeDate={runtimeDate} openSession={openSession} /> : null}
           </main>
           </div>
-          <MobileShell tab={tab} navigate={navigate} mobileLayout="classic" header={showShellHeader ? mobileShellHeader : null}>
+          <MobileShell
+            tab={tab}
+            navigate={navigate}
+            mobileLayout="classic"
+            header={showShellHeader ? mobileShellHeader : null}
+            subNav={shellSubNav}
+            subTab={shellSubTab}
+            onSubTab={shellSubTabSetter}
+          >
           <Views tab={tab} fitnessProps={fitnessProps} fuelTab={fuelTab} setFuelTab={setFuelTab} muscleLanguage={muscleLanguage} taxonomy={taxonomy}
           user={user} settingsProps={settingsProps} openSession={openSession} compact runtimeDate={runtimeDate} onRuntimeDateChange={setRuntimeDate} navigate={navigate} relaxTab={relaxTab} setRelaxTab={setRelaxTab} homeGate={homeGate} onHomeGateSelect={handleHomeGateSelect} onHomeGateDismiss={() => setHomeGate(null)} />
           {tab === 'home' && homeGate === 'hub' ? <HomeHubGate onSelect={navigate} onDismiss={() => setHomeGate(null)} runtimeDate={runtimeDate} openSession={openSession} /> : null}
