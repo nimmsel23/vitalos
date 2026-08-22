@@ -126,6 +126,10 @@ function Views({ tab, fitnessProps, fuelTab, setFuelTab, relaxTab, setRelaxTab, 
 }
 
 export default function App() {
+  const [isDesktopViewport, setIsDesktopViewport] = useState(() => {
+    if (typeof window === 'undefined') return true
+    return window.matchMedia('(min-width: 1024px)').matches
+  })
   const [tab, setTab] = useState(() => readHashState().tab)
   const [fitnessTab, setFitnessTab] = useState(() => {
     const { tab: hashTab, subTab } = readHashState()
@@ -168,6 +172,15 @@ export default function App() {
       setAuthLoading(false)
       watchAuth(u => setUser(u))
     })
+  }, [])
+
+  useEffect(() => {
+    if (typeof window === 'undefined') return undefined
+    const media = window.matchMedia('(min-width: 1024px)')
+    const syncViewport = () => setIsDesktopViewport(media.matches)
+    syncViewport()
+    media.addEventListener('change', syncViewport)
+    return () => media.removeEventListener('change', syncViewport)
   }, [])
 
   // Settings state — SSOT ist der Shell-Store (src/shell/store.js)
@@ -423,6 +436,13 @@ export default function App() {
             : null
       const shellHeader = <ShellHeader tab={tab} subTab={shellSubTab} runtimeDate={runtimeDate} setRuntimeDate={setRuntimeDate} subNav={shellSubNav} onSubTab={shellSubTabSetter} />
       const mobileShellHeader = <ShellHeader tab={tab} subTab={shellSubTab} runtimeDate={runtimeDate} setRuntimeDate={setRuntimeDate} compact subNav={shellSubNav} onSubTab={shellSubTabSetter} />
+      const shellViews = <Views tab={tab} fitnessProps={fitnessProps} fuelTab={fuelTab} setFuelTab={setFuelTab} muscleLanguage={muscleLanguage} taxonomy={taxonomy}
+      user={user} settingsProps={settingsProps} openSession={openSession} runtimeDate={runtimeDate} onRuntimeDateChange={setRuntimeDate} navigate={navigate} relaxTab={relaxTab} setRelaxTab={setRelaxTab} homeGate={homeGate} onHomeGateSelect={handleHomeGateSelect} onHomeGateDismiss={() => setHomeGate(null)} />
+      const compactShellViews = <Views tab={tab} fitnessProps={fitnessProps} fuelTab={fuelTab} setFuelTab={setFuelTab} muscleLanguage={muscleLanguage} taxonomy={taxonomy}
+      user={user} settingsProps={settingsProps} openSession={openSession} compact runtimeDate={runtimeDate} onRuntimeDateChange={setRuntimeDate} navigate={navigate} relaxTab={relaxTab} setRelaxTab={setRelaxTab} homeGate={homeGate} onHomeGateSelect={handleHomeGateSelect} onHomeGateDismiss={() => setHomeGate(null)} />
+      const hubGate = tab === 'home' && homeGate === 'hub'
+        ? <HomeHubGate onSelect={navigate} onDismiss={() => setHomeGate(null)} runtimeDate={runtimeDate} openSession={openSession} />
+        : null
 
       return (
         <ErrorBoundary>
@@ -446,17 +466,16 @@ export default function App() {
         )}
 
         <div className={`flex-1 min-w-0 transition-all duration-500 ease-in-out ${showSidebar ? (sidebarPinned ? 'lg:ml-[304px]' : 'lg:ml-[108px]') : ''}`}>
-        {mobileLayout === 'fuel' ? (
+        {isDesktopViewport ? (
           <>
-          {/* Desktop: klassisches Layout */}
-          <div className="hidden lg:block">
           {showShellHeader ? shellHeader : null}
           <main className="relative min-h-[100dvh]">
-          <Views tab={tab} fitnessProps={fitnessProps} fuelTab={fuelTab} setFuelTab={setFuelTab} muscleLanguage={muscleLanguage} taxonomy={taxonomy}
-          user={user} settingsProps={settingsProps} openSession={openSession} runtimeDate={runtimeDate} onRuntimeDateChange={setRuntimeDate} navigate={navigate} relaxTab={relaxTab} setRelaxTab={setRelaxTab} homeGate={homeGate} onHomeGateSelect={handleHomeGateSelect} onHomeGateDismiss={() => setHomeGate(null)} />
-          {tab === 'home' && homeGate === 'hub' ? <HomeHubGate onSelect={navigate} onDismiss={() => setHomeGate(null)} runtimeDate={runtimeDate} openSession={openSession} /> : null}
+          {shellViews}
+          {hubGate}
           </main>
-          </div>
+          </>
+        ) : mobileLayout === 'fuel' ? (
+          <>
           {/* Mobile: Fuel-Layout */}
           <MobileShell
             tab={tab}
@@ -467,21 +486,12 @@ export default function App() {
             subTab={shellSubTab}
             onSubTab={shellSubTabSetter}
           >
-          <Views tab={tab} fitnessProps={fitnessProps} fuelTab={fuelTab} setFuelTab={setFuelTab} muscleLanguage={muscleLanguage} taxonomy={taxonomy}
-          user={user} settingsProps={settingsProps} openSession={openSession} compact runtimeDate={runtimeDate} onRuntimeDateChange={setRuntimeDate} navigate={navigate} relaxTab={relaxTab} setRelaxTab={setRelaxTab} homeGate={homeGate} onHomeGateSelect={handleHomeGateSelect} onHomeGateDismiss={() => setHomeGate(null)} />
-          {tab === 'home' && homeGate === 'hub' ? <HomeHubGate onSelect={navigate} onDismiss={() => setHomeGate(null)} runtimeDate={runtimeDate} openSession={openSession} /> : null}
+          {compactShellViews}
+          {hubGate}
           </MobileShell>
           </>
         ) : (
           <>
-          <div className="hidden lg:block">
-          {showShellHeader ? shellHeader : null}
-          <main className="relative min-h-[100dvh]">
-          <Views tab={tab} fitnessProps={fitnessProps} fuelTab={fuelTab} setFuelTab={setFuelTab} muscleLanguage={muscleLanguage} taxonomy={taxonomy}
-          user={user} settingsProps={settingsProps} openSession={openSession} runtimeDate={runtimeDate} onRuntimeDateChange={setRuntimeDate} navigate={navigate} relaxTab={relaxTab} setRelaxTab={setRelaxTab} homeGate={homeGate} onHomeGateSelect={handleHomeGateSelect} onHomeGateDismiss={() => setHomeGate(null)} />
-          {tab === 'home' && homeGate === 'hub' ? <HomeHubGate onSelect={navigate} onDismiss={() => setHomeGate(null)} runtimeDate={runtimeDate} openSession={openSession} /> : null}
-          </main>
-          </div>
           <MobileShell
             tab={tab}
             navigate={navigate}
@@ -491,9 +501,8 @@ export default function App() {
             subTab={shellSubTab}
             onSubTab={shellSubTabSetter}
           >
-          <Views tab={tab} fitnessProps={fitnessProps} fuelTab={fuelTab} setFuelTab={setFuelTab} muscleLanguage={muscleLanguage} taxonomy={taxonomy}
-          user={user} settingsProps={settingsProps} openSession={openSession} compact runtimeDate={runtimeDate} onRuntimeDateChange={setRuntimeDate} navigate={navigate} relaxTab={relaxTab} setRelaxTab={setRelaxTab} homeGate={homeGate} onHomeGateSelect={handleHomeGateSelect} onHomeGateDismiss={() => setHomeGate(null)} />
-          {tab === 'home' && homeGate === 'hub' ? <HomeHubGate onSelect={navigate} onDismiss={() => setHomeGate(null)} runtimeDate={runtimeDate} openSession={openSession} /> : null}
+          {compactShellViews}
+          {hubGate}
           </MobileShell>
           </>
         )}
