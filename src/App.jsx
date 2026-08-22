@@ -292,6 +292,11 @@ export default function App() {
       setTab('home')
       return
     }
+    if (id === 'fitness' && !subTab && runtimeDate) {
+      setHomeGate(null)
+      openSession(runtimeDate)
+      return
+    }
     if (!VALID_TABS.has(id)) return
     if (id === 'home') {
       setHomeGate(subTab || null)
