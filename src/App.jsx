@@ -309,6 +309,7 @@ export default function App() {
       return
     }
     if (!VALID_TABS.has(id)) return
+    if (id === tab && subTab == null) return
     if (id === 'home') {
       setHomeGate(subTab || null)
     } else if (tab === 'home' && homeGate === 'hub') {
@@ -317,13 +318,13 @@ export default function App() {
       setHomeGate(null)
     }
     if (id === 'fitness') {
-      setFitnessTab(subTab || null)
+      setFitnessTab(subTab || fitnessTab || null)
     }
     if (id === 'fuel') {
-      setFuelTab(subTab || 'food')
+      setFuelTab(subTab || fuelTab || 'food')
     }
     if (id === 'relax') {
-      setRelaxTab(subTab || 'dash')
+      setRelaxTab(subTab || relaxTab || 'dash')
     }
     setTab(id)
   }
