@@ -55,6 +55,7 @@ export default function RelaxApp({ subTab = 'dash', onSubTab, onOpenSession, run
       shellSyncTargetRef.current = null
       return
     }
+    if (shellSyncTargetRef.current) return
     if (tab !== subTab) onSubTab(tab)
   }, [onSubTab, subTab, tab])
 
