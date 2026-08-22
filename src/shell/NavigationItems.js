@@ -24,7 +24,10 @@ export const VALID_TABS = new Set(['hub', 'journal', ...NAV_ITEMS.map(i => i.id)
 // damit neue Untertabs nicht erneut manuell nachgezogen werden muessen.
 const FITNESS_SIDEBAR_NAV = FITNESS_NAV_ITEMS
   .filter(({ id }) => id === 'session' || id === 'review' || id === 'learn')
-  .map((item) => ({ ...item }))
+  .map((item) => ({
+    ...item,
+    hideInFlatNav: item.id === 'session',
+  }))
 
 // Log zuerst — die tägliche Kernaktion (analog zu Training bei Fitness),
 // Food/Supps/Mikros sind Nachschlagewerke, die man seltener direkt ansteuert.

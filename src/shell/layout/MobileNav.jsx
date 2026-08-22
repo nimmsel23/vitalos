@@ -9,7 +9,9 @@ function normalizeActiveAppId(tab) {
 
 function flattenSubNav(subNav = []) {
   return subNav.flatMap((item) => {
-    const base = [{ id: item.id, label: item.label, Icon: item.Icon, parentId: null, noDefaultSub: item.noDefaultSub }]
+    const base = item.hideInFlatNav
+      ? []
+      : [{ id: item.id, label: item.label, Icon: item.Icon, parentId: null, noDefaultSub: item.noDefaultSub }]
     const nested = (item.sub || []).map((child) => ({
       id: child.id,
       label: child.label,
