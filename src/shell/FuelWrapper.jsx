@@ -57,6 +57,7 @@ export default function FuelWrapper({ user, subTab, onSubTab, onNavigateShell, e
       shellSyncTargetRef.current = null
       return
     }
+    if (shellSyncTargetRef.current) return
     if (desiredShellTab !== effectiveActiveTab) onSubTab(effectiveActiveTab)
   }, [activeTab, desiredShellTab, onSubTab, subTab])
 
