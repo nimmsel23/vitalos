@@ -1,8 +1,10 @@
 import { useEffect, useMemo, useState } from 'react'
-import { CalendarRange, ChevronLeft, ChevronRight, Dumbbell, Flame, BookOpen, CheckSquare } from 'lucide-react'
+import { CalendarRange, ChevronLeft, ChevronRight, Dumbbell, Flame, BookOpen, CheckSquare, Beef, Wheat, Droplet } from 'lucide-react'
 import { getRecentSessions, getMealsHistory, getJournalHistory, getAllHabitJournalsHistory } from '@db'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { useAppData } from '@fuel/hooks/useAppData.js'
+import { useSettings } from '@fuel/store.js'
+import { computeMacroGoals } from '@fuel/views/Settings/GoalsSection.jsx'
 import { formatMetric, sumMetric } from '@fuel-shared/utils/utils.js'
 import { NAV_ITEMS, SUB_NAV } from './NavigationItems.js'
 import { formatRuntimeDate, localISO, shiftISODate, weekDates } from './runtimeDate.js'
@@ -27,22 +29,71 @@ function buildDayMap(sessions, meals, journal, habits) {
   }
 }
 
+const MACRO_META = [
+  { key: 'protein', label: 'Protein', Icon: Beef, color: '#34d399', track: 'rgba(52,211,153,0.14)' },
+  { key: 'carbs', label: 'Carbs', Icon: Wheat, color: '#38bdf8', track: 'rgba(56,189,248,0.14)' },
+  { key: 'fat', label: 'Fett', Icon: Droplet, color: '#a78bfa', track: 'rgba(167,139,250,0.14)' },
+]
+
+function MacroPip({ label, Icon, color, track, value, goal, compact }) {
+  const pct = goal > 0 ? Math.min(100, Math.round((value / goal) * 100)) : 0
+  return (
+    <div className="min-w-0 flex-1">
+      <div className="flex items-center gap-1.5 text-[9px] font-black uppercase tracking-[0.16em] text-slate-500">
+        <Icon size={11} style={{ color }} />
+        <span className="truncate">{label}</span>
+      </div>
+      <div className={`mt-1 font-black text-slate-100 ${compact ? 'text-sm' : 'text-base'}`}>
+        {formatMetric(value)}<span className="text-slate-500">g</span>
+        {goal > 0 && <span className="ml-1 text-[10px] font-semibold text-slate-500">/{goal}g</span>}
+      </div>
+      <div className="mt-1.5 h-1.5 w-full overflow-hidden rounded-full" style={{ background: track }}>
+        <div className="h-full rounded-full transition-all duration-500" style={{ width: `${pct}%`, background: color, boxShadow: `0 0 8px ${color}` }} />
+      </div>
+    </div>
+  )
+}
+
 function FuelHeaderSummaryInner({ runtimeDate, compact = false }) {
   const { nutrition } = useAppData(runtimeDate)
+  const { kcal_goal, protein_goal, carb_ratio } = useSettings()
+  const { carbs_goal, fat_goal } = computeMacroGoals({ kcal_goal, protein_goal, carb_ratio })
   const meals = nutrition?.meals || []
   const totalKcal = sumMetric(meals, 'kcal')
   const totalProtein = sumMetric(meals, 'protein')
   const totalCarbs = sumMetric(meals, 'carbs')
   const totalFat = sumMetric(meals, 'fat')
+  const kcalPct = kcal_goal > 0 ? Math.min(100, Math.round((totalKcal / kcal_goal) * 100)) : 0
+  const kcalRest = Math.max(0, (kcal_goal || 0) - totalKcal)
 
   return (
-    <div className={`rounded-2xl border border-white/10 bg-slate-950/45 ${compact ? 'px-3 py-3' : 'px-4 py-4'} text-right`}>
-      <div className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">Fuel Summe</div>
-      <div className={`mt-2 font-black text-orange-300 ${compact ? 'text-xl' : 'text-3xl'}`}>{formatMetric(totalKcal)} kcal</div>
-      <div className={`mt-1 flex justify-end gap-3 ${compact ? 'text-xs' : 'text-sm'} text-slate-400`}>
-        <span><span className="text-emerald-300">{formatMetric(totalProtein)}</span> P</span>
-        <span><span className="text-sky-300">{formatMetric(totalCarbs)}</span> K</span>
-        <span><span className="text-violet-300">{formatMetric(totalFat)}</span> F</span>
+    <div
+      className={`relative overflow-hidden rounded-2xl border border-orange-400/15 ${compact ? 'px-3.5 py-3' : 'px-5 py-4'}`}
+      style={{ background: 'radial-gradient(120% 140% at 100% 0%, rgba(249,115,22,0.16), transparent 55%), rgba(2,6,14,0.55)' }}
+    >
+      <div className="flex items-baseline justify-between gap-3">
+        <div className="min-w-0">
+          <div className="text-[9px] font-black uppercase tracking-[0.24em] text-orange-300/70">Fuel Summe</div>
+          <div className={`font-black leading-none text-orange-300 ${compact ? 'text-2xl' : 'text-3xl'}`}>
+            {formatMetric(totalKcal)}<span className="ml-1 text-sm font-bold text-orange-300/50">kcal</span>
+          </div>
+        </div>
+        <div className="shrink-0 text-right text-[10px] font-bold uppercase tracking-[0.12em] text-slate-500">
+          {kcal_goal > 0 ? <>Ziel {kcal_goal} · <span className="text-slate-300">{formatMetric(kcalRest)} Rest</span></> : 'Kein Ziel gesetzt'}
+        </div>
+      </div>
+
+      <div className="mt-2.5 h-2 w-full overflow-hidden rounded-full bg-white/5">
+        <div
+          className="h-full rounded-full transition-all duration-500"
+          style={{ width: `${kcalPct}%`, background: 'linear-gradient(90deg, #f97316, #fbbf24)', boxShadow: '0 0 10px rgba(249,115,22,0.6)' }}
+        />
+      </div>
+
+      <div className="mt-3.5 flex gap-4">
+        <MacroPip {...MACRO_META[0]} value={totalProtein} goal={protein_goal} compact={compact} />
+        <MacroPip {...MACRO_META[1]} value={totalCarbs} goal={carbs_goal} compact={compact} />
+        <MacroPip {...MACRO_META[2]} value={totalFat} goal={fat_goal} compact={compact} />
       </div>
     </div>
   )
