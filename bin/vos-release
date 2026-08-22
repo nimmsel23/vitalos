@@ -14,6 +14,7 @@ NC='\033[0m'
 declare -A STANDALONE_DIRS
 declare -A SUBMODULE_DIRS
 declare -A SOURCE_BRANCHES
+declare -A TARGET_BRANCHES
 declare -A NOISE_PATTERNS
 
 STANDALONE_DIRS[fitness]="/home/alpha/fitness-dev"
@@ -36,6 +37,17 @@ SOURCE_BRANCHES[habits]="dev"
 SOURCE_BRANCHES[journal]="dev"
 SOURCE_BRANCHES[learn]="dev"
 SOURCE_BRANCHES[relax]="master"
+
+# Submodule-Master-Branch je Modul — fitness-app heisst "vitalos" statt
+# "master" (Rename, siehe fitness-dev/CLAUDE.md "Main branch"), alle
+# anderen Submodule sind bislang noch "master". Fallback unten in
+# target_branch() falls hier mal ein Modul fehlt.
+TARGET_BRANCHES[fitness]="vitalos"
+TARGET_BRANCHES[fuel]="master"
+TARGET_BRANCHES[habits]="master"
+TARGET_BRANCHES[journal]="master"
+TARGET_BRANCHES[learn]="master"
+TARGET_BRANCHES[relax]="master"
 
 NOISE_PATTERNS[fitness]='^\?\? (node_modules|functions/node_modules)$'
 NOISE_PATTERNS[fuel]='^(D .+\.bak([.].*)?|D .+\.baks.*|D .+\.mjs\.bak-.*|\?\? (node_modules|functions/node_modules))$'
@@ -238,6 +250,7 @@ merge_module() {
     local standalone="${STANDALONE_DIRS[$module]}"
     local submodule="${SUBMODULE_DIRS[$module]}"
     local source_branch="${SOURCE_BRANCHES[$module]}"
+    local target_branch="${TARGET_BRANCHES[$module]:-master}"
     local submodule_name
     submodule_name="$(basename "$submodule")"
 
@@ -246,17 +259,17 @@ merge_module() {
 
     if [[ "$module" != "relax" ]]; then
         expect_branch "$standalone" "$source_branch" "$standalone"
-        expect_branch "$submodule" "master" "$submodule"
+        expect_branch "$submodule" "$target_branch" "$submodule"
         require_clean_repo "$module" "$standalone" "$standalone"
         require_clean_repo "$module" "$submodule" "$submodule"
 
         info "[$module] Push $source_branch -> origin/$source_branch"
         run "$REAL_GIT" -C "$standalone" push origin "$source_branch"
 
-        info "[$module] Pull submodule master"
-        run "$REAL_GIT" -C "$submodule" pull origin master
+        info "[$module] Pull submodule $target_branch"
+        run "$REAL_GIT" -C "$submodule" pull origin "$target_branch"
 
-        info "[$module] Merge $source_branch into submodule master"
+        info "[$module] Merge $source_branch into submodule $target_branch"
         if ! run "$REAL_GIT" -C "$submodule" merge "$source_branch" --no-edit; then
             if [[ "$DRY_RUN" -eq 1 ]]; then
                 error "Dry-run cannot auto-resolve merge failures for $module"
@@ -266,8 +279,8 @@ merge_module() {
             run "$REAL_GIT" -C "$submodule" commit --no-edit
         fi
 
-        info "[$module] Push submodule master -> origin/master"
-        run "$REAL_GIT" -C "$submodule" push origin master
+        info "[$module] Push submodule $target_branch -> origin/$target_branch"
+        run "$REAL_GIT" -C "$submodule" push origin "$target_branch"
     else
         expect_branch "$standalone" "master" "$standalone"
         expect_branch "$submodule" "master" "$submodule"
