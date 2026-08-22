@@ -68,3 +68,26 @@ App-spezifische Settings-Modals (z. B. Journal: Darstellung/Telegram) sind ok.
 ## Regel
 
 Neue Shell-Komponente hier anlegen nur wenn sie wirklich vitalos-übergreifend ist (Navigation, Auth, Layout). Sub-Repo-spezifisches → im Sub-Repo lassen, via `@view/*` Alias einbinden.
+
+## Ping-Pong-Fix (2026-08-22)
+
+Der ausschlaggebende Grund für das mobile Tab-`Ping-Pong` bei Fuel/Relax war
+nicht ein einzelner Hash-Bug, sondern zwei gleichzeitig aktive Sync-Quellen:
+
+1. `App.jsx` mountete mobil zeitweise mehr als eine Shell-View gleichzeitig
+   (Desktop-/Mobile-Pfad nur per CSS verborgen statt wirklich exklusiv
+   gerendert). Dadurch konnten mehrere `Views`/Wrapper parallel auf denselben
+   Shell-State reagieren.
+2. `FuelWrapper.jsx` und `RelaxApp.jsx` spiegelten einen gerade von der Shell
+   gestarteten Subtab-Wechsel sofort wieder zurück via `onSubTab(...)`, bevor
+   der Zieltab stabil angekommen war. Das erzeugte das sichtbare Hin-und-Her.
+
+Der wirksame Fix war deshalb:
+- in `App.jsx` nur **eine** aktive Mobile-/Desktop-Shell-Instanz rendern
+  (`matchMedia`-gesteuert, nicht nur `hidden lg:block`)
+- in `FuelWrapper.jsx` und `RelaxApp.jsx` Shell-getriebene Tabwechsel per
+  `shellSyncTargetRef` als laufende Synchronisation behandeln und in dieser
+  Phase **kein** Echo zurück an die Shell schicken
+
+Kurz: das Problem war eine doppelte Navigation-Synchronisation, nicht einfach
+„zu viel Hashing“.
