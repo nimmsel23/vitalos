@@ -131,6 +131,8 @@ für Build/CI und Pointer-Management, nicht die primären `dev`-Worktrees.
 * Pointer im Meta-Repo dürfen nie auf lokale-only Submodule-Commits zeigen, sonst scheitert CI mit `fatal: not our ref`.
 * Standard im Meta-Repo ist `push.recurseSubmodules=on-demand`: normales `git push` aus `~/vitalos` pusht referenzierte Submodule automatisch vorab.
 * Detached-HEAD-Commits in Submodulen vermeiden. Falls doch nötig: explizit auf einen echten Zielbranch pushen, z. B. `git push origin HEAD:master`.
+* `.githooks/pre-commit` ruft `bin/vos-sync-submodule-pointers --stage` auf und staged erreichbare Submodule-Pointer automatisch mit.
+* `.githooks/pre-push` ruft `bin/vos-sync-submodule-pointers --check-push` auf und blockt nur noch lokal-only Pointer in `HEAD`.
 
 ---
 
@@ -257,7 +259,8 @@ ohne `.githooks/`-Verzeichnis ist **relax-app** — offener Punkt.
 | Repo | Hook | Status |
 |---|---|---|
 | vitalos | `.githooks/post-commit` | aktiv, nur Info-Ausgabe |
-| vitalos | `.githooks/pre-push` | nicht vorhanden; Schutz läuft über `push.recurseSubmodules=on-demand` |
+| vitalos | `.githooks/pre-commit` | aktiv; staged erreichbare Submodule-Pointer automatisch |
+| vitalos | `.githooks/pre-push` | aktiv; blockt nur lokal-only Submodule-Pointer in `HEAD` |
 | vitalos | `.git/hooks/*` | wirkungslos, weil `core.hooksPath=.githooks` |
 | fitness-app | `.githooks/pre-commit`, `post-commit`, `pre-push`, `post-checkout`, `post-merge` | aktiv |
 | fuel-app | `.githooks/post-commit` | aktiv |

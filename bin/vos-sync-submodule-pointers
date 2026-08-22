@@ -1,0 +1,125 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+REAL_GIT="/usr/bin/git"
+ROOT_DIR="/home/alpha/vitalos"
+MODE="${1:---stage}"
+
+declare -a SUBMODULE_PATHS=(
+  "fitness-app"
+  "fuel-app"
+  "journal-app"
+  "habit-app"
+  "learn-dev"
+  "relax-app"
+)
+
+RED='\033[0;31m'
+YELLOW='\033[0;33m'
+GREEN='\033[0;32m'
+BLUE='\033[0;34m'
+NC='\033[0m'
+
+info() { echo -e "${BLUE}[INFO]${NC} $*"; }
+warn() { echo -e "${YELLOW}[WARN]${NC} $*"; }
+error() { echo -e "${RED}[ERROR]${NC} $*" >&2; }
+success() { echo -e "${GREEN}[OK]${NC} $*"; }
+
+gitlink_commit_from_tree() {
+  local treeish="$1"
+  local path="$2"
+  "$REAL_GIT" -C "$ROOT_DIR" ls-tree "$treeish" -- "$path" 2>/dev/null | awk '{print $3}'
+}
+
+gitlink_commit_from_index() {
+  local path="$1"
+  "$REAL_GIT" -C "$ROOT_DIR" ls-files -s -- "$path" 2>/dev/null | awk '{print $2}'
+}
+
+remote_contains_commit() {
+  local repo_path="$1"
+  local commit="$2"
+  "$REAL_GIT" -C "$repo_path" for-each-ref --format='%(refname)' "refs/remotes/origin/*" \
+    | while IFS= read -r ref; do
+        [ -n "$ref" ] || continue
+        if "$REAL_GIT" -C "$repo_path" merge-base --is-ancestor "$commit" "$ref" 2>/dev/null; then
+          printf '%s\n' "$ref"
+          return 0
+        fi
+      done
+}
+
+stage_reachable_pointer_updates() {
+  local staged_any=0
+  local submodule_path repo_path index_commit checkout_commit remote_refs
+
+  for submodule_path in "${SUBMODULE_PATHS[@]}"; do
+    repo_path="${ROOT_DIR}/${submodule_path}"
+    [ -d "$repo_path" ] || continue
+
+    index_commit="$(gitlink_commit_from_index "$submodule_path")"
+    checkout_commit="$("$REAL_GIT" -C "$repo_path" rev-parse HEAD 2>/dev/null || true)"
+
+    [ -n "$index_commit" ] || continue
+    [ -n "$checkout_commit" ] || continue
+
+    if [ "$checkout_commit" = "$index_commit" ]; then
+      continue
+    fi
+
+    remote_refs="$(remote_contains_commit "$repo_path" "$checkout_commit" || true)"
+    if [ -z "$remote_refs" ]; then
+      warn "${submodule_path}: checkout ${checkout_commit:0:7} is not yet on any local origin/* ref; leaving pointer untouched."
+      continue
+    fi
+
+    "$REAL_GIT" -C "$ROOT_DIR" add "$submodule_path"
+    info "${submodule_path}: staged pointer bump ${index_commit:0:7} -> ${checkout_commit:0:7}."
+    staged_any=1
+  done
+
+  if [ "$staged_any" -eq 1 ]; then
+    success "Reachable submodule pointer updates were staged automatically."
+  fi
+}
+
+check_pushed_pointers_are_reachable() {
+  local failures=0
+  local submodule_path repo_path head_commit remote_refs
+
+  for submodule_path in "${SUBMODULE_PATHS[@]}"; do
+    repo_path="${ROOT_DIR}/${submodule_path}"
+    [ -d "$repo_path" ] || continue
+
+    head_commit="$(gitlink_commit_from_tree HEAD "$submodule_path")"
+    [ -n "$head_commit" ] || continue
+
+    remote_refs="$(remote_contains_commit "$repo_path" "$head_commit" || true)"
+    if [ -z "$remote_refs" ]; then
+      error "${submodule_path}: parent HEAD points to ${head_commit:0:7}, but that commit is not contained in any local origin/* ref."
+      info "Push the submodule first, then push vitalos."
+      failures=1
+    fi
+  done
+
+  if [ "$failures" -ne 0 ]; then
+    exit 1
+  fi
+}
+
+main() {
+  case "$MODE" in
+    --stage)
+      stage_reachable_pointer_updates
+      ;;
+    --check-push)
+      check_pushed_pointers_are_reachable
+      ;;
+    *)
+      error "Unknown mode: $MODE"
+      exit 1
+      ;;
+  esac
+}
+
+main "$@"

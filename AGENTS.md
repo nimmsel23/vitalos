@@ -22,6 +22,11 @@ Endstand erreicht hat: sofort committen, ohne vorher um Erlaubnis zu fragen.
 - `fitness-release` ist nur noch der schmale Alias für `vos-release fitness`.
 - Zweck: Standalone-Repo pushen, in `vitalos/<app>` nach `master` mergen, dann
   im Parent-Repo den Submodule-Pointer bumpen.
+- Parent-`git commit` zieht per `.githooks/pre-commit` und
+  `bin/vos-sync-submodule-pointers --stage` erreichbare
+  Submodule-Pointer automatisch mit in den Commit.
+- Parent-`git push` prüft per `.githooks/pre-push` nur noch, dass der bereits
+  committete Pointer nicht auf einen lokal-only Submodule-Commit zeigt.
 
 **Grund:** Ein Agent hat am 2026-08-06 seinen Context aufgegeben, bevor
 committed wurde — die Arbeit ging verloren, der User musste manuell
