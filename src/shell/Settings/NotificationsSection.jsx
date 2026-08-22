@@ -5,6 +5,7 @@ const TYPE_LABELS = {
   workout: 'Workout-Reminder',
   habit: 'Habit-Reminder',
   coverage: 'Coverage-Alert (Muskelgruppe X Tage nicht trainiert)',
+  pplRatio: 'PPL-Ratio-Alert (Push/Pull/Legs unter 15 %)',
   restday: 'Rest-Day-Check (lange keine Session)',
 }
 

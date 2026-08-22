@@ -32,7 +32,7 @@ const DEFAULT_PUSH_SETTINGS = {
   enabled: false,
   token: null,
   reminderTime: "18:00",
-  types: { workout: true, habit: true, coverage: true, restday: true },
+  types: { workout: true, habit: true, coverage: true, pplRatio: true, restday: true },
 };
 
 export async function getPushSettings() {
