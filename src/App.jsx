@@ -348,6 +348,30 @@ export default function App() {
     setTab('fitness')
   }
 
+  function navigateToDomainDate(id, date) {
+    if (date && date !== runtimeDate) setRuntimeDate(date)
+    if (id === 'fitness') {
+      setHomeGate(null)
+      openSession(date || runtimeDate)
+      return
+    }
+    if (id === 'journal') {
+      setHomeGate(null)
+      setTab('home')
+      return
+    }
+    if (id === 'habits') {
+      setHomeGate(null)
+      setTab('habits')
+      return
+    }
+    if (id === 'fuel') {
+      setHomeGate(null)
+      setFuelTab(fuelTab || 'food')
+      setTab('fuel')
+    }
+  }
+
   async function handleAuthSubmit(e) {
     e.preventDefault()
     setAuthError('')
@@ -434,8 +458,8 @@ export default function App() {
           : tab === 'relax'
             ? setRelaxTab
             : null
-      const shellHeader = <ShellHeader tab={tab} subTab={shellSubTab} runtimeDate={runtimeDate} setRuntimeDate={setRuntimeDate} subNav={shellSubNav} onSubTab={shellSubTabSetter} />
-      const mobileShellHeader = <ShellHeader tab={tab} subTab={shellSubTab} runtimeDate={runtimeDate} setRuntimeDate={setRuntimeDate} compact subNav={shellSubNav} onSubTab={shellSubTabSetter} />
+      const shellHeader = <ShellHeader tab={tab} subTab={shellSubTab} runtimeDate={runtimeDate} setRuntimeDate={setRuntimeDate} subNav={shellSubNav} onSubTab={shellSubTabSetter} onNavigateDomain={navigateToDomainDate} />
+      const mobileShellHeader = <ShellHeader tab={tab} subTab={shellSubTab} runtimeDate={runtimeDate} setRuntimeDate={setRuntimeDate} compact subNav={shellSubNav} onSubTab={shellSubTabSetter} onNavigateDomain={navigateToDomainDate} />
       const shellViews = <Views tab={tab} fitnessProps={fitnessProps} fuelTab={fuelTab} setFuelTab={setFuelTab} muscleLanguage={muscleLanguage} taxonomy={taxonomy}
       user={user} settingsProps={settingsProps} openSession={openSession} runtimeDate={runtimeDate} onRuntimeDateChange={setRuntimeDate} navigate={navigate} relaxTab={relaxTab} setRelaxTab={setRelaxTab} homeGate={homeGate} onHomeGateSelect={handleHomeGateSelect} onHomeGateDismiss={() => setHomeGate(null)} />
       const compactShellViews = <Views tab={tab} fitnessProps={fitnessProps} fuelTab={fuelTab} setFuelTab={setFuelTab} muscleLanguage={muscleLanguage} taxonomy={taxonomy}

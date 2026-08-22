@@ -120,7 +120,7 @@ function findSubTabLabel(tab, subTab) {
   return null
 }
 
-export default function ShellHeader({ tab, subTab = null, runtimeDate, setRuntimeDate, compact = false, subNav = null, onSubTab = null }) {
+export default function ShellHeader({ tab, subTab = null, runtimeDate, setRuntimeDate, compact = false, subNav = null, onSubTab = null, onNavigateDomain = null }) {
   const [activity, setActivity] = useState(() => buildDayMap([], [], [], []))
 
   useEffect(() => {
@@ -234,14 +234,18 @@ export default function ShellHeader({ tab, subTab = null, runtimeDate, setRuntim
                     {DOMAIN_META.map(({ key, label, color, Icon }) => {
                       const active = activity[key]?.has(date)
                       return (
-                        <div
+                        <button
                           key={key}
                           title={label}
-                          className="flex h-6 items-center justify-center rounded-lg border border-white/5"
+                          onClick={(event) => {
+                            event.stopPropagation()
+                            onNavigateDomain?.(key, date)
+                          }}
+                          className="flex h-6 items-center justify-center rounded-lg border border-white/5 transition hover:scale-[1.03] hover:border-white/15"
                           style={{ backgroundColor: active ? `${color}22` : 'rgba(255,255,255,0.03)', color: active ? color : '#64748b' }}
                         >
                           <Icon size={11} />
-                        </div>
+                        </button>
                       )
                     })}
                   </div>
