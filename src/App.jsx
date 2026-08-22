@@ -22,6 +22,10 @@ import CoachApp from '@view/coach'
 const DAY_START = 8
 const DAY_END   = 20
 
+function localToday() {
+  return new Date().toISOString().slice(0, 10)
+}
+
 function HomeSheet({ label, onDismiss, children }) {
   return (
     <div className="fixed inset-0 z-50 flex items-end bg-[linear-gradient(180deg,rgba(8,10,14,0.16),rgba(8,10,14,0.5))] backdrop-blur-md">
@@ -74,8 +78,11 @@ function readHashState() {
   if (!raw) return { tab: 'home', subTab: 'hub', date: null }
   const [mainTab = 'home', second = null, third = null] = raw.split('/')
   const dateLike = /^\d{4}-\d{2}-\d{2}$/
+  const resolveDate = (value) => value === 'today' ? localToday() : value
   const subTab = second && !dateLike.test(second) ? second : null
-  const date = dateLike.test(second || '') ? second : third
+  const rawDate = dateLike.test(second || '') ? second : third
+  const date = resolveDate(rawDate || null)
+  const fitnessSessionDate = mainTab === 'fitness' && subTab === 'session' ? (date || localToday()) : date
   if (mainTab === 'hub') return { tab: 'home', subTab: 'hub', date: null }
   if (mainTab === 'dashboard') return { tab: 'home', subTab: null }
   if (mainTab === 'learn') return { tab: 'fitness', subTab: 'learn' }
@@ -86,7 +93,7 @@ function readHashState() {
   return {
     tab: VALID_TABS.has(mainTab) ? mainTab : 'hub',
     subTab: subTab || null,
-    date: date || null,
+    date: fitnessSessionDate || null,
   }
 }
 
@@ -235,6 +242,7 @@ export default function App() {
       setRuntimeDate(date)
     }
     if (hashTab === 'fitness' && readHashState().subTab === 'session' && date) {
+      if (date !== runtimeDate) setRuntimeDate(date)
       setSessionDate(date)
     }
   }, [])
@@ -261,7 +269,10 @@ export default function App() {
       if (nextTab === 'home') setHomeGate(subTab || null)
       if (nextTab === 'home' && date) setRuntimeDate(date)
       if (nextTab === 'fitness') setFitnessTab(subTab || null)
-      if (nextTab === 'fitness' && subTab === 'session') setSessionDate(date || runtimeDate)
+      if (nextTab === 'fitness' && subTab === 'session') {
+        if (date) setRuntimeDate(date)
+        setSessionDate(date || runtimeDate)
+      }
       if (nextTab === 'fuel' && subTab) setFuelTab(subTab)
       if (nextTab === 'fuel' && date) setRuntimeDate(date)
       if ((nextTab === 'journal' || nextTab === 'habits' || nextTab === 'relax') && date) setRuntimeDate(date)
