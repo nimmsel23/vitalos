@@ -6,7 +6,7 @@
  * relax-scope.css, Views sind prop-los.
  */
 
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { Activity, MoonStar, BookOpen, BarChart3, Zap, Beaker } from 'lucide-react'
 import Journal from '@view/journal'
 import DashboardView from '@relax/views/Dashboard.jsx'
@@ -38,16 +38,24 @@ const TABS = [
 
 export default function RelaxApp({ subTab = 'dash', onSubTab, onOpenSession, runtimeDate, onRuntimeDateChange }) {
   const [tab, setTab] = useState(subTab || 'dash')
+  const shellSyncTargetRef = useRef(null)
   const active = TABS.find(t => t.id === tab)
   const View = active?.View ?? null
   const fullBleed = tab === 'physio' || tab === 'catalog' || tab === 'journal'
 
   useEffect(() => {
-    if (subTab && subTab !== tab) setTab(subTab)
+    if (!subTab || subTab === tab) return
+    shellSyncTargetRef.current = subTab
+    setTab(subTab)
   }, [subTab, tab])
 
   useEffect(() => {
-    if (tab && onSubTab && tab !== subTab) onSubTab(tab)
+    if (!tab || !onSubTab) return
+    if (shellSyncTargetRef.current === tab) {
+      shellSyncTargetRef.current = null
+      return
+    }
+    if (tab !== subTab) onSubTab(tab)
   }, [onSubTab, subTab, tab])
 
   return (

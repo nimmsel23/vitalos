@@ -1,4 +1,4 @@
-import { useEffect } from 'react'
+import { useEffect, useRef } from 'react'
 import { useApp } from '@fuel/store.js'
 import FuelApp from './FuelApp.jsx'
 const SHELL_TAB_REDIRECTS = {
@@ -11,32 +11,46 @@ const SHELL_TAB_REDIRECTS = {
 export default function FuelWrapper({ user, subTab, onSubTab, onNavigateShell, embedded = false }) {
   const setActiveTab = useApp(s => s.setActiveTab)
   const activeTab    = useApp(s => s.activeTab)
+  const shellSyncTargetRef = useRef(null)
+  const lastShellRedirectRef = useRef(null)
+
+  function normalizeFuelTab(tab) {
+    const redirect = SHELL_TAB_REDIRECTS[tab]
+    return redirect?.type === 'fuel' ? redirect.tab : tab
+  }
 
   useEffect(() => {
     const redirect = SHELL_TAB_REDIRECTS[activeTab]
-    if (!redirect) return
-    if (redirect.type === 'fuel') setActiveTab(redirect.tab)
-    if (redirect.type === 'shell') onNavigateShell?.(redirect.tab, redirect.subTab || null)
+    if (!redirect) {
+      lastShellRedirectRef.current = null
+      return
+    }
+    if (redirect.type === 'fuel') {
+      if (activeTab !== redirect.tab) setActiveTab(redirect.tab)
+      return
+    }
+    if (lastShellRedirectRef.current === activeTab) return
+    lastShellRedirectRef.current = activeTab
+    onNavigateShell?.(redirect.tab, redirect.subTab || null)
   }, [activeTab, onNavigateShell, setActiveTab])
 
   // Sidebar → Fuel: subTab-Änderung in Store schreiben
   useEffect(() => {
     if (!subTab) return
-    const redirect = SHELL_TAB_REDIRECTS[subTab]
-    if (redirect?.type === 'fuel') {
-      if (activeTab !== redirect.tab) setActiveTab(redirect.tab)
-      return
-    }
-    if (redirect?.type === 'shell') {
-      onNavigateShell?.(redirect.tab, redirect.subTab || null)
-      return
-    }
-    if (subTab !== activeTab) setActiveTab(subTab)
-  }, [activeTab, onNavigateShell, setActiveTab, subTab])
+    const targetTab = normalizeFuelTab(subTab)
+    if (!targetTab || targetTab === activeTab) return
+    shellSyncTargetRef.current = targetTab
+    setActiveTab(targetTab)
+  }, [activeTab, setActiveTab, subTab])
 
   // Fuel intern → Sidebar: Store-Änderung zurückmelden
   useEffect(() => {
-    if (activeTab && onSubTab && activeTab !== subTab) onSubTab(activeTab)
+    if (!activeTab || !onSubTab) return
+    if (shellSyncTargetRef.current === activeTab) {
+      shellSyncTargetRef.current = null
+      return
+    }
+    if (normalizeFuelTab(subTab) !== activeTab) onSubTab(activeTab)
   }, [activeTab, onSubTab, subTab])
 
   if (!user) return (
