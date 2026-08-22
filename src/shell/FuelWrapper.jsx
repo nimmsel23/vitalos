@@ -19,6 +19,8 @@ export default function FuelWrapper({ user, subTab, onSubTab, onNavigateShell, e
     return redirect?.type === 'fuel' ? redirect.tab : tab
   }
 
+  const desiredShellTab = normalizeFuelTab(subTab)
+
   useEffect(() => {
     const redirect = SHELL_TAB_REDIRECTS[activeTab]
     if (!redirect) {
@@ -26,32 +28,37 @@ export default function FuelWrapper({ user, subTab, onSubTab, onNavigateShell, e
       return
     }
     if (redirect.type === 'fuel') {
-      if (activeTab !== redirect.tab) setActiveTab(redirect.tab)
+      if (desiredShellTab && desiredShellTab !== redirect.tab) return
+      if (activeTab !== redirect.tab) {
+        shellSyncTargetRef.current = redirect.tab
+        setActiveTab(redirect.tab)
+      }
       return
     }
     if (lastShellRedirectRef.current === activeTab) return
     lastShellRedirectRef.current = activeTab
     onNavigateShell?.(redirect.tab, redirect.subTab || null)
-  }, [activeTab, onNavigateShell, setActiveTab])
+  }, [activeTab, desiredShellTab, onNavigateShell, setActiveTab])
 
   // Sidebar → Fuel: subTab-Änderung in Store schreiben
   useEffect(() => {
     if (!subTab) return
-    const targetTab = normalizeFuelTab(subTab)
+    const targetTab = desiredShellTab
     if (!targetTab || targetTab === activeTab) return
     shellSyncTargetRef.current = targetTab
     setActiveTab(targetTab)
-  }, [activeTab, setActiveTab, subTab])
+  }, [activeTab, desiredShellTab, setActiveTab, subTab])
 
   // Fuel intern → Sidebar: Store-Änderung zurückmelden
   useEffect(() => {
     if (!activeTab || !onSubTab) return
-    if (shellSyncTargetRef.current === activeTab) {
+    const effectiveActiveTab = normalizeFuelTab(activeTab)
+    if (shellSyncTargetRef.current === activeTab || shellSyncTargetRef.current === effectiveActiveTab) {
       shellSyncTargetRef.current = null
       return
     }
-    if (normalizeFuelTab(subTab) !== activeTab) onSubTab(activeTab)
-  }, [activeTab, onSubTab, subTab])
+    if (desiredShellTab !== effectiveActiveTab) onSubTab(effectiveActiveTab)
+  }, [activeTab, desiredShellTab, onSubTab, subTab])
 
   if (!user) return (
     <div className="flex items-center justify-center h-full text-fit-dim text-xs font-black uppercase tracking-widest">
