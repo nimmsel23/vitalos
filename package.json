@@ -14,7 +14,10 @@
   ],
   "scripts": {
     "dev": "npx vite",
+    "build:fitness-kb-data": "npm --workspace=fitness-app run build:kb-data",
+    "prebuild": "npm run build:fitness-kb-data",
     "build": "npx vite build",
+    "prebuild:firebase": "npm run build:fitness-kb-data",
     "build:firebase": "npx vite build --mode firebase && npm run stamp:sw",
     "stamp:sw": "node scripts/stamp-sw.mjs dist-firebase",
     "deploy:preview": "npm run build:firebase && npx -y firebase-tools@latest hosting:channel:deploy agent-preview --expires 3d --project fitness-aos",
