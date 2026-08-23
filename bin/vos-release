@@ -293,7 +293,15 @@ merge_module() {
 }
 
 parent_status_filtered() {
-    "$REAL_GIT" -C "$VITALOS_DIR" status --short 2>/dev/null | grep -vE '^ \? (fitness-app|fuel-app|habit-app|journal-app|learn-dev|relax-app)$' || true
+    # Erwartete Zustaende fuer die von vos-release verwalteten Submodule:
+    # " M <name>" (Pointer-Bump nach erfolgreichem Push, unstaged) und
+    # "?? <name>" (Submodule noch nie initialisiert). Alles andere in
+    # /home/alpha/vitalos ist unerwartet und muss vor dem Commit auffallen.
+    # Bug bis 2026-08-23: die alte Regex '^ \? (...)$' matchte weder " M"
+    # noch "??" und liess JEDEN Pointer-Bump als "unexpected changes"
+    # durchfallen — nie aufgefallen, weil der volle Flow vorher nie
+    # tatsaechlich per Skript durchlief.
+    "$REAL_GIT" -C "$VITALOS_DIR" status --short 2>/dev/null | grep -vE '^( M|\?\?) (fitness-app|fuel-app|habit-app|journal-app|learn-dev|relax-app)$' || true
 }
 
 commit_parent_bumps() {
