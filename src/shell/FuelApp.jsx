@@ -39,7 +39,7 @@ function FuelInner({ embedded = false }) {
 
   return (
     <div className="min-h-screen text-slate-100">
-      <div className="mx-auto max-w-7xl px-4 py-6 lg:px-8">
+      <div className="mx-auto w-full max-w-[1800px] px-4 py-6 lg:px-8">
         {!embedded && (
           <header className="mb-6 grid gap-4 rounded-[2rem] border border-white/10 bg-white/5 p-6 shadow-glow backdrop-blur">
             <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
