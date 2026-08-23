@@ -22,7 +22,7 @@ STANDALONE_DIRS[fuel]="/home/alpha/fuel-dev"
 STANDALONE_DIRS[habits]="/home/alpha/habits-dev"
 STANDALONE_DIRS[journal]="/home/alpha/journal-dev"
 STANDALONE_DIRS[learn]="/home/alpha/learn-dev"
-STANDALONE_DIRS[relax]="/home/alpha/vitalos/relax-app"
+STANDALONE_DIRS[relax]="/home/alpha/relax-dev"
 
 SUBMODULE_DIRS[fitness]="/home/alpha/vitalos/fitness-app"
 SUBMODULE_DIRS[fuel]="/home/alpha/vitalos/fuel-app"
@@ -36,7 +36,7 @@ SOURCE_BRANCHES[fuel]="dev"
 SOURCE_BRANCHES[habits]="dev"
 SOURCE_BRANCHES[journal]="dev"
 SOURCE_BRANCHES[learn]="dev"
-SOURCE_BRANCHES[relax]="master"
+SOURCE_BRANCHES[relax]="dev"
 
 # Submodule-Master-Branch je Modul — fitness-app heisst "vitalos" statt
 # "master" (Rename, siehe fitness-dev/CLAUDE.md "Main branch"), alle
@@ -54,7 +54,7 @@ NOISE_PATTERNS[fuel]='^(D .+\.bak([.].*)?|D .+\.baks.*|D .+\.mjs\.bak-.*|\?\? (n
 NOISE_PATTERNS[habits]='^(D .+\.bak([.].*)?|D .+\.baks.*|D .+\.mjs\.bak-.*|\?\? node_modules)$'
 NOISE_PATTERNS[journal]='^(D .+\.bak([.].*)?|D .+\.baks.*|D .+\.mjs\.bak-.*|\?\? (node_modules|functions/node_modules))$'
 NOISE_PATTERNS[learn]='^(D .+\.bak([.].*)?|D .+\.baks.*|D .+\.mjs\.bak-.*|\?\? node_modules)$'
-NOISE_PATTERNS[relax]='^$'
+NOISE_PATTERNS[relax]='^(D .+\.bak([.].*)?|D .+\.baks.*|D .+\.mjs\.bak-.*|\?\? node_modules)$'
 
 MODULE_ORDER=(fitness fuel habits journal learn relax)
 SELECTED_MODULES=()
@@ -76,9 +76,8 @@ Modules:
   fitness fuel habits journal learn relax
 
 Behavior:
-  - For fitness/fuel/habits/journal/learn: push standalone dev -> origin/dev,
-    merge dev into the corresponding vitalos submodule master, push master.
-  - For relax: push relax-app master directly (no dev->master merge).
+  - For every module: push standalone dev -> origin/dev, merge dev into the
+    corresponding vitalos submodule master (or "vitalos" for fitness), push.
   - At the end: stage changed submodule pointers in /home/alpha/vitalos,
     create one parent commit, and push vitalos master.
 
@@ -257,37 +256,29 @@ merge_module() {
     require_dir "$standalone"
     require_dir "$submodule"
 
-    if [[ "$module" != "relax" ]]; then
-        expect_branch "$standalone" "$source_branch" "$standalone"
-        expect_branch "$submodule" "$target_branch" "$submodule"
-        require_clean_repo "$module" "$standalone" "$standalone"
-        require_clean_repo "$module" "$submodule" "$submodule"
+    expect_branch "$standalone" "$source_branch" "$standalone"
+    expect_branch "$submodule" "$target_branch" "$submodule"
+    require_clean_repo "$module" "$standalone" "$standalone"
+    require_clean_repo "$module" "$submodule" "$submodule"
 
-        info "[$module] Push $source_branch -> origin/$source_branch"
-        run "$REAL_GIT" -C "$standalone" push origin "$source_branch"
+    info "[$module] Push $source_branch -> origin/$source_branch"
+    run "$REAL_GIT" -C "$standalone" push origin "$source_branch"
 
-        info "[$module] Pull submodule $target_branch"
-        run "$REAL_GIT" -C "$submodule" pull origin "$target_branch"
+    info "[$module] Pull submodule $target_branch"
+    run "$REAL_GIT" -C "$submodule" pull origin "$target_branch"
 
-        info "[$module] Merge $source_branch into submodule $target_branch"
-        if ! run "$REAL_GIT" -C "$submodule" merge "$source_branch" --no-edit; then
-            if [[ "$DRY_RUN" -eq 1 ]]; then
-                error "Dry-run cannot auto-resolve merge failures for $module"
-                exit 1
-            fi
-            resolve_backup_conflicts "$submodule" || exit 1
-            run "$REAL_GIT" -C "$submodule" commit --no-edit
+    info "[$module] Merge $source_branch into submodule $target_branch"
+    if ! run "$REAL_GIT" -C "$submodule" merge "$source_branch" --no-edit; then
+        if [[ "$DRY_RUN" -eq 1 ]]; then
+            error "Dry-run cannot auto-resolve merge failures for $module"
+            exit 1
         fi
-
-        info "[$module] Push submodule $target_branch -> origin/$target_branch"
-        run "$REAL_GIT" -C "$submodule" push origin "$target_branch"
-    else
-        expect_branch "$standalone" "master" "$standalone"
-        expect_branch "$submodule" "master" "$submodule"
-        require_clean_repo "$module" "$standalone" "$standalone"
-        info "[$module] Push master -> origin/master"
-        run "$REAL_GIT" -C "$standalone" push origin master
+        resolve_backup_conflicts "$submodule" || exit 1
+        run "$REAL_GIT" -C "$submodule" commit --no-edit
     fi
+
+    info "[$module] Push submodule $target_branch -> origin/$target_branch"
+    run "$REAL_GIT" -C "$submodule" push origin "$target_branch"
 
     PARENT_BUMPS+=("$submodule_name")
 }
