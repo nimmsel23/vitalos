@@ -40,6 +40,7 @@ export function crossAppAliases() {
   return {
     '@fitness/components': `${FITNESS}/src/components`,
     '@fitness/constants':  `${FITNESS}/src/constants`,
+    '@fitness/lib':        `${FITNESS}/src/lib`,
     '@fitness-db':         `${FITNESS}/src/lib/db`,
     '@fitness':            FITNESS,
     '@fuel-db':            `${FUEL}/src/client/lib/db`,
