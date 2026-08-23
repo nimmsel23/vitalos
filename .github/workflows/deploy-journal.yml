@@ -29,6 +29,13 @@ jobs:
       - name: Install (Workspaces)
         run: npm ci
 
+      # journal-app re-exportiert @fitness-db/index.firestore.js komplett
+      # (Wildcard) und bündelt zusätzlich habit-app (@habits, Timeline-Icons)
+      # — beide ziehen fitness-apps generierten KB-Layer mit. Gitignored,
+      # wird sonst nur von fitness-apps eigenem "prebuild"-Hook erzeugt.
+      - name: Generate fitness KB data (transitive dependency via @fitness-db/@habits)
+        run: npm run build:kb-data --workspace=fitness-app
+
       - name: Build Journal
         run: npm run build:cloud --workspace=journal-app
 

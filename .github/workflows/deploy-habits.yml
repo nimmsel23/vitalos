@@ -29,6 +29,13 @@ jobs:
       - name: Install (Workspaces)
         run: npm ci
 
+      # habit-app importiert @db/@utils, die auf fuel-devs Wrapper zeigen,
+      # der wiederum @fitness-db komplett re-exportiert — zieht fitness-apps
+      # generierten KB-Layer mit. Gitignored, wird sonst nur von fitness-apps
+      # eigenem "prebuild"-Hook erzeugt.
+      - name: Generate fitness KB data (transitive dependency via @fitness-db)
+        run: npm run build:kb-data --workspace=fitness-app
+
       - name: Build Habits
         run: npm run build:firebase --workspace=habit-app
 

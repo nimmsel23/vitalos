@@ -29,6 +29,17 @@ jobs:
       - name: Install (Workspaces)
         run: npm ci
 
+      # fuel-app bündelt journal-app (Journal-Tab), journal-app bündelt
+      # habit-app (Habit-Icons in der Timeline), habit-app importiert @db/
+      # @utils → fuel-devs eigener @fitness-db-Re-Export → fitness-apps KB-
+      # Layer. Diese generierte Datei ist gitignored und wird sonst nur
+      # durch fitness-apps eigenen "prebuild"-Hook erzeugt (läuft nur bei
+      # `npm run build --workspace=fitness-app`, nicht hier). Ohne diesen
+      # Schritt schlägt der Build mit "Could not resolve
+      # exerciseBulkData.generated.js" fehl.
+      - name: Generate fitness KB data (transitive dependency via journal→habits)
+        run: npm run build:kb-data --workspace=fitness-app
+
       - name: Firebase config schreiben
         run: |
           if [ -n "$FIREBASE_CONFIG" ]; then
