@@ -1,0 +1,448 @@
+#!/usr/bin/env python3
+"""vos-doctor — pre-flight checks for the vitalos multi-repo release flow.
+
+Catches the class of failure that keeps slipping through: CI deploys that
+fail quietly because a cross-repo import (@habits, @journal, @fitness-db, ...)
+no longer resolves, or resolves to a file that no longer exports what a
+consumer imports. Also checks hook wiring drift and recent GitHub Actions
+runs, since both have silently broken before.
+
+Usage:
+    vos-doctor              run everything, all modules
+    vos-doctor --module fuel
+    vos-doctor --no-gh       skip GitHub Actions (offline / rate-limit friendly)
+    vos-doctor --no-aliases  skip cross-app-alias resolution + export checks
+    vos-doctor --no-hooks    skip hook wiring checks
+"""
+from __future__ import annotations
+
+import json
+import re
+import shutil
+import subprocess
+from dataclasses import dataclass, field
+from pathlib import Path
+from typing import Optional
+
+import typer
+from loguru import logger
+
+app = typer.Typer(add_completion=False, no_args_is_help=False)
+
+HOME = Path.home()
+VITALOS = HOME / "vitalos"
+CROSS_ALIASES_PKG = VITALOS / "packages" / "cross-app-aliases" / "index.mjs"
+
+# module -> (standalone_dir, submodule_dir, github_repo, uses_dot_githooks)
+MODULES: dict[str, tuple[Path, Path, str, bool]] = {
+    "fuel":    (HOME / "fuel-dev",    VITALOS / "fuel-app",    "nimmsel23/fuel-dev",    True),
+    "fitness": (HOME / "fitness-dev", VITALOS / "fitness-app", "nimmsel23/fitness-dev", True),
+    "habits":  (HOME / "habits-dev",  VITALOS / "habit-app",   "nimmsel23/habits-dev",  True),
+    "journal": (HOME / "journal-dev", VITALOS / "journal-app", "nimmsel23/journal-dev", True),
+    "relax":   (HOME / "relax-dev",   VITALOS / "relax-app",   "nimmsel23/relax-dev",   False),
+    "learn":   (HOME / "learn-dev",   VITALOS / "learn-dev",   "nimmsel23/learn-dev",   True),
+}
+VITALOS_REPO = "nimmsel23/vitalos"
+
+CODE_GLOBS = ("*.jsx", "*.js", "*.mjs")
+EXPORT_NAME_RE = re.compile(r"export\s+(?:default\s+)?(?:async\s+)?(?:const|function|class|let|var)\s+(\w+)")
+EXPORT_LIST_RE = re.compile(r"export\s*\{([^}]+)\}")
+IMPORT_RE = re.compile(
+    r"""import\s*\{([^}]+)\}\s*from\s*['"](@[\w/.-]+)['"]"""
+)
+
+
+@dataclass
+class Finding:
+    module: str
+    check: str
+    level: str  # "ok" | "warn" | "fail"
+    detail: str
+
+
+RESULTS: list[Finding] = []
+
+
+def record(module: str, check: str, level: str, detail: str) -> None:
+    RESULTS.append(Finding(module, check, level, detail))
+
+
+def have_gum() -> bool:
+    return shutil.which("gum") is not None
+
+
+# --------------------------------------------------------------------------
+# 1. Hook wiring
+# --------------------------------------------------------------------------
+
+def check_hooks(module: str) -> None:
+    standalone, _submodule, _repo, uses_githooks = MODULES[module]
+    if not standalone.exists():
+        record(module, "hooks", "fail", f"standalone dir missing: {standalone}")
+        return
+
+    if not uses_githooks:
+        pre_push = standalone / ".git" / "hooks" / "pre-push"
+        if pre_push.exists() and pre_push.stat().st_mode & 0o111:
+            record(module, "hooks", "ok", "local .git/hooks/pre-push present + executable (documented exception)")
+        else:
+            record(module, "hooks", "warn", "no local .git/hooks/pre-push reminder found")
+        return
+
+    result = subprocess.run(
+        ["git", "-C", str(standalone), "config", "core.hooksPath"],
+        capture_output=True, text=True,
+    )
+    hooks_path = result.stdout.strip()
+    if hooks_path != ".githooks":
+        record(module, "hooks", "fail", f"core.hooksPath is '{hooks_path or '(unset)'}', expected '.githooks'")
+        return
+
+    pre_push = standalone / ".githooks" / "pre-push"
+    if not pre_push.exists():
+        record(module, "hooks", "fail", ".githooks/pre-push missing")
+        return
+    if not (pre_push.stat().st_mode & 0o111):
+        record(module, "hooks", "fail", ".githooks/pre-push exists but is not executable")
+        return
+    record(module, "hooks", "ok", ".githooks/pre-push present + executable")
+
+
+# --------------------------------------------------------------------------
+# 2. Cross-app aliases: resolution + export/import cross-check
+# --------------------------------------------------------------------------
+
+def parse_cross_aliases_pkg() -> dict[str, Path]:
+    """Parse ~/vitalos/packages/cross-app-aliases/index.mjs's alias map.
+
+    This is a light regex parse, not a JS evaluator — good enough since the
+    file is a static object literal by convention.
+    """
+    if not CROSS_ALIASES_PKG.exists():
+        return {}
+    text = CROSS_ALIASES_PKG.read_text()
+
+    # Resolve the appDir() vars (FITNESS, FUEL, ...) first.
+    var_dirs: dict[str, Path] = {}
+    for m in re.finditer(r"const\s+(\w+)\s*=\s*appDir\('([\w-]+)',\s*'([\w-]+)'\)", text):
+        var, app_name, dev_name = m.groups()
+        app_path = VITALOS / app_name
+        var_dirs[var] = app_path if app_path.exists() else VITALOS / dev_name
+
+    aliases: dict[str, Path] = {}
+    for m in re.finditer(r"""['"](@[\w/-]+)['"]\s*:\s*`\$\{(\w+)\}([^`]*)`""", text):
+        key, var, suffix = m.groups()
+        base = var_dirs.get(var)
+        if base is None:
+            continue
+        aliases[key] = Path(str(base) + suffix)
+    return aliases
+
+
+def find_resolve_sibling_calls(vite_config: Path) -> list[tuple[str, list[str]]]:
+    """Return [(alias_key, [candidate_relative_paths, ...]), ...] found in a vite config."""
+    if not vite_config.exists():
+        return []
+    text = vite_config.read_text()
+    out = []
+    for m in re.finditer(
+        r"""["'](@[\w-]+)["']\s*:\s*resolveSibling\(\s*\[([^\]]+)\]""",
+        text,
+    ):
+        key, list_body = m.groups()
+        candidates = re.findall(r"""["']([^"']+)["']""", list_body)
+        out.append((key, candidates))
+    return out
+
+
+def collect_import_usages(alias_key: str) -> dict[str, set[str]]:
+    """Scan every module's source tree for named imports from `alias_key`.
+
+    Returns {module_name: {imported_name, ...}}. Only exact-key imports are
+    matched (subpath aliases like @fitness/constants are separate keys and
+    checked separately when they appear in the alias map).
+    """
+    usages: dict[str, set[str]] = {}
+    for mod, (standalone, submodule, _repo, _) in MODULES.items():
+        names: set[str] = set()
+        for base in (standalone, submodule):
+            src = base / "src"
+            if not src.exists():
+                continue
+            for pattern in CODE_GLOBS:
+                for f in src.rglob(pattern):
+                    try:
+                        text = f.read_text(errors="ignore")
+                    except OSError:
+                        continue
+                    for imp_match in IMPORT_RE.finditer(text):
+                        names_str, from_key = imp_match.groups()
+                        if from_key != alias_key:
+                            continue
+                        for n in names_str.split(","):
+                            n = n.strip().split(" as ")[0].strip()
+                            if n:
+                                names.add(n)
+        if names:
+            usages[mod] = names
+    return usages
+
+
+REEXPORT_STAR_RE = re.compile(r"""export\s*\*\s*from\s*['"]([^'"]+)['"]""")
+
+
+def _entry_file(target: Path) -> Optional[Path]:
+    if target.is_file():
+        return target
+    if target.is_dir():
+        for name in ("index.js", "index.mjs", "index.jsx"):
+            p = target / name
+            if p.exists():
+                return p
+    return None
+
+
+def resolve_specifier(spec: str, current_file: Path, aliases: dict[str, Path]) -> Optional[Path]:
+    """Resolve a relative ('./x') or aliased ('@x/y') import specifier to a file."""
+    if spec.startswith("."):
+        base = (current_file.parent / spec).resolve()
+        if base.is_file():
+            return base
+        for ext in (".js", ".mjs", ".jsx"):
+            p = Path(str(base) + ext)
+            if p.exists():
+                return p
+        return _entry_file(base)
+
+    if spec.startswith("@"):
+        # Longest-prefix match: subpath aliases (@fuel/lib/...) must win over
+        # bare aliases (@fuel) when both match, same rule Vite itself uses.
+        best_key = None
+        for key in sorted(aliases, key=len, reverse=True):
+            if spec == key or spec.startswith(key + "/"):
+                best_key = key
+                break
+        if best_key is None:
+            return None
+        target_base = aliases[best_key]
+        remainder = spec[len(best_key):]  # '' or '/rest/of/path.js'
+        if not remainder:
+            return _entry_file(target_base)
+        combined = Path(str(target_base) + remainder)
+        return combined if combined.exists() else None
+
+    return None
+
+
+def extract_exports(
+    target: Path,
+    aliases: dict[str, Path],
+    _visited: Optional[set[Path]] = None,
+    _depth: int = 0,
+) -> Optional[set[str]]:
+    """Best-effort export-name extraction, following `export * from ...` chains.
+
+    target may be a file or a directory (index.js/.mjs/.jsx tried). Recurses
+    into wildcard re-exports up to a depth limit, since this codebase's
+    cross-app db layers are commonly 2-4 hops of `export * from`. Returns
+    None if no readable entry file was found at the top level.
+    """
+    if _visited is None:
+        _visited = set()
+    if _depth > 6:
+        return set()
+
+    entry = _entry_file(target)
+    if entry is None:
+        return None if _depth == 0 else set()
+    entry = entry.resolve()
+    if entry in _visited:
+        return set()
+    _visited.add(entry)
+
+    try:
+        text = entry.read_text(errors="ignore")
+    except OSError:
+        return set()
+
+    names: set[str] = set()
+    names.update(EXPORT_NAME_RE.findall(text))
+    for lst in EXPORT_LIST_RE.findall(text):
+        for n in lst.split(","):
+            n = n.strip().split(" as ")[-1].strip()
+            if n:
+                names.add(n)
+
+    for spec in REEXPORT_STAR_RE.findall(text):
+        resolved = resolve_specifier(spec, entry, aliases)
+        if resolved is None:
+            continue
+        sub_names = extract_exports(resolved, aliases, _visited, _depth + 1)
+        if sub_names:
+            names.update(sub_names)
+
+    return names
+
+
+def check_cross_aliases(module: str) -> None:
+    standalone, submodule, _repo, _ = MODULES[module]
+
+    # 2a. resolveSibling() candidates in this module's own vite configs must
+    #     resolve to at least one existing path (this is exactly the class
+    #     of bug that broke fuel-dev's CI: an alias with zero valid candidates).
+    for cfg_dir in (standalone, submodule):
+        for cfg_name in ("vite.config.cjs", "vite.config.js"):
+            cfg = cfg_dir / cfg_name
+            if not cfg.exists():
+                continue
+            for key, candidates in find_resolve_sibling_calls(cfg):
+                resolved = [c for c in candidates if (cfg_dir / c).exists()]
+                if not resolved:
+                    record(
+                        module, "alias-resolve", "fail",
+                        f"{cfg.relative_to(HOME)}: '{key}' has no existing candidate "
+                        f"among {candidates}",
+                    )
+
+    # 2b. Every alias in the shared @vos/cross-app-aliases SSOT must resolve
+    #     on disk (dir or file actually exists).
+    aliases = parse_cross_aliases_pkg()
+    for key, target in aliases.items():
+        if not target.exists():
+            record(module, "alias-resolve", "warn",
+                   f"SSOT alias '{key}' -> {target} does not exist (only relevant if this module imports it)")
+
+    # 2c. Import/export cross-check: for every alias, do all named imports
+    #     across the fleet actually exist in the resolved target's exports?
+    #     This is the proactive version of the "getHabits is not exported"
+    #     bug — catch it before CI does.
+    if module != next(iter(MODULES)):
+        return  # only run the fleet-wide export check once, not per module
+    for key, target in aliases.items():
+        if not target.exists():
+            continue
+        exports = extract_exports(target, aliases)
+        if exports is None:
+            continue
+        usages = collect_import_usages(key)
+        for consumer_mod, names in usages.items():
+            missing = sorted(n for n in names if n not in exports)
+            if missing:
+                record(
+                    consumer_mod, "alias-exports", "fail",
+                    f"imports {missing} from '{key}' but {target} only exports {sorted(exports)}",
+                )
+
+
+# --------------------------------------------------------------------------
+# 3. GitHub Actions status
+# --------------------------------------------------------------------------
+
+def check_gh_runs(module: str, repo: str, limit: int = 3) -> None:
+    if not shutil.which("gh"):
+        record(module, "gh-actions", "warn", "gh CLI not found — skipped")
+        return
+    try:
+        proc = subprocess.run(
+            ["gh", "run", "list", "--repo", repo, "--limit", str(limit),
+             "--json", "conclusion,status,name,headBranch,createdAt,url"],
+            capture_output=True, text=True, timeout=20,
+        )
+    except subprocess.TimeoutExpired:
+        record(module, "gh-actions", "warn", f"{repo}: gh run list timed out")
+        return
+    if proc.returncode != 0:
+        record(module, "gh-actions", "warn", f"{repo}: gh run list failed ({proc.stderr.strip()[:120]})")
+        return
+    try:
+        runs = json.loads(proc.stdout)
+    except json.JSONDecodeError:
+        record(module, "gh-actions", "warn", f"{repo}: could not parse gh output")
+        return
+    if not runs:
+        record(module, "gh-actions", "warn", f"{repo}: no workflow runs found")
+        return
+
+    failures = [r for r in runs if r.get("conclusion") == "failure"]
+    latest = runs[0]
+    if failures:
+        names = ", ".join(f"{r['name']}@{r['headBranch']}" for r in failures)
+        record(module, "gh-actions", "fail", f"{repo}: recent failures — {names}")
+    elif latest.get("status") != "completed":
+        record(module, "gh-actions", "warn", f"{repo}: latest run '{latest['name']}' still {latest['status']}")
+    else:
+        record(module, "gh-actions", "ok", f"{repo}: last {len(runs)} runs green ({latest['name']}@{latest['headBranch']})")
+
+
+# --------------------------------------------------------------------------
+# Output
+# --------------------------------------------------------------------------
+
+LEVEL_ICON = {"ok": "✅", "warn": "⚠️ ", "fail": "❌"}
+
+
+def print_results() -> None:
+    order = {"fail": 0, "warn": 1, "ok": 2}
+    RESULTS.sort(key=lambda f: (order[f.level], f.module, f.check))
+
+    printed_via_gum = False
+    if have_gum():
+        rows = ["Level\tModul\tCheck\tDetail"]
+        for f in RESULTS:
+            detail = f.detail.replace("\t", " ").replace("\n", " ")
+            rows.append(f"{LEVEL_ICON[f.level]}\t{f.module}\t{f.check}\t{detail}")
+        try:
+            gum_proc = subprocess.run(
+                ["gum", "table", "--separator", "\t"],
+                input="\n".join(rows), text=True, capture_output=True,
+            )
+            if gum_proc.returncode == 0:
+                print(gum_proc.stdout)
+                printed_via_gum = True
+        except OSError:
+            pass
+
+    if not printed_via_gum:
+        for f in RESULTS:
+            print(f"{LEVEL_ICON[f.level]} [{f.module}] {f.check}: {f.detail}")
+
+    n_fail = sum(1 for f in RESULTS if f.level == "fail")
+    n_warn = sum(1 for f in RESULTS if f.level == "warn")
+    n_ok = sum(1 for f in RESULTS if f.level == "ok")
+    logger.info(f"{n_ok} ok, {n_warn} warn, {n_fail} fail")
+
+
+@app.command()
+def main(
+    module: Optional[str] = typer.Option(None, "--module", "-m", help="Only check this module"),
+    gh: bool = typer.Option(True, "--gh/--no-gh", help="Check recent GitHub Actions runs"),
+    aliases: bool = typer.Option(True, "--aliases/--no-aliases", help="Check cross-app alias resolution + exports"),
+    hooks: bool = typer.Option(True, "--hooks/--no-hooks", help="Check pre-push hook wiring"),
+    gh_limit: int = typer.Option(3, "--gh-limit", help="How many recent runs to inspect per repo"),
+):
+    """Pre-flight checks for the vos-release multi-repo flow."""
+    modules = [module] if module else list(MODULES.keys())
+    for m in modules:
+        if m not in MODULES:
+            logger.error(f"Unknown module: {m}. Known: {', '.join(MODULES)}")
+            raise typer.Exit(1)
+
+    for m in modules:
+        if hooks:
+            check_hooks(m)
+        if aliases:
+            check_cross_aliases(m)
+        if gh:
+            _standalone, _submodule, repo, _ = MODULES[m]
+            check_gh_runs(m, repo, gh_limit)
+
+    if gh and not module:
+        check_gh_runs("vitalos", VITALOS_REPO, gh_limit)
+
+    print_results()
+    if any(f.level == "fail" for f in RESULTS):
+        raise typer.Exit(1)
+
+
+if __name__ == "__main__":
+    app()
