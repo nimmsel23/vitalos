@@ -267,8 +267,17 @@ merge_module() {
     info "[$module] Pull submodule $target_branch"
     run "$REAL_GIT" -C "$submodule" pull origin "$target_branch"
 
+    # fuel/fitness/habits/journal sind Git-Worktrees EINES Repos (geteilte
+    # .git/modules/<name>/worktrees/<name>) — dort existiert der lokale
+    # Branch "$source_branch" im Submodule-Checkout automatisch. relax ist
+    # (Stand 2026-08-23) ein davon unabhaengiger zweiter Klon desselben
+    # Remotes — dort gibt es lokal nur "origin/$source_branch", keinen
+    # lokalen Branch gleichen Namens. Frisch fetchen + gegen den
+    # Remote-Tracking-Branch mergen funktioniert in beiden Faellen.
+    run "$REAL_GIT" -C "$submodule" fetch origin "$source_branch"
+
     info "[$module] Merge $source_branch into submodule $target_branch"
-    if ! run "$REAL_GIT" -C "$submodule" merge "$source_branch" --no-edit; then
+    if ! run "$REAL_GIT" -C "$submodule" merge "origin/$source_branch" --no-edit; then
         if [[ "$DRY_RUN" -eq 1 ]]; then
             error "Dry-run cannot auto-resolve merge failures for $module"
             exit 1
