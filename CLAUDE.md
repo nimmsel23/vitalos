@@ -133,6 +133,7 @@ für Build/CI und Pointer-Management, nicht die primären `dev`-Worktrees.
 * Detached-HEAD-Commits in Submodulen vermeiden. Falls doch nötig: explizit auf einen echten Zielbranch pushen, z. B. `git push origin HEAD:master`.
 * `.githooks/pre-commit` ruft `bin/vos-sync-submodule-pointers --stage` auf und staged erreichbare Submodule-Pointer automatisch mit.
 * `.githooks/pre-push` ruft `bin/vos-sync-submodule-pointers --check-push` auf und blockt nur noch lokal-only Pointer in `HEAD`.
+* **Seit 2026-08-25:** `vos-sync-submodule-pointers --stage` prüft beim Staging jedes Pointer-Bumps zusätzlich, ob sich `package.json` im betroffenen Submodul geändert hat (`git diff <alter> <neuer Commit> -- package.json`). Falls ja, läuft automatisch `npm install --package-lock-only` im Root und `package-lock.json` wird mitgestaged — behebt strukturell das Lockfile-Drift-Problem unten (war zuvor reine Merkregel, jetzt Automatismus). Bricht `npm install` dabei, stoppt der Commit mit Fehlermeldung statt eines halb-synchronisierten Lockfiles.
 
 ---
 
@@ -148,16 +149,29 @@ Seit 2026-07-16 nutzen **alle 4 Apps** (`vitalos`, `fitness-app`, `fuel-app`, `j
 - **Fat Shell (`vitalos` / `fitness-app`):** Nutzen einen manuellen Service Worker (`public/sw.js`). Ein neuer Build ändert das Datum im SW. Das Frontend hört auf das Event `sw-update-available` und zeigt global (unabhängig vom aktuellen Tab) einen schwebenden Update-Banner am unteren Bildschirmrand.
 - **Lean Apps (`journal-app`, `habit-app`, `fuel-app`):** Diese verzichten auf komplexe Background-Syncs und nutzen rein `vite-plugin-pwa` (via `useRegisterSW()`). Bei einem Update erscheint im Header (neben dem App-Namen) automatisch ein goldener Update-Button. Es gibt keinen erzwungenen Auto-Reload mehr, der User entscheidet.
 
-**BEHOBEN (2026-07-12, `6abbfb7`): CI war mehrere Pushes rot** — `npm ci`
-scheiterte mit `EUSAGE`, weil `package-lock.json` nicht synchron zu
-`package.json` war (`Missing: vite-plugin-pwa@1.3.0 from lock file`,
-Verursacher: learn-dev-Bump auf ^1.3.0 ohne Root-`npm install`). Seit dem
-Lockfile-Sync läuft die CI grün. **Merkregel:** Nach jedem
-Dependency-Bump in einem Workspace `npm install` im vitalos-Root laufen
-lassen und das Lockfile mitcommitten, sonst bricht `npm ci` für ALLE
-folgenden Pushes. `gh run view <id> --log-failed` liefert aktuell `403: Must have
-admin rights to Repository` — Logs sind über die CLI mit dem aktuellen
-Token nicht einsehbar, nur der Job-Step-Status (`gh run view <id>`).
+**Wiederkehrendes Problem, seit 2026-08-25 automatisiert behoben:** `npm ci`
+in der CI scheitert mit `EUSAGE`, wenn `package-lock.json` nicht synchron zu
+einem Workspace-`package.json` ist. Bisher dreimal aufgetreten:
+- 2026-07-12 (`6abbfb7`): learn-dev-Bump auf `vite-plugin-pwa@^1.3.0` ohne
+  Root-`npm install` → `Missing: vite-plugin-pwa@1.3.0 from lock file`.
+- 2026-08-25 (`058e7b4`): habit-app-Bump auf `@dnd-kit/modifiers@^9.0.0` +
+  `@dnd-kit/sortable@^10.0.0` ohne Root-`npm install` → 4 Deploy-Workflows
+  (Shell/Fitness/Fuel/Habits) liefen mehrere Pushes rot; `@vos/cross-app-aliases`
+  fiel zusätzlich aus dem Lockfile, weil es in `habit-app`/`fuel-app` per
+  `file:../vitalos/packages/cross-app-aliases` referenziert wird, in
+  `fitness-app`/`journal-app`/Root aber per reiner Versionsangabe `1.0.0` —
+  die inkonsistente Referenzform macht die Auflösung bei jeder
+  Workspace-`package.json`-Änderung neu nötig.
+
+**Root Cause behoben, nicht nur der Symptomfix:** `bin/vos-sync-submodule-pointers`
+(siehe "Submodule-Regel" oben) läuft automatisch als `pre-commit`-Hook und
+zieht `package-lock.json` jetzt selbst nach, sobald ein gestageter
+Pointer-Bump eine geänderte `package.json` mitbringt — die frühere
+"Merkregel, nach jedem Dependency-Bump manuell `npm install` im Root
+laufen lassen" ist damit kein reines Disziplinproblem mehr. `gh run view <id>
+--log-failed` liefert aktuell `403: Must have admin rights to Repository` —
+Logs sind über die CLI mit dem aktuellen Token nicht einsehbar, nur der
+Job-Step-Status (`gh run view <id>`).
 
 ---
 
