@@ -49,8 +49,16 @@ remote_contains_commit() {
       done
 }
 
+submodule_package_json_changed() {
+  local repo_path="$1"
+  local from_commit="$2"
+  local to_commit="$3"
+  ! "$REAL_GIT" -C "$repo_path" diff --quiet "$from_commit" "$to_commit" -- package.json 2>/dev/null
+}
+
 stage_reachable_pointer_updates() {
   local staged_any=0
+  local lockfile_drift=0
   local submodule_path repo_path index_commit checkout_commit remote_refs
 
   for submodule_path in "${SUBMODULE_PATHS[@]}"; do
@@ -73,6 +81,11 @@ stage_reachable_pointer_updates() {
       continue
     fi
 
+    if submodule_package_json_changed "$repo_path" "$index_commit" "$checkout_commit"; then
+      info "${submodule_path}: package.json changed between ${index_commit:0:7} and ${checkout_commit:0:7} — root lockfile needs a re-sync."
+      lockfile_drift=1
+    fi
+
     "$REAL_GIT" -C "$ROOT_DIR" add "$submodule_path"
     info "${submodule_path}: staged pointer bump ${index_commit:0:7} -> ${checkout_commit:0:7}."
     staged_any=1
@@ -80,6 +93,22 @@ stage_reachable_pointer_updates() {
 
   if [ "$staged_any" -eq 1 ]; then
     success "Reachable submodule pointer updates were staged automatically."
+  fi
+
+  if [ "$lockfile_drift" -eq 1 ]; then
+    info "Re-syncing root package-lock.json (npm install --package-lock-only)…"
+    if (cd "$ROOT_DIR" && npm install --package-lock-only --legacy-peer-deps >/tmp/vos-npm-lockfile-sync.log 2>&1); then
+      if ! "$REAL_GIT" -C "$ROOT_DIR" diff --quiet -- package-lock.json 2>/dev/null; then
+        "$REAL_GIT" -C "$ROOT_DIR" add package-lock.json
+        success "package-lock.json re-synced and staged."
+      else
+        info "package-lock.json was already in sync."
+      fi
+    else
+      error "npm install --package-lock-only failed — see /tmp/vos-npm-lockfile-sync.log"
+      error "Fix manually before committing, otherwise CI's npm ci will fail."
+      exit 1
+    fi
   fi
 }
 
