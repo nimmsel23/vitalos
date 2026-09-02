@@ -49,7 +49,16 @@ TARGET_BRANCHES[journal]="master"
 TARGET_BRANCHES[learn]="master"
 TARGET_BRANCHES[relax]="master"
 
-NOISE_PATTERNS[fitness]='^\?\? (node_modules|functions/node_modules)$'
+# vos-release deployt für fitness ausschliesslich npm run build:firebase
+# (liest src/** + die KB-*Daten*-YAMLs zur Build-Zeit für die generierten
+# src/**/*.generated.js) und pusht dist-firebase/ nach Firebase Hosting.
+# Der Python-Code unter fitness/ (fitness/catalog/agent/*.py, fitness/api/*,
+# fitness/catalog/cli.py, ...) wird von diesem Build-Pfad nie gelesen — reines
+# Katalog-/Backend-Tooling, unabhängig vom vos/Firebase-Release-Zyklus, oft
+# mitten in Bearbeitung durch eine parallele Session. kb/inbox/ zusätzlich
+# ausgenommen: laufende Drafts vom Enrichment-Watcher, reine Datenchurn.
+# node_modules/functions aus demselben Grund wie bei den anderen Modulen.
+NOISE_PATTERNS[fitness]='^\?\? (node_modules|functions/node_modules)$|^.{2} fitness/catalog/kb/inbox/|^.{2} fitness/.*\.py$'
 NOISE_PATTERNS[fuel]='^(D .+\.bak([.].*)?|D .+\.baks.*|D .+\.mjs\.bak-.*|\?\? (node_modules|functions/node_modules))$'
 NOISE_PATTERNS[habits]='^(D .+\.bak([.].*)?|D .+\.baks.*|D .+\.mjs\.bak-.*|\?\? node_modules)$'
 NOISE_PATTERNS[journal]='^(D .+\.bak([.].*)?|D .+\.baks.*|D .+\.mjs\.bak-.*|\?\? (node_modules|functions/node_modules))$'
