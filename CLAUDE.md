@@ -219,7 +219,8 @@ Hosting-*Site* im selben Projekt (alle `.firebaserc` → `fitness-aos`):
 | vitalos (Shell) | `vitalos` → vitalos.web.app | CI `deploy-shell.yml` |
 | fitness-app | `fitness-aos` → fitness-aos.web.app | CI `deploy-fitness.yml` |
 | fitness-vos | `fitness-vos` → fitness-vos.web.app | lokal via `fitness-vos/firebase.json` |
-| fuel-app | `fuel-vos` | CI `deploy-fuel.yml` |
+| fuel-app | `fuel-aos` → fuel-aos.web.app | CI `deploy-fuel.yml` |
+| fuel-vos | `fuel-vos` → fuel-vos.web.app | lokal via `fuel-vos/firebase.json` |
 | journal-app / habit-app / learn-dev | je eigene Site | CI `deploy-journal/habits/learn.yml` |
 
 **Fitness-Rollen sind absichtlich getrennt:** `~/fitness-dev` ist der OG-Source-Code
@@ -231,6 +232,19 @@ die noetigen Bausteine aus `fitness-app` und soll schlank bleiben, statt die
 volle `fitness-app`-Shell zu duplizieren. Zweck: eine live Fitness-Variante,
 die einfach funktioniert, auch wenn die VitalOS-Shell oder die AOS-Version
 gerade nicht gesund ist. Diese drei Pfade nicht zusammenziehen.
+
+**VOS-Doppelstruktur:** Die `~/vitalos/*-app`-Checkouts sind die integrierten
+Standalone-App/Submodule-Handoffs fuer Firebase; die `~/vitalos/*-vos`-Ordner
+sind zusaetzliche entschlackte Live-Varianten innerhalb von VitalOS. Alles, was
+aus `~/vitalos/` heraus nach Firebase gebaut wird, gehoert bewusst zu dieser
+Live-Schiene. Der Localhost-Betrieb bleibt getrennt und kommt aus den externen
+`~/fitness-dev`, `~/fuel-dev` usw. Dev-Branches, die die eigentlichen Git-Repos
+und primaeren lokalen Arbeitskopien sind.
+
+**Fuel-Rollen sind analog getrennt:** `~/fuel-dev` ist der OG-Source-Code und
+primäre Localhost-/Dev-Worktree; `~/vitalos/fuel-app` ist der Firebase-Handoff
+fuer die volle Fuel-App und deployed nach `fuel-aos.web.app`; `~/vitalos/fuel-vos`
+ist die separate, schlanke Live-Variante und deployed nach `fuel-vos.web.app`.
 
 **Der EINZIGE aktive Deploy-Pfad ist die CI im Meta-Repo** (seit 2026-07-15,
 siehe Hook-Bereinigung unten). Ablauf für eine Sub-App:

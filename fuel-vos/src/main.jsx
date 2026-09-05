@@ -1,0 +1,1 @@
+import '@fuel/main.jsx';
