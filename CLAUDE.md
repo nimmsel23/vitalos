@@ -226,7 +226,9 @@ Hosting-*Site* im selben Projekt (alle `.firebaserc` → `fitness-aos`):
 und primäre Dev-Worktree; `~/vitalos/fitness-app` ist der in VitalOS integrierte
 Shell-Teil/Submodule-Checkout und deployed nach `fitness-aos.web.app`;
 `~/vitalos/fitness-vos` ist die separate, schlanke VOS-Standalone-Variante und
-deployed nach `fitness-vos.web.app`. Diese drei Pfade nicht zusammenziehen.
+deployed nach `fitness-vos.web.app`. `fitness-vos` importiert absichtlich nur
+die noetigen Bausteine aus `fitness-app` und soll schlank bleiben, statt die
+volle `fitness-app`-Shell zu duplizieren. Diese drei Pfade nicht zusammenziehen.
 
 **Der EINZIGE aktive Deploy-Pfad ist die CI im Meta-Repo** (seit 2026-07-15,
 siehe Hook-Bereinigung unten). Ablauf für eine Sub-App:
