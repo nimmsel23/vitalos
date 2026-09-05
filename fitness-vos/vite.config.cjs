@@ -3,12 +3,12 @@ const react = require("@vitejs/plugin-react");
 const path = require("path");
 
 const VITALOS = path.resolve(__dirname, "..");
-const FITNESS = path.resolve(VITALOS, "fitness-dev");
-const FUEL = path.resolve(VITALOS, "fuel-dev");
-const JOURNAL = path.resolve(VITALOS, "journal-dev");
-const HABITS = path.resolve(VITALOS, "habits-dev");
+const FITNESS = path.resolve(VITALOS, "fitness-app");
+const FUEL = path.resolve(VITALOS, "fuel-app");
+const JOURNAL = path.resolve(VITALOS, "journal-app");
+const HABITS = path.resolve(VITALOS, "habit-app");
 const LEARN = path.resolve(VITALOS, "learn-dev");
-const RELAX = path.resolve(VITALOS, "relax-dev");
+const RELAX = path.resolve(VITALOS, "relax-app");
 
 module.exports = defineConfig(({ mode }) => {
   const env = loadEnv(mode, process.cwd(), "");
@@ -46,6 +46,7 @@ module.exports = defineConfig(({ mode }) => {
         "@utils": path.resolve(FITNESS, "src/lib/utils.js"),
         "@db": path.resolve(VITALOS, "src/shell/db/index.js"),
         "@fitness-db": path.resolve(FITNESS, "src/lib/db"),
+        "@relax-db": path.resolve(RELAX, "src/lib/db"),
         "@habits": path.resolve(HABITS, "src"),
         "@journal": path.resolve(JOURNAL, "src"),
         "@learn": path.resolve(LEARN, "src"),

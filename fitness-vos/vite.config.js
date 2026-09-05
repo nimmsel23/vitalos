@@ -5,8 +5,8 @@ import { resolve, dirname } from 'path'
 import { fileURLToPath } from 'url'
 
 const __dirname   = dirname(fileURLToPath(import.meta.url))
-const FITNESS_DEV = resolve(__dirname, '../fitness-dev')
-const FITNESS_SRC = resolve(FITNESS_DEV, 'src')
+const FITNESS_APP = resolve(__dirname, '../fitness-app')
+const FITNESS_SRC = resolve(FITNESS_APP, 'src')
 
 export default defineConfig({
   root: __dirname,
@@ -17,15 +17,16 @@ export default defineConfig({
     alias: {
       '@src':                FITNESS_SRC,
       '@db':                 resolve(FITNESS_SRC, 'lib/db/index.js'), // local mode for standalone fitness
+      '@relax-db':           resolve(__dirname, '../relax-app/src/lib/db'),
       '@utils':              resolve(FITNESS_SRC, 'lib/utils.js'),
-      '@aliase':             resolve(FITNESS_DEV, 'catalog/kb/aliases.yml'),
+      '@aliase':             resolve(FITNESS_APP, 'catalog/kb/aliases.yml'),
       '@fitness/components': resolve(FITNESS_SRC, 'components'),
       '@fitness/constants':  resolve(FITNESS_SRC, 'constants'),
-      '@fitness':            FITNESS_SRC,
+      '@fitness':            FITNESS_APP,
       '@components':         resolve(FITNESS_SRC, 'components'),
-      '@fuel':               resolve(__dirname, '../fuel-dev/src/client'),
-      '@habits':             resolve(__dirname, '../habits-dev/src'),
-      '@journal':            resolve(__dirname, '../journal-dev/src'),
+      '@fuel':               resolve(__dirname, '../fuel-app/src/client'),
+      '@habits':             resolve(__dirname, '../habit-app/src'),
+      '@journal':            resolve(__dirname, '../journal-app/src'),
       '@learn':              resolve(__dirname, '../learn-dev/src'),
     },
     dedupe: ['react', 'react-dom', '@tanstack/react-query'],
