@@ -44,7 +44,7 @@ module.exports = defineConfig(({ mode }) => {
         "@lib": path.resolve(FITNESS, "src/lib"),
         "@constants": path.resolve(FITNESS, "src/constants"),
         "@utils": path.resolve(FITNESS, "src/lib/utils.js"),
-        "@db": path.resolve(VITALOS, "src/shell/db/index.js"),
+        "@db": path.resolve(FITNESS, "src/lib/db/index.firestore.js"),
         "@fitness-db": path.resolve(FITNESS, "src/lib/db"),
         "@relax-db": path.resolve(RELAX, "src/lib/db"),
         "@habits": path.resolve(HABITS, "src"),
@@ -66,7 +66,7 @@ module.exports = defineConfig(({ mode }) => {
         "@view/learn": path.resolve(LEARN, "src/views/Learn"),
         "@view/journal": path.resolve(JOURNAL, "src/views/JournalVosView.jsx"),
         "@view/habits": path.resolve(HABITS, "src/views/Habits"),
-        "@view/settings": path.resolve(VITALOS, "src/shell/Settings"),
+        "@view/settings": path.resolve(FITNESS, "src/views/Settings"),
         "@view/plan": path.resolve(FITNESS, "src/views/Plan"),
         "@view/coach": path.resolve(FITNESS, "src/views/Coach"),
         
