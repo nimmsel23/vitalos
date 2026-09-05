@@ -217,9 +217,16 @@ Hosting-*Site* im selben Projekt (alle `.firebaserc` → `fitness-aos`):
 | Repo | Hosting-Site | Deploy-Pfad |
 |---|---|---|
 | vitalos (Shell) | `vitalos` → vitalos.web.app | CI `deploy-shell.yml` |
-| fitness-app | (eigene Site, siehe deren firebase.json) | CI `deploy-fitness.yml` |
+| fitness-app | `fitness-aos` → fitness-aos.web.app | CI `deploy-fitness.yml` |
+| fitness-vos | `fitness-vos` → fitness-vos.web.app | lokal via `fitness-vos/firebase.json` |
 | fuel-app | `fuel-vos` | CI `deploy-fuel.yml` |
 | journal-app / habit-app / learn-dev | je eigene Site | CI `deploy-journal/habits/learn.yml` |
+
+**Fitness-Rollen sind absichtlich getrennt:** `~/fitness-dev` ist der OG-Source-Code
+und primäre Dev-Worktree; `~/vitalos/fitness-app` ist der in VitalOS integrierte
+Shell-Teil/Submodule-Checkout und deployed nach `fitness-aos.web.app`;
+`~/vitalos/fitness-vos` ist die separate, schlanke VOS-Standalone-Variante und
+deployed nach `fitness-vos.web.app`. Diese drei Pfade nicht zusammenziehen.
 
 **Der EINZIGE aktive Deploy-Pfad ist die CI im Meta-Repo** (seit 2026-07-15,
 siehe Hook-Bereinigung unten). Ablauf für eine Sub-App:
@@ -315,6 +322,5 @@ Er ruft KEINE Hooks auf.
   `dist-firebase/`/`node_modules/` eingecheckt (jetzt 0 getrackte Dateien).
 - Meta-Repo-Branch-Leichen `merge` (0 commits ahead, voll gemerged),
   `mobile/mobile-optimizations-safe-area` (uralter Snapshot vor der
-  fitness-vos → fitness-app Umbenennung, klar überholt) und
-  `rename/local-app-dirs` (identisch zu master) — Löschung ausstehend,
-  User-Bestätigung angefragt (2026-08-16).
+  Fitness-Pfadtrennung) und `rename/local-app-dirs` (identisch zu master) —
+  Löschung ausstehend, User-Bestätigung angefragt (2026-08-16).
