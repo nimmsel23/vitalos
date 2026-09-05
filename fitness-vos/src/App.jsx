@@ -173,6 +173,7 @@ export default function App() {
           navigate={navigate}
           subTab={subTab}
           navigateSub={navigateSub}
+          navItems={NAV_ITEMS}
           pinned={sidebarPinned}
           setPinned={setSidebarPinned}
           user={user}
@@ -193,7 +194,7 @@ export default function App() {
               {/* Background Gate - only mounted in home mode */}
               {navMode === 'home' && (
                 <div className={`transition-all duration-700 ease-[cubic-bezier(0.32,0.72,0,1)] max-w-[1600px] mx-auto min-h-[100dvh] flex flex-col ${tab !== 'gate' ? 'scale-[0.98] opacity-30 blur-[2px] pointer-events-none' : 'scale-100 opacity-100'}`}>
-                   <AppGate navigate={navigate} />
+                   <AppGate navigate={navigate} navItems={NAV_ITEMS} />
                 </div>
               )}
 
@@ -229,7 +230,7 @@ export default function App() {
               </div>
             </main>
 
-            {navMode === 'tabs' && <MobileNav tab={tab} navigate={navigate} swipeHint={swipeHint} />}
+            {navMode === 'tabs' && <MobileNav tab={tab} subTab={subTab} navigate={navigate} navigateSub={navigateSub} swipeHint={swipeHint} navItems={NAV_ITEMS} />}
           </div>
         </div>
       </ErrorBoundary>

@@ -219,8 +219,8 @@ Hosting-*Site* im selben Projekt (alle `.firebaserc` → `fitness-aos`):
 | vitalos (Shell) | `vitalos` → vitalos.web.app | CI `deploy-shell.yml` |
 | fitness-app | `fitness-aos` → fitness-aos.web.app | CI `deploy-fitness.yml` |
 | fitness-vos | `fitness-vos` → fitness-vos.web.app | lokal via `fitness-vos/firebase.json` |
-| fuel-app | `fuel-aos` → fuel-aos.web.app | CI `deploy-fuel.yml` |
-| fuel-vos | `fuel-vos` → fuel-vos.web.app | lokal via `fuel-vos/firebase.json` |
+| fuel-app | `fuel-vos` → fuel-vos.web.app | CI `deploy-fuel.yml` / `fuel-app/firebase.json` |
+| fuel-os | `fuel-os` → fuel-os.web.app | lokal via `fuel-os/firebase.json` |
 | journal-app / habit-app / learn-dev | je eigene Site | CI `deploy-journal/habits/learn.yml` |
 
 **Fitness-Rollen sind absichtlich getrennt:** `~/fitness-dev` ist der OG-Source-Code
@@ -243,8 +243,9 @@ und primaeren lokalen Arbeitskopien sind.
 
 **Fuel-Rollen sind analog getrennt:** `~/fuel-dev` ist der OG-Source-Code und
 primäre Localhost-/Dev-Worktree; `~/vitalos/fuel-app` ist der Firebase-Handoff
-fuer die volle Fuel-App und deployed nach `fuel-aos.web.app`; `~/vitalos/fuel-vos`
-ist die separate, schlanke Live-Variante und deployed nach `fuel-vos.web.app`.
+fuer die volle Fuel-App und deployed nach `fuel-vos.web.app`; `~/vitalos/fuel-os`
+ist die separate, schlanke Wrapper-Variante. Die schlanke Variante darf `fuel-vos`
+nicht ueberschreiben, solange sie nicht als stabil verifiziert ist.
 
 **Der EINZIGE aktive Deploy-Pfad ist die CI im Meta-Repo** (seit 2026-07-15,
 siehe Hook-Bereinigung unten). Ablauf für eine Sub-App:

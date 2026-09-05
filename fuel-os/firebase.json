@@ -1,6 +1,6 @@
 {
   "hosting": {
-    "site": "fuel-vos",
+    "site": "fuel-os",
     "public": "dist-firebase",
     "ignore": [
       "firebase.json",
