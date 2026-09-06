@@ -23,6 +23,42 @@ import { useUser } from '@fitness/contexts/UserContext'
 import { useSettings } from '@fitness/contexts/SettingsContext'
 import { useSwipeNavigation } from '@fitness/hooks/useSwipeNavigation'
 
+const SESSION_SUB_TABS = new Set(['today', 'plan', 'history'])
+const REVIEW_SUB_TABS = new Set(['report', 'muscles'])
+const LEARN_SUB_TABS = new Set(['exercises', 'anatomy', 'quiz'])
+
+function parseHashRoute() {
+  const rawHash = window.location.hash.replace(/^#\/?/, '')
+  const [pathPart = ''] = rawHash.split('?')
+  const [rawTab = '', rawSub = ''] = pathPart.split('/').filter(Boolean)
+  const tab = VALID_TABS.has(rawTab) ? rawTab : 'session'
+  let subTab = null
+
+  if (tab === 'session') {
+    subTab = SESSION_SUB_TABS.has(rawSub) ? rawSub : null
+  } else if (tab === 'review') {
+    subTab = REVIEW_SUB_TABS.has(rawSub) && rawSub !== 'report' ? rawSub : null
+  } else if (tab === 'learn') {
+    subTab = LEARN_SUB_TABS.has(rawSub) ? rawSub : null
+  }
+
+  return { tab, subTab }
+}
+
+function buildHashRoute({ tab, subTab }) {
+  const segments = [tab]
+
+  if (tab === 'session' && SESSION_SUB_TABS.has(subTab) && subTab !== 'today') {
+    segments.push(subTab)
+  } else if (tab === 'review' && REVIEW_SUB_TABS.has(subTab) && subTab !== 'report') {
+    segments.push(subTab)
+  } else if (tab === 'learn' && LEARN_SUB_TABS.has(subTab)) {
+    segments.push(subTab)
+  }
+
+  return `#${segments.join('/')}`
+}
+
 export default function App() {
   const {
     user, authLoading,
@@ -40,13 +76,13 @@ export default function App() {
     navMode, setNavMode
   } = useSettings();
 
-  const [tab, setTab]             = useState(() => {
-     const hash = window.location.hash.replace(/^#\/?/, '');
-     if (VALID_TABS.has(hash)) return hash;
-     const initialNavMode = localStorage.getItem('fitness-navMode') || 'tabs';
-     return initialNavMode === 'home' ? 'gate' : 'session';
+  const initialRoute = parseHashRoute();
+  const [tab, setTab] = useState(() => {
+    const initialNavMode = localStorage.getItem('fitness-navMode') || 'tabs';
+    if (!window.location.hash && initialNavMode === 'home') return 'gate';
+    return initialRoute.tab;
   });
-  const [subTab, setSubTab] = useState(null);
+  const [subTab, setSubTab] = useState(() => initialRoute.subTab);
 
   const [authEmail, setAuthEmail] = useState('');
   const [authPassword, setAuthPassword] = useState('');
@@ -87,21 +123,26 @@ export default function App() {
   function navigate(id) { navigateToTab(id) }
   function navigateSub(id) { setSubTab(id) }
 
-  // Sync tab → URL hash
   useEffect(() => {
-    if (window.location.hash.slice(1) !== tab) history.pushState(null, '', `#${tab}`)
-  }, [tab])
+    if (tab === 'gate') return
+    const targetHash = buildHashRoute({ tab, subTab })
+    if (window.location.hash !== targetHash) {
+      history.replaceState(null, '', targetHash)
+    }
+  }, [tab, subTab])
 
   useEffect(() => {
-    const handlePopState = () => {
-      const hash = window.location.hash.replace(/^#\/?/, '');
-      navigateToTab(VALID_TABS.has(hash) ? hash : 'session');
+    const handleHashChange = () => {
+      const route = parseHashRoute();
+      if (route.tab === tab && route.subTab === subTab) return;
+      navigateToTab(route.tab);
+      setSubTab(route.subTab);
     };
-    window.addEventListener('popstate', handlePopState);
+    window.addEventListener('hashchange', handleHashChange);
     return () => {
-      window.removeEventListener('popstate', handlePopState);
+      window.removeEventListener('hashchange', handleHashChange);
     };
-  }, [tab]);
+  }, [tab, subTab]);
 
   function openSession(date, draft = null) {
     setSessionDate(date || null)
