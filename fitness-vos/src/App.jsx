@@ -166,7 +166,7 @@ export default function App() {
     <>
       <PwaUpdateBanner />
       <ErrorBoundary>
-        <div className="app-shell flex min-h-screen overflow-x-hidden w-full bg-fit-bg text-fit-ink font-sans transition-colors duration-500">
+        <div className="app-shell isolate flex min-h-screen overflow-x-hidden w-full bg-fit-bg text-fit-ink font-sans transition-colors duration-500">
 
         <Sidebar
           tab={tab}
@@ -189,8 +189,8 @@ export default function App() {
           </button>
         </Sidebar>
 
-        <div className={`flex-1 transition-all duration-500 ease-in-out ${sidebarPinned ? 'lg:ml-[280px]' : 'lg:ml-24'}`}>
-          <main ref={mainRef} className={`relative ${navMode === 'tabs' ? 'pb-28' : ''} sm:pb-10 lg:pb-16 min-h-[100dvh] overflow-x-hidden`}>
+        <div className={`flex-1 min-w-0 transition-all duration-500 ease-in-out ${sidebarPinned ? 'lg:ml-[280px]' : 'lg:ml-24'}`}>
+          <main ref={mainRef} className={`relative min-w-0 ${navMode === 'tabs' ? 'pb-28' : ''} sm:pb-10 lg:pb-16 min-h-[100dvh] overflow-x-hidden`}>
               {/* Background Gate - only mounted in home mode */}
               {navMode === 'home' && (
                 <div className={`transition-all duration-700 ease-[cubic-bezier(0.32,0.72,0,1)] max-w-[1600px] mx-auto min-h-[100dvh] flex flex-col ${tab !== 'gate' ? 'scale-[0.98] opacity-30 blur-[2px] pointer-events-none' : 'scale-100 opacity-100'}`}>
@@ -201,17 +201,17 @@ export default function App() {
               {/* Foreground Sheet (or normal Tab content) */}
               <div 
                 className={`
-                  ${navMode === 'home' ? 'fixed inset-0 z-50 transform transition-transform duration-500 ease-[cubic-bezier(0.32,0.72,0,1)]' : 'p-4 sm:p-10 lg:p-16 max-w-[1600px] mx-auto'}
+                  ${navMode === 'home' ? 'fixed inset-0 z-30 overflow-x-hidden transform transition-transform duration-500 ease-[cubic-bezier(0.32,0.72,0,1)]' : 'p-4 sm:p-10 lg:p-16 max-w-[1600px] mx-auto'}
                   ${navMode === 'home' && tab === 'gate' ? 'translate-y-full pointer-events-none' : 'translate-y-0'}
                 `}
               >
-                <div className={`${navMode === 'home' ? 'h-full bg-[var(--bg)] shadow-[0_-20px_50px_rgba(0,0,0,0.3)] overflow-y-auto rounded-t-[40px] border-t border-[var(--line)]/30 relative pt-6' : ''}`}>
+                <div className={`${navMode === 'home' ? 'alpha-glass h-full w-full overflow-y-auto overflow-x-hidden rounded-t-[40px] border-t border-[var(--line)]/30 shadow-[0_-20px_50px_rgba(0,0,0,0.3)] relative pt-6 lg:m-4 lg:h-[calc(100dvh-2rem)] lg:rounded-[32px] lg:border lg:border-[var(--line)]/30 lg:shadow-[0_24px_80px_rgba(0,0,0,0.32)]' : ''}`}>
                   {/* Back-to-Gate handle (only in home mode, when not on gate) */}
                   {navMode === 'home' && tab !== 'gate' && (
                     <button
                       onClick={() => navigate('gate')}
                       aria-label="Zurück zum Menü"
-                      className="sticky top-0 z-30 mx-auto flex flex-col items-center gap-1 pt-2 pb-3 w-full bg-gradient-to-b from-[var(--bg)] via-[var(--bg)] to-transparent active:opacity-60 transition-opacity"
+                      className="sticky top-0 z-30 mx-auto flex w-full flex-col items-center gap-1 pt-2 pb-3 active:opacity-60 transition-opacity bg-gradient-to-b from-[color:var(--glass)] via-[color:var(--glass)] to-transparent backdrop-blur-md"
                     >
                       <div className="w-10 h-1.5 rounded-full bg-fit-line" />
                       <span className="text-[9px] font-black uppercase tracking-widest text-fit-dim opacity-60">Menü</span>
