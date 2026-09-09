@@ -31,19 +31,34 @@ export async function updateUserProfile(uid, data) {
 const DEFAULT_PUSH_SETTINGS = {
   enabled: false,
   token: null,
+  tokens: [],
   reminderTime: "18:00",
-  types: { workout: true, habit: true, coverage: true, pplRatio: true, restday: true },
+  types: { workout: true, activeWorkout: true, habit: true, coverage: true, pplRatio: true, restday: true },
 };
 
 export async function getPushSettings() {
   const snap = await getDoc(doc(db, "fitness", getUid(), "settings", "push"));
   if (!snap.exists()) return DEFAULT_PUSH_SETTINGS;
-  return { ...DEFAULT_PUSH_SETTINGS, ...snap.data() };
+  const data = snap.data() || {};
+  const tokens = Array.from(new Set([
+    ...(Array.isArray(data.tokens) ? data.tokens : []),
+    ...(data.token ? [data.token] : []),
+  ].filter(Boolean)));
+  return {
+    ...DEFAULT_PUSH_SETTINGS,
+    ...data,
+    token: tokens[0] || data.token || null,
+    tokens,
+  };
 }
 
 export async function savePushSettings(settings) {
   await setDoc(doc(db, "fitness", getUid(), "settings", "push"), {
     ...settings,
+    tokens: Array.from(new Set([
+      ...(Array.isArray(settings?.tokens) ? settings.tokens : []),
+      ...(settings?.token ? [settings.token] : []),
+    ].filter(Boolean))),
     updated_at: serverTimestamp(),
   }, { merge: true });
   return { ok: true };

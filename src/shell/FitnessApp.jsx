@@ -2,10 +2,9 @@ import { useEffect, useMemo, useState } from 'react'
 import Session from '@view/session/index.jsx'
 import WeeklyReview from '@view/review/index.jsx'
 import Learn from '@view/learn/index.jsx'
-import Coach from '@fitness/src/views/Coach/index.jsx'
-import Inbox from '@fitness/src/views/Inbox/index.js'
-import Settings from '@fitness/src/views/Settings/index.jsx'
-import ExerciseInsightModal from '@fitness/components/ExerciseInsightModal.jsx'
+import Coach from '@view/coach/index.jsx'
+import Inbox from '@view/inbox/index.js'
+import ExerciseInsightModal from '@fitness-components/ExerciseInsightModal.jsx'
 import { buildFitnessGateItems } from '@shell/NavigationItems.js'
 import { getAnatomy, getAllMuscles, getPlan } from '@db'
 import FitnessAppGate from './FitnessAppGate.jsx'
@@ -88,12 +87,11 @@ export default function FitnessApp({ recentDays, coverageThreshold, gender, musc
 
         <div
           className={`
-            fixed inset-0 z-30 transform transition-all duration-500 ease-[cubic-bezier(0.32,0.72,0,1)]
-            ${showDesktopChrome ? (sidebarPinned ? 'lg:left-[304px]' : 'lg:left-[108px]') : ''}
+            fixed inset-0 z-30 overflow-x-hidden transform transition-all duration-500 ease-[cubic-bezier(0.32,0.72,0,1)]
             ${tab === 'gate' ? 'translate-y-full pointer-events-none' : 'translate-y-0'}
           `}
         >
-          <div className="relative h-full overflow-y-auto rounded-t-[40px] border-t border-[var(--line)]/30 bg-[var(--bg)] pt-6 shadow-[0_-20px_50px_rgba(0,0,0,0.3)]">
+          <div className="relative h-full w-full overflow-y-auto overflow-x-hidden rounded-t-[40px] border-t border-[var(--line)]/30 bg-[var(--bg)] pt-6 shadow-[0_-20px_50px_rgba(0,0,0,0.3)] lg:m-4 lg:h-[calc(100dvh-2rem)] lg:rounded-[32px] lg:border lg:border-[var(--line)]/30 lg:shadow-[0_24px_80px_rgba(0,0,0,0.32)]">
             {tab !== 'gate' && (
               <button
                 onClick={() => setTab('gate')}
@@ -105,13 +103,12 @@ export default function FitnessApp({ recentDays, coverageThreshold, gender, musc
               </button>
             )}
 
-            <div className={`animate-in fade-in duration-500 ${tab !== 'gate' ? 'p-4 pb-20 sm:p-8 lg:p-12' : ''}`}>
-              {tab === 'session' && <Session key={sessionDate || 'today'} initialDate={sessionDate} initialDraft={sessionDraft} onInspectExercise={inspectExercise} recentDays={recentDays} coverageThreshold={coverageThreshold} subTab={route.sessionSubTab} onDateChange={onRuntimeDateChange} />}
+            <div className={`animate-in fade-in duration-500 ${tab !== 'gate' ? 'p-4 pb-20 sm:p-10' : ''}`}>
+              {tab === 'session' && <Session key={sessionDate || 'today'} initialDate={sessionDate} initialDraft={sessionDraft} onInspectExercise={inspectExercise} recentDays={recentDays} coverageThreshold={coverageThreshold} subTab={route.sessionSubTab} onDateChange={onRuntimeDateChange} onSubNav={setTab} />}
               {tab === 'review'  && <WeeklyReview onOpenSession={onOpenSession} onInspectExercise={inspectExercise} muscleLanguage={muscleLanguage} taxonomy={taxonomy} gender={gender} recentDays={recentDays} subTab={activeReviewSubTab} onSubNav={setReviewSubTab} />}
               {tab === 'learn'   && <Learn subTab={activeLearnSubTab} onInspectExercise={inspectExercise} muscleLanguage={muscleLanguage} taxonomy={taxonomy} />}
               {tab === 'inbox'   && <Inbox />}
               {tab === 'coach'   && <Coach onInspectExercise={inspectExercise} />}
-              {tab === 'settings' && <Settings />}
             </div>
           </div>
         </div>

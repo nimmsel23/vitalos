@@ -87,6 +87,7 @@ function readHashState() {
   if (mainTab === 'dashboard') return { tab: 'home', subTab: null }
   if (mainTab === 'learn') return { tab: 'fitness', subTab: 'learn' }
   if (mainTab === 'journal') return { tab: 'home', subTab: null, date: date || null }
+  if (mainTab === 'fitness' && subTab === 'settings') return { tab: 'settings', subTab: null }
   if (mainTab === 'fuel' && subTab === 'journal') return { tab: 'home', subTab: null, date: date || null }
   if (mainTab === 'fuel' && subTab === 'habits') return { tab: 'habits', subTab: null }
   if (mainTab === 'fuel' && subTab === 'settings') return { tab: 'settings', subTab: null }

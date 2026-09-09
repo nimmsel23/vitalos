@@ -39,6 +39,7 @@ export default defineConfig(({ mode }) => {
     '@coach':      resolve(VITALOS_SRC, 'coach'),
     '@cloud':      resolve(VITALOS_SRC, 'cloud'),
     '@components': resolve(FITNESS_SRC, 'components'),
+    '@fitness-components': resolve(FITNESS_SRC, 'components'),
     '@lib':        resolve(FITNESS_SRC, 'lib'),
     '@constants':  resolve(FITNESS_SRC, 'constants'),
     '@utils':      resolve(FITNESS_SRC, 'lib/utils.js'),
@@ -49,6 +50,10 @@ export default defineConfig(({ mode }) => {
     '@view/review':     resolve(FITNESS_SRC,          'views/WeeklyReview'),   // fitness-dev
     '@view/muscles':    resolve(FITNESS_SRC,          'views/Muscles'),        // fitness-dev
     '@view/learn':      resolve(LEARN_DEV,            'src/views/Learn'),      // learn-dev
+    '@view/inbox':      resolve(FITNESS_SRC,          'views/Inbox'),          // fitness-dev
+    '@view/anamnese':   resolve(FITNESS_SRC,          'views/Anamnese'),       // fitness-dev
+    '@view/focus':      resolve(FITNESS_SRC,          'views/Fokus'),          // fitness-dev
+    '@view/fitness-settings': resolve(FITNESS_SRC,    'views/Settings'),       // fitness-dev domain sections
     '@view/journal':    resolve(JOURNAL_DEV,          'src/views/JournalVosView.jsx'), // journal-dev
     '@view/habits':     resolve(HABITS_DEV,           'src/views/Habits'),     // habits-dev
     '@view/settings':   resolve(VITALOS_SRC,          'shell/Settings'),       // vitalos-spezifisch

@@ -11,7 +11,7 @@ export default function Sidebar({ tab, navigate, pinned, setPinned, children, us
       <div className={`flex h-full flex-col p-3.5 ${!pinned ? 'items-center' : ''}`}>
 
         {/* Logo */}
-        <div className="relative mb-5 flex items-center gap-3">
+        <div className={`relative mb-5 flex w-full items-center gap-3 ${!pinned ? 'justify-center' : ''}`}>
           <div className="w-10 h-10 shrink-0 rounded-xl bg-fit-accent text-black flex items-center justify-center shadow-xl shadow-fit-accent/30 transition-transform hover:scale-105">
             <Zap size={20} />
           </div>
@@ -22,7 +22,7 @@ export default function Sidebar({ tab, navigate, pinned, setPinned, children, us
           )}
           <button
             onClick={() => setPinned(!pinned)}
-            className="absolute top-1 right-0 z-10 flex h-8 w-8 items-center justify-center rounded-full border border-white/10 bg-white/8 text-fit-dim shadow-lg backdrop-blur transition-all hover:scale-110 hover:text-fit-accent active:scale-90"
+            className={`absolute top-1 z-10 flex h-8 w-8 items-center justify-center rounded-full border border-white/10 bg-white/8 text-fit-dim shadow-lg backdrop-blur transition-all hover:scale-110 hover:text-fit-accent active:scale-90 ${pinned ? 'right-0' : '-right-1 translate-x-1/2'}`}
           >
             {pinned ? <ChevronLeft size={14} /> : <ChevronRight size={14} />}
           </button>

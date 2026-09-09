@@ -52,8 +52,15 @@ Der `*Shell.jsx` ist für die Layout-Ebene (Sidebar, MobileShell), der `*App.jsx
 Eigenständiger Setup-Tab — vitalos SSOT. Shell-eigene Sektionen:
 `Account · Profile · Notifications · Appearance · Fuel · LocalDev · Advanced` + Kompositor `index.jsx`.
 
+Der Shell-Setup-Tab ersetzt im VitalOS-Betrieb die Setup-/Settings-Einstiege
+der Subapps. Deshalb sind Shell-eigene Settings-Komponenten und Adapter hier
+absichtlich erlaubt, auch wenn sie Domain-Controls wie Fitness-Notifications
+bedienen. Wichtig ist die Grenze: VitalOS pflegt die Shell-Oberfläche und die
+Shell-spezifische `@db`-Adapter-Schicht; die Fachlogik/Views der Fitness-App
+bleiben im `fitness-app`-Submodule und werden nicht als stale Kopie nachgebaut.
+
 Importierte Domain-Sektionen (einzige Sub-Repo-Anteile):
-- `TrainingSection` ← `@fitness/src/views/Settings/TrainingSection.jsx` (Split, Zyklus, Location)
+- `TrainingSection` ← `@view/fitness-settings/TrainingSection.jsx` (Split, Zyklus, Location)
 - `FuelSection` ist shell-eigenes UI über `@fuel/store.js` (Tagesziele)
 
 `LocalDevSection.jsx` = coach-only (Port-Checks, Sync-Trigger) — wird im Firebase-Build nicht angezeigt.

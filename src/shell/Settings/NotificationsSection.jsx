@@ -3,6 +3,7 @@ import { usePushNotifications } from '@src/hooks/usePushNotifications.js'
 
 const TYPE_LABELS = {
   workout: 'Workout-Reminder',
+  activeWorkout: 'Open-Workout-Reminder (1h nach Start)',
   habit: 'Habit-Reminder',
   coverage: 'Coverage-Alert (Muskelgruppe X Tage nicht trainiert)',
   pplRatio: 'PPL-Ratio-Alert (Push/Pull/Legs unter 15 %)',

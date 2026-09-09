@@ -79,6 +79,15 @@ button, a, input, .tap-target {
   overflow-y: auto;
 }
 
+.no-scrollbar {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
 /* ensure inputs are scrolled into view on focus */
 input, textarea {
   scroll-margin-bottom: calc(56px + var(--safe-bottom, 0px));
