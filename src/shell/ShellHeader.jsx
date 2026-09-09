@@ -146,13 +146,13 @@ export default function ShellHeader({ tab, subTab = null, runtimeDate, setRuntim
   const todayIso = localISO()
   const isToday = runtimeDate === todayIso
   const containerClass = compact
-    ? 'mx-3 mt-3 rounded-[2rem] border border-white/10 bg-white/5 px-4 py-4 shadow-lg backdrop-blur-xl'
-    : 'mx-4 mb-4 mt-3 rounded-[2rem] border border-white/10 bg-white/5 px-5 py-5 shadow-lg backdrop-blur-xl lg:px-7'
+    ? 'mx-3 mt-3 min-w-0 max-w-full overflow-hidden rounded-[2rem] border border-white/10 bg-white/5 px-4 py-4 shadow-lg backdrop-blur-xl'
+    : 'mx-4 mb-4 mt-3 min-w-0 max-w-full overflow-hidden rounded-[2rem] border border-white/10 bg-white/5 px-5 py-5 shadow-lg backdrop-blur-xl lg:px-7'
   const showSubNav = Array.isArray(subNav) && subNav.length > 0 && (compact || tab === 'relax')
 
   return (
     <header className={containerClass}>
-      <div className={compact ? 'flex flex-col gap-4' : 'grid gap-5 xl:grid-cols-[minmax(0,0.95fr)_minmax(0,1.45fr)] xl:items-end 2xl:grid-cols-[minmax(0,0.9fr)_minmax(0,1.6fr)]'}>
+      <div className={compact ? 'flex min-w-0 flex-col gap-4' : 'grid min-w-0 gap-5 xl:grid-cols-[minmax(0,0.95fr)_minmax(0,1.45fr)] xl:items-end 2xl:grid-cols-[minmax(0,0.9fr)_minmax(0,1.6fr)]'}>
         <div className="min-w-0">
           <div className="mb-2 flex items-center gap-3">
             <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-fit-accent/15 text-fit-accent">
@@ -180,7 +180,7 @@ export default function ShellHeader({ tab, subTab = null, runtimeDate, setRuntim
           {tab === 'fuel' ? <FuelHeaderSummary runtimeDate={runtimeDate} compact={compact} /> : null}
           <div className={`${compact ? 'flex flex-col gap-2 items-stretch' : 'grid gap-3 xl:grid-cols-[auto_minmax(0,1fr)] xl:items-center'}`}>
             <div className="text-[10px] font-black uppercase tracking-[0.24em] text-fit-dim">Datum</div>
-            <div className={`${compact ? 'flex flex-wrap items-center gap-2' : 'grid min-w-0 grid-cols-[auto_auto_minmax(0,1fr)_auto] items-center gap-2'}`}>
+            <div className={`${compact ? 'flex min-w-0 flex-wrap items-center gap-2' : 'grid min-w-0 grid-cols-[auto_auto_minmax(0,1fr)_auto] items-center gap-2'}`}>
               <button
                 onClick={() => setRuntimeDate(shiftISODate(runtimeDate, -1))}
                 className="flex h-9 w-9 items-center justify-center rounded-xl border border-white/10 bg-fit-bg2 text-fit-dim transition hover:text-fit-accent"
@@ -212,7 +212,7 @@ export default function ShellHeader({ tab, subTab = null, runtimeDate, setRuntim
             </div>
           </div>
 
-          <div className="grid grid-cols-7 gap-1.5 rounded-2xl border border-white/10 bg-slate-950/40 p-2.5">
+          <div className="grid min-w-0 grid-cols-7 gap-1.5 overflow-hidden rounded-2xl border border-white/10 bg-slate-950/40 p-2.5">
             {dates.map((date) => {
               const selected = date === runtimeDate
               const today = date === todayIso
@@ -257,7 +257,7 @@ export default function ShellHeader({ tab, subTab = null, runtimeDate, setRuntim
       </div>
 
       {showSubNav ? (
-        <nav className={`mt-4 flex gap-2 overflow-x-auto pb-1 ${compact ? '' : 'xl:ml-auto xl:w-full'}`}>
+        <nav className={`mt-4 flex min-w-0 flex-wrap gap-2 pb-1 overflow-visible ${compact ? '' : 'xl:ml-auto xl:w-full'}`}>
           {subNav.map(({ id, label, Icon }) => {
             const active = subTab === id
             return (

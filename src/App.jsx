@@ -26,6 +26,22 @@ function localToday() {
   return new Date().toISOString().slice(0, 10)
 }
 
+const DATE_LIKE = /^\d{4}-\d{2}-\d{2}$/
+const FITNESS_DIRECT_ROUTES = new Set([
+  'today', 'session', 'timer', 'skills', 'plan', 'history',
+  'review', 'report', 'muscles', 'readiness', 'strength', 'verlauf',
+  'learn', 'exercises', 'anatomy', 'quiz',
+  'inbox',
+])
+const FUEL_DIRECT_ROUTES = new Set(['log', 'food', 'supplements', 'micros'])
+const RELAX_DIRECT_ROUTES = new Set(['dash', 'stats', 'physio', 'catalog'])
+const FITNESS_DATE_ROUTES = new Set(['session'])
+
+function resolveHashDate(value) {
+  if (value === 'today') return localToday()
+  return DATE_LIKE.test(value || '') ? value : null
+}
+
 function HomeSheet({ label, onDismiss, children }) {
   return (
     <div className="fixed inset-0 z-50 flex items-end bg-[linear-gradient(180deg,rgba(8,10,14,0.16),rgba(8,10,14,0.5))] backdrop-blur-md">
@@ -77,11 +93,25 @@ function readHashState() {
   const raw = window.location.hash.replace(/^#\/?/, '')
   if (!raw) return { tab: 'home', subTab: 'hub', date: null }
   const [mainTab = 'home', second = null, third = null] = raw.split('/')
-  const dateLike = /^\d{4}-\d{2}-\d{2}$/
-  const resolveDate = (value) => value === 'today' ? localToday() : value
-  const subTab = second && !dateLike.test(second) ? second : null
-  const rawDate = dateLike.test(second || '') ? second : third
-  const date = resolveDate(rawDate || null)
+  const subTab = second && !DATE_LIKE.test(second) && second !== 'today' ? second : null
+  const date = resolveHashDate(second) || resolveHashDate(third)
+
+  if (FITNESS_DIRECT_ROUTES.has(mainTab)) {
+    return {
+      tab: 'fitness',
+      subTab: mainTab === 'session' && !second ? 'session' : mainTab,
+      date: mainTab === 'session' || mainTab === 'today' ? (date || localToday()) : date,
+    }
+  }
+
+  if (FUEL_DIRECT_ROUTES.has(mainTab)) {
+    return { tab: 'fuel', subTab: mainTab, date: date || null }
+  }
+
+  if (RELAX_DIRECT_ROUTES.has(mainTab)) {
+    return { tab: 'relax', subTab: mainTab, date: date || null }
+  }
+
   const fitnessSessionDate = mainTab === 'fitness' && subTab === 'session' ? (date || localToday()) : date
   if (mainTab === 'hub') return { tab: 'home', subTab: 'hub', date: null }
   if (mainTab === 'dashboard') return { tab: 'home', subTab: null }
@@ -99,6 +129,26 @@ function readHashState() {
 }
 
 function buildHashState({ tab, subTab = null, date = null }) {
+  if (tab === 'fitness' && subTab) {
+    const parts = [subTab]
+    if (FITNESS_DATE_ROUTES.has(subTab) && date) parts.push(date)
+    return `#${parts.join('/')}`
+  }
+  if (tab === 'fuel' && subTab) {
+    const parts = [subTab]
+    if (date) parts.push(date)
+    return `#${parts.join('/')}`
+  }
+  if (tab === 'relax' && subTab && RELAX_DIRECT_ROUTES.has(subTab)) {
+    const parts = [subTab]
+    if (date) parts.push(date)
+    return `#${parts.join('/')}`
+  }
+  if (tab === 'home' && !subTab) {
+    const parts = ['journal']
+    if (date) parts.push(date)
+    return `#${parts.join('/')}`
+  }
   const parts = [tab]
   if (subTab) parts.push(subTab)
   if (date) parts.push(date)
@@ -127,28 +177,33 @@ function Views({ tab, fitnessProps, fuelTab, setFuelTab, relaxTab, setRelaxTab, 
 }
 
 export default function App() {
+  const initialHashState = readHashState()
   const [isDesktopViewport, setIsDesktopViewport] = useState(() => {
     if (typeof window === 'undefined') return true
     return window.matchMedia('(min-width: 1024px)').matches
   })
-  const [tab, setTab] = useState(() => readHashState().tab)
+  const [tab, setTab] = useState(() => initialHashState.tab)
   const [fitnessTab, setFitnessTab] = useState(() => {
-    const { tab: hashTab, subTab } = readHashState()
+    const { tab: hashTab, subTab } = initialHashState
     return hashTab === 'fitness' ? (subTab || null) : null
   })
   const [fuelTab, setFuelTab] = useState(() => {
-    const { tab: hashTab, subTab } = readHashState()
+    const { tab: hashTab, subTab } = initialHashState
     return hashTab === 'fuel' && subTab ? subTab : 'food'
   })
   const [homeGate, setHomeGate] = useState(() => {
-    const { tab: hashTab, subTab } = readHashState()
+    const { tab: hashTab, subTab } = initialHashState
     return hashTab === 'home' ? (subTab || null) : null
   })
   const [relaxTab, setRelaxTab] = useState(() => {
-    const { tab: hashTab, subTab } = readHashState()
+    const { tab: hashTab, subTab } = initialHashState
     return hashTab === 'relax' && subTab ? subTab : 'dash'
   })
-  const [sessionDate,   setSessionDate]   = useState(null)
+  const [sessionDate,   setSessionDate]   = useState(() => (
+    initialHashState.tab === 'fitness' && initialHashState.subTab === 'session'
+      ? initialHashState.date
+      : null
+  ))
   const [sessionDraft,  setSessionDraft]  = useState(null)
 
   function openSession(date, draft = null) {
@@ -283,8 +338,8 @@ export default function App() {
       if (nextTab === 'home') setHomeGate(subTab || null)
       if (nextTab === 'home' && date) setRuntimeDate(date)
       if (nextTab === 'fitness') setFitnessTab(subTab || null)
+      if (nextTab === 'fitness' && date) setRuntimeDate(date)
       if (nextTab === 'fitness' && subTab === 'session') {
-        if (date) setRuntimeDate(date)
         setSessionDate(date || runtimeDate)
       }
       if (nextTab === 'fuel' && subTab) setFuelTab(subTab)
