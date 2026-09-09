@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import { ArrowUpRight } from 'lucide-react'
 import { getSession, getPlan, getRelaxStatsSummary } from '@db'
 import { localToday } from '@utils'
 import { VOS_APPS } from './VitalOSApps.js'
@@ -56,7 +57,7 @@ export default function Hub({ navigate, variant = 'page', runtimeDate, openSessi
     ? 'mb-8 text-left'
     : 'mb-12 text-center animate-in fade-in duration-700'
   const navClass = isSheet
-    ? 'grid grid-cols-2 gap-4 w-full'
+    ? 'grid grid-cols-2 sm:grid-cols-3 gap-3 w-full max-w-3xl'
     : 'grid grid-cols-2 gap-4 w-full max-w-xl animate-in fade-in zoom-in-95 duration-700 delay-100'
   const handleNavigate = (id) => navigate(id === 'journal' ? 'home' : id)
 
@@ -74,21 +75,36 @@ export default function Hub({ navigate, variant = 'page', runtimeDate, openSessi
           <button
             key={id}
             onClick={() => handleNavigate(id)}
-            className={`relative group overflow-hidden rounded-[32px] bg-fit-card border border-fit-line/50 active:scale-95 transition-all flex flex-col items-center gap-4 shadow-sm hover:shadow-2xl hover:border-white/20 ${isSheet ? 'p-5' : 'p-6'}`}
+            className={`group relative flex flex-col items-start justify-between overflow-hidden rounded-3xl border border-fit-line/60 bg-fit-card text-left shadow-sm transition-all duration-300
+              hover:-translate-y-1 hover:shadow-[0_18px_40px_-18px_rgba(0,0,0,0.55)] active:translate-y-0 active:scale-[0.98]
+              ${isSheet ? 'min-h-[124px] gap-3 p-4' : 'min-h-[132px] gap-5 p-5'}`}
           >
             <div
-              className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500"
-              style={{ background: `radial-gradient(ellipse at 50% 0%, ${color}18 0%, transparent 70%)` }}
+              className="pointer-events-none absolute inset-0 opacity-0 transition-opacity duration-500 group-hover:opacity-100"
+              style={{ background: `radial-gradient(120% 90% at 0% 0%, ${color}22 0%, transparent 60%)` }}
             />
-            <div className={`${isSheet ? 'w-12 h-12 rounded-[18px]' : 'w-14 h-14 rounded-[20px]'} bg-fit-bg border border-fit-line flex items-center justify-center transition-all duration-300 shadow-inner z-10 group-hover:scale-110`}>
-              <Icon size={isSheet ? 20 : 24} className="text-fit-dim transition-colors duration-300" />
+            <div className="pointer-events-none absolute inset-x-0 top-0 h-px opacity-0 transition-opacity duration-500 group-hover:opacity-100" style={{ background: color }} />
+
+            <div className="z-10 flex w-full items-start justify-between">
+              <div
+                className={`flex items-center justify-center rounded-2xl border bg-fit-bg shadow-inner transition-all duration-300 group-hover:scale-105
+                  ${isSheet ? 'h-11 w-11' : 'h-14 w-14'}`}
+                style={{ borderColor: 'color-mix(in srgb, ' + color + ' 45%, transparent)' }}
+              >
+                <Icon size={isSheet ? 19 : 22} className="transition-colors duration-300" style={{ color }} />
+              </div>
+              <ArrowUpRight
+                size={16}
+                className="mt-1 shrink-0 text-fit-dim/40 transition-all duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
+              />
             </div>
-            <div className="flex flex-col items-center gap-1 z-10">
-              <span className={`${isSheet ? 'text-[10px]' : 'text-[11px]'} font-black uppercase tracking-[0.2em] text-fit-muted group-hover:text-fit-ink transition-colors`}>
+
+            <div className="z-10 flex flex-col gap-2">
+              <span className={`${isSheet ? 'text-[10px]' : 'text-[11px]'} font-black uppercase tracking-[0.18em] text-fit-muted transition-colors group-hover:text-fit-ink`}>
                 {label}
               </span>
-              <div className="h-0.5 w-0 group-hover:w-8 transition-all duration-500 rounded-full" style={{ background: color }} />
-              <span className="text-[9px] font-bold text-fit-dim/60 tracking-wide min-h-[12px] text-center">
+              <div className="h-0.5 w-6 rounded-full transition-all duration-500 group-hover:w-10" style={{ background: color }} />
+              <span className="min-h-[12px] text-[9px] font-bold tracking-wide text-fit-dim/60">
                 <TileStat appId={id} />
               </span>
             </div>

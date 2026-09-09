@@ -1,7 +1,8 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { RefreshCw } from 'lucide-react'
+import { useEscapeKey } from './hooks/useEscapeKey.js'
 import { watchAuth, signIn, signInEmail, signUpEmail, signOut, isLocalMode, auth, getUserProfile } from '@db'
-import { VALID_TABS, SUB_NAV, buildFitnessGateItems } from './shell/NavigationItems.js'
+import { NAV_ITEMS, VALID_TABS, SUB_NAV, buildFitnessGateItems } from './shell/NavigationItems.js'
 import Settings from '@view/settings/index.jsx'
 import Sidebar from './shell/layout/Sidebar.jsx'
 import MobileShell from './shell/layout/MobileShell.jsx'
@@ -427,6 +428,49 @@ export default function App() {
       setTab('fuel')
     }
   }
+
+  // ── Tastatur-Navigation ───────────────────────────────────────────────
+  // Nachgezogen aus fitness-app (fitness-dev 3d501d2). Die Shell mountet
+  // fitness-apps App.jsx nie, also griff dort nichts davon.
+  //
+  // ESC-Prinzip: die jeweils oberste offene Ebene schließen. Die Ebenen
+  // besitzen ihr ESC-Handling selbst und liegen von innen nach außen:
+  //   1. Session-lokale Modals (@view/session, setzt
+  //      document.body.dataset.sessionModalOpen) — eigener Handler
+  //   2. ExerciseInsightModal + Fitness-Menü-Sheet — in FitnessApp.jsx
+  //   3. Home-Gate (Hub-/Fitness-Kacheln über dem Journal) — hier
+  // Jede Ebene bricht ab (return), wenn eine tiefere noch offen ist, damit
+  // ein ESC-Druck nur genau eine Ebene schließt.
+  const handleShellEscape = useCallback(() => {
+    if (typeof document !== 'undefined' && document.body.dataset.sessionModalOpen) return
+    // Fitness kümmert sich selbst um Inspector + Trainings-Sheet
+    if (tab === 'fitness' && fitnessTab && fitnessTab !== 'gate') return
+    if (homeGate) setHomeGate(null)
+  }, [homeGate, tab, fitnessTab])
+  useEscapeKey(handleShellEscape, true)
+
+  // Alt+Pfeil links/rechts wechselt zyklisch durch die Haupt-Tabs
+  // (NAV_ITEMS). Alt statt Ctrl/Cmd, weil Ctrl/Cmd+… vom Browser belegt
+  // ist. Nicht aktiv, solange ein Eingabefeld fokussiert ist.
+  useEffect(() => {
+    function handleKeyDown(event) {
+      if (!event.altKey) return
+      if (event.key !== 'ArrowLeft' && event.key !== 'ArrowRight') return
+      const target = event.target
+      const t = target?.tagName
+      if (t === 'INPUT' || t === 'TEXTAREA' || t === 'SELECT' || target?.isContentEditable) return
+      if (homeGate) return
+      const cycle = NAV_ITEMS.map(i => i.id)
+      const currentIdx = cycle.indexOf(tab)
+      if (currentIdx === -1) return
+      event.preventDefault()
+      const delta = event.key === 'ArrowRight' ? 1 : -1
+      const nextIdx = (currentIdx + delta + cycle.length) % cycle.length
+      navigate(cycle[nextIdx])
+    }
+    window.addEventListener('keydown', handleKeyDown)
+    return () => window.removeEventListener('keydown', handleKeyDown)
+  }, [tab, homeGate])
 
   async function handleAuthSubmit(e) {
     e.preventDefault()

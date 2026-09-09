@@ -1,4 +1,5 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useEscapeKey } from '../hooks/useEscapeKey.js'
 import Session from '@view/session/index.jsx'
 import WeeklyReview from '@view/review/index.jsx'
 import Learn from '@view/learn/index.jsx'
@@ -32,6 +33,22 @@ export default function FitnessApp({ recentDays, coverageThreshold, gender, musc
   const [learnSubTab, setLearnSubTab] = useState('exercises')
 
   const setTab = onSubTab || (() => {})
+
+  // ESC schließt hier die von FitnessApp aufgespannten Ebenen — von innen
+  // nach außen, immer nur eine pro Druck (siehe handleShellEscape in
+  // App.jsx für die Gesamt-Reihenfolge):
+  //   1. ExerciseInsightModal (falls offen)
+  //   2. die fixe Trainings-Fläche → zurück aufs Fitness-Menü ('gate')
+  // Session-lokale Modals (@view/session) haben ihr eigenes ESC-Handling
+  // und setzen document.body.dataset.sessionModalOpen — solange das steht,
+  // fassen wir die Fläche nicht an.
+  const handleFitnessEscape = useCallback(() => {
+    if (inspectorExercise) { setInspectorExercise(null); return }
+    if (typeof document !== 'undefined' && document.body.dataset.sessionModalOpen) return
+    const currentTab = resolveFitnessRoute(subTab).tab
+    if (currentTab !== 'gate') setTab('gate')
+  }, [inspectorExercise, subTab, setTab])
+  useEscapeKey(handleFitnessEscape, true)
 
   // fitness-app/src/App.jsx bootstrapt setKBMuscles() (shared/muscle.js) via
   // getAllMuscles() beim Mount — die Shell mountet fitness-apps eigenes
@@ -88,6 +105,7 @@ export default function FitnessApp({ recentDays, coverageThreshold, gender, musc
         <div
           className={`
             fixed inset-0 z-30 overflow-x-hidden transform transition-all duration-500 ease-[cubic-bezier(0.32,0.72,0,1)]
+            ${showDesktopChrome ? (sidebarPinned ? 'lg:left-[304px]' : 'lg:left-[108px]') : ''}
             ${tab === 'gate' ? 'translate-y-full pointer-events-none' : 'translate-y-0'}
           `}
         >

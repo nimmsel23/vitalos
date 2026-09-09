@@ -1,3 +1,4 @@
+import { ArrowUpRight } from 'lucide-react';
 import { NAV_ITEMS } from '@shell/NavigationItems.js';
 
 // items akzeptiert zwei Formen:
@@ -8,25 +9,40 @@ import { NAV_ITEMS } from '@shell/NavigationItems.js';
 //   Karte gehört (Training/Review/Lernen), statt alles flach zu mischen.
 function CardGrid({ items, navigate, compact = false }) {
   return (
-    <nav className={`grid w-full gap-4 ${compact ? 'grid-cols-2 lg:grid-cols-3' : 'grid-cols-2 sm:grid-cols-3 lg:grid-cols-4'}`}>
+    <nav className={`grid w-full gap-3 ${compact ? 'grid-cols-2 lg:grid-cols-3' : 'grid-cols-2 sm:grid-cols-3 lg:grid-cols-4'}`}>
       {items.map(({ id, label, Icon, onSelect }) => (
         <button
           key={id}
           onClick={() => (onSelect ? onSelect() : navigate(id))}
-          className={`relative group overflow-hidden rounded-[32px] border border-fit-line/50 bg-fit-card transition-all active:scale-95 flex flex-col items-center shadow-sm hover:border-fit-accent/40 hover:shadow-2xl hover:shadow-fit-accent/10 ${compact ? 'gap-3 p-5' : 'gap-4 p-6'}`}
+          className={`group relative flex flex-col items-start justify-between overflow-hidden rounded-3xl border border-fit-line/60 bg-fit-card text-left transition-all duration-300
+            hover:-translate-y-1 hover:border-fit-accent/50 hover:shadow-[0_18px_40px_-18px_rgba(0,0,0,0.55)] active:translate-y-0 active:scale-[0.98]
+            ${compact ? 'min-h-[118px] gap-3 p-4' : 'min-h-[132px] gap-4 p-5'}`}
         >
-          {/* Glow */}
-          <div className="absolute inset-0 bg-gradient-to-br from-fit-accent/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+          {/* Accent-Glow beim Hover, von oben links */}
+          <div
+            className="pointer-events-none absolute inset-0 opacity-0 transition-opacity duration-500 group-hover:opacity-100"
+            style={{ background: 'radial-gradient(120% 90% at 0% 0%, rgba(var(--accent-rgb,200,255,0),0.14) 0%, transparent 60%)' }}
+          />
 
-          <div className={`rounded-[20px] border border-fit-line bg-fit-bg flex items-center justify-center group-hover:bg-fit-accent group-hover:border-fit-accent transition-all duration-300 shadow-inner z-10 ${compact ? 'h-12 w-12' : 'h-14 w-14'}`}>
-            <Icon size={compact ? 20 : 24} className="text-fit-dim group-hover:text-black transition-colors" />
+          <div className="z-10 flex w-full items-start justify-between">
+            <div
+              className={`flex items-center justify-center rounded-2xl border border-fit-line bg-fit-bg shadow-inner transition-all duration-300
+                group-hover:border-fit-accent group-hover:bg-fit-accent group-hover:shadow-[0_8px_24px_-8px_rgba(var(--accent-rgb,200,255,0),0.5)]
+                ${compact ? 'h-11 w-11' : 'h-14 w-14'}`}
+            >
+              <Icon size={compact ? 19 : 22} className="text-fit-dim transition-colors duration-300 group-hover:text-black" />
+            </div>
+            <ArrowUpRight
+              size={16}
+              className="mt-1 shrink-0 text-fit-dim/40 transition-all duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 group-hover:text-fit-accent"
+            />
           </div>
 
-          <div className="flex flex-col items-center gap-1 z-10">
-            <span className={`font-black uppercase tracking-[0.2em] text-fit-muted group-hover:text-fit-ink transition-colors ${compact ? 'text-[10px]' : 'text-[11px]'}`}>
+          <div className="z-10 flex flex-col gap-2">
+            <span className={`font-black uppercase tracking-[0.18em] text-fit-muted transition-colors group-hover:text-fit-ink ${compact ? 'text-[10px]' : 'text-[11px]'}`}>
               {label}
             </span>
-            <div className="h-0.5 w-0 group-hover:w-8 bg-fit-accent transition-all duration-500 rounded-full" />
+            <div className="h-0.5 w-6 rounded-full bg-fit-line transition-all duration-500 group-hover:w-10 group-hover:bg-fit-accent" />
           </div>
         </button>
       ))}
@@ -41,14 +57,15 @@ export default function AppGate({ navigate, items = NAV_ITEMS, title = null, var
     ? 'flex flex-col text-fit-ink'
     : 'min-h-screen flex flex-col items-center justify-center p-6 bg-gradient-to-br from-fit-bg to-fit-bg2 text-fit-ink'
   const bodyClass = isSheet
-    ? 'w-full space-y-7'
-    : 'w-full max-w-6xl space-y-8 animate-in fade-in zoom-in-95 duration-700'
+    ? 'w-full space-y-8'
+    : 'w-full max-w-5xl space-y-9 animate-in fade-in zoom-in-95 duration-700'
 
   return (
     <div className={wrapperClass}>
       {title && (
-        <div className={`${isSheet ? 'mb-6 text-left' : 'mb-10 text-center animate-in fade-in duration-700'}`}>
+        <div className={`${isSheet ? 'mb-7 text-left' : 'mb-10 text-center animate-in fade-in duration-700'}`}>
           <h2 className={`${isSheet ? 'text-2xl' : 'text-3xl'} font-black tracking-tight text-fit-ink`}>{title}</h2>
+          <p className="mt-1.5 text-[10px] font-black uppercase tracking-[0.3em] text-fit-dim/70">Bereich wählen</p>
         </div>
       )}
 
@@ -56,8 +73,10 @@ export default function AppGate({ navigate, items = NAV_ITEMS, title = null, var
         {isGrouped
           ? items.filter((g) => g.items?.length > 0).map((g) => (
               <div key={g.group}>
-                <div className="mb-3 ml-1 text-[10px] font-black uppercase tracking-[0.25em] text-fit-dim/50">
-                  {g.group}
+                <div className="mb-3.5 flex items-center gap-3">
+                  <span className="text-[11px] font-black uppercase tracking-[0.28em] text-fit-ink/80">{g.group}</span>
+                  <span className="h-px flex-1 bg-gradient-to-r from-fit-line/70 to-transparent" />
+                  <span className="text-[10px] font-black tabular-nums text-fit-dim/50">{g.items.length}</span>
                 </div>
                 <CardGrid items={g.items} navigate={navigate} compact={isSheet} />
               </div>
