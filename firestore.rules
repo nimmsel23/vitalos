@@ -12,6 +12,11 @@ rules_version = '2';
 // lesen/schreiben (Inbox-Review, Plan-Zuweisung). Server-Sync-Prozesse
 // (firestore-mirror.mjs, sync_gateway) laufen mit Admin SDK und sind von
 // Rules nicht betroffen.
+//
+// App-Rules werden in ihren App-Repos gepflegt und hier zentral registriert:
+// - fitness-app/firestore.rules
+// - fuel-app/firestore.rules
+// - coach-dev/firestore.rules (Repo liegt bewusst ausserhalb von ~/vitalos)
 // ─────────────────────────────────────────────────────────────────────────────
 
 service cloud.firestore {
@@ -78,6 +83,29 @@ service cloud.firestore {
       // request.resource.data = incoming doc (works on create + update).
       // resource.data = existing doc (fails on create).
       allow write: if isCoach() || (authed() && request.resource.data.userId == request.auth.uid);
+    }
+
+    // ── Coach-App (coach-dev / vos-coach) ────────────────────────────────────
+    // Eigene App-Rules liegen in ~/coach-dev/firestore.rules. Deploybar ist nur
+    // dieses konsolidierte Set aus ~/vitalos fuer das gemeinsame fitness-aos.
+    match /{path=**}/journal/{doc} {
+      allow read: if isCoach() || (authed() && resource.data.userId == request.auth.uid);
+      allow write: if isCoach();
+    }
+    match /{path=**}/settings/{doc} {
+      allow read, write: if isCoach();
+    }
+    match /{path=**}/routines/{doc} {
+      allow read, write: if isCoach();
+    }
+    match /{path=**}/workouts/{doc} {
+      allow read, write: if isCoach();
+    }
+    match /{path=**}/wf_workouts/{doc} {
+      allow read, write: if isCoach();
+    }
+    match /{path=**}/macrocycles/{doc} {
+      allow read, write: if isCoach();
     }
 
     // ── Fuel (Nutrition & Supplements) ───────────────────────────────────────
