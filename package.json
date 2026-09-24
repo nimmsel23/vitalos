@@ -5,6 +5,7 @@
   "type": "module",
   "workspaces": [
     "fitness-app",
+    "6pack-app",
     "fuel-app",
     "journal-app",
     "habit-app",
@@ -15,9 +16,10 @@
   "scripts": {
     "dev": "npx vite",
     "build:fitness-kb-data": "npm --workspace=fitness-app run build:kb-data",
-    "prebuild": "npm run build:fitness-kb-data",
+    "build:6pack-data": "npm --workspace=6pack-app run build:data",
+    "prebuild": "npm run build:fitness-kb-data && npm run build:6pack-data",
     "build": "npx vite build",
-    "prebuild:firebase": "npm run build:fitness-kb-data",
+    "prebuild:firebase": "npm run build:fitness-kb-data && npm run build:6pack-data",
     "build:firebase": "npx vite build --mode firebase && npm run stamp:sw",
     "stamp:sw": "node scripts/stamp-sw.mjs dist-firebase",
     "deploy:preview": "npm run build:firebase && npx -y firebase-tools@latest hosting:channel:deploy agent-preview --expires 3d --project fitness-aos",

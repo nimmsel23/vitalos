@@ -6,6 +6,7 @@ module.exports = {
     './src/**/*.{js,jsx,ts,tsx}',
     './index.html',
     './fitness-app/src/**/*.{js,jsx,ts,tsx}',
+    './6pack-app/**/*.{js,jsx,ts,tsx}',
     './journal-app/src/**/*.{js,jsx,ts,tsx}',
     './habit-app/src/**/*.{js,jsx,ts,tsx}',
     './learn-dev/src/**/*.{js,jsx,ts,tsx}',

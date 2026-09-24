@@ -50,7 +50,7 @@ export default function MobileNav({ tab, navigate, subNav = null, subTab = null,
   const navEntries = useMemo(() => flattenSubNav(subNav || []), [subNav])
   const overflowItems = NAV_ITEMS.filter((item) => item.id !== 'home' && item.id !== activeAppId)
   const homePrimaryApps = NAV_ITEMS.filter((item) => ['fitness', 'fuel', 'relax'].includes(item.id))
-  const homeOverflowItems = NAV_ITEMS.filter((item) => ['habits', 'settings'].includes(item.id))
+  const homeOverflowItems = NAV_ITEMS.filter((item) => ['sixpack', 'habits', 'settings'].includes(item.id))
   const panelGroups = useMemo(() => getPanelGroups(panelId), [panelId])
   const panelTitle = panelId === 'overflow'
     ? 'Mehr'
