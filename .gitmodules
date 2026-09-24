@@ -23,5 +23,5 @@
 	url = git@github.com:nimmsel23/relax-dev.git
 [submodule "6pack-dev"]
 	path = 6pack-app
-	url = /home/alpha/6pack-dev
+	url = ../6pack-dev
 	branch = vitalos
