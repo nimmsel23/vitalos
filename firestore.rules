@@ -88,6 +88,27 @@ service cloud.firestore {
     // ── Coach-App (coach-dev / vos-coach) ────────────────────────────────────
     // Eigene App-Rules liegen in ~/coach-dev/firestore.rules. Deploybar ist nur
     // dieses konsolidierte Set aus ~/vitalos fuer das gemeinsame fitness-aos.
+    match /coachInbox/{id} {
+      allow read: if isCoach();
+      allow write: if false;
+    }
+    match /coachState/{id} {
+      allow read: if isCoach();
+      allow write: if false;
+    }
+    match /coachCommands/{id} {
+      allow read: if isCoach();
+      allow create: if isCoach()
+        && request.resource.data.keys().hasOnly(['action', 'item_id', 'uid', 'payload', 'requested_by', 'status', 'created_at'])
+        && request.resource.data.requested_by == request.auth.uid
+        && request.resource.data.status == 'queued'
+        && request.resource.data.action in ['approve', 'reenrich', 'delete', 'link-source', 'duplicates', 'merge-duplicates']
+        && request.resource.data.item_id is string
+        && request.resource.data.item_id.size() > 0
+        && request.resource.data.item_id.size() <= 200
+        && request.resource.data.payload is map;
+      allow update, delete: if false;
+    }
     match /{path=**}/journal/{doc} {
       allow read: if isCoach() || (authed() && resource.data.userId == request.auth.uid);
       allow write: if isCoach();
