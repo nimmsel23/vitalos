@@ -17,6 +17,9 @@ rules_version = '2';
 // - fitness-app/firestore.rules
 // - fuel-app/firestore.rules
 // - coach-dev/firestore.rules (Repo liegt bewusst ausserhalb von ~/vitalos)
+// - plan-dev/firestore.rules (Repo liegt bewusst ausserhalb von ~/vitalos;
+//   nutzt ausschliesslich bereits registrierte fitness/{uid}/...-Pfade,
+//   keine neuen Collections)
 // ─────────────────────────────────────────────────────────────────────────────
 
 service cloud.firestore {
@@ -85,9 +88,12 @@ service cloud.firestore {
       allow write: if isCoach() || (authed() && request.resource.data.userId == request.auth.uid);
     }
 
-    // ── Coach-App (coach-dev / vos-coach) ────────────────────────────────────
-    // Eigene App-Rules liegen in ~/coach-dev/firestore.rules. Deploybar ist nur
-    // dieses konsolidierte Set aus ~/vitalos fuer das gemeinsame fitness-aos.
+    // ── Coach-App (coach-dev / vos-coach) + Plan-App (plan-dev / vos-plan) ───
+    // Eigene App-Rules liegen in ~/coach-dev/firestore.rules bzw.
+    // ~/plan-dev/firestore.rules. Deploybar ist nur dieses konsolidierte Set
+    // aus ~/vitalos fuer das gemeinsame fitness-aos. Plan-App nutzt dieselben
+    // routines/workouts/wf_workouts/macrocycles-Collections wie Coach-App,
+    // keine eigenen Regeln noetig.
     match /coachInbox/{id} {
       allow read: if isCoach();
       allow write: if false;
