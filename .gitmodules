@@ -23,5 +23,9 @@
 	url = git@github.com:nimmsel23/relax-dev.git
 [submodule "6pack-dev"]
 	path = 6pack-app
-	url = ../6pack-dev
-	branch = vitalos
+	url = git@github.com:nimmsel23/6pack-dev.git
+	ignore = untracked
+[submodule "plan-dev"]
+	path = plan-app
+	url = git@github.com:nimmsel23/plan-dev.git
+	ignore = untracked
