@@ -20,7 +20,7 @@ const FITNESS = appDir('fitness-app', 'fitness-dev')
 const FUEL    = appDir('fuel-app', 'fuel-dev')
 const JOURNAL = appDir('journal-app', 'journal-dev')
 const HABITS  = appDir('habit-app', 'habits-dev')
-const LEARN   = appDir('learn-dev', 'learn-dev')
+const LEARN   = appDir('learn-app', 'learn-dev')
 const RELAX   = appDir('relax-app', 'relax-dev')
 
 // SSOT für alle Cross-App-Aliase (Sub-Repo A importiert Code aus Sub-Repo B).

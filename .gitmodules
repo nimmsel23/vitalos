@@ -19,7 +19,7 @@
 	ignore = untracked
 	branch = vitalos
 [submodule "learn-dev"]
-	path = learn-dev
+	path = learn-app
 	url = git@github.com:nimmsel23/learn-dev.git
 	ignore = untracked
 	branch = vitalos
