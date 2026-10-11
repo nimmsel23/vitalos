@@ -9,15 +9,15 @@ export default function ActivityHeatmap({ rollingDays, sessionByDate, today, onN
     .slice(0, 10);
 
   return (
-    <div className="md:col-span-2 xl:col-span-3 alpha-card !p-10 shadow-2xl bg-gradient-to-br from-fit-card to-fit-bg2">
-      <div className="flex items-center justify-between mb-10">
-        <h3 className="label-caps !mb-0 flex items-center gap-3 text-sm">
-          <Activity size={18} className="text-fit-accent" />
+    <div className="md:col-span-2 xl:col-span-3 vos-surface rounded-[22px] p-5 md:p-8">
+      <div className="mb-4 flex items-center justify-between gap-3">
+        <h3 className="flex items-center gap-2 text-[17px] font-semibold text-fit-ink">
+          <Activity size={17} className="text-fit-accent" />
           Aktivität & Konsistenz
         </h3>
-        <span className="text-[11px] font-black opacity-30 uppercase tracking-[0.2em]">Letzte 10 Tage</span>
+        <span className="shrink-0 text-[12px] text-fit-dim">Letzte 10 Tage</span>
       </div>
-      <div className="grid grid-cols-5 lg:grid-cols-10 gap-6">
+      <div className="grid grid-cols-5 gap-x-3 gap-y-4 lg:grid-cols-10">
         {rollingDays.map((date) => {
           const s = sessionByDate[date];
           const done = !!(s?.block || s?.activity);
@@ -25,20 +25,20 @@ export default function ActivityHeatmap({ rollingDays, sessionByDate, today, onN
           const color = done ? blockColor(s.block, s.activity, s.sessionMode) : null;
           const dayName = DAY_LABELS[new Date(date).getDay()];
           return (
-            <div key={date} className="flex flex-col items-center gap-3 group">
+            <div key={date} className="group flex flex-col items-center gap-1.5">
               <button
                 onClick={() => done && onNavigate?.("session", date)}
-                className="w-full aspect-square rounded-2xl flex items-center justify-center text-sm font-black transition-all shadow-inner border-2"
+                className="flex aspect-square w-full max-w-[44px] items-center justify-center rounded-full border text-[13px] font-semibold transition-all"
                 style={{
-                  background: isToday ? 'var(--accent)' : done ? (color + '15') : 'var(--bg2)',
-                  borderColor: isToday ? 'var(--accent)' : done ? (color + '30') : 'transparent',
-                  color: isToday ? '#000' : done ? color : 'var(--dim)',
+                  background: done ? (color + '22') : 'color-mix(in srgb, var(--ink) 5%, transparent)',
+                  borderColor: isToday ? 'var(--accent)' : 'transparent',
+                  color: done ? color : 'var(--dim)',
                   cursor: done ? 'pointer' : 'default',
                 }}
               >
                 {done ? "✓" : "·"}
               </button>
-              <span className="text-[10px] font-black opacity-40 uppercase tracking-widest group-hover:opacity-100 transition-opacity">
+              <span className="text-[11px] font-medium text-fit-dim">
                 {dayName}
               </span>
             </div>
@@ -47,9 +47,9 @@ export default function ActivityHeatmap({ rollingDays, sessionByDate, today, onN
       </div>
 
       {recentList.length > 0 && (
-        <div className="mt-10 pt-8 border-t border-fit-line/30">
-          <div className="text-[10px] font-black uppercase tracking-[0.2em] text-fit-dim/40 mb-4">Verlauf</div>
-          <div className="space-y-2">
+        <div className="mt-5 pt-4 vos-hairline-t">
+          <div className="vos-eyebrow mb-2">Verlauf</div>
+          <div className="space-y-1">
             {recentList.map(([date, s]) => {
               const color = blockColor(s.block, s.activity, s.sessionMode);
               const label = s.block || ACTIVITY_LABELS[s.activity?.type] || '—';
@@ -58,16 +58,16 @@ export default function ActivityHeatmap({ rollingDays, sessionByDate, today, onN
                 <button
                   key={date}
                   onClick={() => onNavigate?.("session", date)}
-                  className="w-full flex items-center justify-between px-4 py-3 rounded-2xl bg-fit-bg2/60 hover:bg-fit-bg2 border border-transparent hover:border-fit-line/40 transition-all group"
+                  className="group flex w-full items-center justify-between rounded-xl px-3 py-2.5 transition-colors active:bg-white/5 hover:bg-white/5"
                 >
                   <div className="flex items-center gap-4">
                     <div className="w-2 h-2 rounded-full shrink-0" style={{ background: color || 'var(--accent)' }} />
-                    <span className="text-[11px] font-black uppercase tracking-widest" style={{ color: color || 'var(--accent)' }}>{label}</span>
-                    <span className="text-[10px] text-fit-dim/50 font-mono">{date}</span>
+                    <span className="text-[14px] font-medium" style={{ color: color || 'var(--accent)' }}>{label}</span>
+                    <span className="text-[12px] text-fit-dim tabular-nums">{new Date(`${date}T12:00:00`).toLocaleDateString('de-DE', { weekday: 'short', day: 'numeric', month: 'short' })}</span>
                   </div>
                   <div className="flex items-center gap-4 text-fit-dim">
-                    {exCount > 0 && <span className="text-[10px] font-black opacity-50">{exCount} Übg.</span>}
-                    {s.effort && <span className="text-[10px] font-black opacity-50">E{s.effort}</span>}
+                    {exCount > 0 && <span className="text-[12px]">{exCount} Übg.</span>}
+                    {s.effort && <span className="text-[12px]">E{s.effort}</span>}
                     <ChevronRight size={14} className="opacity-0 group-hover:opacity-60 transition-opacity" />
                   </div>
                 </button>

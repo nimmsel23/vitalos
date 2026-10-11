@@ -4,14 +4,11 @@ import App from './App.jsx'
 import './styles.css'
 
 import { UserProvider } from './contexts/UserContext'
-import { SettingsProvider } from './contexts/SettingsContext'
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
     <UserProvider>
-      <SettingsProvider>
-        <App />
-      </SettingsProvider>
+      <App />
     </UserProvider>
   </React.StrictMode>
 )

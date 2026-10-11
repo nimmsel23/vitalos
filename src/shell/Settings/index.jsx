@@ -115,7 +115,7 @@ export default function Settings({ user, signOut }) {
 
   return (
     <div className="space-y-8 pb-32 max-w-5xl mx-auto">
-       <header className="mb-4 animate-in fade-in duration-700">
+       <header className="mb-4 hidden animate-in fade-in duration-700 lg:block">
           <h2 className="text-3xl font-black text-fit-ink">Settings</h2>
           <p className="text-sm font-medium opacity-40">VitalOS — Fitness, Ernährung, Entspannung</p>
        </header>
