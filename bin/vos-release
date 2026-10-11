@@ -295,6 +295,10 @@ merge_module() {
         run "$REAL_GIT" -C "$submodule" commit --no-edit
     fi
 
+    info "[$module] Initialize nested submodules before release build/push"
+    run "$REAL_GIT" -C "$submodule" submodule sync --recursive
+    run "$REAL_GIT" -C "$submodule" submodule update --init --recursive
+
     info "[$module] Push submodule $target_branch -> origin/$target_branch"
     run "$REAL_GIT" -C "$submodule" push origin "$target_branch"
 
