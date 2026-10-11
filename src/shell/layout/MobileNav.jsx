@@ -1,7 +1,7 @@
 import { useMemo, useRef, useState } from 'react'
 import { Check, ChevronRight, Home, LayoutGrid, MoreHorizontal, NotebookPen, X } from 'lucide-react'
 import { NAV_ITEMS, SUB_NAV, buildFitnessGateItems } from '@shell/NavigationItems'
-import { useSwipeToDismiss } from '../../hooks/useSwipeToDismiss.js'
+import { useSwipeToDismiss } from '@fitness/hooks/useSwipeToDismiss.js'
 
 // iOS-artige Tab-Bar: fünf feste Slots, immer an derselben Stelle.
 // Erneutes Tippen auf den aktiven Tab öffnet ein Sheet mit dessen

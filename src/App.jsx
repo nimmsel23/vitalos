@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback, useRef } from 'react'
 import { RefreshCw, X, Zap } from 'lucide-react'
 import { useEscapeKey } from './hooks/useEscapeKey.js'
-import { useSwipeToDismiss } from './hooks/useSwipeToDismiss.js'
+import { useSwipeToDismiss } from '@fitness/hooks/useSwipeToDismiss.js'
 import { watchAuth, signIn, signInEmail, signUpEmail, signOut, isLocalMode, auth, getUserProfile } from '@db'
 import { NAV_ITEMS, VALID_TABS, SUB_NAV, buildFitnessGateItems } from './shell/NavigationItems.js'
 import Settings from '@view/settings/index.jsx'
