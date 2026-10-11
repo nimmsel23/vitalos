@@ -2,25 +2,31 @@
 	path = fitness-app
 	url = git@github.com:nimmsel23/fitness-dev.git
 	ignore = untracked
+	branch = vitalos
 [submodule "fuel-dev"]
 	path = fuel-app
 	url = git@github.com:nimmsel23/fuel-dev.git
 	ignore = untracked
+	branch = vitalos
 [submodule "journal-dev"]
 	path = journal-app
 	url = git@github.com:nimmsel23/journal-dev.git
 	ignore = untracked
+	branch = vitalos
 [submodule "habits-dev"]
 	path = habit-app
 	url = git@github.com:nimmsel23/habits-dev.git
 	ignore = untracked
+	branch = vitalos
 [submodule "learn-dev"]
 	path = learn-dev
 	url = git@github.com:nimmsel23/learn-dev.git
 	ignore = untracked
+	branch = vitalos
 [submodule "relax-dev"]
 	path = relax-app
 	url = git@github.com:nimmsel23/relax-dev.git
+	branch = vitalos
 [submodule "6pack-dev"]
 	path = 6pack-app
 	url = git@github.com:nimmsel23/6pack-dev.git
@@ -30,3 +36,4 @@
 	path = plan-app
 	url = git@github.com:nimmsel23/plan-dev.git
 	ignore = untracked
+	branch = vitalos
