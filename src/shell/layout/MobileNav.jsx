@@ -1,6 +1,7 @@
-import { useMemo, useState } from 'react'
+import { useMemo, useRef, useState } from 'react'
 import { Check, ChevronRight, Home, LayoutGrid, MoreHorizontal, NotebookPen, X } from 'lucide-react'
 import { NAV_ITEMS, SUB_NAV, buildFitnessGateItems } from '@shell/NavigationItems'
+import { useSwipeToDismiss } from '../../hooks/useSwipeToDismiss.js'
 
 // iOS-artige Tab-Bar: fünf feste Slots, immer an derselben Stelle.
 // Erneutes Tippen auf den aktiven Tab öffnet ein Sheet mit dessen
@@ -64,6 +65,9 @@ export default function MobileNav({ tab, navigate, subTab = null, homeGate = nul
 
   function close() { setPanelId(null) }
 
+  const backdropRef = useRef(null)
+  const sheetRef = useSwipeToDismiss(close, { enabled: Boolean(panelId), backdropRef })
+
   function handleSlot(id) {
     if (id === 'more') {
       setPanelId((current) => (current === 'overflow' ? null : 'overflow'))
@@ -95,18 +99,21 @@ export default function MobileNav({ tab, navigate, subTab = null, homeGate = nul
       {panelId ? (
         <>
           <button
+            ref={backdropRef}
             aria-label="Menü schließen"
             className="vos-fade-in fixed inset-0 z-[55] bg-black/40 lg:hidden"
             onClick={close}
           />
           <div
-            className="vos-sheet vos-sheet-in fixed inset-x-2 z-[56] max-h-[70dvh] overflow-y-auto rounded-[28px] p-3 shadow-2xl lg:hidden"
+            ref={sheetRef}
+            className="vos-sheet vos-sheet-in fixed inset-x-2 z-[56] max-h-[70dvh] overflow-y-auto overscroll-contain rounded-[28px] px-3 pb-3 pt-2 shadow-2xl lg:hidden"
             style={{
               bottom: 'calc(var(--tabbar-h) + var(--safe-bottom) + 8px)',
               border: '1px solid color-mix(in srgb, var(--ink) 8%, transparent)',
             }}
           >
-            <div className="mb-1 flex items-center justify-between px-2 pb-1 pt-1">
+            <div className="mx-auto mb-1 h-[5px] w-9 rounded-full" style={{ background: 'color-mix(in srgb, var(--ink) 20%, transparent)' }} />
+            <div className="mb-1 flex items-center justify-between px-2 pb-1">
               <div className="text-[17px] font-semibold text-fit-ink">{panelTitle}</div>
               <button
                 onClick={close}

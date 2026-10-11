@@ -1,6 +1,7 @@
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect, useCallback, useRef } from 'react'
 import { RefreshCw, X, Zap } from 'lucide-react'
 import { useEscapeKey } from './hooks/useEscapeKey.js'
+import { useSwipeToDismiss } from './hooks/useSwipeToDismiss.js'
 import { watchAuth, signIn, signInEmail, signUpEmail, signOut, isLocalMode, auth, getUserProfile } from '@db'
 import { NAV_ITEMS, VALID_TABS, SUB_NAV, buildFitnessGateItems } from './shell/NavigationItems.js'
 import Settings from '@view/settings/index.jsx'
@@ -46,14 +47,18 @@ function resolveHashDate(value) {
 }
 
 function HomeSheet({ label, onDismiss, children }) {
+  const backdropRef = useRef(null)
+  const sheetRef = useSwipeToDismiss(onDismiss, { backdropRef })
   return (
-    <div className="vos-fade-in fixed inset-0 z-50 flex items-end bg-black/45 lg:backdrop-blur-sm">
+    <div className="fixed inset-0 z-50 flex items-end lg:backdrop-blur-sm">
       <button
+        ref={backdropRef}
         aria-label={`${label} schließen`}
-        className="absolute inset-0"
+        className="vos-fade-in absolute inset-0 bg-black/45"
         onClick={onDismiss}
       />
       <div
+        ref={sheetRef}
         className="vos-sheet vos-sheet-in relative mx-auto flex w-full max-w-[1600px] flex-col overflow-hidden rounded-t-[28px] shadow-[0_-24px_60px_rgba(0,0,0,0.35)] lg:max-h-[88dvh]"
         style={{
           height: 'calc(100dvh - var(--safe-top) - 10px)',
