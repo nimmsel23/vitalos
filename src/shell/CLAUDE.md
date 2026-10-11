@@ -128,3 +128,19 @@ Ziel: iOS-native Optik statt „alles UPPERCASE + font-black + tracking“.
   niemand hat den Context konsumiert.
 - `App.jsx` setzt `<meta name="theme-color">` auf den `--bg` des Themes
   (iOS-Statusleiste passt sich an).
+
+## Swipe-to-dismiss (2026-10-11)
+
+Alle Bottom-Sheets schließen per Wisch nach unten. SSOT ist
+`fitness-app/src/hooks/useSwipeToDismiss.js`, importiert als
+`@fitness/hooks/useSwipeToDismiss.js` (Alias in `packages/cross-app-aliases`
++ Fallback-Aliase in habit-app/fuel-app `vite.config.cjs`). relax-app hat
+eine lokale Kopie (standalone, kein `@fitness`-Alias).
+
+Nutzung: `const ref = useSwipeToDismiss(onClose, { enabled, backdropRef, media })`
+→ `ref` aufs Sheet-Element. Drag startet nur, wenn der scrollbare Inhalt
+unter dem Finger oben steht; horizontale Gesten und Inputs
+(`input/textarea/select/[data-no-swipe]`) bleiben unberührt. `media` begrenzt
+die Geste z. B. auf Mobile, wenn das Sheet auf Desktop ein Modal/Drawer ist.
+Eingebaut: Hub-/Fitness-Gate-Sheet, Tab-Bar-Sheets, Übungs-Detail,
+Session-Gate, Session-Sidebar, Habit-Sidebar, Fuel-TapBoard, Relax-Substanz-Detail.
