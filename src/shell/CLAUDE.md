@@ -43,8 +43,8 @@ Der `*Shell.jsx` ist für die Layout-Ebene (Sidebar, MobileShell), der `*App.jsx
 | Datei | Rolle |
 |---|---|
 | `Sidebar.jsx` / `VitalOSSidebar.jsx` | Desktop-Navigation |
-| `MobileShell.jsx` | Mobile-Wrapper mit Bottom-Nav |
-| `MobileNav.jsx` | Bottom-Navigation Bar |
+| `MobileShell.jsx` | Mobile-Wrapper mit Bottom-Nav, reserviert unten Platz für Tab-Bar + Home-Indicator |
+| `MobileNav.jsx` | iOS-Tab-Bar: 5 feste Slots (Home · Fitness · Fuel · Relax · Mehr). Aktiven Tab nochmal tippen → Sheet mit Unterbereichen; Home nochmal tippen → Hub an/aus |
 | `FuelMobileLayout.jsx` | Fuel-spezifisches Mobile-Layout |
 
 ## Settings/ (Setup-Tab)
@@ -98,3 +98,33 @@ Der wirksame Fix war deshalb:
 
 Kurz: das Problem war eine doppelte Navigation-Synchronisation, nicht einfach
 „zu viel Hashing“.
+
+## Mobile-Redesign (2026-10-11)
+
+Ziel: iOS-native Optik statt „alles UPPERCASE + font-black + tracking“.
+
+- **Design-Primitives** in `src/styles.css` (`.vos-bar`, `.vos-surface`,
+  `.vos-fill`, `.vos-eyebrow`, `.vos-press`, `.vos-sheet`, Hairlines,
+  Sheet-Animationen). Transparenzen IMMER über `color-mix()` — die
+  `fit-*`-Tailwind-Farben sind reine `var()`-Werte ohne `<alpha-value>`,
+  `bg-fit-card/90` erzeugt deshalb gar nichts (war der Grund für die
+  durchsichtige alte Bottom-Bar).
+- **Safe-Area:** nicht mehr global als Padding auf `.app-shell/main/
+  .mobile-shell` (war verschachtelt → bis zu 3× Inset). Oben konsumiert der
+  `ShellHeader` (compact) `--safe-top`, unten `MobileShell`/Tab-Bar
+  `--safe-bottom` + `--tabbar-h`.
+- **Keine globale 44px-Mindestgröße** mehr für `button/a/input` — hat
+  Wochenleiste und Icon-Chips gesprengt. Bei Bedarf `.tap-target`.
+- **`ShellHeader`** hat zwei Komponenten: `CompactHeader` (mobil: Sticky-
+  Leiste Titel + Datums-Pill mit nativem Datepicker, Wochenleiste mit
+  Aktivitäts-Punkten, Sub-Tabs als Pills, kompakte Fuel-Summe) und
+  `DesktopHeader` (unverändert). Setup/Coach/6Pack zeigen kein Datum.
+- **Themes:** neues Default `vital` (dunkel) / `vital-light`. `App.jsx`
+  migriert einmalig (`vitalos-redesign-2026-10`) vom alten Default
+  `nordic` → `vital`; bewusst gewählte Themes bleiben.
+- **Theme-Bug behoben:** `src/contexts/SettingsContext.jsx` (Legacy, aus
+  `main.jsx` gemountet) setzte `data-theme` aus `fitness-theme` und
+  überschrieb als Eltern-Effect die Shell-Wahl bei jedem Laden. Entfernt —
+  niemand hat den Context konsumiert.
+- `App.jsx` setzt `<meta name="theme-color">` auf den `--bg` des Themes
+  (iOS-Statusleiste passt sich an).

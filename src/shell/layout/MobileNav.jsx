@@ -1,37 +1,22 @@
 import { useMemo, useState } from 'react'
-import { Home, MoreHorizontal, NotebookPen, X } from 'lucide-react'
+import { Check, ChevronRight, Home, LayoutGrid, MoreHorizontal, NotebookPen, X } from 'lucide-react'
 import { NAV_ITEMS, SUB_NAV, buildFitnessGateItems } from '@shell/NavigationItems'
 
-function normalizeActiveAppId(tab) {
-  if (tab === 'home' || tab === 'journal') return 'journal'
-  return tab
-}
+// iOS-artige Tab-Bar: fünf feste Slots, immer an derselben Stelle.
+// Erneutes Tippen auf den aktiven Tab öffnet ein Sheet mit dessen
+// Unterbereichen (statt der früheren, horizontal scrollenden Pill-Leiste
+// in der Bar selbst — die Sub-Tabs leben jetzt im ShellHeader).
+const PRIMARY_IDS = ['home', 'fitness', 'fuel', 'relax']
+const MORE_IDS = ['sixpack', 'habits', 'settings']
 
 function flattenSubNav(subNav = []) {
   return subNav.flatMap((item) => {
     const base = item.hideInFlatNav
       ? []
-      : [{ id: item.id, label: item.label, Icon: item.Icon, parentId: null, noDefaultSub: item.noDefaultSub }]
-    const nested = (item.sub || []).map((child) => ({
-      id: child.id,
-      label: child.label,
-      Icon: child.Icon,
-      parentId: item.id,
-    }))
+      : [{ id: item.id, label: item.label, Icon: item.Icon }]
+    const nested = (item.sub || []).map((child) => ({ id: child.id, label: child.label, Icon: child.Icon }))
     return [...base, ...nested]
   })
-}
-
-function isEntryActive(entry, subTab, subNav) {
-  if (!subTab) return false
-  if (entry.id === subTab) return true
-  if (entry.parentId) return false
-  const parent = subNav.find((item) => item.id === entry.id)
-  return Boolean(parent?.sub?.some((child) => child.id === subTab))
-}
-
-function findApp(id) {
-  return NAV_ITEMS.find((item) => item.id === id)
 }
 
 function getPanelGroups(panelId) {
@@ -41,217 +26,157 @@ function getPanelGroups(panelId) {
   return []
 }
 
-export default function MobileNav({ tab, navigate, subNav = null, subTab = null, onSubTab = null }) {
-  const [panelId, setPanelId] = useState(null)
-  const panelOpen = Boolean(panelId)
-  const activeAppId = normalizeActiveAppId(tab)
-  const activeApp = findApp(activeAppId) || NAV_ITEMS[0]
-  const isHome = tab === 'home'
-  const navEntries = useMemo(() => flattenSubNav(subNav || []), [subNav])
-  const overflowItems = NAV_ITEMS.filter((item) => item.id !== 'home' && item.id !== activeAppId)
-  const homePrimaryApps = NAV_ITEMS.filter((item) => ['fitness', 'fuel', 'relax'].includes(item.id))
-  const homeOverflowItems = NAV_ITEMS.filter((item) => ['sixpack', 'habits', 'settings'].includes(item.id))
-  const panelGroups = useMemo(() => getPanelGroups(panelId), [panelId])
-  const panelTitle = panelId === 'overflow'
-    ? 'Mehr'
-    : (findApp(panelId)?.label || '')
+function findApp(id) {
+  return NAV_ITEMS.find((item) => item.id === id)
+}
 
-  function openApp(id) {
+function SheetRow({ Icon, label, active, onClick, hint }) {
+  const ResolvedIcon = Icon || NotebookPen
+  return (
+    <button
+      onClick={onClick}
+      className={`vos-press flex w-full items-center gap-3 rounded-2xl px-3 py-2.5 text-left ${active ? 'bg-fit-accent/15' : 'active:bg-white/5'}`}
+      style={active ? { background: 'color-mix(in srgb, var(--accent) 14%, transparent)' } : undefined}
+    >
+      <span
+        className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl"
+        style={{
+          background: active ? 'var(--accent)' : 'color-mix(in srgb, var(--ink) 7%, transparent)',
+          color: active ? '#0b0e14' : 'var(--ink)',
+        }}
+      >
+        <ResolvedIcon size={17} strokeWidth={2} />
+      </span>
+      <span className="min-w-0 flex-1">
+        <span className="block truncate text-[15px] font-medium text-fit-ink">{label}</span>
+        {hint ? <span className="block truncate text-[12px] text-fit-dim">{hint}</span> : null}
+      </span>
+      {active ? <Check size={16} className="shrink-0 text-fit-accent" /> : <ChevronRight size={16} className="shrink-0 text-fit-dim/60" />}
+    </button>
+  )
+}
+
+export default function MobileNav({ tab, navigate, subTab = null, homeGate = null }) {
+  const [panelId, setPanelId] = useState(null)
+  const panelGroups = useMemo(() => getPanelGroups(panelId), [panelId])
+  const activeSlot = PRIMARY_IDS.includes(tab) ? tab : (tab === 'journal' ? 'home' : 'more')
+  const hubOpen = tab === 'home' && homeGate === 'hub'
+
+  function close() { setPanelId(null) }
+
+  function handleSlot(id) {
+    if (id === 'more') {
+      setPanelId((current) => (current === 'overflow' ? null : 'overflow'))
+      return
+    }
     setPanelId(null)
+    if (id === 'home') {
+      // Home = Journal; nochmal tippen schaltet den Hub (Übersicht) an/aus
+      navigate(activeSlot === 'home' && !hubOpen ? 'hub' : 'home')
+      return
+    }
+    if (activeSlot === id) {
+      setPanelId(id)
+      return
+    }
     navigate(id)
   }
 
-  function openHome() {
-    setPanelId(null)
-    navigate('home')
-  }
+  const slots = [
+    { id: 'home', label: 'Home', Icon: Home },
+    ...PRIMARY_IDS.slice(1).map((id) => findApp(id)).filter(Boolean),
+    { id: 'more', label: 'Mehr', Icon: MoreHorizontal },
+  ]
 
-  function openActiveApp() {
-    setPanelId(null)
-    navigate(activeAppId)
-  }
-
-  function openSubEntry(id) {
-    setPanelId(null)
-    onSubTab?.(id)
-  }
-
-  function openPanel(id) {
-    setPanelId((current) => (current === id ? null : id))
-  }
-
-  function handlePanelSelect(targetAppId, entryId) {
-    setPanelId(null)
-    navigate(targetAppId, entryId)
-  }
-
-  function renderIcon(Icon, size, className = '') {
-    const ResolvedIcon = Icon || NotebookPen
-    return <ResolvedIcon size={size} className={className} />
-  }
+  const panelTitle = panelId === 'overflow' ? 'Mehr' : (findApp(panelId)?.label || '')
 
   return (
     <>
-      {panelOpen ? (
-        <button
-          aria-label="Menü schließen"
-          className="fixed inset-0 z-40 bg-black/30 backdrop-blur-[2px] lg:hidden"
-          onClick={() => setPanelId(null)}
-        />
-      ) : null}
+      {panelId ? (
+        <>
+          <button
+            aria-label="Menü schließen"
+            className="vos-fade-in fixed inset-0 z-[55] bg-black/40 lg:hidden"
+            onClick={close}
+          />
+          <div
+            className="vos-sheet vos-sheet-in fixed inset-x-2 z-[56] max-h-[70dvh] overflow-y-auto rounded-[28px] p-3 shadow-2xl lg:hidden"
+            style={{
+              bottom: 'calc(var(--tabbar-h) + var(--safe-bottom) + 8px)',
+              border: '1px solid color-mix(in srgb, var(--ink) 8%, transparent)',
+            }}
+          >
+            <div className="mb-1 flex items-center justify-between px-2 pb-1 pt-1">
+              <div className="text-[17px] font-semibold text-fit-ink">{panelTitle}</div>
+              <button
+                onClick={close}
+                aria-label="Schließen"
+                className="vos-press flex h-8 w-8 items-center justify-center rounded-full text-fit-dim vos-fill"
+              >
+                <X size={16} />
+              </button>
+            </div>
 
-      {panelOpen ? (
-        <div className="fixed inset-x-3 bottom-[5.5rem] z-50 rounded-[2rem] border border-white/10 bg-fit-card/95 p-3 shadow-2xl shadow-black/35 backdrop-blur-2xl lg:hidden">
-          <div className="mb-2 flex items-center justify-between px-2">
-            <div className="text-[10px] font-black uppercase tracking-[0.22em] text-fit-dim">{panelTitle}</div>
-            <button
-              onClick={() => setPanelId(null)}
-              className="flex h-8 w-8 items-center justify-center rounded-full border border-white/10 bg-white/5 text-fit-dim"
-            >
-              <X size={14} />
-            </button>
-          </div>
-          {panelId === 'overflow' ? (
-            <div className="grid grid-cols-2 gap-2">
-              {(isHome ? homeOverflowItems : overflowItems).map(({ id, label, Icon }) => {
-                const active = tab === id
-                return (
-                  <button
-                    key={id}
-                    onClick={() => openApp(id)}
-                    className={`flex items-center gap-3 rounded-2xl border px-4 py-3 text-left transition ${
-                      active
-                        ? 'border-fit-accent/30 bg-fit-accent/14 text-fit-accent'
-                        : 'border-white/10 bg-fit-bg2/70 text-fit-ink'
-                    }`}
-                  >
-                    {renderIcon(Icon, 16)}
-                    <span className="text-[10px] font-black uppercase tracking-[0.16em]">{label}</span>
-                  </button>
-                )
-              })}
-            </div>
-          ) : (
-            <div className="space-y-4">
-              {panelGroups.map(({ group, items }) => (
-                <div key={group}>
-                  <div className="mb-2 px-2 text-[10px] font-black uppercase tracking-[0.22em] text-fit-dim">{group}</div>
-                  <div className="grid grid-cols-2 gap-2">
-                    {items.map(({ id, label, Icon }) => (
-                      <button
-                        key={id}
-                        onClick={() => handlePanelSelect(panelId, id)}
-                        className="flex items-center gap-3 rounded-2xl border border-white/10 bg-fit-bg2/70 px-4 py-3 text-left text-fit-ink transition"
-                      >
-                        {renderIcon(Icon, 16)}
-                        <span className="text-[10px] font-black uppercase tracking-[0.16em]">{label}</span>
-                      </button>
-                    ))}
+            {panelId === 'overflow' ? (
+              <div className="space-y-0.5">
+                <SheetRow Icon={LayoutGrid} label="Übersicht" hint="Alle Bereiche auf einen Blick" active={hubOpen} onClick={() => { close(); navigate('hub') }} />
+                {MORE_IDS.map((id) => findApp(id)).filter(Boolean).map(({ id, label, Icon }) => (
+                  <SheetRow key={id} Icon={Icon} label={label} active={tab === id} onClick={() => { close(); navigate(id) }} />
+                ))}
+              </div>
+            ) : (
+              <div className="space-y-3">
+                {panelGroups.map(({ group, items }) => (
+                  <div key={group}>
+                    {panelGroups.length > 1 ? <div className="vos-eyebrow px-3 pb-1 pt-2">{group}</div> : null}
+                    <div className="space-y-0.5">
+                      {items.map(({ id, label, Icon }) => (
+                        <SheetRow
+                          key={id}
+                          Icon={Icon}
+                          label={label}
+                          active={subTab === id}
+                          onClick={() => { close(); navigate(panelId, id) }}
+                        />
+                      ))}
+                    </div>
                   </div>
-                </div>
-              ))}
-            </div>
-          )}
-        </div>
+                ))}
+              </div>
+            )}
+          </div>
+        </>
       ) : null}
 
       <nav
-        className="lg:hidden fixed bottom-0 left-0 right-0 z-50"
-        style={{ paddingBottom: 'env(safe-area-inset-bottom)' }}
+        className="vos-bar vos-hairline-t fixed inset-x-0 bottom-0 z-[60] lg:hidden"
+        style={{ paddingBottom: 'var(--safe-bottom)' }}
       >
-        <div className="border-t border-fit-line/40 bg-fit-card/92 px-3 pt-2 pb-3 backdrop-blur-2xl">
-          <div className="flex items-end gap-2">
-            <button
-              onClick={openHome}
-              className={`flex shrink-0 flex-col items-center gap-[5px] rounded-[1.2rem] px-2 py-1.5 transition ${
-                tab === 'home'
-                  ? 'text-fit-accent'
-                  : 'text-fit-dim'
-              }`}
-            >
-              <div className={`flex h-8 w-11 items-center justify-center rounded-2xl ${tab === 'home' ? 'bg-fit-accent shadow-lg shadow-fit-accent/30' : 'bg-white/5'}`}>
-                <Home size={17} className={tab === 'home' ? 'text-black stroke-[2.5]' : 'stroke-[2]'} />
-              </div>
-              <span className="text-[7.5px] font-black uppercase tracking-wide leading-none">Home</span>
-            </button>
-
-            {isHome ? (
-              <div className="min-w-0 flex-1 overflow-x-auto no-scrollbar">
-                <div className="flex min-w-max items-end gap-2 pb-1">
-                  {homePrimaryApps.map(({ id, label, Icon }) => (
-                    <button
-                      key={id}
-                      onClick={() => openPanel(id)}
-                      className={`flex shrink-0 flex-col items-center gap-[5px] rounded-[1.2rem] px-2 py-1.5 transition ${
-                        panelId === id ? 'text-fit-accent' : 'text-fit-ink'
-                      }`}
-                    >
-                      <div className={`flex h-8 min-w-[3.2rem] items-center justify-center rounded-2xl px-3 ${
-                        panelId === id ? 'bg-fit-accent shadow-lg shadow-fit-accent/30' : 'bg-white/7'
-                      }`}>
-                        {renderIcon(Icon, 17, panelId === id ? 'text-black stroke-[2.5]' : 'stroke-[2]')}
-                      </div>
-                      <span className="text-[7.5px] font-black uppercase tracking-wide leading-none">{label}</span>
-                    </button>
-                  ))}
-                </div>
-              </div>
-            ) : (
+        <div className="mx-auto grid max-w-xl grid-cols-5" style={{ height: 'var(--tabbar-h)' }}>
+          {slots.map(({ id, label, Icon }) => {
+            const active = id === 'more' ? (activeSlot === 'more' || panelId === 'overflow') : activeSlot === id
+            return (
               <button
-                onClick={openActiveApp}
-                className={`flex shrink-0 flex-col items-center gap-[5px] rounded-[1.2rem] px-2 py-1.5 transition ${
-                  tab === activeAppId
-                    ? 'text-fit-accent'
-                    : 'text-fit-ink'
-                }`}
+                key={id}
+                onClick={() => handleSlot(id)}
+                aria-current={active ? 'page' : undefined}
+                className="vos-press group flex flex-col items-center justify-center gap-1"
               >
-                <div className={`flex h-8 min-w-[3.2rem] items-center justify-center rounded-2xl px-3 ${
-                  tab === activeAppId
-                    ? 'bg-fit-accent shadow-lg shadow-fit-accent/30'
-                    : 'bg-white/7'
-                }`}>
-                  {renderIcon(activeApp.Icon, 17, tab === activeAppId ? 'text-black stroke-[2.5]' : 'stroke-[2]')}
-                </div>
-                <span className="text-[7.5px] font-black uppercase tracking-wide leading-none">{activeApp.label}</span>
+                <span
+                  className="flex h-8 w-14 items-center justify-center rounded-full transition-colors duration-200"
+                  style={{ background: active ? 'color-mix(in srgb, var(--accent) 18%, transparent)' : 'transparent' }}
+                >
+                  <Icon size={21} strokeWidth={active ? 2.3 : 1.8} style={{ color: active ? 'var(--accent)' : 'var(--dim)' }} />
+                </span>
+                <span
+                  className="text-[10.5px] font-medium leading-none"
+                  style={{ color: active ? 'var(--ink)' : 'var(--dim)' }}
+                >
+                  {label}
+                </span>
               </button>
-            )}
-
-            {!isHome ? (
-              <div className="min-w-0 flex-1 overflow-x-auto no-scrollbar">
-                <div className="flex min-w-max items-center gap-1 pb-1">
-                  {navEntries.map((entry) => {
-                    const active = isEntryActive(entry, subTab, subNav || [])
-                    return (
-                      <button
-                        key={`${entry.parentId || 'root'}-${entry.id}`}
-                        onClick={() => openSubEntry(entry.id)}
-                        className={`inline-flex h-9 shrink-0 items-center gap-1.5 rounded-full border px-3 text-[9px] font-black uppercase tracking-[0.14em] transition ${
-                          active
-                            ? 'border-fit-accent/30 bg-fit-accent text-black'
-                            : 'border-white/10 bg-fit-bg2/80 text-fit-dim'
-                        }`}
-                      >
-                        {renderIcon(entry.Icon, 12)}
-                        <span>{entry.label}</span>
-                      </button>
-                    )
-                  })}
-                </div>
-              </div>
-            ) : null}
-
-            <button
-              onClick={() => openPanel('overflow')}
-              className={`flex shrink-0 flex-col items-center gap-[5px] rounded-[1.2rem] px-2 py-1.5 transition ${
-                panelId === 'overflow' ? 'text-fit-accent' : 'text-fit-dim'
-              }`}
-            >
-              <div className={`flex h-8 w-11 items-center justify-center rounded-2xl ${panelId === 'overflow' ? 'bg-fit-accent shadow-lg shadow-fit-accent/30' : 'bg-white/5'}`}>
-                <MoreHorizontal size={17} className={panelId === 'overflow' ? 'text-black stroke-[2.5]' : 'stroke-[2]'} />
-              </div>
-              <span className="text-[7.5px] font-black uppercase tracking-wide leading-none">Mehr</span>
-            </button>
-          </div>
+            )
+          })}
         </div>
       </nav>
     </>

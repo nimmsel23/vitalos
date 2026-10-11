@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from 'react'
-import { RefreshCw } from 'lucide-react'
+import { RefreshCw, X, Zap } from 'lucide-react'
 import { useEscapeKey } from './hooks/useEscapeKey.js'
 import { watchAuth, signIn, signInEmail, signUpEmail, signOut, isLocalMode, auth, getUserProfile } from '@db'
 import { NAV_ITEMS, VALID_TABS, SUB_NAV, buildFitnessGateItems } from './shell/NavigationItems.js'
@@ -47,29 +47,36 @@ function resolveHashDate(value) {
 
 function HomeSheet({ label, onDismiss, children }) {
   return (
-    <div className="fixed inset-0 z-50 flex items-end bg-[linear-gradient(180deg,rgba(8,10,14,0.16),rgba(8,10,14,0.5))] backdrop-blur-md">
+    <div className="vos-fade-in fixed inset-0 z-50 flex items-end bg-black/45 lg:backdrop-blur-sm">
       <button
         aria-label={`${label} schließen`}
         className="absolute inset-0"
         onClick={onDismiss}
       />
-      <div className="relative w-full translate-y-0 animate-in slide-in-from-bottom-8 duration-500">
-        <div className="mx-auto flex max-h-[88dvh] w-full max-w-[1600px] flex-col overflow-hidden rounded-t-[2.5rem] border border-white/12 bg-[linear-gradient(180deg,rgba(20,24,32,0.72),rgba(10,12,18,0.82))] shadow-[0_-30px_80px_rgba(0,0,0,0.35)] backdrop-blur-2xl">
-          <div className="flex shrink-0 flex-col gap-3 px-4 pb-3 pt-3 sm:px-6 lg:px-8">
-            <div className="mx-auto h-1.5 w-14 rounded-full bg-white/15" />
-            <div className="flex items-center justify-between gap-4">
-              <div className="text-[10px] font-black uppercase tracking-[0.22em] text-fit-dim">{label}</div>
-              <button
-                onClick={onDismiss}
-                className="rounded-full border border-white/10 bg-white/5 px-3 py-1.5 text-[10px] font-black uppercase tracking-[0.18em] text-fit-dim transition hover:text-fit-ink"
-              >
-                Schließen
-              </button>
-            </div>
-          </div>
-          <div className="min-h-0 flex-1 overflow-y-auto px-4 pb-8 sm:px-6 lg:px-8">
-            {children}
-          </div>
+      <div
+        className="vos-sheet vos-sheet-in relative mx-auto flex w-full max-w-[1600px] flex-col overflow-hidden rounded-t-[28px] shadow-[0_-24px_60px_rgba(0,0,0,0.35)] lg:max-h-[88dvh]"
+        style={{
+          height: 'calc(100dvh - var(--safe-top) - 10px)',
+          border: '1px solid color-mix(in srgb, var(--ink) 8%, transparent)',
+          borderBottom: 0,
+        }}
+      >
+        <div className="flex shrink-0 items-center justify-between gap-4 px-5 pb-1 pt-2 sm:px-6 lg:px-8">
+          <div className="w-8" />
+          <div className="h-[5px] w-9 rounded-full" style={{ background: 'color-mix(in srgb, var(--ink) 20%, transparent)' }} />
+          <button
+            onClick={onDismiss}
+            aria-label="Schließen"
+            className="vos-press mt-1 flex h-8 w-8 items-center justify-center rounded-full text-fit-dim vos-fill"
+          >
+            <X size={16} />
+          </button>
+        </div>
+        <div
+          className="min-h-0 flex-1 overflow-y-auto overscroll-contain px-5 sm:px-6 lg:px-8"
+          style={{ paddingBottom: 'calc(var(--tabbar-h) + var(--safe-bottom) + 24px)' }}
+        >
+          {children}
         </div>
       </div>
     </div>
@@ -300,6 +307,20 @@ export default function App() {
     if (weightKg) setFuelSetting('weight_kg', weightKg)
   }, [age, gender, heightCm, weightKg, setFuelSetting])
 
+  // Einmalige Migration auf das neue Default-Theme (Redesign 2026-10):
+  // wer noch auf dem alten Default "nordic" steht (bzw. nie gewählt hat),
+  // bekommt "vital". Bewusst gewählte andere Themes bleiben unangetastet.
+  useEffect(() => {
+    try {
+      if (localStorage.getItem('vitalos-redesign-2026-10')) return
+      localStorage.setItem('vitalos-redesign-2026-10', '1')
+      const s = useShellSettings.getState()
+      if (s.theme === 'nordic') s.setTheme('vital')
+      if (s.circDark === 'nordic') s.setCircDark('vital')
+      if (s.circLight === 'honey') s.setCircLight('vital-light')
+    } catch {}
+  }, [])
+
   useEffect(() => {
     if (themeMode === 'manual') {
       document.documentElement.setAttribute('data-theme', theme)
@@ -307,6 +328,10 @@ export default function App() {
       const hour = new Date().getHours()
       document.documentElement.setAttribute('data-theme', (hour >= DAY_START && hour < DAY_END) ? circLight : circDark)
     }
+    // iOS-Statusleiste/Browser-Chrome an den Theme-Hintergrund angleichen
+    const bg = getComputedStyle(document.documentElement).getPropertyValue('--bg').trim()
+    const meta = document.querySelector('meta[name="theme-color"]')
+    if (bg && meta) meta.setAttribute('content', bg)
   }, [theme, themeMode, circLight, circDark])
 
   useEffect(() => {
@@ -382,6 +407,10 @@ export default function App() {
       return
     }
     if (!VALID_TABS.has(id)) return
+    if (id === 'home' && tab === 'home') {
+      setHomeGate(subTab || null)
+      return
+    }
     if (id === tab && subTab == null) return
     if (id === 'home') {
       setHomeGate(subTab || null)
@@ -494,32 +523,38 @@ export default function App() {
 
     // Local-Mode hat keine Firebase-Auth — user bleibt null, Gate überspringen
     if (!user && !isLocalMode()) return (
-      <div className="min-h-screen flex items-center justify-center bg-fit-bg text-fit-ink p-6">
-      <div className="w-full max-w-sm card p-8 space-y-6">
-      <div className="text-center">
-      <h1 className="text-2xl font-black tracking-tight">VitalOS</h1>
-      <p className="text-fit-dim text-[10px] font-bold uppercase tracking-widest mt-2">Anmelden</p>
-      </div>
-      <form onSubmit={handleAuthSubmit} className="space-y-3">
-      <input type="email"    placeholder="Email"    value={authEmail}    onChange={e => setAuthEmail(e.target.value)}    required className="w-full bg-fit-bg2 border border-fit-line rounded-xl px-4 py-3 text-sm font-bold focus:border-fit-accent outline-none" />
-      <input type="password" placeholder="Passwort" value={authPassword} onChange={e => setAuthPassword(e.target.value)} required className="w-full bg-fit-bg2 border border-fit-line rounded-xl px-4 py-3 text-sm font-bold focus:border-fit-accent outline-none" />
-      {authError && <p className="text-fit-red text-[10px] font-bold uppercase text-center">{authError}</p>}
-      <button type="submit" className="w-full btn btn-primary py-3 font-black uppercase tracking-widest">
-      {authRegistering ? 'Account erstellen' : 'Anmelden'}
-      </button>
-      </form>
-      <div className="flex items-center gap-3">
-      <div className="h-px bg-fit-line flex-1 opacity-50" />
-      <span className="text-[9px] font-black uppercase text-fit-dim">oder</span>
-      <div className="h-px bg-fit-line flex-1 opacity-50" />
-      </div>
-      <button onClick={signIn} className="w-full flex items-center justify-center gap-2 px-4 py-3 bg-white text-black rounded-xl font-black uppercase text-[10px] tracking-widest active:scale-95 transition-transform">
-      Google Login
-      </button>
-      <button onClick={() => setAuthRegistering(!authRegistering)} className="w-full text-[10px] font-black text-fit-dim uppercase hover:text-fit-accent">
-      {authRegistering ? 'Bereits einen Account? Anmelden' : 'Neu hier? Account erstellen'}
-      </button>
-      </div>
+      <div
+        className="flex min-h-[100dvh] items-center justify-center bg-fit-bg px-5 text-fit-ink"
+        style={{ paddingTop: 'var(--safe-top)', paddingBottom: 'var(--safe-bottom)' }}
+      >
+        <div className="w-full max-w-sm">
+          <div className="mb-8 text-center">
+            <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-[20px]" style={{ background: 'var(--accent)' }}>
+              <Zap size={30} strokeWidth={2.2} color="#0b0e14" />
+            </div>
+            <h1 className="text-[28px] font-bold tracking-tight">VitalOS</h1>
+            <p className="mt-1 text-[15px] text-fit-dim">{authRegistering ? 'Neuen Account erstellen' : 'Willkommen zurück'}</p>
+          </div>
+          <form onSubmit={handleAuthSubmit} className="space-y-3">
+            <input type="email" autoComplete="email" placeholder="E-Mail" value={authEmail} onChange={e => setAuthEmail(e.target.value)} required className="vos-surface h-12 w-full rounded-[14px] px-4 text-[16px] text-fit-ink outline-none transition focus:border-fit-accent" />
+            <input type="password" autoComplete={authRegistering ? 'new-password' : 'current-password'} placeholder="Passwort" value={authPassword} onChange={e => setAuthPassword(e.target.value)} required className="vos-surface h-12 w-full rounded-[14px] px-4 text-[16px] text-fit-ink outline-none transition focus:border-fit-accent" />
+            {authError && <p className="text-center text-[13px] text-fit-red">{authError}</p>}
+            <button type="submit" className="vos-press h-12 w-full rounded-[14px] text-[16px] font-semibold" style={{ background: 'var(--accent)', color: '#0b0e14' }}>
+              {authRegistering ? 'Account erstellen' : 'Anmelden'}
+            </button>
+          </form>
+          <div className="my-5 flex items-center gap-3">
+            <div className="h-px flex-1" style={{ background: 'color-mix(in srgb, var(--ink) 12%, transparent)' }} />
+            <span className="text-[12px] text-fit-dim">oder</span>
+            <div className="h-px flex-1" style={{ background: 'color-mix(in srgb, var(--ink) 12%, transparent)' }} />
+          </div>
+          <button onClick={signIn} className="vos-press h-12 w-full rounded-[14px] bg-white text-[16px] font-semibold text-black">
+            Mit Google anmelden
+          </button>
+          <button onClick={() => setAuthRegistering(!authRegistering)} className="mt-5 w-full text-[14px] text-fit-dim hover:text-fit-accent">
+            {authRegistering ? 'Bereits einen Account? Anmelden' : 'Neu hier? Account erstellen'}
+          </button>
+        </div>
       </div>
     )
 
@@ -623,6 +658,7 @@ export default function App() {
             tab={tab}
             navigate={navigate}
             mobileLayout="classic"
+            homeGate={homeGate}
             header={showShellHeader ? mobileShellHeader : null}
             subNav={shellSubNav}
             subTab={shellSubTab}

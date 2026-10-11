@@ -99,7 +99,7 @@ export default function FitnessApp({ recentDays, coverageThreshold, gender, musc
     <div className="flex flex-col h-full">
       <div className="relative flex-1 overflow-hidden">
         <div className={`transition-all duration-700 ease-[cubic-bezier(0.32,0.72,0,1)] max-w-[1600px] mx-auto min-h-[100dvh] flex flex-col ${tab !== 'gate' ? 'scale-[0.98] opacity-30 blur-[2px] pointer-events-none' : 'scale-100 opacity-100'}`}>
-          <FitnessAppGate navigate={handleGateSelect} items={gateItems} title="Fitness" />
+          <FitnessAppGate navigate={handleGateSelect} items={gateItems} />
         </div>
 
         <div

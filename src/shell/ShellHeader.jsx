@@ -10,10 +10,10 @@ import { NAV_ITEMS, SUB_NAV } from './NavigationItems.js'
 import { formatRuntimeDate, localISO, shiftISODate, weekDates } from './runtimeDate.js'
 
 const DOMAIN_META = [
-  { key: 'fitness', label: 'Fitness', color: '#ff8c42', Icon: Dumbbell },
-  { key: 'fuel', label: 'Fuel', color: '#f97316', Icon: Flame },
-  { key: 'journal', label: 'Journal', color: '#4a9eff', Icon: BookOpen },
-  { key: 'habits', label: 'Habits', color: '#84cc16', Icon: CheckSquare },
+  { key: 'fitness', label: 'Fitness', color: '#60a5fa', Icon: Dumbbell },
+  { key: 'fuel', label: 'Fuel', color: '#fb923c', Icon: Flame },
+  { key: 'journal', label: 'Journal', color: '#a78bfa', Icon: BookOpen },
+  { key: 'habits', label: 'Habits', color: '#a3e635', Icon: CheckSquare },
 ]
 
 const fuelHeaderQueryClient = new QueryClient({
@@ -65,6 +65,51 @@ function FuelHeaderSummaryInner({ runtimeDate, compact = false }) {
   const totalFat = sumMetric(meals, 'fat')
   const kcalPct = kcal_goal > 0 ? Math.min(100, Math.round((totalKcal / kcal_goal) * 100)) : 0
   const kcalRest = Math.max(0, (kcal_goal || 0) - totalKcal)
+
+  if (compact) {
+    return (
+      <div className="vos-surface rounded-[20px] px-4 py-3.5">
+        <div className="flex items-end justify-between gap-3">
+          <div className="min-w-0">
+            <div className="text-[12px] font-medium text-fit-dim">Kalorien heute</div>
+            <div className="mt-0.5 flex items-baseline gap-1">
+              <span className="text-[26px] font-semibold leading-none tracking-tight text-fit-ink tabular-nums">{formatMetric(totalKcal)}</span>
+              <span className="text-[13px] text-fit-dim">{kcal_goal > 0 ? `/ ${kcal_goal} kcal` : 'kcal'}</span>
+            </div>
+          </div>
+          {kcal_goal > 0 ? (
+            <div className="shrink-0 text-right">
+              <div className="text-[15px] font-semibold text-fit-ink tabular-nums">{formatMetric(kcalRest)}</div>
+              <div className="text-[11px] text-fit-dim">übrig</div>
+            </div>
+          ) : null}
+        </div>
+        <div className="mt-2.5 h-1.5 w-full overflow-hidden rounded-full vos-fill">
+          <div className="h-full rounded-full transition-all duration-500" style={{ width: `${kcalPct}%`, background: '#fb923c' }} />
+        </div>
+        <div className="mt-3 grid grid-cols-3 gap-3">
+          {[
+            { ...MACRO_META[0], value: totalProtein, goal: protein_goal },
+            { ...MACRO_META[1], value: totalCarbs, goal: carbs_goal },
+            { ...MACRO_META[2], value: totalFat, goal: fat_goal },
+          ].map(({ key, label, color, value, goal }) => {
+            const pct = goal > 0 ? Math.min(100, Math.round((value / goal) * 100)) : 0
+            return (
+              <div key={key} className="min-w-0">
+                <div className="flex items-baseline justify-between gap-1">
+                  <span className="truncate text-[11px] text-fit-dim">{label}</span>
+                  <span className="text-[12px] font-semibold text-fit-ink tabular-nums">{formatMetric(value)}<span className="font-normal text-fit-dim">{goal > 0 ? `/${goal}` : ''}g</span></span>
+                </div>
+                <div className="mt-1 h-1 w-full overflow-hidden rounded-full vos-fill">
+                  <div className="h-full rounded-full transition-all duration-500" style={{ width: `${pct}%`, background: color }} />
+                </div>
+              </div>
+            )
+          })}
+        </div>
+      </div>
+    )
+  }
 
   return (
     <div
@@ -120,7 +165,166 @@ function findSubTabLabel(tab, subTab) {
   return null
 }
 
-export default function ShellHeader({ tab, subTab = null, runtimeDate, setRuntimeDate, compact = false, subNav = null, onSubTab = null, onNavigateDomain = null }) {
+function useActivityMap() {
+  const [activity, setActivity] = useState(() => buildDayMap([], [], [], []))
+
+  useEffect(() => {
+    let cancelled = false
+
+    async function load() {
+      const [sessions, meals, journal, habits] = await Promise.all([
+        Promise.resolve(getRecentSessions?.(90)).catch(() => []),
+        Promise.resolve(getMealsHistory?.(90)).catch(() => []),
+        Promise.resolve(getJournalHistory?.(90)).catch(() => []),
+        Promise.resolve(getAllHabitJournalsHistory?.(90)).catch(() => []),
+      ])
+      if (!cancelled) setActivity(buildDayMap(sessions, meals, journal, habits))
+    }
+
+    load()
+    return () => { cancelled = true }
+  }, [])
+
+  return activity
+}
+
+// Mobile-Header: schlanke Sticky-Leiste (Titel + Datum) + scrollende
+// Wochenleiste und Sub-Tabs. Konsumiert das obere Safe-Area-Inset selbst.
+function CompactHeader({ tab, subTab, runtimeDate, setRuntimeDate, subNav, onSubTab }) {
+  const activity = useActivityMap()
+  const current = NAV_ITEMS.find((item) => item.id === tab) || NAV_ITEMS[0]
+  const title = tab === 'home' ? 'Journal' : current.label
+  const subLabel = findSubTabLabel(tab, subTab)
+  const dates = useMemo(() => weekDates(runtimeDate), [runtimeDate])
+  const todayIso = localISO()
+  const isToday = runtimeDate === todayIso
+  const showSubNav = Array.isArray(subNav) && subNav.length > 0
+  // Setup/Coach/6Pack haben keinen Tagesbezug — dort weder Datum noch Wochenleiste
+  const dated = !['settings', 'coach', 'sixpack'].includes(tab)
+  const activeParent = showSubNav
+    ? subNav.find((item) => item.id === subTab || item.sub?.some((child) => child.id === subTab))?.id
+    : null
+
+  return (
+    <>
+      <header
+        className="vos-bar vos-hairline-b sticky top-0 z-40"
+        style={{ paddingTop: 'var(--safe-top)' }}
+      >
+        <div className="flex h-[52px] items-center gap-3 px-4">
+          <div className="min-w-0 flex-1">
+            <div className="truncate text-[20px] font-semibold leading-tight tracking-tight text-fit-ink">{title}</div>
+            {subLabel ? <div className="truncate text-[12px] leading-tight text-fit-dim">{subLabel}</div> : null}
+          </div>
+
+          {dated && !isToday ? (
+            <button
+              onClick={() => setRuntimeDate(todayIso)}
+              className="vos-press h-8 shrink-0 rounded-full px-3 text-[13px] font-medium text-fit-accent vos-fill"
+            >
+              Heute
+            </button>
+          ) : null}
+
+          {dated ? <div className="flex h-8 shrink-0 items-center rounded-full vos-fill">
+            <button
+              onClick={() => setRuntimeDate(shiftISODate(runtimeDate, -1))}
+              aria-label="Vorheriger Tag"
+              className="vos-press flex h-8 w-8 items-center justify-center rounded-full text-fit-dim"
+            >
+              <ChevronLeft size={17} />
+            </button>
+            <label className="relative cursor-pointer px-0.5 text-[13px] font-medium text-fit-ink tabular-nums">
+              {formatRuntimeDate(runtimeDate, true)}
+              <input
+                type="date"
+                value={runtimeDate}
+                max={todayIso}
+                onChange={(event) => event.target.value && setRuntimeDate(event.target.value)}
+                aria-label="Datum wählen"
+                className="absolute inset-0 h-full w-full cursor-pointer opacity-0"
+              />
+            </label>
+            <button
+              onClick={() => setRuntimeDate(shiftISODate(runtimeDate, 1))}
+              disabled={isToday}
+              aria-label="Nächster Tag"
+              className="vos-press flex h-8 w-8 items-center justify-center rounded-full text-fit-dim disabled:opacity-30"
+            >
+              <ChevronRight size={17} />
+            </button>
+          </div> : null}
+        </div>
+      </header>
+
+      {dated || showSubNav ? <div className="space-y-3 px-4 pb-1 pt-3">
+        {dated ? <div className="grid grid-cols-7 gap-1">
+          {dates.map((date) => {
+            const selected = date === runtimeDate
+            const today = date === todayIso
+            const future = date > todayIso
+            const dayLabel = new Date(`${date}T12:00:00`).toLocaleDateString('de-DE', { weekday: 'narrow' })
+            return (
+              <button
+                key={date}
+                onClick={() => setRuntimeDate(date)}
+                disabled={future}
+                className="vos-press flex flex-col items-center gap-1 py-1 disabled:opacity-35"
+              >
+                <span className="text-[11px] font-medium" style={{ color: today ? 'var(--accent)' : 'var(--dim)' }}>{dayLabel}</span>
+                <span
+                  className="flex h-9 w-9 items-center justify-center rounded-full text-[15px] font-semibold tabular-nums transition-colors"
+                  style={selected
+                    ? { background: 'var(--accent)', color: '#0b0e14' }
+                    : { color: today ? 'var(--accent)' : 'var(--ink)', boxShadow: today ? 'inset 0 0 0 1.5px color-mix(in srgb, var(--accent) 55%, transparent)' : 'none' }}
+                >
+                  {Number(date.slice(8))}
+                </span>
+                <span className="flex h-1.5 items-center gap-[3px]">
+                  {DOMAIN_META.map(({ key, color }) => (
+                    activity[key]?.has(date)
+                      ? <span key={key} className="h-1 w-1 rounded-full" style={{ background: color }} />
+                      : null
+                  ))}
+                </span>
+              </button>
+            )
+          })}
+        </div> : null}
+
+        {tab === 'fuel' ? <FuelHeaderSummary runtimeDate={runtimeDate} compact /> : null}
+
+        {showSubNav ? (
+          <nav className="no-scrollbar -mx-4 flex gap-2 overflow-x-auto px-4">
+            {subNav.map(({ id, label, Icon }) => {
+              const active = activeParent === id
+              return (
+                <button
+                  key={id}
+                  onClick={() => onSubTab?.(id)}
+                  className="vos-press inline-flex h-8 shrink-0 items-center gap-1.5 rounded-full px-3.5 text-[13px] font-medium transition-colors"
+                  style={active
+                    ? { background: 'var(--ink)', color: 'var(--bg)' }
+                    : { background: 'color-mix(in srgb, var(--ink) 6%, transparent)', color: 'var(--muted)' }}
+                >
+                  {Icon ? <Icon size={14} strokeWidth={2} /> : null}
+                  {label}
+                </button>
+              )
+            })}
+          </nav>
+        ) : null}
+      </div> : null}
+    </>
+  )
+}
+
+export default function ShellHeader(props) {
+  if (props.compact) return <CompactHeader {...props} />
+  return <DesktopHeader {...props} />
+}
+
+function DesktopHeader({ tab, subTab = null, runtimeDate, setRuntimeDate, compact = false, subNav = null, onSubTab = null, onNavigateDomain = null }) {
   const [activity, setActivity] = useState(() => buildDayMap([], [], [], []))
 
   useEffect(() => {

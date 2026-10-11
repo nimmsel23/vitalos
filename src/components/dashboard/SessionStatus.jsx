@@ -7,27 +7,26 @@ export default function SessionStatus({ plan, todaySession, recent, today, onNav
   const recentSessions = Array.isArray(recent) ? recent : [];
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-4">
       {/* Plan-Hint */}
       {plan?.today && (
-        <div className="alpha-card p-8 bg-gradient-to-b from-fit-card to-fit-bg2 border-fit-accent/20">
-          <div className="flex items-center justify-between gap-3 mb-8">
+        <div className="rounded-[18px] p-4 vos-fill">
+          <div className="mb-3 flex items-center justify-between gap-3">
             <div className="flex items-center gap-2">
-              <Zap size={18} className="text-fit-accent" />
-              <span className="label-caps !mb-0">Vorschlag</span>
+              <Zap size={16} className="text-fit-accent" />
+              <span className="text-[13px] font-medium text-fit-dim">Vorschlag</span>
             </div>
-            <span className="text-[10px] font-black text-fit-accent bg-fit-accent/10 px-3 py-1 rounded-full uppercase tracking-[0.2em]">Plan</span>
+            <span className="rounded-full px-2.5 py-0.5 text-[11px] font-medium text-fit-accent" style={{ background: 'color-mix(in srgb, var(--accent) 14%, transparent)' }}>Plan</span>
           </div>
-          <div className="mb-6">
-            <div className="text-3xl font-black text-fit-ink mb-2" style={{ color: blockColor(plan.today.block) || 'var(--accent)' }}>
+          <div className="mb-3">
+            <div className="text-[24px] font-semibold tracking-tight text-fit-ink" style={{ color: blockColor(plan.today.block) || 'var(--accent)' }}>
               {plan.today.block}
             </div>
-            <div className="h-1.5 w-16 bg-fit-accent rounded-full shadow-lg shadow-accent/20" />
-          </div>
+                      </div>
           {planExercises.length > 0 && (
             <div className="flex flex-wrap gap-2">
               {planExercises.slice(0, 6).map((e, i) => (
-                <span key={i} className="text-[10px] font-bold px-3 py-1.5 rounded-xl bg-fit-bg2 text-fit-muted border border-fit-line">
+                <span key={i} className="rounded-full px-2.5 py-1 text-[12px] text-fit-muted" style={{ background: 'color-mix(in srgb, var(--ink) 7%, transparent)' }}>
                   {typeof e === "string" ? e : e.name}
                 </span>
               ))}
@@ -35,57 +34,58 @@ export default function SessionStatus({ plan, todaySession, recent, today, onNav
           )}
           <button
             onClick={() => onNavigate?.("session")}
-            className="btn btn-primary py-4 text-xs font-black uppercase tracking-widest w-full mt-10 shadow-2xl shadow-accent/20 hover:scale-[1.02] active:scale-95 transition-all"
+            className="vos-press mt-4 h-11 w-full rounded-full text-[15px] font-semibold"
+            style={{ background: 'var(--accent)', color: '#0b0e14' }}
           >
-            Session Starten →
+            Session starten
           </button>
         </div>
       )}
 
       {/* Heutige Session Status */}
        { (todayExercises.length > 0 || todaySession?.activity || todaySession?.sessionMode === 'cardio') ? (
-        <div className="alpha-card p-8 border-fit-accent/30 shadow-2xl shadow-accent/5">
-          <div className="label-caps mb-8 flex items-center justify-between">
-            <span>Aktuelle Session</span>
-            <span className="text-fit-accent font-black tracking-widest">
+        <div className="rounded-[18px] p-4 vos-fill">
+          <div className="mb-3 flex items-center justify-between text-[13px]">
+            <span className="font-medium text-fit-dim">Aktuelle Session</span>
+            <span className="font-semibold text-fit-accent">
               {(todaySession?.activity || todaySession?.sessionMode === 'cardio')
                 ? (ACTIVITY_LABELS[todaySession.activity?.type] || 'Ausdauer')
                 : todaySession?.block}
             </span>
           </div>
           <div className="flex items-center justify-between">
-            <div className="flex gap-10">
+            <div className="flex gap-8">
               {todaySession.activity ? (
                 <div className="flex flex-col">
-                  <span className="text-3xl font-black text-fit-ink flex items-center gap-1">
-                    {todaySession.activity.duration || '—'}<span className="text-xs opacity-30 mt-2 font-mono">min</span>
+                  <span className="flex items-baseline gap-1 text-[26px] font-semibold text-fit-ink tabular-nums">
+                    {todaySession.activity.duration || '—'}<span className="text-[13px] font-normal text-fit-dim">min</span>
                   </span>
-                  <span className="text-[10px] font-black uppercase tracking-[0.2em] opacity-30">Dauer</span>
+                  <span className="text-[12px] text-fit-dim">Dauer</span>
                 </div>
               ) : (
                 <div className="flex flex-col">
-                  <span className="text-3xl font-black text-fit-ink">
+                  <span className="text-[26px] font-semibold text-fit-ink tabular-nums">
                     {todayExercises.length}
                   </span>
-                  <span className="text-[10px] font-black uppercase tracking-[0.2em] opacity-30">Übungen</span>
+                  <span className="text-[12px] text-fit-dim">Übungen</span>
                 </div>
               )}
               {todaySession?.effort && (
                 <div className="flex flex-col">
-                  <span className="text-3xl font-black text-fit-ink">{todaySession.effort}</span>
-                  <span className="text-[10px] font-black uppercase tracking-[0.2em] opacity-30">Effort</span>
+                  <span className="text-[26px] font-semibold text-fit-ink tabular-nums">{todaySession.effort}</span>
+                  <span className="text-[12px] text-fit-dim">Effort</span>
                 </div>
               )}
             </div>
-            <button onClick={() => onNavigate?.("session")} className="w-16 h-16 rounded-3xl bg-fit-accent flex items-center justify-center text-black shadow-2xl shadow-accent/30 transition-all hover:scale-110 active:scale-90">
-              <ChevronRight size={32} />
+            <button onClick={() => onNavigate?.("session")} className="vos-press flex h-11 w-11 items-center justify-center rounded-full" style={{ background: 'var(--accent)', color: '#0b0e14' }} aria-label="Session öffnen">
+              <ChevronRight size={22} />
             </button>
           </div>
         </div>
       ) : !plan?.today && (
-        <div className="alpha-card flex flex-col items-center justify-center text-center py-16 opacity-30 border-dashed">
-           <Dumbbell size={40} className="mb-4" />
-           <p className="text-[11px] font-black uppercase tracking-[0.3em]">Pause oder Plan wählen</p>
+        <div className="flex items-center gap-3 rounded-[18px] p-4 vos-fill">
+           <Dumbbell size={20} className="shrink-0 text-fit-dim" />
+           <p className="text-[14px] text-fit-dim">Heute nichts geplant – Pause oder Plan wählen.</p>
         </div>
       )}
 

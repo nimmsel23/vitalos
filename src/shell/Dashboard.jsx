@@ -93,16 +93,16 @@ function FitnessTodayWidget({ runtimeDate, openSession, navigate }) {
   }
 
   return (
-    <div className="grid gap-6 xl:grid-cols-[1.15fr_0.85fr]">
-      <div className="alpha-card p-6 md:p-8">
-        <div className="mb-6 flex items-center justify-between gap-4">
+    <div className="grid gap-4 xl:grid-cols-[1.15fr_0.85fr]">
+      <div className="vos-surface rounded-[22px] p-5 md:p-8">
+        <div className="mb-4 flex items-center justify-between gap-4">
           <div>
-            <div className="text-[10px] font-black uppercase tracking-[0.28em] text-fit-dim">Fitness</div>
-            <h2 className="mt-2 text-2xl font-black tracking-tight text-fit-ink">Heute im Training</h2>
+            <div className="vos-eyebrow">Fitness</div>
+            <h2 className="mt-1 text-[20px] font-semibold tracking-tight text-fit-ink">Heute im Training</h2>
           </div>
           <button
             onClick={() => navigate?.('fitness', 'session')}
-            className="inline-flex items-center gap-2 rounded-2xl border border-white/10 bg-fit-bg2 px-4 py-3 text-[10px] font-black uppercase tracking-[0.2em] text-fit-ink transition hover:text-fit-accent"
+            className="vos-press inline-flex h-8 shrink-0 items-center gap-1 rounded-full px-3.5 text-[13px] font-medium text-fit-accent vos-fill"
           >
             Öffnen <ArrowRight size={14} />
           </button>
@@ -117,7 +117,7 @@ function FitnessTodayWidget({ runtimeDate, openSession, navigate }) {
 
 export function DashboardSections({ navigate, openSession, runtimeDate, showHero = true, showQuickLinks = true }) {
   return (
-    <div className="flex flex-col gap-8">
+    <div className="flex flex-col gap-4">
       {showHero ? (
         <section className="overflow-hidden rounded-[2rem] border border-white/10 bg-[radial-gradient(circle_at_top_left,rgba(255,140,66,0.14),transparent_30%),radial-gradient(circle_at_top_right,rgba(249,115,22,0.16),transparent_28%),linear-gradient(180deg,rgba(255,255,255,0.03),rgba(255,255,255,0.01))] p-6 md:p-8">
           <div className="flex flex-col gap-8 xl:flex-row xl:items-end xl:justify-between">
@@ -154,16 +154,16 @@ export function DashboardSections({ navigate, openSession, runtimeDate, showHero
 
       <FitnessTodayWidget runtimeDate={runtimeDate} openSession={openSession} navigate={navigate} />
 
-      <section className={`grid gap-6 ${showQuickLinks ? 'xl:grid-cols-[1.1fr_0.9fr]' : ''}`}>
-        <div className="alpha-card p-6 md:p-8">
-          <div className="mb-6 flex items-center justify-between gap-4">
+      <section className={`grid gap-4 ${showQuickLinks ? 'xl:grid-cols-[1.1fr_0.9fr]' : ''}`}>
+        <div className="vos-surface rounded-[22px] p-5 md:p-8">
+          <div className="mb-4 flex items-center justify-between gap-4">
             <div>
-              <div className="text-[10px] font-black uppercase tracking-[0.28em] text-fit-dim">Fuel</div>
-              <h2 className="mt-2 text-2xl font-black tracking-tight text-fit-ink">Heute im Essen</h2>
+              <div className="vos-eyebrow">Fuel</div>
+              <h2 className="mt-1 text-[20px] font-semibold tracking-tight text-fit-ink">Heute im Essen</h2>
             </div>
             <button
               onClick={() => navigate?.('fuel', 'food')}
-              className="inline-flex items-center gap-2 rounded-2xl border border-white/10 bg-fit-bg2 px-4 py-3 text-[10px] font-black uppercase tracking-[0.2em] text-fit-ink transition hover:text-fit-accent"
+              className="vos-press inline-flex h-8 shrink-0 items-center gap-1 rounded-full px-3.5 text-[13px] font-medium text-fit-accent vos-fill"
             >
               Öffnen <Flame size={14} />
             </button>
@@ -172,12 +172,12 @@ export function DashboardSections({ navigate, openSession, runtimeDate, showHero
         </div>
 
         {showQuickLinks ? (
-          <div className="alpha-card p-6 md:p-8">
+          <div className="vos-surface rounded-[22px] p-5 md:p-8">
             <div className="mb-6 flex items-center gap-3">
               <CalendarDays size={18} className="text-fit-accent" />
               <div>
-                <div className="text-[10px] font-black uppercase tracking-[0.28em] text-fit-dim">Quick Links</div>
-                <h2 className="mt-2 text-2xl font-black tracking-tight text-fit-ink">Bereiche</h2>
+                <div className="vos-eyebrow">Quick Links</div>
+                <h2 className="mt-1 text-[20px] font-semibold tracking-tight text-fit-ink">Bereiche</h2>
               </div>
             </div>
             <nav className="grid grid-cols-2 gap-4">
