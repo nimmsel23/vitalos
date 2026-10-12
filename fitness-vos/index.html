@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-    <meta name="theme-color" content="#080b12" />
+    <meta name="theme-color" content="#0a0b0d" />
     <meta name="mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
     <link rel="manifest" href="/manifest.json" />
@@ -11,13 +11,25 @@
     <title>Fitness VOS</title>
     <script>
       (function() {
-        const theme = localStorage.getItem('fitness-theme') || 'nordic';
+        // fitness-vos hat seit 2026-10-12 einen eigenständigen Look
+        // ("vos-pulse", src/styles/vos-pulse.css). Default für Erstbesuche;
+        // einmal in localStorage gesetzt, bleibt eine manuelle Theme-Wahl
+        // über Settings erhalten (wir überschreiben hier nie einen
+        // vorhandenen Wert).
+        const DEFAULT_THEME = 'vos-pulse';
+        if (localStorage.getItem('fitness-theme') === null) {
+          localStorage.setItem('fitness-theme', DEFAULT_THEME);
+        }
+        if (localStorage.getItem('fitness-theme-mode') === null) {
+          localStorage.setItem('fitness-theme-mode', 'manual');
+        }
+        const theme = localStorage.getItem('fitness-theme') || DEFAULT_THEME;
         const mode = localStorage.getItem('fitness-theme-mode') || 'manual';
         if (mode === 'manual') {
           document.documentElement.setAttribute('data-theme', theme);
         } else {
           const hour = new Date().getHours();
-          const dark = localStorage.getItem('fitness-circ-dark') || 'nordic';
+          const dark = localStorage.getItem('fitness-circ-dark') || DEFAULT_THEME;
           const light = localStorage.getItem('fitness-circ-light') || 'honey';
           document.documentElement.setAttribute('data-theme', (hour >= 8 && hour < 20) ? light : dark);
         }

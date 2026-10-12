@@ -1,5 +1,5 @@
 import { createRoot } from 'react-dom/client'
-import App from './App.jsx'
+import AppWrapper from './AppWrapper.jsx'
 import '@fitness/src/styles.css'
 import { UserProvider } from '@fitness/contexts/UserContext.jsx'
 import { SettingsProvider } from '@fitness/contexts/SettingsContext.jsx'
@@ -11,7 +11,7 @@ createRoot(document.getElementById('root')).render(
   <QueryClientProvider client={qc}>
     <UserProvider>
       <SettingsProvider>
-        <App />
+        <AppWrapper />
       </SettingsProvider>
     </UserProvider>
   </QueryClientProvider>

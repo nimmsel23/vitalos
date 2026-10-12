@@ -1,0 +1,25 @@
+/*
+ * fitness-vos eigener Look ("Pulse") — eigenständige Theme-Definition,
+ * unabhängig von den ~25 fitness-app-Themes. Nutzt dieselben CSS-Variablen
+ * (--bg/--card/--accent/...), die die importierten fitness-app-Komponenten
+ * über die fit-* Tailwind-Utilities konsumieren — kein Component-Code nötig,
+ * nur neue Werte für die slim/VOS-Variante.
+ */
+[data-theme="vos-pulse"] {
+  --bg: #0a0b0d;
+  --bg2: #111317;
+  --panel: #15171c;
+  --card: #1b1e24;
+  --card-hover: #242830;
+  --line: #2a2e36;
+  --ink: #f7f8fa;
+  --muted: #a3abb5;
+  --dim: #5b6270;
+  --accent: #ff5630;
+  --accent-glow: rgba(255, 86, 48, 0.18);
+  --green: #2ee6a8;
+  --red: #ff4d6d;
+  --orange: #ffb020;
+  --glass: rgba(15, 16, 19, 0.72);
+  --glass-border: rgba(255, 86, 48, 0.12);
+}
