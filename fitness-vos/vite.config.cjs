@@ -7,7 +7,7 @@ const FITNESS = path.resolve(VITALOS, "fitness-app");
 const FUEL = path.resolve(VITALOS, "fuel-app");
 const JOURNAL = path.resolve(VITALOS, "journal-app");
 const HABITS = path.resolve(VITALOS, "habit-app");
-const LEARN = path.resolve(VITALOS, "learn-dev");
+const LEARN = path.resolve(VITALOS, "learn-app");
 const RELAX = path.resolve(VITALOS, "relax-app");
 
 module.exports = defineConfig(({ mode }) => {
