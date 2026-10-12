@@ -1,0 +1,338 @@
+/*
+ * "Pulse" — eigenständiges Bedienkonzept für fitness-vos. Ersetzt Sidebar/
+ * MobileNav/AppGate durch EINEN durchgängigen Screen: eine vertikale
+ * "Spine" (heutige Logs als Pulsschläge) + eine permanente Ein-Zeilen-
+ * Eingabe unten. Alles andere (Review/Lernen/Verlauf/Settings) sitzt in
+ * einem einzigen Overlay-Sheet statt in persistenter Nav-Chrome.
+ */
+@import url('https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,200..800&family=Hanken+Grotesk:ital,wght@0,400..800;1,400..800&display=swap');
+
+.pulse-root {
+  --p-display: 'Bricolage Grotesque', ui-sans-serif, sans-serif;
+  --p-body: 'Hanken Grotesk', ui-sans-serif, sans-serif;
+  font-family: var(--p-body);
+  min-height: 100dvh;
+  min-height: 100vh;
+  background: var(--bg);
+  color: var(--ink);
+  position: relative;
+  overflow-x: hidden;
+}
+
+/* atmospheric grain + radial glow instead of a flat background */
+.pulse-root::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  background:
+    radial-gradient(60% 40% at 15% -10%, color-mix(in srgb, var(--accent) 16%, transparent), transparent 60%),
+    radial-gradient(40% 30% at 100% 20%, color-mix(in srgb, var(--green) 10%, transparent), transparent 65%);
+}
+.pulse-root::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  opacity: 0.35;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.05'/%3E%3C/svg%3E");
+  mix-blend-mode: overlay;
+}
+
+.pulse-header {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  padding: max(1.75rem, env(safe-area-inset-top)) 1.5rem 1.25rem;
+}
+
+.pulse-header .pulse-date {
+  font-family: var(--p-display);
+  font-weight: 800;
+  font-size: clamp(1.9rem, 6vw, 2.6rem);
+  letter-spacing: -0.02em;
+  line-height: 0.95;
+}
+
+.pulse-header .pulse-sub {
+  font-size: 0.68rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  color: var(--dim);
+  margin-top: 0.35rem;
+}
+
+.pulse-more-btn {
+  width: 44px;
+  height: 44px;
+  border-radius: 999px;
+  display: grid;
+  place-items: center;
+  background: var(--card);
+  border: 1px solid var(--line);
+  color: var(--ink);
+  flex-shrink: 0;
+  transition: transform 0.2s ease, border-color 0.2s ease;
+}
+.pulse-more-btn:active { transform: scale(0.9); }
+.pulse-more-btn:hover { border-color: var(--accent); }
+
+.pulse-feed {
+  position: relative;
+  z-index: 1;
+  padding: 0.5rem 1.25rem 10.5rem;
+  max-width: 640px;
+  margin: 0 auto;
+}
+
+/* the spine: a vertical line the beats hang off of */
+.pulse-spine {
+  position: relative;
+  padding-left: 1.9rem;
+}
+.pulse-spine::before {
+  content: '';
+  position: absolute;
+  left: 0.5rem;
+  top: 0.4rem;
+  bottom: 0.4rem;
+  width: 2px;
+  background: linear-gradient(to bottom, color-mix(in srgb, var(--accent) 60%, transparent), var(--line) 12%);
+}
+
+.pulse-beat {
+  position: relative;
+  padding: 0.9rem 1rem;
+  margin-bottom: 0.65rem;
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: 1.1rem;
+  animation: pulse-in 0.45s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+.pulse-beat::before {
+  content: '';
+  position: absolute;
+  left: -1.42rem;
+  top: 1.25rem;
+  width: 9px;
+  height: 9px;
+  border-radius: 999px;
+  background: var(--accent);
+  box-shadow: 0 0 0 4px color-mix(in srgb, var(--accent) 22%, transparent);
+}
+
+@keyframes pulse-in {
+  from { opacity: 0; transform: translateY(10px) scale(0.97); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+.pulse-beat-name {
+  font-family: var(--p-display);
+  font-weight: 700;
+  font-size: 1.02rem;
+  letter-spacing: -0.01em;
+}
+
+.pulse-beat-meta {
+  font-size: 0.72rem;
+  color: var(--dim);
+  font-weight: 600;
+  margin-top: 0.1rem;
+}
+
+.pulse-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin-top: 0.55rem;
+}
+.pulse-chip {
+  font-family: var(--p-display);
+  font-size: 0.78rem;
+  font-weight: 700;
+  padding: 0.28rem 0.6rem;
+  border-radius: 0.6rem;
+  background: var(--accent-subtle);
+  color: var(--accent);
+  border: 1px solid var(--accent-border);
+}
+
+.pulse-empty {
+  padding: 3.5rem 1rem 2rem;
+  text-align: center;
+  color: var(--dim);
+}
+.pulse-empty strong {
+  display: block;
+  font-family: var(--p-display);
+  font-size: 1.3rem;
+  color: var(--ink);
+  margin-bottom: 0.4rem;
+}
+
+/* composer: one line, always visible, nothing else between thumb and send */
+.pulse-composer-wrap {
+  position: fixed;
+  left: 0; right: 0; bottom: 0;
+  z-index: 20;
+  padding: 0 1rem max(1rem, env(safe-area-inset-bottom));
+  background: linear-gradient(to top, var(--bg) 55%, transparent);
+}
+
+.pulse-composer {
+  max-width: 640px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: 1.4rem;
+  padding: 0.5rem 0.5rem 0.5rem 1.1rem;
+  box-shadow: 0 20px 45px -15px rgba(0,0,0,0.55);
+}
+.pulse-composer:focus-within {
+  border-color: var(--accent);
+}
+
+.pulse-composer input {
+  flex: 1;
+  background: transparent;
+  border: none;
+  outline: none;
+  color: var(--ink);
+  font-family: var(--p-body);
+  font-weight: 600;
+  font-size: 0.95rem;
+}
+.pulse-composer input::placeholder { color: var(--dim); }
+
+.pulse-send {
+  width: 42px;
+  height: 42px;
+  border-radius: 999px;
+  display: grid;
+  place-items: center;
+  background: var(--accent);
+  color: var(--bg);
+  border: none;
+  flex-shrink: 0;
+  transition: transform 0.15s ease, opacity 0.15s ease;
+}
+.pulse-send:active { transform: scale(0.88); }
+.pulse-send:disabled { opacity: 0.35; }
+
+.pulse-composer-hint {
+  max-width: 640px;
+  margin: 0.5rem auto 0;
+  text-align: center;
+  font-size: 0.65rem;
+  color: var(--dim);
+  font-weight: 600;
+}
+
+.pulse-match-row {
+  display: flex;
+  gap: 0.4rem;
+  overflow-x: auto;
+  max-width: 640px;
+  margin: 0 auto 0.5rem;
+  padding: 0 0.1rem;
+}
+.pulse-match-chip {
+  flex-shrink: 0;
+  font-size: 0.72rem;
+  font-weight: 700;
+  padding: 0.4rem 0.7rem;
+  border-radius: 0.8rem;
+  background: var(--card);
+  border: 1px solid var(--line);
+  color: var(--muted);
+  white-space: nowrap;
+}
+.pulse-match-chip.active {
+  border-color: var(--accent);
+  color: var(--accent);
+  background: var(--accent-subtle);
+}
+
+/* "More" — a single full-screen sheet holding everything that isn't logging */
+.pulse-sheet-backdrop {
+  position: fixed; inset: 0; z-index: 40;
+  background: var(--scrim);
+  animation: pulse-fade 0.25s ease both;
+}
+@keyframes pulse-fade { from { opacity: 0 } to { opacity: 1 } }
+
+.pulse-sheet {
+  position: fixed;
+  left: 0; right: 0; bottom: 0; top: 6%;
+  z-index: 41;
+  background: var(--bg2);
+  border-top: 1px solid var(--line);
+  border-radius: 1.75rem 1.75rem 0 0;
+  display: flex;
+  flex-direction: column;
+  animation: pulse-sheet-in 0.35s cubic-bezier(0.16, 1, 0.3, 1) both;
+  overflow: hidden;
+}
+@keyframes pulse-sheet-in { from { transform: translateY(5%); opacity: 0.4 } to { transform: translateY(0); opacity: 1 } }
+
+.pulse-sheet-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1.1rem 1.25rem;
+  border-bottom: 1px solid var(--line);
+  flex-shrink: 0;
+}
+.pulse-sheet-head h2 {
+  font-family: var(--p-display);
+  font-weight: 800;
+  font-size: 1.15rem;
+}
+
+.pulse-sheet-nav {
+  display: flex;
+  gap: 0.4rem;
+  padding: 0.9rem 1.25rem;
+  overflow-x: auto;
+  flex-shrink: 0;
+  border-bottom: 1px solid var(--line);
+}
+.pulse-sheet-tab {
+  font-family: var(--p-display);
+  font-size: 0.78rem;
+  font-weight: 700;
+  padding: 0.5rem 0.9rem;
+  border-radius: 0.8rem;
+  background: var(--card);
+  color: var(--muted);
+  border: 1px solid var(--line);
+  white-space: nowrap;
+}
+.pulse-sheet-tab.active {
+  background: var(--accent);
+  color: var(--bg);
+  border-color: var(--accent);
+}
+
+.pulse-sheet-body {
+  flex: 1;
+  overflow-y: auto;
+  padding: 1.25rem;
+}
+
+.pulse-icon-btn {
+  width: 38px; height: 38px;
+  border-radius: 999px;
+  display: grid; place-items: center;
+  background: var(--card);
+  border: 1px solid var(--line);
+  color: var(--ink);
+}

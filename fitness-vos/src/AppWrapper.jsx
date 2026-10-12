@@ -1,12 +1,18 @@
 import './styles/vos-pulse.css'
-import App from './App.jsx'
+import PulseApp from './pulse/PulseApp.jsx'
 
 /**
- * fitness-vos eigener Einstiegspunkt. Bündelt den "vos-pulse"-Look (eigene
- * CSS-Variablen-Theme, unabhängig von den fitness-app-Themes) und rendert
- * ansonsten die geerbte App unverändert — kein Fork der Shell-Logik, nur
- * ein eigener visueller Layer für die slim/VOS-Variante.
+ * fitness-vos eigener Einstiegspunkt. Seit 2026-10-12 nicht mehr nur ein
+ * neuer Look (vos-pulse-Theme), sondern ein grundsätzlich anderes
+ * Bedienkonzept ("Pulse"): kein Sidebar/MobileNav/Tab-System, kein
+ * AppGate-Startbildschirm. Stattdessen EIN durchgängiger Screen — eine
+ * vertikale Spine mit den heutigen Logs + eine permanente Ein-Zeilen-
+ * Eingabe unten, die sofort loggt (kein Formular, kein Zwischenschritt).
+ * Alles andere (Review/Lernen/Verlauf/Settings) sitzt in einem einzigen
+ * Overlay-Sheet statt in persistenter Nav-Chrome — siehe src/pulse/.
+ * Die alte Shell (App.jsx + fitness-app-Sidebar/MobileNav) bleibt im Repo
+ * unverändert erhalten, wird aber von hier aus nicht mehr gerendert.
  */
 export default function AppWrapper() {
-  return <App />
+  return <PulseApp />
 }
