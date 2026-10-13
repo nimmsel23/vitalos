@@ -37,3 +37,8 @@
 	url = git@github.com:nimmsel23/plan-dev.git
 	ignore = untracked
 	branch = vitalos
+[submodule "coach-dev"]
+	path = coach-app
+	url = git@github.com:nimmsel23/coach-dev.git
+	ignore = untracked
+	branch = vitalos
