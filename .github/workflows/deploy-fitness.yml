@@ -41,6 +41,17 @@ jobs:
         env:
           FIREBASE_CONFIG: ${{ secrets.FIREBASE_CONFIG }}
 
+      - name: Debug firebase/util versions
+        run: |
+          echo "=== all @firebase/util package.json files ==="
+          find . -path "*/node_modules/@firebase/util/package.json" -exec sh -c 'echo "--- {} ---"; grep "\"version\"" "{}"' \;
+          echo "=== fitness-app node_modules/@firebase/util resolved path ==="
+          readlink -f fitness-app/node_modules/@firebase/util || true
+          echo "=== fitness-app node_modules/@firebase/firestore's own nested @firebase/util ==="
+          find . -path "*@firebase+firestore*/node_modules/@firebase/util" -exec readlink -f {} \;
+          echo "=== does index.esm.js exist anywhere? ==="
+          find . -path "*@firebase/util*" -name "index.esm.js"
+
       - name: Build Fitness
         run: pnpm --filter ./fitness-app run build:firebase
 
