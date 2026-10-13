@@ -51,6 +51,9 @@ jobs:
           find . -path "*@firebase+firestore*/node_modules/@firebase/util" -exec readlink -f {} \;
           echo "=== does index.esm.js exist anywhere? ==="
           find . -path "*@firebase/util*" -name "index.esm.js"
+          echo "=== does it export updateEmulatorBanner? ==="
+          grep -c "updateEmulatorBanner" node_modules/.pnpm/@firebase+util@1.12.1/node_modules/@firebase/util/dist/*.js 2>&1 || true
+          ls node_modules/.pnpm/@firebase+util@1.12.1/node_modules/@firebase/util/dist/ 2>&1 || true
 
       - name: Build Fitness
         run: pnpm --filter ./fitness-app run build:firebase
