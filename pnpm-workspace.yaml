@@ -16,4 +16,4 @@ allowBuilds:
   esbuild: true
   protobufjs: true
 overrides:
-  '@firebase/firestore>@firebase/util': 1.12.1
+  '@firebase/util': 1.15.1

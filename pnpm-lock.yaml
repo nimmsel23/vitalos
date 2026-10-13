@@ -5,7 +5,7 @@ settings:
   excludeLinksFromLockfile: false
 
 overrides:
-  '@firebase/firestore>@firebase/util': 1.12.1
+  '@firebase/util': 1.15.1
 
 importers:
 
@@ -325,7 +325,7 @@ importers:
         specifier: ^0.12.22
         version: 0.12.22(@firebase/app@0.13.2)
       '@firebase/util':
-        specifier: ^1.12.1
+        specifier: 1.15.1
         version: 1.15.1
       '@firebase/webchannel-wrapper':
         specifier: ^1.0.3
@@ -1954,7 +1954,7 @@ packages:
     resolution: {integrity: sha512-S/PuIjni0AQRLF+l9ck0YpsMOdE8GO2KU6ubmBB7P+7TJUCQDa3R1dlgYm9UzGbbePMZsp0xzB93f2b/CgxMOg==}
     peerDependencies:
       '@firebase/app-types': 0.x
-      '@firebase/util': 1.x
+      '@firebase/util': 1.15.1
 
   '@firebase/auth@1.10.8':
     resolution: {integrity: sha512-GpuTz5ap8zumr/ocnPY57ZanX02COsXloY6Y/2LYPAuXYiaJRf6BAGDEdRq1BMjP93kqQnKNuKZUTMZbQ8MNYA==}
@@ -2027,7 +2027,7 @@ packages:
     resolution: {integrity: sha512-hD2jGdiWRxB/eZWF89xcK9gF8wvENDJkzpVFb4aGkzfEaKxVRD1kjz1t1Wj8VZEp2LCB53Yx1zD8mrhQu87R6Q==}
     peerDependencies:
       '@firebase/app-types': 0.x
-      '@firebase/util': 1.x
+      '@firebase/util': 1.15.1
 
   '@firebase/firestore@4.8.0':
     resolution: {integrity: sha512-QSRk+Q1/CaabKyqn3C32KSFiOdZpSqI9rpLK5BHPcooElumOBooPFa6YkDdiT+/KhJtel36LdAacha9BptMj2A==}
@@ -2125,24 +2125,13 @@ packages:
     resolution: {integrity: sha512-+Muk7g9uwngTpd8xn9OdF/D48uiQ7I1Fae7ULsWPuKoCH3HU7bfFPhxtJYzyhjdniowhuDpQcfPmuNRAqZEfvg==}
     peerDependencies:
       '@firebase/app-types': 0.x
-      '@firebase/util': 1.x
+      '@firebase/util': 1.15.1
 
   '@firebase/storage@0.13.14':
     resolution: {integrity: sha512-xTq5ixxORzx+bfqCpsh+o3fxOsGoDjC1nO0Mq2+KsOcny3l7beyBhP/y1u5T6mgsFQwI1j6oAkbT5cWdDBx87g==}
     engines: {node: '>=18.0.0'}
     peerDependencies:
       '@firebase/app': 0.x
-
-  '@firebase/util@1.10.0':
-    resolution: {integrity: sha512-xKtx4A668icQqoANRxyDLBLz51TAbDP9KRfpbKGxiCAW346d0BeJe5vN6/hKxxmWwnZ0mautyv39JxviwwQMOQ==}
-
-  '@firebase/util@1.11.3':
-    resolution: {integrity: sha512-4wYnOV9FpwdCq3rHQOCrdx4AQBUbfH1p2DhWGQxlQ+D3Xl/wSxc/HttcyPN4NNFiynxoNCFGWQH/zdhRfxP1Zg==}
-    engines: {node: '>=18.0.0'}
-
-  '@firebase/util@1.12.1':
-    resolution: {integrity: sha512-zGlBn/9Dnya5ta9bX/fgEoNC3Cp8s6h+uYPYaDieZsFOAdHP/ExzQ/eaDgxD3GOROdPkLKpvKY0iIzr9adle0w==}
-    engines: {node: '>=18.0.0'}
 
   '@firebase/util@1.15.1':
     resolution: {integrity: sha512-LUdM4Wg7YM9Pq/49nGYySJA0CSQEKnGffFzWV8+6gXN7mGxn+FL1IqvFbuZUtAQcfZgHYDwCE1wwlK7rB7gl2g==}
@@ -6943,7 +6932,7 @@ snapshots:
       '@firebase/app-types': 0.9.3
       '@firebase/component': 0.6.18
       '@firebase/logger': 0.4.4
-      '@firebase/util': 1.12.1
+      '@firebase/util': 1.15.1
       tslib: 2.8.1
 
   '@firebase/ai@1.4.1(@firebase/app-types@0.9.5)(@firebase/app@0.13.2)':
@@ -6953,7 +6942,7 @@ snapshots:
       '@firebase/app-types': 0.9.5
       '@firebase/component': 0.6.18
       '@firebase/logger': 0.4.4
-      '@firebase/util': 1.12.1
+      '@firebase/util': 1.15.1
       tslib: 2.8.1
 
   '@firebase/analytics-compat@0.2.23(@firebase/app-compat@0.4.2)(@firebase/app@0.13.2)':
@@ -6962,7 +6951,7 @@ snapshots:
       '@firebase/analytics-types': 0.8.3
       '@firebase/app-compat': 0.4.2
       '@firebase/component': 0.6.18
-      '@firebase/util': 1.12.1
+      '@firebase/util': 1.15.1
       tslib: 2.8.1
     transitivePeerDependencies:
       - '@firebase/app'
@@ -6975,7 +6964,7 @@ snapshots:
       '@firebase/component': 0.6.18
       '@firebase/installations': 0.6.18(@firebase/app@0.13.2)
       '@firebase/logger': 0.4.4
-      '@firebase/util': 1.12.1
+      '@firebase/util': 1.15.1
       tslib: 2.8.1
 
   '@firebase/app-check-compat@0.3.26(@firebase/app-compat@0.4.2)(@firebase/app@0.13.2)':
@@ -6985,7 +6974,7 @@ snapshots:
       '@firebase/app-compat': 0.4.2
       '@firebase/component': 0.6.18
       '@firebase/logger': 0.4.4
-      '@firebase/util': 1.12.1
+      '@firebase/util': 1.15.1
       tslib: 2.8.1
     transitivePeerDependencies:
       - '@firebase/app'
@@ -7003,7 +6992,7 @@ snapshots:
       '@firebase/app': 0.13.2
       '@firebase/component': 0.6.18
       '@firebase/logger': 0.4.4
-      '@firebase/util': 1.12.1
+      '@firebase/util': 1.15.1
       tslib: 2.8.1
 
   '@firebase/app-compat@0.4.2':
@@ -7011,7 +7000,7 @@ snapshots:
       '@firebase/app': 0.13.2
       '@firebase/component': 0.6.18
       '@firebase/logger': 0.4.4
-      '@firebase/util': 1.12.1
+      '@firebase/util': 1.15.1
       tslib: 2.8.1
 
   '@firebase/app-types@0.9.2': {}
@@ -7026,7 +7015,7 @@ snapshots:
     dependencies:
       '@firebase/component': 0.6.18
       '@firebase/logger': 0.4.4
-      '@firebase/util': 1.12.1
+      '@firebase/util': 1.15.1
       idb: 7.1.1
       tslib: 2.8.1
 
@@ -7034,9 +7023,9 @@ snapshots:
     dependencies:
       '@firebase/app-compat': 0.4.2
       '@firebase/auth': 1.10.8(@firebase/app@0.13.2)
-      '@firebase/auth-types': 0.13.0(@firebase/app-types@0.9.3)(@firebase/util@1.12.1)
+      '@firebase/auth-types': 0.13.0(@firebase/app-types@0.9.3)(@firebase/util@1.15.1)
       '@firebase/component': 0.6.18
-      '@firebase/util': 1.12.1
+      '@firebase/util': 1.15.1
       tslib: 2.8.1
     transitivePeerDependencies:
       - '@firebase/app'
@@ -7049,32 +7038,32 @@ snapshots:
 
   '@firebase/auth-interop-types@0.2.5': {}
 
-  '@firebase/auth-types@0.13.0(@firebase/app-types@0.9.3)(@firebase/util@1.12.1)':
+  '@firebase/auth-types@0.13.0(@firebase/app-types@0.9.3)(@firebase/util@1.15.1)':
     dependencies:
       '@firebase/app-types': 0.9.3
-      '@firebase/util': 1.12.1
+      '@firebase/util': 1.15.1
 
   '@firebase/auth@1.10.8(@firebase/app@0.13.2)':
     dependencies:
       '@firebase/app': 0.13.2
       '@firebase/component': 0.6.18
       '@firebase/logger': 0.4.4
-      '@firebase/util': 1.12.1
+      '@firebase/util': 1.15.1
       tslib: 2.8.1
 
   '@firebase/component@0.6.16':
     dependencies:
-      '@firebase/util': 1.11.3
+      '@firebase/util': 1.15.1
       tslib: 2.8.1
 
   '@firebase/component@0.6.18':
     dependencies:
-      '@firebase/util': 1.12.1
+      '@firebase/util': 1.15.1
       tslib: 2.8.1
 
   '@firebase/component@0.6.9':
     dependencies:
-      '@firebase/util': 1.10.0
+      '@firebase/util': 1.15.1
       tslib: 2.8.1
 
   '@firebase/component@0.7.3':
@@ -7088,7 +7077,7 @@ snapshots:
       '@firebase/auth-interop-types': 0.2.4
       '@firebase/component': 0.6.18
       '@firebase/logger': 0.4.4
-      '@firebase/util': 1.12.1
+      '@firebase/util': 1.15.1
       tslib: 2.8.1
 
   '@firebase/database-compat@1.0.8':
@@ -7097,7 +7086,7 @@ snapshots:
       '@firebase/database': 1.0.8
       '@firebase/database-types': 1.0.5
       '@firebase/logger': 0.4.2
-      '@firebase/util': 1.10.0
+      '@firebase/util': 1.15.1
       tslib: 2.8.1
 
   '@firebase/database-compat@2.0.11':
@@ -7106,7 +7095,7 @@ snapshots:
       '@firebase/database': 1.0.20
       '@firebase/database-types': 1.0.15
       '@firebase/logger': 0.4.4
-      '@firebase/util': 1.12.1
+      '@firebase/util': 1.15.1
       tslib: 2.8.1
 
   '@firebase/database-compat@2.1.4':
@@ -7121,7 +7110,7 @@ snapshots:
   '@firebase/database-types@1.0.15':
     dependencies:
       '@firebase/app-types': 0.9.3
-      '@firebase/util': 1.12.1
+      '@firebase/util': 1.15.1
 
   '@firebase/database-types@1.0.20':
     dependencies:
@@ -7131,7 +7120,7 @@ snapshots:
   '@firebase/database-types@1.0.5':
     dependencies:
       '@firebase/app-types': 0.9.2
-      '@firebase/util': 1.10.0
+      '@firebase/util': 1.15.1
 
   '@firebase/database@1.0.20':
     dependencies:
@@ -7139,7 +7128,7 @@ snapshots:
       '@firebase/auth-interop-types': 0.2.4
       '@firebase/component': 0.6.18
       '@firebase/logger': 0.4.4
-      '@firebase/util': 1.12.1
+      '@firebase/util': 1.15.1
       faye-websocket: 0.11.4
       tslib: 2.8.1
 
@@ -7149,7 +7138,7 @@ snapshots:
       '@firebase/auth-interop-types': 0.2.3
       '@firebase/component': 0.6.9
       '@firebase/logger': 0.4.2
-      '@firebase/util': 1.10.0
+      '@firebase/util': 1.15.1
       faye-websocket: 0.11.4
       tslib: 2.8.1
 
@@ -7168,24 +7157,24 @@ snapshots:
       '@firebase/app-compat': 0.4.2
       '@firebase/component': 0.6.18
       '@firebase/firestore': 4.8.0(@firebase/app@0.13.2)
-      '@firebase/firestore-types': 3.0.3(@firebase/app-types@0.9.3)(@firebase/util@1.12.1)
-      '@firebase/util': 1.12.1
+      '@firebase/firestore-types': 3.0.3(@firebase/app-types@0.9.3)(@firebase/util@1.15.1)
+      '@firebase/util': 1.15.1
       tslib: 2.8.1
     transitivePeerDependencies:
       - '@firebase/app'
       - '@firebase/app-types'
 
-  '@firebase/firestore-types@3.0.3(@firebase/app-types@0.9.3)(@firebase/util@1.12.1)':
+  '@firebase/firestore-types@3.0.3(@firebase/app-types@0.9.3)(@firebase/util@1.15.1)':
     dependencies:
       '@firebase/app-types': 0.9.3
-      '@firebase/util': 1.12.1
+      '@firebase/util': 1.15.1
 
   '@firebase/firestore@4.8.0(@firebase/app@0.13.2)':
     dependencies:
       '@firebase/app': 0.13.2
       '@firebase/component': 0.6.18
       '@firebase/logger': 0.4.4
-      '@firebase/util': 1.12.1
+      '@firebase/util': 1.15.1
       '@firebase/webchannel-wrapper': 1.0.3
       '@grpc/grpc-js': 1.9.16
       '@grpc/proto-loader': 0.7.15
@@ -7197,7 +7186,7 @@ snapshots:
       '@firebase/component': 0.6.18
       '@firebase/functions': 0.12.9(@firebase/app@0.13.2)
       '@firebase/functions-types': 0.6.3
-      '@firebase/util': 1.12.1
+      '@firebase/util': 1.15.1
       tslib: 2.8.1
     transitivePeerDependencies:
       - '@firebase/app'
@@ -7211,7 +7200,7 @@ snapshots:
       '@firebase/auth-interop-types': 0.2.4
       '@firebase/component': 0.6.18
       '@firebase/messaging-interop-types': 0.2.3
-      '@firebase/util': 1.12.1
+      '@firebase/util': 1.15.1
       tslib: 2.8.1
 
   '@firebase/installations-compat@0.2.18(@firebase/app-compat@0.4.2)(@firebase/app-types@0.9.3)(@firebase/app@0.13.2)':
@@ -7220,7 +7209,7 @@ snapshots:
       '@firebase/component': 0.6.18
       '@firebase/installations': 0.6.18(@firebase/app@0.13.2)
       '@firebase/installations-types': 0.5.3(@firebase/app-types@0.9.3)
-      '@firebase/util': 1.12.1
+      '@firebase/util': 1.15.1
       tslib: 2.8.1
     transitivePeerDependencies:
       - '@firebase/app'
@@ -7234,7 +7223,7 @@ snapshots:
     dependencies:
       '@firebase/app': 0.13.2
       '@firebase/component': 0.6.18
-      '@firebase/util': 1.12.1
+      '@firebase/util': 1.15.1
       idb: 7.1.1
       tslib: 2.8.1
 
@@ -7255,7 +7244,7 @@ snapshots:
       '@firebase/app-compat': 0.4.2
       '@firebase/component': 0.6.18
       '@firebase/messaging': 0.12.22(@firebase/app@0.13.2)
-      '@firebase/util': 1.12.1
+      '@firebase/util': 1.15.1
       tslib: 2.8.1
     transitivePeerDependencies:
       - '@firebase/app'
@@ -7268,7 +7257,7 @@ snapshots:
       '@firebase/component': 0.6.18
       '@firebase/installations': 0.6.18(@firebase/app@0.13.2)
       '@firebase/messaging-interop-types': 0.2.3
-      '@firebase/util': 1.12.1
+      '@firebase/util': 1.15.1
       idb: 7.1.1
       tslib: 2.8.1
 
@@ -7279,7 +7268,7 @@ snapshots:
       '@firebase/logger': 0.4.4
       '@firebase/performance': 0.7.7(@firebase/app@0.13.2)
       '@firebase/performance-types': 0.2.3
-      '@firebase/util': 1.12.1
+      '@firebase/util': 1.15.1
       tslib: 2.8.1
     transitivePeerDependencies:
       - '@firebase/app'
@@ -7292,7 +7281,7 @@ snapshots:
       '@firebase/component': 0.6.18
       '@firebase/installations': 0.6.18(@firebase/app@0.13.2)
       '@firebase/logger': 0.4.4
-      '@firebase/util': 1.12.1
+      '@firebase/util': 1.15.1
       tslib: 2.8.1
       web-vitals: 4.2.4
 
@@ -7303,7 +7292,7 @@ snapshots:
       '@firebase/logger': 0.4.4
       '@firebase/remote-config': 0.6.5(@firebase/app@0.13.2)
       '@firebase/remote-config-types': 0.4.0
-      '@firebase/util': 1.12.1
+      '@firebase/util': 1.15.1
       tslib: 2.8.1
     transitivePeerDependencies:
       - '@firebase/app'
@@ -7316,7 +7305,7 @@ snapshots:
       '@firebase/component': 0.6.18
       '@firebase/installations': 0.6.18(@firebase/app@0.13.2)
       '@firebase/logger': 0.4.4
-      '@firebase/util': 1.12.1
+      '@firebase/util': 1.15.1
       tslib: 2.8.1
 
   '@firebase/storage-compat@0.3.24(@firebase/app-compat@0.4.2)(@firebase/app-types@0.9.3)(@firebase/app@0.13.2)':
@@ -7324,35 +7313,23 @@ snapshots:
       '@firebase/app-compat': 0.4.2
       '@firebase/component': 0.6.18
       '@firebase/storage': 0.13.14(@firebase/app@0.13.2)
-      '@firebase/storage-types': 0.8.3(@firebase/app-types@0.9.3)(@firebase/util@1.12.1)
-      '@firebase/util': 1.12.1
+      '@firebase/storage-types': 0.8.3(@firebase/app-types@0.9.3)(@firebase/util@1.15.1)
+      '@firebase/util': 1.15.1
       tslib: 2.8.1
     transitivePeerDependencies:
       - '@firebase/app'
       - '@firebase/app-types'
 
-  '@firebase/storage-types@0.8.3(@firebase/app-types@0.9.3)(@firebase/util@1.12.1)':
+  '@firebase/storage-types@0.8.3(@firebase/app-types@0.9.3)(@firebase/util@1.15.1)':
     dependencies:
       '@firebase/app-types': 0.9.3
-      '@firebase/util': 1.12.1
+      '@firebase/util': 1.15.1
 
   '@firebase/storage@0.13.14(@firebase/app@0.13.2)':
     dependencies:
       '@firebase/app': 0.13.2
       '@firebase/component': 0.6.18
-      '@firebase/util': 1.12.1
-      tslib: 2.8.1
-
-  '@firebase/util@1.10.0':
-    dependencies:
-      tslib: 2.8.1
-
-  '@firebase/util@1.11.3':
-    dependencies:
-      tslib: 2.8.1
-
-  '@firebase/util@1.12.1':
-    dependencies:
+      '@firebase/util': 1.15.1
       tslib: 2.8.1
 
   '@firebase/util@1.15.1':
@@ -7366,7 +7343,7 @@ snapshots:
       '@firebase/app-types': 0.9.5
       '@firebase/component': 0.6.16
       '@firebase/logger': 0.4.4
-      '@firebase/util': 1.11.3
+      '@firebase/util': 1.15.1
       tslib: 2.8.1
 
   '@firebase/webchannel-wrapper@1.0.3': {}
@@ -9241,7 +9218,7 @@ snapshots:
       '@firebase/remote-config-compat': 0.2.18(@firebase/app-compat@0.4.2)(@firebase/app@0.13.2)
       '@firebase/storage': 0.13.14(@firebase/app@0.13.2)
       '@firebase/storage-compat': 0.3.24(@firebase/app-compat@0.4.2)(@firebase/app-types@0.9.3)(@firebase/app@0.13.2)
-      '@firebase/util': 1.12.1
+      '@firebase/util': 1.15.1
     transitivePeerDependencies:
       - '@react-native-async-storage/async-storage'
 
