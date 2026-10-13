@@ -10,7 +10,7 @@ declare -a SUBMODULE_PATHS=(
   "fuel-app"
   "journal-app"
   "habit-app"
-  "learn-dev"
+  "learn-app"
   "relax-app"
   "6pack-app"
   "coach-app"
