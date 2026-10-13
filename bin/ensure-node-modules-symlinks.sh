@@ -5,7 +5,9 @@
 # (git submodule + worktree desselben Repos, siehe ~/vitalos/.gitmodules).
 # node_modules (und ggf. functions/node_modules) NICHT doppelt installieren —
 # ~/*-dev behält die echte Installation, ~/vitalos/<name-app> bekommt einen
-# Symlink darauf. Idempotent: läuft mehrfach ohne Schaden, legt fehlende
+# Symlink darauf. pnpm-Workspaces verwalten ihre eigenen Paket-Symlinks;
+# deren node_modules werden nicht durch einen Dev-Checkout-Link ersetzt.
+# Idempotent: läuft mehrfach ohne Schaden, legt fehlende
 # Symlinks an, lässt existierende echte Verzeichnisse unangetastet (kein
 # automatisches rm -rf — das entscheidet ein Mensch einmalig manuell).
 #
@@ -62,6 +64,10 @@ for pair in "${PAIRS[@]}"; do
   [ -d "$devroot" ] || continue
   [ -d "$approot" ] || continue
 
-  ensure_link "$devroot/node_modules" "$approot/node_modules"
+  if [[ -f "$approot/../pnpm-workspace.yaml" && -f "$approot/../pnpm-lock.yaml" ]]; then
+    log_info "$app/node_modules wird vom pnpm-Workspace verwaltet — kein Dev-Symlink nötig"
+  else
+    ensure_link "$devroot/node_modules" "$approot/node_modules"
+  fi
   ensure_link "$devroot/functions/node_modules" "$approot/functions/node_modules"
 done
