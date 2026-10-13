@@ -38,16 +38,18 @@ SOURCE_BRANCHES[journal]="dev"
 SOURCE_BRANCHES[learn]="dev"
 SOURCE_BRANCHES[relax]="dev"
 
-# Submodule-Master-Branch je Modul — fitness-app und fuel-app heissen
-# "vitalos" statt "master" (Rename, siehe fitness-dev/CLAUDE.md "Main
-# branch"), die uebrigen Submodule sind bislang noch "master". Fallback
-# unten in target_branch() falls hier mal ein Modul fehlt.
+# Submodule-Master-Branch je Modul — fitness-app, fuel-app, habit-app und
+# relax-app heissen "vitalos" statt "master" (Rename, siehe fitness-dev/
+# CLAUDE.md "Main branch"); journal-app ist noch auf "master" (dort ist
+# master tatsaechlich der lebende Branch, vitalos liegt zurueck). learn
+# bislang ohne Checkout unter ~/vitalos (separates Problem). Fallback unten
+# in target_branch() falls hier mal ein Modul fehlt.
 TARGET_BRANCHES[fitness]="vitalos"
 TARGET_BRANCHES[fuel]="vitalos"
-TARGET_BRANCHES[habits]="master"
+TARGET_BRANCHES[habits]="vitalos"
 TARGET_BRANCHES[journal]="master"
 TARGET_BRANCHES[learn]="master"
-TARGET_BRANCHES[relax]="master"
+TARGET_BRANCHES[relax]="vitalos"
 
 # vos-release deployt für fitness ausschliesslich npm run build:firebase
 # (liest src/** + die KB-*Daten*-YAMLs zur Build-Zeit für die generierten
