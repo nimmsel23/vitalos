@@ -326,13 +326,23 @@ Er ruft KEINE Hooks auf.
 
 ### Branch-Konventionen
 
-- Überall ist **`master`** der Deploy-/Hauptbranch.
-- Sub-Repos haben zusätzlich `dev` mit Upstream `origin/dev` — inzwischen
-  **auch relax-app** (Stand 2026-08-16, seit 2026-07-16 nachgezogen).
-  Workflow: auf `dev` arbeiten, nach master mergen, pushen, Pointer bumpen.
-- `.gitmodules` hat bewusst KEIN `branch=`-Feld — Submodule-Stand wird
-  ausschließlich über manuell gebumpte Commit-Pointer kontrolliert.
-  `git submodule update --remote` daher nur gezielt einsetzen.
+- **Korrigiert 2026-10-13** (vorherige Version dieses Abschnitts war veraltet/
+  falsch — `master` war mal überall der Hauptbranch, ist es nicht mehr):
+  Alle 9 Submodule-Checkouts unter `~/vitalos/*-app` laufen auf einem eigenen
+  **`vitalos`**-Branch (Rename von `master`), nicht auf `master` selbst.
+  `journal-app`/`learn-app` standen bis 2026-10-13 noch auf `master` bzw.
+  waren kurzzeitig falsch dokumentiert als "bewusste Ausnahme" — das war
+  schlicht Checkout-Drift, kein Designentscheid, und wurde gefixt (beide
+  jetzt korrekt auf `vitalos`).
+- `.gitmodules` deklariert **sehr wohl** `branch = vitalos` pro Submodule
+  (frühere Notiz "bewusst KEIN branch=-Feld" war falsch/veraltet) — Submodule-
+  Stand wird trotzdem weiterhin über manuell gebumpte Commit-Pointer
+  kontrolliert, `branch=` ist nur die Checkout-Referenz für `git submodule
+  update --remote`, nicht automatischer Auto-Pull.
+- Sub-Repos haben zusätzlich `dev` mit Upstream `origin/dev` — ihr jeweiliger
+  Standalone-Arbeitsbranch (inkl. relax-app, seit 2026-07-16/08-16).
+  Workflow: auf `dev` arbeiten, per `vos-release` nach `vitalos` mergen,
+  pushen, Pointer in `~/vitalos` bumpen.
 
 ### Bekannte Baustellen (Stand 2026-08-16)
 

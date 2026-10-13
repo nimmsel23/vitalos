@@ -47,17 +47,17 @@ SOURCE_BRANCHES[6pack]="dev"
 SOURCE_BRANCHES[coach]="dev"
 SOURCE_BRANCHES[plan]="dev"
 
-# Submodule-Master-Branch je Modul — fitness-app, fuel-app, habit-app und
-# relax-app heissen "vitalos" statt "master" (Rename, siehe fitness-dev/
-# CLAUDE.md "Main branch"); journal-app ist noch auf "master" (dort ist
-# master tatsaechlich der lebende Branch, vitalos liegt zurueck). learn
-# bislang ohne Checkout unter ~/vitalos (separates Problem). Fallback unten
-# in target_branch() falls hier mal ein Modul fehlt.
+# Submodule-Master-Branch je Modul — alle Module heissen "vitalos" (Rename,
+# siehe fitness-dev/CLAUDE.md "Main branch"). journal-app/learn-app standen
+# bis 2026-10-13 fälschlich auf "master" ausgecheckt (bzw. gar nicht), obwohl
+# .gitmodules schon branch=vitalos deklarierte — war Checkout-Drift, keine
+# bewusste Ausnahme (alte Doku hier war falsch). Fallback unten in
+# target_branch() falls hier mal ein Modul fehlt.
 TARGET_BRANCHES[fitness]="vitalos"
 TARGET_BRANCHES[fuel]="vitalos"
 TARGET_BRANCHES[habits]="vitalos"
-TARGET_BRANCHES[journal]="master"
-TARGET_BRANCHES[learn]="master"
+TARGET_BRANCHES[journal]="vitalos"
+TARGET_BRANCHES[learn]="vitalos"
 TARGET_BRANCHES[relax]="vitalos"
 TARGET_BRANCHES[6pack]="vitalos"
 TARGET_BRANCHES[coach]="vitalos"
