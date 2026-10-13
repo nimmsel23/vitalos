@@ -15,3 +15,5 @@ allowBuilds:
   better-sqlite3: true
   esbuild: true
   protobufjs: true
+overrides:
+  '@firebase/firestore>@firebase/util': 1.12.1

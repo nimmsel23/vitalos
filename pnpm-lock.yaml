@@ -4,6 +4,9 @@ settings:
   autoInstallPeers: true
   excludeLinksFromLockfile: false
 
+overrides:
+  '@firebase/firestore>@firebase/util': 1.12.1
+
 importers:
 
   .:
