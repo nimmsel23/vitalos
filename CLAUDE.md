@@ -218,7 +218,7 @@ Hosting-*Site* im selben Projekt (alle `.firebaserc` → `fitness-aos`):
 |---|---|---|
 | vitalos (Shell) | `vitalos` → vitalos.web.app | CI `deploy-shell.yml` |
 | fitness-app | `fitness-aos` → fitness-aos.web.app | CI `deploy-fitness.yml` |
-| fitness-vos | `fitness-vos` → fitness-vos.web.app | lokal via `fitness-vos/firebase.json` |
+| fitness-vos | `fitness-vos` → fitness-vos.web.app | lokal via `fitness-vos/firebase.json`, automatisiert seit 2026-10-13 über `.githooks/pre-push` (siehe unten) |
 | fuel-app | `fuel-vos` → fuel-vos.web.app | CI `deploy-fuel.yml` / `fuel-app/firebase.json` |
 | fuel-os | `fuel-os` → fuel-os.web.app | lokal via `fuel-os/firebase.json` |
 | journal-app / habit-app / learn-dev | je eigene Site | CI `deploy-journal/habits/learn.yml` |
@@ -232,6 +232,17 @@ die noetigen Bausteine aus `fitness-app` und soll schlank bleiben, statt die
 volle `fitness-app`-Shell zu duplizieren. Zweck: eine live Fitness-Variante,
 die einfach funktioniert, auch wenn die VitalOS-Shell oder die AOS-Version
 gerade nicht gesund ist. Diese drei Pfade nicht zusammenziehen.
+
+**fitness-vos Auto-Deploy (seit 2026-10-13):** `.githooks/pre-push` löst bei
+jedem Push nach `master`, der Dateien unter `fitness-vos/` ändert (außer
+`.md`/`.bak`/eigenem Build-Output `dist-firebase/`/`.firebase/`), automatisch
+`cd fitness-vos && npm run firebase` aus (Build + `firebase deploy --only
+hosting --project fitness-aos`) — analog zum bestehenden Pre-Push-Hook in
+`~/fitness-dev`. Schlägt der Build/Deploy fehl, bricht der Push ab (kein
+halb-deployter Stand), Override via `git push --no-verify`. User hat
+Claude Code für Deploy-Schritte an `fitness-vos` ausdrücklich freie Hand
+gegeben (2026-10-13) — abweichend von der generellen Deploy-Bestätigungspflicht
+weiter oben.
 
 **VOS-Doppelstruktur:** Die `~/vitalos/*-app`-Checkouts sind die integrierten
 Standalone-App/Submodule-Handoffs fuer Firebase; die `~/vitalos/*-vos`-Ordner
