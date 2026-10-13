@@ -38,12 +38,12 @@ SOURCE_BRANCHES[journal]="dev"
 SOURCE_BRANCHES[learn]="dev"
 SOURCE_BRANCHES[relax]="dev"
 
-# Submodule-Master-Branch je Modul — fitness-app heisst "vitalos" statt
-# "master" (Rename, siehe fitness-dev/CLAUDE.md "Main branch"), alle
-# anderen Submodule sind bislang noch "master". Fallback unten in
-# target_branch() falls hier mal ein Modul fehlt.
+# Submodule-Master-Branch je Modul — fitness-app und fuel-app heissen
+# "vitalos" statt "master" (Rename, siehe fitness-dev/CLAUDE.md "Main
+# branch"), die uebrigen Submodule sind bislang noch "master". Fallback
+# unten in target_branch() falls hier mal ein Modul fehlt.
 TARGET_BRANCHES[fitness]="vitalos"
-TARGET_BRANCHES[fuel]="master"
+TARGET_BRANCHES[fuel]="vitalos"
 TARGET_BRANCHES[habits]="master"
 TARGET_BRANCHES[journal]="master"
 TARGET_BRANCHES[learn]="master"
