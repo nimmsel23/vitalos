@@ -99,17 +99,17 @@ stage_reachable_pointer_updates() {
   fi
 
   if [ "$lockfile_drift" -eq 1 ]; then
-    info "Re-syncing root package-lock.json (npm install --package-lock-only)…"
-    if (cd "$ROOT_DIR" && npm install --package-lock-only --legacy-peer-deps >/tmp/vos-npm-lockfile-sync.log 2>&1); then
-      if ! "$REAL_GIT" -C "$ROOT_DIR" diff --quiet -- package-lock.json 2>/dev/null; then
-        "$REAL_GIT" -C "$ROOT_DIR" add package-lock.json
-        success "package-lock.json re-synced and staged."
+    info "Re-syncing root pnpm-lock.yaml (pnpm install --lockfile-only)…"
+    if (cd "$ROOT_DIR" && pnpm install --lockfile-only >/tmp/vos-pnpm-lockfile-sync.log 2>&1); then
+      if ! "$REAL_GIT" -C "$ROOT_DIR" diff --quiet -- pnpm-lock.yaml 2>/dev/null; then
+        "$REAL_GIT" -C "$ROOT_DIR" add pnpm-lock.yaml
+        success "pnpm-lock.yaml re-synced and staged."
       else
-        info "package-lock.json was already in sync."
+        info "pnpm-lock.yaml was already in sync."
       fi
     else
-      error "npm install --package-lock-only failed — see /tmp/vos-npm-lockfile-sync.log"
-      error "Fix manually before committing, otherwise CI's npm ci will fail."
+      error "pnpm install --lockfile-only failed — see /tmp/vos-pnpm-lockfile-sync.log"
+      error "Fix manually before committing, otherwise CI's pnpm install --frozen-lockfile will fail."
       exit 1
     fi
   fi

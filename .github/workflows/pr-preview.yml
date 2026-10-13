@@ -1,7 +1,7 @@
 # PR-Preview für die VitalOS-Shell selbst (vitalos.web.app).
 #
 # Bewusst NUR für vitalos/src — die Submodule (fuel-app, fitness-app, ...)
-# haben ihre eigene lokale Preview-Pipeline (npm run deploy:preview +
+# haben ihre eigene lokale Preview-Pipeline (pnpm run deploy:preview +
 # Telegram-Link), die bleibt unangetastet. Dieser Workflow feuert nur,
 # wenn sich die Shell selbst (src/, public/, Root-Configs) ändert.
 
@@ -31,16 +31,20 @@ jobs:
           git submodule sync
           git submodule update --init --recursive
 
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 11.3.0
+
       - uses: actions/setup-node@v4
         with:
           node-version: 22
-          cache: npm
+          cache: pnpm
 
       - name: Install (Workspaces)
-        run: npm ci
+        run: pnpm install --frozen-lockfile
 
       - name: Build (firebase mode)
-        run: npm run build:firebase
+        run: pnpm run build:firebase
 
       - name: Deploy Preview Channel (vitalos)
         uses: FirebaseExtended/action-hosting-deploy@v0

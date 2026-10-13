@@ -21,23 +21,27 @@ jobs:
           git submodule sync
           git submodule update --init --recursive
 
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 11.3.0
+
       - uses: actions/setup-node@v4
         with:
           node-version: 22
-          cache: npm
+          cache: pnpm
 
       - name: Install (Workspaces)
-        run: npm ci
+        run: pnpm install --frozen-lockfile
 
       # journal-app re-exportiert @fitness-db/index.firestore.js komplett
       # (Wildcard) und bündelt zusätzlich habit-app (@habits, Timeline-Icons)
       # — beide ziehen fitness-apps generierten KB-Layer mit. Gitignored,
       # wird sonst nur von fitness-apps eigenem "prebuild"-Hook erzeugt.
       - name: Generate fitness KB data (transitive dependency via @fitness-db/@habits)
-        run: npm run build:kb-data --workspace=fitness-app
+        run: pnpm --filter ./fitness-app run build:kb-data
 
       - name: Build Journal
-        run: npm run build:cloud --workspace=journal-app
+        run: pnpm --filter ./journal-app run build:cloud
 
       # KEIN firestore:rules mehr: Rules-SSOT ist ~/vitalos/firestore.rules,
       # deployed nur von deploy-shell.yml. Per-App-Rules haben sich gegenseitig

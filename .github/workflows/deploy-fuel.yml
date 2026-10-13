@@ -21,24 +21,28 @@ jobs:
           git submodule sync
           git submodule update --init --recursive
 
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 11.3.0
+
       - uses: actions/setup-node@v4
         with:
           node-version: 22
-          cache: npm
+          cache: pnpm
 
       - name: Install (Workspaces)
-        run: npm ci
+        run: pnpm install --frozen-lockfile
 
       # fuel-app bündelt journal-app (Journal-Tab), journal-app bündelt
       # habit-app (Habit-Icons in der Timeline), habit-app importiert @db/
       # @utils → fuel-devs eigener @fitness-db-Re-Export → fitness-apps KB-
       # Layer. Diese generierte Datei ist gitignored und wird sonst nur
       # durch fitness-apps eigenen "prebuild"-Hook erzeugt (läuft nur bei
-      # `npm run build --workspace=fitness-app`, nicht hier). Ohne diesen
+      # `pnpm --filter ./fitness-app run build`, nicht hier). Ohne diesen
       # Schritt schlägt der Build mit "Could not resolve
       # exerciseBulkData.generated.js" fehl.
       - name: Generate fitness KB data (transitive dependency via journal→habits)
-        run: npm run build:kb-data --workspace=fitness-app
+        run: pnpm --filter ./fitness-app run build:kb-data
 
       - name: Firebase config schreiben
         run: |
@@ -49,7 +53,7 @@ jobs:
           FIREBASE_CONFIG: ${{ secrets.FIREBASE_CONFIG }}
 
       - name: Build Fuel
-        run: npm run build:cloud --workspace=fuel-app
+        run: pnpm --filter ./fuel-app run build:cloud
 
       - name: Deploy Fuel to Firebase Hosting
         run: |

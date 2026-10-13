@@ -30,18 +30,22 @@ jobs:
           git submodule sync
           git submodule update --init --recursive
 
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 11.3.0
+
       - uses: actions/setup-node@v5
         with:
           node-version: 22
-          cache: npm
+          cache: pnpm
 
-      # npm-workspaces (fitness/fuel/journal/habits/learn) — ein ci installiert alles.
-      # .npmrc: legacy-peer-deps wegen eslint@10-Konflikt in fitness-app.
+      # pnpm-Workspace (fitness/fuel/journal/habits/learn/6pack/coach/plan) — ein install installiert alles.
+      # .npmrc: strict-peer-dependencies=false wegen eslint@10-Konflikt in fitness-app.
       - name: Install (Workspaces)
-        run: npm ci --legacy-peer-deps
+        run: pnpm install --frozen-lockfile
 
       - name: Build (firebase mode)
-        run: npm run build:firebase
+        run: pnpm run build:firebase
 
       # Firestore-Rules werden hier bewusst NICHT deployt. Rules sind
       # projekt-global und sicherheitskritisch — Deploy nur manuell über
