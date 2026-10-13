@@ -12,6 +12,9 @@ declare -a SUBMODULE_PATHS=(
   "habit-app"
   "learn-dev"
   "relax-app"
+  "6pack-app"
+  "coach-app"
+  "plan-app"
 )
 
 RED='\033[0;31m'

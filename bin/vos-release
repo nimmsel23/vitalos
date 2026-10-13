@@ -23,6 +23,9 @@ STANDALONE_DIRS[habits]="/home/alpha/habits-dev"
 STANDALONE_DIRS[journal]="/home/alpha/journal-dev"
 STANDALONE_DIRS[learn]="/home/alpha/learn-dev"
 STANDALONE_DIRS[relax]="/home/alpha/relax-dev"
+STANDALONE_DIRS[6pack]="/home/alpha/6pack-dev"
+STANDALONE_DIRS[coach]="/home/alpha/coach-dev"
+STANDALONE_DIRS[plan]="/home/alpha/plan-dev"
 
 SUBMODULE_DIRS[fitness]="/home/alpha/vitalos/fitness-app"
 SUBMODULE_DIRS[fuel]="/home/alpha/vitalos/fuel-app"
@@ -30,6 +33,9 @@ SUBMODULE_DIRS[habits]="/home/alpha/vitalos/habit-app"
 SUBMODULE_DIRS[journal]="/home/alpha/vitalos/journal-app"
 SUBMODULE_DIRS[learn]="/home/alpha/vitalos/learn-dev"
 SUBMODULE_DIRS[relax]="/home/alpha/vitalos/relax-app"
+SUBMODULE_DIRS[6pack]="/home/alpha/vitalos/6pack-app"
+SUBMODULE_DIRS[coach]="/home/alpha/vitalos/coach-app"
+SUBMODULE_DIRS[plan]="/home/alpha/vitalos/plan-app"
 
 SOURCE_BRANCHES[fitness]="dev"
 SOURCE_BRANCHES[fuel]="dev"
@@ -37,6 +43,9 @@ SOURCE_BRANCHES[habits]="dev"
 SOURCE_BRANCHES[journal]="dev"
 SOURCE_BRANCHES[learn]="dev"
 SOURCE_BRANCHES[relax]="dev"
+SOURCE_BRANCHES[6pack]="dev"
+SOURCE_BRANCHES[coach]="dev"
+SOURCE_BRANCHES[plan]="dev"
 
 # Submodule-Master-Branch je Modul — fitness-app, fuel-app, habit-app und
 # relax-app heissen "vitalos" statt "master" (Rename, siehe fitness-dev/
@@ -50,6 +59,9 @@ TARGET_BRANCHES[habits]="vitalos"
 TARGET_BRANCHES[journal]="master"
 TARGET_BRANCHES[learn]="master"
 TARGET_BRANCHES[relax]="vitalos"
+TARGET_BRANCHES[6pack]="vitalos"
+TARGET_BRANCHES[coach]="vitalos"
+TARGET_BRANCHES[plan]="vitalos"
 
 # vos-release deployt für fitness ausschliesslich npm run build:firebase
 # (liest src/** + die KB-*Daten*-YAMLs zur Build-Zeit für die generierten
@@ -66,8 +78,14 @@ NOISE_PATTERNS[habits]='^(D .+\.bak([.].*)?|D .+\.baks.*|D .+\.mjs\.bak-.*|\?\? 
 NOISE_PATTERNS[journal]='^(D .+\.bak([.].*)?|D .+\.baks.*|D .+\.mjs\.bak-.*|\?\? (node_modules|functions/node_modules))$'
 NOISE_PATTERNS[learn]='^(D .+\.bak([.].*)?|D .+\.baks.*|D .+\.mjs\.bak-.*|\?\? node_modules)$'
 NOISE_PATTERNS[relax]='^(D .+\.bak([.].*)?|D .+\.baks.*|D .+\.mjs\.bak-.*|\?\? node_modules)$'
+NOISE_PATTERNS[6pack]='^(D .+\.bak([.].*)?|D .+\.baks.*|D .+\.mjs\.bak-.*|\?\? node_modules)$'
+# coach/plan sind Forks des fitness-dev-Codebase (eigene Apps, gleiches
+# Katalog-/Backend-Tooling) — gleiches Noise-Muster wie fitness: Python-
+# Backend + kb/inbox-Drafts werden vom Firebase-Build nie gelesen.
+NOISE_PATTERNS[coach]='^\?\? (node_modules|functions/node_modules)$|^.{2} fitness/catalog/kb/inbox/|^.{2} fitness/.*\.py$'
+NOISE_PATTERNS[plan]='^\?\? (node_modules|functions/node_modules)$|^.{2} fitness/catalog/kb/inbox/|^.{2} fitness/.*\.py$'
 
-MODULE_ORDER=(fitness fuel habits journal learn relax)
+MODULE_ORDER=(fitness fuel habits journal learn relax 6pack coach plan)
 SELECTED_MODULES=()
 PARENT_BUMPS=()
 DRY_RUN=0
@@ -84,7 +102,7 @@ Usage:
   vos-release --help
 
 Modules:
-  fitness fuel habits journal learn relax
+  fitness fuel habits journal learn relax 6pack coach plan
 
 Behavior:
   - For every module: push standalone dev -> origin/dev, merge dev into the
