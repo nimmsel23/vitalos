@@ -17,3 +17,4 @@ allowBuilds:
   protobufjs: true
 overrides:
   '@firebase/util': 1.12.1
+shamefullyHoist: true
