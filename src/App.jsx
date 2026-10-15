@@ -614,7 +614,7 @@ export default function App() {
       return (
         <ErrorBoundary>
         {/* HIER ist die app-shell Klasse wieder an Ort und Stelle */}
-        <div className="app-shell flex min-h-screen overflow-x-hidden w-full bg-fit-bg text-fit-ink font-sans transition-colors duration-500">
+        <div className="app-shell flex min-h-screen overflow-x-clip w-full bg-fit-bg text-fit-ink font-sans transition-colors duration-500">
         {showSidebar && (
         <Sidebar tab={tab} navigate={navigate} pinned={sidebarPinned} setPinned={setSidebarPinned} user={user}
         subNav={tab === 'fitness' ? SUB_NAV.fitness : tab === 'fuel' ? SUB_NAV.fuel : tab === 'relax' ? SUB_NAV.relax : null}

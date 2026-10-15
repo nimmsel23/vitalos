@@ -54,6 +54,15 @@ fokussierbar. `MobileShell` passt den Inhaltsabstand über `--mobile-nav-height`
 an; Griff und Home-Indicator bleiben frei. Die Geste gehört zur Shell und
 ändert nicht den gemeinsamen `useSwipeToDismiss`-Hook der App-Sheets.
 
+## Scroll-Verhalten
+
+Journal und Setup scrollen mit dem Dokument. Die äußeren Wrapper (`html`,
+`body`, `.app-shell`) begrenzen horizontalen Überlauf mit `overflow-x: clip`;
+`hidden` würde hier zusätzlich vertikale Scroll-Container erzeugen. Der
+Journal-Wrapper braucht deshalb weder `h-full` noch `overflow-y-auto`.
+Die globale Overscroll-Begrenzung liegt auf `html`, dem Dokument-Scroller.
+Offene Sheets behalten ihre begrenzte Höhe und ihren eigenen Scrollbereich.
+
 ## Settings/ (Setup-Tab)
 
 Eigenständiger Setup-Tab — vitalos SSOT. Shell-eigene Sektionen:
