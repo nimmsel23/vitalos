@@ -55,6 +55,7 @@
   --safe-left: env(safe-area-inset-left, 0px);
   --safe-right: env(safe-area-inset-right, 0px);
   --tabbar-h: 58px;
+  --nav-grip-h: 28px;
 }
 
 /* touch defaults — keine globale 44px-Mindestgröße mehr: die hat jedes
@@ -134,6 +135,8 @@ body {
 .vos-hairline-b { box-shadow: inset 0 -0.5px 0 color-mix(in srgb, var(--ink) 12%, transparent); }
 .vos-hairline-t { box-shadow: inset 0 0.5px 0 color-mix(in srgb, var(--ink) 12%, transparent); }
 
+.vos-nav-sheet { transition: transform 240ms cubic-bezier(.2,.8,.2,1); }
+
 .vos-surface {
   background: var(--card);
   border: 1px solid color-mix(in srgb, var(--ink) 7%, transparent);
@@ -168,6 +171,7 @@ body {
 .vos-fade-in { animation: vos-fade-in 200ms ease-out both; }
 
 @media (prefers-reduced-motion: reduce) {
+  .vos-nav-sheet { transition: none; }
   .vos-sheet-in, .vos-fade-in { animation: none; }
   .vos-press:active { transform: none; }
 }

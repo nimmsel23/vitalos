@@ -1,4 +1,4 @@
-import { useMemo, useRef, useState } from 'react'
+import { useId, useMemo, useRef, useState } from 'react'
 import { Check, ChevronRight, ExternalLink, Home, LayoutGrid, MoreHorizontal, NotebookPen, X } from 'lucide-react'
 import { NAV_ITEMS, SUB_NAV, buildFitnessGateItems } from '@shell/NavigationItems'
 import { useSwipeToDismiss } from '@fitness/hooks/useSwipeToDismiss.js'
@@ -59,8 +59,14 @@ function SheetRow({ Icon, label, active, onClick, hint, href }) {
   )
 }
 
-export default function MobileNav({ tab, navigate, subTab = null, homeGate = null }) {
+export default function MobileNav({ tab, navigate, subTab = null, homeGate = null, expanded = true, onExpandedChange }) {
   const [panelId, setPanelId] = useState(null)
+  const [dragY, setDragY] = useState(null)
+  const tabsId = useId()
+  const tabsRef = useRef(null)
+  const gripRef = useRef(null)
+  const gestureRef = useRef(null)
+  const suppressClickRef = useRef(false)
   const panelGroups = useMemo(() => getPanelGroups(panelId), [panelId])
   const activeSlot = PRIMARY_IDS.includes(tab) ? tab : (tab === 'journal' ? 'home' : 'more')
   const hubOpen = tab === 'home' && homeGate === 'hub'
@@ -69,6 +75,52 @@ export default function MobileNav({ tab, navigate, subTab = null, homeGate = nul
 
   const backdropRef = useRef(null)
   const sheetRef = useSwipeToDismiss(close, { enabled: Boolean(panelId), backdropRef })
+
+  function setExpanded(next) {
+    if (!next) {
+      close()
+      if (tabsRef.current?.contains(document.activeElement)) gripRef.current?.focus({ preventScroll: true })
+    }
+    onExpandedChange?.(next)
+  }
+
+  function startDrag(event) {
+    if (!event.isPrimary || event.button !== 0) return
+    suppressClickRef.current = false
+    gestureRef.current = { id: event.pointerId, x: event.clientX, y: event.clientY, time: event.timeStamp, dragging: false }
+  }
+
+  function moveDrag(event) {
+    const gesture = gestureRef.current
+    if (!gesture || gesture.id !== event.pointerId) return
+    const dy = event.clientY - gesture.y
+    const dx = event.clientX - gesture.x
+    if (!gesture.dragging) {
+      if (Math.max(Math.abs(dx), Math.abs(dy)) < 6) return
+      if (Math.abs(dx) > Math.abs(dy)) {
+        suppressClickRef.current = true
+        gestureRef.current = null
+        return
+      }
+      gesture.dragging = true
+      suppressClickRef.current = true
+      event.currentTarget.setPointerCapture(event.pointerId)
+      close()
+    }
+    const distance = tabsRef.current.offsetHeight
+    setDragY(Math.max(0, Math.min(distance, (expanded ? 0 : distance) + dy)))
+  }
+
+  function endDrag(event, cancelled = false) {
+    const gesture = gestureRef.current
+    if (!gesture || gesture.id !== event.pointerId) return
+    gestureRef.current = null
+    setDragY(null)
+    if (!gesture.dragging || cancelled) return
+    const delta = (event.clientY - gesture.y) * (expanded ? 1 : -1)
+    const velocity = delta / Math.max(1, event.timeStamp - gesture.time)
+    if (delta > tabsRef.current.offsetHeight / 2 || (delta > 10 && velocity > 0.5)) setExpanded(!expanded)
+  }
 
   function handleSlot(id) {
     if (id === 'more') {
@@ -111,7 +163,7 @@ export default function MobileNav({ tab, navigate, subTab = null, homeGate = nul
             ref={sheetRef}
             className="vos-sheet vos-sheet-in fixed inset-x-2 z-[56] max-h-[70dvh] overflow-y-auto overscroll-contain rounded-[28px] px-3 pb-3 pt-2 shadow-2xl lg:hidden"
             style={{
-              bottom: 'calc(var(--tabbar-h) + var(--safe-bottom) + 8px)',
+              bottom: 'calc(var(--mobile-nav-height) + 8px)',
               border: '1px solid color-mix(in srgb, var(--ink) 8%, transparent)',
             }}
           >
@@ -170,10 +222,49 @@ export default function MobileNav({ tab, navigate, subTab = null, homeGate = nul
       ) : null}
 
       <nav
-        className="vos-bar vos-hairline-t fixed inset-x-0 bottom-0 z-[60] lg:hidden"
-        style={{ paddingBottom: 'var(--safe-bottom)' }}
+        aria-label="Hauptnavigation"
+        className="vos-nav-sheet vos-bar vos-hairline-t fixed inset-x-0 bottom-0 z-[60] rounded-t-2xl lg:hidden"
+        style={{
+          paddingBottom: 'var(--safe-bottom)',
+          transform: dragY === null ? (expanded ? 'translateY(0)' : 'translateY(var(--tabbar-h))') : `translateY(${dragY}px)`,
+          transition: dragY === null ? undefined : 'none',
+          touchAction: 'none',
+        }}
+        onPointerDown={startDrag}
+        onPointerMove={moveDrag}
+        onPointerUp={endDrag}
+        onPointerCancel={(event) => endDrag(event, true)}
+        onLostPointerCapture={(event) => {
+          if (event.target === event.currentTarget) endDrag(event, true)
+        }}
+        onClickCapture={(event) => {
+          if (suppressClickRef.current && event.detail !== 0) {
+            event.preventDefault()
+            event.stopPropagation()
+            suppressClickRef.current = false
+          }
+        }}
       >
-        <div className="mx-auto grid max-w-xl grid-cols-5" style={{ height: 'var(--tabbar-h)' }}>
+        <button
+          ref={gripRef}
+          type="button"
+          aria-label={expanded ? 'Navigation ausblenden' : 'Navigation einblenden'}
+          aria-expanded={expanded}
+          aria-controls={tabsId}
+          onClick={() => setExpanded(!expanded)}
+          className="flex w-full items-center justify-center"
+          style={{ height: 'var(--nav-grip-h)' }}
+        >
+          <span className="h-[5px] w-9 rounded-full" style={{ background: 'color-mix(in srgb, var(--ink) 25%, transparent)' }} />
+        </button>
+        <div
+          id={tabsId}
+          ref={tabsRef}
+          aria-hidden={!expanded}
+          {...(!expanded ? { inert: '' } : {})}
+          className="mx-auto grid max-w-xl grid-cols-5"
+          style={{ height: 'var(--tabbar-h)', visibility: expanded || dragY !== null ? 'visible' : 'hidden' }}
+        >
           {slots.map(({ id, label, Icon }) => {
             const active = id === 'more' ? (activeSlot === 'more' || panelId === 'overflow') : activeSlot === id
             return (

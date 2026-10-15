@@ -79,7 +79,7 @@ function HomeSheet({ label, onDismiss, children }) {
         </div>
         <div
           className="min-h-0 flex-1 overflow-y-auto overscroll-contain px-5 sm:px-6 lg:px-8"
-          style={{ paddingBottom: 'calc(var(--tabbar-h) + var(--safe-bottom) + 24px)' }}
+          style={{ paddingBottom: 'calc(var(--mobile-nav-height, calc(var(--tabbar-h) + var(--safe-bottom))) + 24px)' }}
         >
           {children}
         </div>

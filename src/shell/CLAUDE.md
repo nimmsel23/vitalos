@@ -47,6 +47,13 @@ Der `*Shell.jsx` ist für die Layout-Ebene (Sidebar, MobileShell), der `*App.jsx
 | `MobileNav.jsx` | iOS-Tab-Bar: 5 feste Slots (Home · Fitness · Fuel · Relax · Mehr). Aktiven Tab nochmal tippen → Sheet mit Unterbereichen und zusätzlichem Standalone-Link (neuer Tab, URLs in `NavigationItems.js`); Home nochmal tippen → Hub an/aus |
 | `FuelMobileLayout.jsx` | Fuel-spezifisches Mobile-Layout |
 
+Die Bottom-Nav lässt sich auf der Leiste nach unten einklappen und über den
+sichtbaren Griff nach oben aufziehen. Tippen auf den Griff schaltet ebenfalls
+um. Beim Einklappen schließen offene Nav-Menüs; ausgeblendete Tabs sind nicht
+fokussierbar. `MobileShell` passt den Inhaltsabstand über `--mobile-nav-height`
+an; Griff und Home-Indicator bleiben frei. Die Geste gehört zur Shell und
+ändert nicht den gemeinsamen `useSwipeToDismiss`-Hook der App-Sheets.
+
 ## Settings/ (Setup-Tab)
 
 Eigenständiger Setup-Tab — vitalos SSOT. Shell-eigene Sektionen:
