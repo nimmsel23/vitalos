@@ -85,6 +85,11 @@ NOISE_PATTERNS[6pack]='^(D .+\.bak([.].*)?|D .+\.baks.*|D .+\.mjs\.bak-.*|\?\? n
 NOISE_PATTERNS[coach]='^\?\? (node_modules|functions/node_modules)$|^.{2} fitness/catalog/kb/inbox/|^.{2} fitness/.*\.py$'
 NOISE_PATTERNS[plan]='^\?\? (node_modules|functions/node_modules)$|^.{2} fitness/catalog/kb/inbox/|^.{2} fitness/.*\.py$'
 
+# Reine Doku-Änderungen (Markdown, docs/) blockieren nie einen Release —
+# NEXT.md/RESULTS.md/TODO.md werden laufend von Hooks/Sessions nachgepflegt
+# und fließen nicht in Build/Deploy ein. Gilt für alle Module.
+DOC_NOISE='^.{2} (docs/.*|.*\.md)$'
+
 MODULE_ORDER=(fitness fuel habits journal learn relax 6pack coach plan)
 SELECTED_MODULES=()
 PARENT_BUMPS=()
@@ -168,6 +173,10 @@ status_filtered() {
     local pattern="${NOISE_PATTERNS[$module]}"
     local status
     status="$("$REAL_GIT" -C "$repo" status --short 2>/dev/null || true)"
+    if [[ -z "$status" ]]; then
+        return 0
+    fi
+    status="$(printf '%s\n' "$status" | grep -vE "$DOC_NOISE" || true)"
     if [[ -z "$status" ]]; then
         return 0
     fi
