@@ -26,7 +26,7 @@ PAIRS=(
   "fuel-dev:fuel-app"
   "journal-dev:journal-app"
   "habits-dev:habit-app"
-  "learn-dev:learn-dev"
+  "learn-dev:learn-app"
 )
 
 only="${1:-}"

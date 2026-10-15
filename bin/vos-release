@@ -31,7 +31,7 @@ SUBMODULE_DIRS[fitness]="/home/alpha/vitalos/fitness-app"
 SUBMODULE_DIRS[fuel]="/home/alpha/vitalos/fuel-app"
 SUBMODULE_DIRS[habits]="/home/alpha/vitalos/habit-app"
 SUBMODULE_DIRS[journal]="/home/alpha/vitalos/journal-app"
-SUBMODULE_DIRS[learn]="/home/alpha/vitalos/learn-dev"
+SUBMODULE_DIRS[learn]="/home/alpha/vitalos/learn-app"
 SUBMODULE_DIRS[relax]="/home/alpha/vitalos/relax-app"
 SUBMODULE_DIRS[6pack]="/home/alpha/vitalos/6pack-app"
 SUBMODULE_DIRS[coach]="/home/alpha/vitalos/coach-app"
@@ -343,7 +343,7 @@ parent_status_filtered() {
     # noch "??" und liess JEDEN Pointer-Bump als "unexpected changes"
     # durchfallen — nie aufgefallen, weil der volle Flow vorher nie
     # tatsaechlich per Skript durchlief.
-    "$REAL_GIT" -C "$VITALOS_DIR" status --short 2>/dev/null | grep -vE '^( M|\?\?) (fitness-app|fuel-app|habit-app|journal-app|learn-dev|relax-app)$' || true
+    "$REAL_GIT" -C "$VITALOS_DIR" status --short 2>/dev/null | grep -vE '^( M|\?\?) (fitness-app|fuel-app|habit-app|journal-app|learn-app|relax-app)$' || true
 }
 
 commit_parent_bumps() {

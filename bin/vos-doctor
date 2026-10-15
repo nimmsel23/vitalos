@@ -40,7 +40,7 @@ MODULES: dict[str, tuple[Path, Path, str, bool]] = {
     "habits":  (HOME / "habits-dev",  VITALOS / "habit-app",   "nimmsel23/habits-dev",  True),
     "journal": (HOME / "journal-dev", VITALOS / "journal-app", "nimmsel23/journal-dev", True),
     "relax":   (HOME / "relax-dev",   VITALOS / "relax-app",   "nimmsel23/relax-dev",   False),
-    "learn":   (HOME / "learn-dev",   VITALOS / "learn-dev",   "nimmsel23/learn-dev",   True),
+    "learn":   (HOME / "learn-dev",   VITALOS / "learn-app",   "nimmsel23/learn-dev",   True),
 }
 VITALOS_REPO = "nimmsel23/vitalos"
 
