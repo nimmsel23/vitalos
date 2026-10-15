@@ -343,7 +343,7 @@ parent_status_filtered() {
     # noch "??" und liess JEDEN Pointer-Bump als "unexpected changes"
     # durchfallen — nie aufgefallen, weil der volle Flow vorher nie
     # tatsaechlich per Skript durchlief.
-    "$REAL_GIT" -C "$VITALOS_DIR" status --short 2>/dev/null | grep -vE '^( M|\?\?) (fitness-app|fuel-app|habit-app|journal-app|learn-app|relax-app)$' || true
+    "$REAL_GIT" -C "$VITALOS_DIR" status --short 2>/dev/null | grep -vE '^( M|\?\?) (fitness-app|fuel-app|habit-app|journal-app|learn-app|relax-app|6pack-app|plan-app|coach-app)$' || true
 }
 
 commit_parent_bumps() {
