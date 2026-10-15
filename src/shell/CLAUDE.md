@@ -44,7 +44,7 @@ Der `*Shell.jsx` ist für die Layout-Ebene (Sidebar, MobileShell), der `*App.jsx
 |---|---|
 | `Sidebar.jsx` / `VitalOSSidebar.jsx` | Desktop-Navigation |
 | `MobileShell.jsx` | Mobile-Wrapper mit Bottom-Nav, reserviert unten Platz für Tab-Bar + Home-Indicator |
-| `MobileNav.jsx` | iOS-Tab-Bar: 5 feste Slots (Home · Fitness · Fuel · Relax · Mehr). Aktiven Tab nochmal tippen → Sheet mit Unterbereichen; Home nochmal tippen → Hub an/aus |
+| `MobileNav.jsx` | iOS-Tab-Bar: 5 feste Slots (Home · Fitness · Fuel · Relax · Mehr). Aktiven Tab nochmal tippen → Sheet mit Unterbereichen und zusätzlichem Standalone-Link (neuer Tab, URLs in `NavigationItems.js`); Home nochmal tippen → Hub an/aus |
 | `FuelMobileLayout.jsx` | Fuel-spezifisches Mobile-Layout |
 
 ## Settings/ (Setup-Tab)

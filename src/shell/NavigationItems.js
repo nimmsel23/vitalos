@@ -8,10 +8,10 @@ import { NAV_ITEMS as FITNESS_NAV_ITEMS } from '@constants/NavigationItems.js'
 
 export const NAV_ITEMS = [
   { id: 'home',     label: 'Journal', Icon: NotebookPen },
-  { id: 'fitness',  label: 'Fitness', Icon: Dumbbell },
+  { id: 'fitness',  label: 'Fitness', Icon: Dumbbell, standaloneUrl: 'https://fitness-vos.web.app' },
   { id: 'sixpack',  label: '6Pack',   Icon: Zap },
-  { id: 'fuel',     label: 'Fuel',    Icon: Flame },
-  { id: 'relax',    label: 'Relax',   Icon: MoonStar },
+  { id: 'fuel',     label: 'Fuel',    Icon: Flame, standaloneUrl: 'https://fuel-vos.web.app' },
+  { id: 'relax',    label: 'Relax',   Icon: MoonStar, standaloneUrl: 'https://relax-vos.web.app' },
   { id: 'habits',   label: 'Habits',  Icon: CheckSquare },
   { id: 'settings', label: 'Setup',   Icon: Settings2 },
 ]

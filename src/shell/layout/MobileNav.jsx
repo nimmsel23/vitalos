@@ -1,5 +1,5 @@
 import { useMemo, useRef, useState } from 'react'
-import { Check, ChevronRight, Home, LayoutGrid, MoreHorizontal, NotebookPen, X } from 'lucide-react'
+import { Check, ChevronRight, ExternalLink, Home, LayoutGrid, MoreHorizontal, NotebookPen, X } from 'lucide-react'
 import { NAV_ITEMS, SUB_NAV, buildFitnessGateItems } from '@shell/NavigationItems'
 import { useSwipeToDismiss } from '@fitness/hooks/useSwipeToDismiss.js'
 
@@ -31,10 +31,12 @@ function findApp(id) {
   return NAV_ITEMS.find((item) => item.id === id)
 }
 
-function SheetRow({ Icon, label, active, onClick, hint }) {
+function SheetRow({ Icon, label, active, onClick, hint, href }) {
   const ResolvedIcon = Icon || NotebookPen
+  const Row = href ? 'a' : 'button'
   return (
-    <button
+    <Row
+      {...(href ? { href, target: '_blank', rel: 'noopener noreferrer' } : { type: 'button' })}
       onClick={onClick}
       className={`vos-press flex w-full items-center gap-3 rounded-2xl px-3 py-2.5 text-left ${active ? 'bg-fit-accent/15' : 'active:bg-white/5'}`}
       style={active ? { background: 'color-mix(in srgb, var(--accent) 14%, transparent)' } : undefined}
@@ -52,8 +54,8 @@ function SheetRow({ Icon, label, active, onClick, hint }) {
         <span className="block truncate text-[15px] font-medium text-fit-ink">{label}</span>
         {hint ? <span className="block truncate text-[12px] text-fit-dim">{hint}</span> : null}
       </span>
-      {active ? <Check size={16} className="shrink-0 text-fit-accent" /> : <ChevronRight size={16} className="shrink-0 text-fit-dim/60" />}
-    </button>
+      {href ? <ExternalLink size={16} className="shrink-0 text-fit-dim/60" /> : active ? <Check size={16} className="shrink-0 text-fit-accent" /> : <ChevronRight size={16} className="shrink-0 text-fit-dim/60" />}
+    </Row>
   )
 }
 
@@ -92,7 +94,8 @@ export default function MobileNav({ tab, navigate, subTab = null, homeGate = nul
     { id: 'more', label: 'Mehr', Icon: MoreHorizontal },
   ]
 
-  const panelTitle = panelId === 'overflow' ? 'Mehr' : (findApp(panelId)?.label || '')
+  const panelApp = findApp(panelId)
+  const panelTitle = panelId === 'overflow' ? 'Mehr' : (panelApp?.label || '')
 
   return (
     <>
@@ -149,6 +152,17 @@ export default function MobileNav({ tab, navigate, subTab = null, homeGate = nul
                     </div>
                   </div>
                 ))}
+                {panelApp?.standaloneUrl ? (
+                  <div className="border-t pt-2" style={{ borderColor: 'color-mix(in srgb, var(--ink) 8%, transparent)' }}>
+                    <SheetRow
+                      Icon={panelApp.Icon}
+                      label={`${panelTitle} separat öffnen`}
+                      hint={`${new URL(panelApp.standaloneUrl).hostname} · Neuer Tab`}
+                      href={panelApp.standaloneUrl}
+                      onClick={close}
+                    />
+                  </div>
+                ) : null}
               </div>
             )}
           </div>
