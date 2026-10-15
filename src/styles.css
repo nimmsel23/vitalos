@@ -139,6 +139,16 @@ body {
 
 .vos-nav-sheet { transition: transform 240ms cubic-bezier(.2,.8,.2,1); }
 
+.app-shell :where(button, a, input, select, textarea, [tabindex]):focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+}
+
+.vos-skip-link { position: fixed; left: 12px; top: 12px; z-index: 100; transform: translateY(-150%); }
+.vos-skip-link:focus { transform: none; }
+.vos-keyboard-help { margin: auto; width: min(34rem, calc(100vw - 24px)); max-height: 85dvh; overflow-y: auto; }
+.vos-keyboard-help::backdrop { background: rgb(0 0 0 / 55%); }
+
 .vos-surface {
   background: var(--card);
   border: 1px solid color-mix(in srgb, var(--ink) 7%, transparent);

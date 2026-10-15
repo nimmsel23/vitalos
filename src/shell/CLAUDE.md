@@ -54,6 +54,25 @@ fokussierbar. `MobileShell` passt den Inhaltsabstand über `--mobile-nav-height`
 an; Griff und Home-Indicator bleiben frei. Die Geste gehört zur Shell und
 ändert nicht den gemeinsamen `useSwipeToDismiss`-Hook der App-Sheets.
 
+## Tastaturbedienung
+
+- `Alt+0`: Übersicht; `Alt+1` bis `Alt+7`: Journal, Fitness, 6Pack, Fuel,
+  Relax, Habits, Setup (Reihenfolge aus `NAV_ITEMS`).
+- `Alt+←/→`: vorherige/nächste App; `?`: Tastaturübersicht. Hilfe auch über
+  die Sidebar, mobil unter „Mehr“ bzw. in der Fuel-Navigation.
+- `Tab`/`Shift+Tab`: Bedienelemente; Skip-Link „Zum Inhalt springen“.
+- Pfeiltasten sowie `Pos1`/`Ende`: Fokus innerhalb markierter Shell-Navs;
+  `Enter`/Leertaste aktiviert Buttons. Kein automatischer Appwechsel beim
+  Bewegen des Fokus. Raster berücksichtigen die sichtbare Spaltenzahl.
+- Shell-Sheets fokussieren beim Öffnen ein Bedienelement, halten den
+  Tab-Fokus im Sheet und geben ihn beim Schließen zurück. Escape schließt
+  die oberste Shell-Ebene; die native Hilfe lässt darunterliegende Sheets offen.
+- App-Shortcuts pausieren in Eingabefeldern, bei Textkomposition und offenen
+  Dialogen. Browser-Shortcuts mit Ctrl/Cmd und AltGr bleiben unangetastet.
+
+`keyboard.js` behandelt ausschließlich mit `data-shell-nav` markierte
+Shell-Navigationen; die eingebetteten App-Views behalten ihre eigenen Tasten.
+
 ## Scroll-Verhalten
 
 Journal und Setup scrollen mit dem Dokument. Die äußeren Wrapper (`html`,

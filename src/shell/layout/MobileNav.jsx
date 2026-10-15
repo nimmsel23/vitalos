@@ -1,7 +1,9 @@
 import { useId, useMemo, useRef, useState } from 'react'
-import { Check, ChevronRight, ExternalLink, Home, LayoutGrid, MoreHorizontal, NotebookPen, X } from 'lucide-react'
+import { Check, ChevronRight, ExternalLink, Home, Keyboard, LayoutGrid, MoreHorizontal, NotebookPen, X } from 'lucide-react'
 import { NAV_ITEMS, SUB_NAV, buildFitnessGateItems } from '@shell/NavigationItems'
 import { useSwipeToDismiss } from '@fitness/hooks/useSwipeToDismiss.js'
+import { handleSheetKeys } from '../keyboard.js'
+import { useSheetFocus } from '../useSheetFocus.js'
 
 // iOS-artige Tab-Bar: fünf feste Slots, immer an derselben Stelle.
 // Erneutes Tippen auf den aktiven Tab öffnet ein Sheet mit dessen
@@ -59,7 +61,7 @@ function SheetRow({ Icon, label, active, onClick, hint, href }) {
   )
 }
 
-export default function MobileNav({ tab, navigate, subTab = null, homeGate = null, expanded = true, onExpandedChange }) {
+export default function MobileNav({ tab, navigate, subTab = null, homeGate = null, expanded = true, onExpandedChange, onKeyboardHelp }) {
   const [panelId, setPanelId] = useState(null)
   const [dragY, setDragY] = useState(null)
   const tabsId = useId()
@@ -75,11 +77,12 @@ export default function MobileNav({ tab, navigate, subTab = null, homeGate = nul
 
   const backdropRef = useRef(null)
   const sheetRef = useSwipeToDismiss(close, { enabled: Boolean(panelId), backdropRef })
+  useSheetFocus(sheetRef, Boolean(panelId))
 
   function setExpanded(next) {
     if (!next) {
       close()
-      if (tabsRef.current?.contains(document.activeElement)) gripRef.current?.focus({ preventScroll: true })
+      if (tabsRef.current?.contains(document.activeElement) || sheetRef.current?.contains(document.activeElement)) gripRef.current?.focus({ preventScroll: true })
     }
     onExpandedChange?.(next)
   }
@@ -161,6 +164,10 @@ export default function MobileNav({ tab, navigate, subTab = null, homeGate = nul
           />
           <div
             ref={sheetRef}
+            role="dialog"
+            aria-label={panelTitle}
+            data-shell-nav-dialog=""
+            onKeyDown={(event) => handleSheetKeys(event, close)}
             className="vos-sheet vos-sheet-in fixed inset-x-2 z-[56] max-h-[70dvh] overflow-y-auto overscroll-contain rounded-[28px] px-3 pb-3 pt-2 shadow-2xl lg:hidden"
             style={{
               bottom: 'calc(var(--mobile-nav-height) + 8px)',
@@ -180,14 +187,15 @@ export default function MobileNav({ tab, navigate, subTab = null, homeGate = nul
             </div>
 
             {panelId === 'overflow' ? (
-              <div className="space-y-0.5">
+              <div data-shell-nav="vertical" className="space-y-0.5">
                 <SheetRow Icon={LayoutGrid} label="Übersicht" hint="Alle Bereiche auf einen Blick" active={hubOpen} onClick={() => { close(); navigate('hub') }} />
                 {MORE_IDS.map((id) => findApp(id)).filter(Boolean).map(({ id, label, Icon }) => (
                   <SheetRow key={id} Icon={Icon} label={label} active={tab === id} onClick={() => { close(); navigate(id) }} />
                 ))}
+                <SheetRow Icon={Keyboard} label="Tastaturkurzbefehle" hint="?" onClick={() => { close(); onKeyboardHelp?.() }} />
               </div>
             ) : (
-              <div className="space-y-3">
+              <div data-shell-nav="vertical" className="space-y-3">
                 {panelGroups.map(({ group, items }) => (
                   <div key={group}>
                     {panelGroups.length > 1 ? <div className="vos-eyebrow px-3 pb-1 pt-2">{group}</div> : null}
@@ -260,6 +268,7 @@ export default function MobileNav({ tab, navigate, subTab = null, homeGate = nul
         <div
           id={tabsId}
           ref={tabsRef}
+          data-shell-nav="horizontal"
           aria-hidden={!expanded}
           {...(!expanded ? { inert: '' } : {})}
           className="mx-auto grid max-w-xl grid-cols-5"
@@ -271,6 +280,8 @@ export default function MobileNav({ tab, navigate, subTab = null, homeGate = nul
               <button
                 key={id}
                 onClick={() => handleSlot(id)}
+                aria-haspopup={id === 'home' ? undefined : 'dialog'}
+                aria-expanded={id === 'home' ? undefined : (panelId === (id === 'more' ? 'overflow' : id))}
                 aria-current={active ? 'page' : undefined}
                 className="vos-press group flex flex-col items-center justify-center gap-1"
               >

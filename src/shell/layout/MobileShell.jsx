@@ -12,13 +12,13 @@ import FuelMobileLayout from './FuelMobileLayout.jsx'
  * Safe-Area: oben konsumiert der ShellHeader das Inset, unten reserviert
  * der Content-Wrapper Platz für die fixe Tab-Bar + Home-Indicator.
  */
-export default function MobileShell({ tab, navigate, mobileLayout, swipeHint, header, subNav = null, subTab = null, onSubTab = null, homeGate = null, children }) {
+export default function MobileShell({ tab, navigate, mobileLayout, swipeHint, header, subNav = null, subTab = null, onSubTab = null, homeGate = null, onKeyboardHelp, children }) {
   const [navExpanded, setNavExpanded] = useState(true)
 
   if (mobileLayout === 'fuel') {
     return (
       <div className="lg:hidden mobile-shell" style={{ paddingTop: 'var(--safe-top)' }}>
-        <FuelMobileLayout tab={tab} navigate={navigate} header={header}>
+        <FuelMobileLayout tab={tab} navigate={navigate} header={header} onKeyboardHelp={onKeyboardHelp}>
           {children}
         </FuelMobileLayout>
       </div>
@@ -32,12 +32,14 @@ export default function MobileShell({ tab, navigate, mobileLayout, swipeHint, he
     >
       {header || <div style={{ height: 'var(--safe-top)' }} />}
       <div
+        id="vos-shell-content"
+        tabIndex={-1}
         className="min-w-0 flex-1"
         style={{ paddingBottom: 'calc(var(--mobile-nav-height) + 12px)' }}
       >
         {children}
       </div>
-      <MobileNav tab={tab} navigate={navigate} swipeHint={swipeHint} subNav={subNav} subTab={subTab} onSubTab={onSubTab} homeGate={homeGate} expanded={navExpanded} onExpandedChange={setNavExpanded} />
+      <MobileNav tab={tab} navigate={navigate} swipeHint={swipeHint} subNav={subNav} subTab={subTab} onSubTab={onSubTab} homeGate={homeGate} expanded={navExpanded} onExpandedChange={setNavExpanded} onKeyboardHelp={onKeyboardHelp} />
     </div>
   )
 }

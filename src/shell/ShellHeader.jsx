@@ -295,7 +295,7 @@ function CompactHeader({ tab, subTab, runtimeDate, setRuntimeDate, subNav, onSub
         {tab === 'fuel' ? <FuelHeaderSummary runtimeDate={runtimeDate} compact /> : null}
 
         {showSubNav ? (
-          <nav className="no-scrollbar -mx-4 flex gap-2 overflow-x-auto px-4">
+          <nav aria-label="Unterbereiche" data-shell-nav="horizontal" className="no-scrollbar -mx-4 flex gap-2 overflow-x-auto px-4">
             {subNav.map(({ id, label, Icon }) => {
               const active = activeParent === id
               return (
@@ -461,7 +461,7 @@ function DesktopHeader({ tab, subTab = null, runtimeDate, setRuntimeDate, compac
       </div>
 
       {showSubNav ? (
-        <nav className={`mt-4 flex min-w-0 flex-wrap gap-2 pb-1 overflow-visible ${compact ? '' : 'xl:ml-auto xl:w-full'}`}>
+        <nav aria-label="Unterbereiche" data-shell-nav="horizontal" className={`mt-4 flex min-w-0 flex-wrap gap-2 pb-1 overflow-visible ${compact ? '' : 'xl:ml-auto xl:w-full'}`}>
           {subNav.map(({ id, label, Icon }) => {
             const active = subTab === id
             return (

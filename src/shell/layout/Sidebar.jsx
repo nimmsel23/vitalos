@@ -1,8 +1,8 @@
-import { ChevronLeft, ChevronRight, Shield, Zap } from "lucide-react";
+import { ChevronLeft, ChevronRight, Keyboard, Shield, Zap } from "lucide-react";
 import { NAV_ITEMS } from '@shell/NavigationItems';
 import { isLocalMode } from "@db";
 
-export default function Sidebar({ tab, navigate, pinned, setPinned, children, user, subNav, subTab, onSubTab }) {
+export default function Sidebar({ tab, navigate, pinned, setPinned, children, user, subNav, subTab, onSubTab, onKeyboardHelp }) {
   const hasSubNav = Array.isArray(subNav) && subNav.length > 0
   const visibleNavItems = NAV_ITEMS.filter(({ id }) => id !== 'hub')
 
@@ -22,6 +22,8 @@ export default function Sidebar({ tab, navigate, pinned, setPinned, children, us
           )}
           <button
             onClick={() => setPinned(!pinned)}
+            aria-label={pinned ? 'Seitenleiste einklappen' : 'Seitenleiste ausklappen'}
+            aria-expanded={pinned}
             className={`absolute top-1 z-10 flex h-8 w-8 items-center justify-center rounded-full border border-white/10 bg-white/8 text-fit-dim shadow-lg backdrop-blur transition-all hover:scale-110 hover:text-fit-accent active:scale-90 ${pinned ? 'right-0' : '-right-1 translate-x-1/2'}`}
           >
             {pinned ? <ChevronLeft size={14} /> : <ChevronRight size={14} />}
@@ -30,11 +32,11 @@ export default function Sidebar({ tab, navigate, pinned, setPinned, children, us
 
         {/* Haupt-Nav bleibt in App-Views immer kompakt, damit die Rail nicht
             zwischen Journal/Habits und Apps mit eigener Sub-Navigation springt. */}
-        <nav className="mb-3 flex flex-wrap justify-center gap-1 border-b border-fit-line/30 pb-3">
-          {visibleNavItems.map(({ id, label, Icon }) => {
+        <nav aria-label="Hauptnavigation" data-shell-nav="horizontal" className="mb-3 flex flex-wrap justify-center gap-1 border-b border-fit-line/30 pb-3">
+          {visibleNavItems.map(({ id, label, Icon }, index) => {
             const isActive = tab === id
             return (
-              <button key={id} onClick={() => navigate(id)} title={label}
+              <button key={id} onClick={() => navigate(id)} title={`${label} (Alt+${index + 1})`} aria-label={label} aria-current={isActive ? 'page' : undefined} aria-keyshortcuts={`Alt+${index + 1}`}
                 className={`rounded-xl border p-2.5 transition-all duration-200 ${isActive ? 'border-fit-accent/30 bg-fit-accent/14 text-fit-accent shadow-lg shadow-fit-accent/10 backdrop-blur' : 'border-transparent text-fit-dim hover:border-white/10 hover:bg-white/5 hover:text-fit-ink'}`}>
                 <Icon size={16} className={isActive ? 'stroke-[3]' : ''} />
               </button>
@@ -42,7 +44,7 @@ export default function Sidebar({ tab, navigate, pinned, setPinned, children, us
           })}
 
           {(isLocalMode() || user?.email?.includes('alpha') || user?.uid === '59ole36uNpNwml5H6VDYCXyCME92') && (
-            <button key="coach" onClick={() => navigate('coach')} title="Coach"
+            <button key="coach" onClick={() => navigate('coach')} title="Coach" aria-label="Coach" aria-current={tab === 'coach' ? 'page' : undefined}
               className={`rounded-xl border p-2.5 transition-all duration-200 ${tab === 'coach' ? 'border-red-500/30 bg-red-500/16 text-red-200 shadow-lg shadow-red-500/10 backdrop-blur' : 'border-transparent text-fit-dim hover:border-red-500/20 hover:bg-red-500/10 hover:text-red-200'}`}>
               <Shield size={16} className={tab === 'coach' ? 'stroke-[3]' : ''} />
             </button>
@@ -57,13 +59,15 @@ export default function Sidebar({ tab, navigate, pinned, setPinned, children, us
             als aktiv markiert wird, wenn eigentlich der Tab selbst (Bericht)
             angezeigt wird. */}
         {hasSubNav && (
-          <nav className="flex-1 space-y-1">
+          <nav aria-label="Unterbereiche" data-shell-nav="vertical" className="flex-1 space-y-1">
             {subNav.map(({ id, label, Icon, sub, noDefaultSub }) => {
               const isChildActive = sub?.some((s) => s.id === subTab)
               const isActive = subTab === id || isChildActive
               return (
                 <div key={id}>
                   <button onClick={() => onSubTab?.(id)}
+                    aria-label={label}
+                    aria-current={isActive ? 'page' : undefined}
                     className={`w-full border transition-all duration-200 ${pinned ? 'gap-4 px-5 py-3.5 rounded-2xl' : 'justify-center p-3.5 rounded-2xl'} ${isActive ? 'border-fit-accent/25 bg-white/10 text-fit-ink shadow-xl shadow-black/10 backdrop-blur font-black' : 'border-transparent text-fit-dim hover:border-white/10 hover:bg-white/5 font-bold'} flex items-center`}>
                     <Icon size={20} className={isActive ? 'stroke-[3]' : ''} />
                     {pinned && <span className="text-sm truncate animate-in fade-in slide-in-from-left-4 duration-500">{label}</span>}
@@ -75,6 +79,7 @@ export default function Sidebar({ tab, navigate, pinned, setPinned, children, us
                         const isSubActive = subTab === subId || (!isChildActive && !noDefaultSub && sub[0].id === subId)
                         return (
                           <button key={subId} onClick={() => onSubTab?.(subId)}
+                            aria-current={isSubActive ? 'page' : undefined}
                             className={`w-full flex items-center gap-3 rounded-xl border px-4 py-2 text-[11px] font-black uppercase tracking-[0.15em] transition-all ${isSubActive ? 'border-fit-accent/20 bg-fit-accent/12 text-fit-accent backdrop-blur' : 'border-transparent text-fit-dim/60 hover:border-white/10 hover:bg-white/5 hover:text-fit-dim'}`}>
                             <SubIcon size={13} />
                             {subLabel}
@@ -91,6 +96,9 @@ export default function Sidebar({ tab, navigate, pinned, setPinned, children, us
 
         {/* Footer */}
         <div className={`mt-auto space-y-2.5 border-t border-fit-line/30 pt-3 ${!pinned ? 'w-full flex flex-col items-center overflow-hidden' : ''}`}>
+          <button type="button" onClick={onKeyboardHelp} aria-label="Tastaturkurzbefehle" aria-keyshortcuts="?" title="Tastaturkurzbefehle (?)" className="flex min-h-9 items-center justify-center gap-2 rounded-xl px-2 text-sm text-fit-dim">
+            <Keyboard size={18} />{pinned ? 'Tastatur' : null}
+          </button>
           {pinned ? children : (
             <div className="h-9 w-9 rounded-full border border-white/10 bg-white/6 backdrop-blur" />
           )}

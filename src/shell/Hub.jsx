@@ -85,7 +85,7 @@ export default function Hub({ navigate, variant = 'page', runtimeDate, openSessi
           <h1 className="mt-0.5 text-[32px] font-bold leading-tight tracking-tight text-fit-ink">{greeting(now)}</h1>
         </header>
 
-        <nav className="grid grid-cols-2 gap-3 sm:grid-cols-4">
+        <nav aria-label="Apps" data-shell-nav="grid" className="grid grid-cols-2 gap-3 sm:grid-cols-4">
           {HUB_TILES.map(({ id, label, Icon, color }) => (
             <button
               key={id}
@@ -112,7 +112,7 @@ export default function Hub({ navigate, variant = 'page', runtimeDate, openSessi
           ))}
         </nav>
 
-        <div className="vos-surface mt-3 overflow-hidden rounded-[18px]">
+        <div data-shell-nav="vertical" className="vos-surface mt-3 overflow-hidden rounded-[18px]">
           {SECONDARY_LINKS.map(({ id, label, Icon, color }, index) => (
             <button
               key={id}

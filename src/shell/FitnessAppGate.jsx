@@ -8,7 +8,7 @@ import { NAV_ITEMS } from '@shell/NavigationItems.js';
 //   Karte gehört (Training/Review/Lernen), statt alles flach zu mischen.
 function CardGrid({ items, navigate, compact = false }) {
   return (
-    <nav className={`grid w-full gap-2.5 ${compact ? 'grid-cols-2 lg:grid-cols-3' : 'grid-cols-2 sm:grid-cols-3 lg:grid-cols-4'}`}>
+    <nav aria-label="Fitness-Bereiche" data-shell-nav="grid" className={`grid w-full gap-2.5 ${compact ? 'grid-cols-2 lg:grid-cols-3' : 'grid-cols-2 sm:grid-cols-3 lg:grid-cols-4'}`}>
       {items.map(({ id, label, Icon, onSelect }) => (
         <button
           key={id}

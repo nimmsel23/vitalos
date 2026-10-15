@@ -7,6 +7,9 @@ import { NAV_ITEMS, VALID_TABS, SUB_NAV, buildFitnessGateItems } from './shell/N
 import Settings from '@view/settings/index.jsx'
 import Sidebar from './shell/layout/Sidebar.jsx'
 import MobileShell from './shell/layout/MobileShell.jsx'
+import KeyboardHelp from './shell/KeyboardHelp.jsx'
+import { handleNavigationKeys, handleSheetKeys, isEditing } from './shell/keyboard.js'
+import { useSheetFocus } from './shell/useSheetFocus.js'
 import UserProfile from './components/common/UserProfile.jsx'
 import ErrorBoundary from './components/common/ErrorBoundary.jsx'
 import Hub from './shell/Hub.jsx'
@@ -49,6 +52,7 @@ function resolveHashDate(value) {
 function HomeSheet({ label, onDismiss, children }) {
   const backdropRef = useRef(null)
   const sheetRef = useSwipeToDismiss(onDismiss, { backdropRef })
+  useSheetFocus(sheetRef)
   return (
     <div className="fixed inset-0 z-50 flex items-end lg:backdrop-blur-sm">
       <button
@@ -59,6 +63,10 @@ function HomeSheet({ label, onDismiss, children }) {
       />
       <div
         ref={sheetRef}
+        role="dialog"
+        aria-label={label}
+        data-shell-overlay=""
+        onKeyDown={(event) => handleSheetKeys(event, onDismiss)}
         className="vos-sheet vos-sheet-in relative mx-auto flex w-full max-w-[1600px] flex-col overflow-hidden rounded-t-[28px] shadow-[0_-24px_60px_rgba(0,0,0,0.35)] lg:max-h-[88dvh]"
         style={{
           height: 'calc(100dvh - var(--safe-top) - 10px)',
@@ -231,6 +239,7 @@ export default function App() {
 
   const [user, setUser]           = useState(null)
   const [authLoading, setAuthLoading] = useState(true)
+  const [keyboardHelpOpen, setKeyboardHelpOpen] = useState(false)
   const [authEmail, setAuthEmail]     = useState('')
   const [authPassword, setAuthPassword] = useState('')
   const [authError, setAuthError]     = useState('')
@@ -479,6 +488,7 @@ export default function App() {
   // Jede Ebene bricht ab (return), wenn eine tiefere noch offen ist, damit
   // ein ESC-Druck nur genau eine Ebene schließt.
   const handleShellEscape = useCallback(() => {
+    if (document.querySelector('dialog[open], [data-shell-nav-dialog]')) return
     if (typeof document !== 'undefined' && document.body.dataset.sessionModalOpen) return
     // Fitness kümmert sich selbst um Inspector + Trainings-Sheet
     if (tab === 'fitness' && fitnessTab && fitnessTab !== 'gate') return
@@ -486,17 +496,23 @@ export default function App() {
   }, [homeGate, tab, fitnessTab])
   useEscapeKey(handleShellEscape, true)
 
-  // Alt+Pfeil links/rechts wechselt zyklisch durch die Haupt-Tabs
-  // (NAV_ITEMS). Alt statt Ctrl/Cmd, weil Ctrl/Cmd+… vom Browser belegt
-  // ist. Nicht aktiv, solange ein Eingabefeld fokussiert ist.
   useEffect(() => {
     function handleKeyDown(event) {
-      if (!event.altKey) return
+      if (authLoading || (!user && !isLocalMode()) || event.defaultPrevented || event.isComposing || event.ctrlKey || event.metaKey || isEditing(event.target)) return
+      if (document.querySelector('dialog[open]')) return
+      if (event.key === '?' && !event.altKey) {
+        event.preventDefault()
+        setKeyboardHelpOpen(true)
+        return
+      }
+      if (!event.altKey || event.shiftKey || document.querySelector('[aria-modal="true"], [data-shell-overlay], [data-shell-nav-dialog]') || document.body.dataset.sessionModalOpen) return
+      const digit = event.code?.match(/^Digit([0-7])$/)?.[1] || (/^[0-7]$/.test(event.key) ? event.key : null)
+      if (digit !== null) {
+        event.preventDefault()
+        navigate(digit === '0' ? 'hub' : NAV_ITEMS[Number(digit) - 1].id)
+        return
+      }
       if (event.key !== 'ArrowLeft' && event.key !== 'ArrowRight') return
-      const target = event.target
-      const t = target?.tagName
-      if (t === 'INPUT' || t === 'TEXTAREA' || t === 'SELECT' || target?.isContentEditable) return
-      if (homeGate) return
       const cycle = NAV_ITEMS.map(i => i.id)
       const currentIdx = cycle.indexOf(tab)
       if (currentIdx === -1) return
@@ -507,7 +523,7 @@ export default function App() {
     }
     window.addEventListener('keydown', handleKeyDown)
     return () => window.removeEventListener('keydown', handleKeyDown)
-  }, [tab, homeGate])
+  }, [tab, homeGate, authLoading, user, navigate])
 
   async function handleAuthSubmit(e) {
     e.preventDefault()
@@ -614,9 +630,13 @@ export default function App() {
       return (
         <ErrorBoundary>
         {/* HIER ist die app-shell Klasse wieder an Ort und Stelle */}
-        <div className="app-shell flex min-h-screen overflow-x-clip w-full bg-fit-bg text-fit-ink font-sans transition-colors duration-500">
+        <div className="app-shell flex min-h-screen overflow-x-clip w-full bg-fit-bg text-fit-ink font-sans transition-colors duration-500" onKeyDown={handleNavigationKeys}>
+        <a href="#vos-shell-content" className="vos-skip-link vos-surface rounded-xl px-4 py-3" onClick={(event) => {
+          event.preventDefault()
+          document.getElementById('vos-shell-content')?.focus()
+        }}>Zum Inhalt springen</a>
         {showSidebar && (
-        <Sidebar tab={tab} navigate={navigate} pinned={sidebarPinned} setPinned={setSidebarPinned} user={user}
+        <Sidebar tab={tab} navigate={navigate} pinned={sidebarPinned} setPinned={setSidebarPinned} user={user} onKeyboardHelp={() => setKeyboardHelpOpen(true)}
         subNav={tab === 'fitness' ? SUB_NAV.fitness : tab === 'fuel' ? SUB_NAV.fuel : tab === 'relax' ? SUB_NAV.relax : null}
         subTab={tab === 'fitness' ? fitnessTab : tab === 'fuel' ? fuelTab : tab === 'relax' ? relaxTab : null}
         onSubTab={tab === 'fitness' ? setFitnessTab : tab === 'fuel' ? setFuelTab : tab === 'relax' ? setRelaxTab : null}>
@@ -636,7 +656,7 @@ export default function App() {
         {isDesktopViewport ? (
           <>
           {showShellHeader ? shellHeader : null}
-          <main className="relative min-h-[100dvh]">
+          <main id="vos-shell-content" tabIndex={-1} className="relative min-h-[100dvh]">
           {shellViews}
           {hubGate}
           </main>
@@ -648,6 +668,7 @@ export default function App() {
             tab={tab}
             navigate={navigate}
             mobileLayout="fuel"
+            onKeyboardHelp={() => setKeyboardHelpOpen(true)}
             header={showShellHeader ? mobileShellHeader : null}
             subNav={shellSubNav}
             subTab={shellSubTab}
@@ -663,6 +684,7 @@ export default function App() {
             tab={tab}
             navigate={navigate}
             mobileLayout="classic"
+            onKeyboardHelp={() => setKeyboardHelpOpen(true)}
             homeGate={homeGate}
             header={showShellHeader ? mobileShellHeader : null}
             subNav={shellSubNav}
@@ -675,6 +697,7 @@ export default function App() {
           </>
         )}
         </div>
+        <KeyboardHelp open={keyboardHelpOpen} onClose={() => setKeyboardHelpOpen(false)} />
         </div>
         </ErrorBoundary>
       )
