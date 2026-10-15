@@ -33,6 +33,13 @@ jobs:
       - name: Install (Workspaces)
         run: pnpm install --frozen-lockfile
 
+      # learn-app importiert fitness-app/src/lib/db/firestore/kb.js, und das zieht die
+      # beim Fitness-Build erzeugten, gitignorierten *.generated.js (u.a.
+      # exerciseBulkData.generated.js). Ohne diesen Schritt: "Could not resolve
+      # ./exerciseBulkData.generated.js".
+      - name: Fitness-KB-Daten erzeugen (von learn-app mitgenutzt)
+        run: pnpm --filter ./fitness-app run build:kb-data
+
       - name: Build Learn
         run: pnpm --filter ./learn-app run build:firebase
 
