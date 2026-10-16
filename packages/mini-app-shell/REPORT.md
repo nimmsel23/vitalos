@@ -60,10 +60,16 @@ Adlerblick über alle Klone (Branch, Sync, Dirty, geteilte .git), Pointer (ok/st
 dev/master/vitalos, alle Service Worker (Kopien erkannt, mini-app-shell-Drift) und eine abgeleitete Push-Reihenfolge. `--sw`, `--plan`, `--fetch`, `--json`.
 Ausführen tut es nichts — das bleibt `vos-release` (existiert schon, deckt alle 9 Module ab).
 
+## Stand 2026-10-16 abends (aktualisiert)
+
+- **Veröffentlicht + deployt:** 6pack (live, inkl. Runner-Update), coach, fitness — jeweils `dev` und `vitalos`; `vitalos master` mit Pointer-Bumps gepusht. Plan: Kollege übernimmt Commit/Push/Merge (`~/plan-dev`).
+- **6pack-Deploy-Lücke:** `vos-release 6pack` lieferte zunächst nichts aus (Pre-Push-Hook kannte Root-Quellen nicht); manuell deployt, Hook-Trigger repariert (`6pack-dev 32ddd53`, wirkt ab dem nächsten Release).
+
 ## Offen
 
-1. **Pushen** (wartet auf den User, 6pack-Push = Live-Deploy). Reihenfolge laut `vos-overview --plan`; `fitness-dev` ist durch fremde WIP (`backend/pusher/` u. a.) für `vos-release` blockiert; `~/6pack-dev` steht auf `agent/photo-auth`.
-2. **fuel-dev** hat das Paket schon vendored (Kollege) — Stand jetzt veraltet → `node ~/vitalos/packages/mini-app-shell/cli.mjs vendor <fuel-dev>/scripts/mini-app-shell` (oder `vos-overview --sw` zeigt „Drift“).
-3. **SW abstimmen:** `vos-overview --sw` zeigt 6 identische Kopien des Fitness-Haupt-SW (u. a. `plan-dev/public/sw.js`, `coach-dev/public/sw.js`, in den nested Kopien) und mehrfach `fitness-v0`/`fuel-v0` als Cache-Präfix. Nächster Schritt: Haupt-SW von fitness selbst auf `sw-template` + Extras umstellen, fuel (`fuel-dev/public/sw.js`, `frontend/public/sw.js`, `vitalos/fuel-os`) anbinden, tote `public/sw.js` in plan/coach entfernen.
-4. relax / habits / journal / learn bleiben bei workbox / `useRegisterSW` (Lean Apps, laut `vitalos/CLAUDE.md` bewusst).
-5. Nicht auf Gerät getestet — vor dem Push SW-Update einmal an einer installierten PWA prüfen.
+1. **6pack:** `32ddd53`/`b3e070b` (Hook-Fix, Doku) sind auf `dev`, aber noch nicht auf `vitalos` → nächstes `6pack-release`.
+2. **Plan:** Merge nach `vitalos` beim Kollegen. Vorher `.githooks/pre-push` in plan-dev bereinigen (enthält Fitness-spezifischen KB-Push-Block).
+3. **fuel-dev** hat das Paket vendored, aber veraltet: `node ~/vitalos/packages/mini-app-shell/cli.mjs vendor <fuel-dev>/scripts/mini-app-shell` (Drift zeigt `vos-overview --sw`).
+4. **SW-Abgleich nur teilweise:** 6pack/plan/coach/training/atlas laufen auf dem gemeinsamen Template. Nicht umgestellt: Haupt-SW fitness (`public/sw.js`, 6 identische Kopien laut `vos-overview --sw`), fuel (`public/sw.js`, `frontend/public/sw.js`, `vitalos/fuel-os`), tote `public/sw.js` in plan/coach; relax/habits/journal/learn bleiben workbox (Lean Apps).
+5. **nested Submodule in fitness-dev** (`6pack/ coach/ plan/`): stehen auf `master`, eigene Commits auf Branch `lokal` (unveröffentlicht, überholt). fitness-dev nutzt `6pack/` noch in `lint` und `sync:6pack`. Entscheidung offen: `lokal`-Branches löschen und/oder Submodule entfernen.
+6. **Nicht auf Gerät getestet:** SW-Update-Verhalten (alle Mini-Apps) und der 6pack-Runner (Intro-Timing, englische Stimme, Musik läuft durch, Finisher-Eintrag in der Fitness-App).
