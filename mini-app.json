@@ -1,0 +1,63 @@
+{
+  "apps": {
+    "vitalos": {
+      "name": "VitalOS",
+      "short": "VitalOS",
+      "accent": "#6ee7b7",
+      "bg": "#0b0e14",
+      "splash": {
+        "icon": "/icon-192.png"
+      },
+      "register": {
+        "expose": true
+      },
+      "sw": {
+        "prefix": "vitalos-",
+        "shell": [
+          "./",
+          "./index.html",
+          "./manifest.json"
+        ],
+        "cacheAllSameOrigin": true,
+        "navTimeoutMs": null,
+        "api": {
+          "swr": [
+            "/session",
+            "/coverage",
+            "/fitness/weekly",
+            "/fitness/body",
+            "/fitness/plan",
+            "/fitness/inbox",
+            "/fitness/clients",
+            "/fitness/config",
+            "/fitness/muscles",
+            "/fitness/search",
+            "/fitness/exercises",
+            "/exercises/search",
+            "/exercises/by-group",
+            "/exercise",
+            "/journal",
+            "/habitsync",
+            "/plan/today",
+            "/blocks",
+            "/theme",
+            "/health"
+          ]
+        },
+        "imageCaches": [
+          {
+            "cache": "fitness-exercise-images",
+            "hosts": [
+              "cdn.jsdelivr.net"
+            ]
+          }
+        ],
+        "extras": [
+          "workout-notifications"
+        ],
+        "workoutLink": "./#session/today",
+        "notificationLink": "./#session/today"
+      }
+    }
+  }
+}

@@ -9,10 +9,10 @@
     "build:fitness-kb-data": "pnpm --filter fitness-dev run build:kb-data",
     "build:6pack-data": "pnpm --filter 6pack run build:data",
     "prebuild": "pnpm run build:fitness-kb-data && pnpm run build:6pack-data",
-    "build": "vite build",
+    "build": "vite build && node packages/mini-app-shell/cli.mjs sw dist --app vitalos && node packages/mini-app-shell/cli.mjs splash dist --app vitalos",
     "prebuild:firebase": "pnpm run build:fitness-kb-data && pnpm run build:6pack-data",
     "build:firebase": "vite build --mode firebase && pnpm run stamp:sw",
-    "stamp:sw": "node scripts/stamp-sw.mjs dist-firebase",
+    "stamp:sw": "node packages/mini-app-shell/cli.mjs sw dist-firebase --app vitalos && node packages/mini-app-shell/cli.mjs splash dist-firebase --app vitalos",
     "deploy:preview": "pnpm run build:firebase && pnpm dlx firebase-tools@latest hosting:channel:deploy agent-preview --expires 3d --project fitness-aos",
     "preview": "vite preview"
   },

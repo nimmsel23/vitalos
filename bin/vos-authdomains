@@ -1,0 +1,115 @@
+#!/usr/bin/env python3
+"""vos-authdomains — Firebase-Auth-Domains im Projekt mit den Hosting-Sites/Preview-Channels abgleichen.
+
+Ohne eingetragene Domain scheitert der Google-Login (auth/unauthorized-domain). Die Liste der autorisierten
+Domains kennt KEINE Wildcards: jede Live-Domain (<site>.web.app, <site>.firebaseapp.com) und jede aktive
+Preview-Channel-URL (<site>--<channel>-<hash>.web.app) muss einzeln drinstehen.
+
+Liest alle Hosting-Sites und deren aktive Channels, vergleicht mit authorizedDomains und zeigt, was fehlt.
+Mit --apply wird NUR HINZUGEFÜGT (nie entfernt) — Lesen/Schreiben per Identity-Toolkit-Admin-API.
+
+Usage:
+    vos-authdomains                  zeigt fehlende Domains (ändert nichts)
+    vos-authdomains --apply          fügt fehlende Domains hinzu
+    vos-authdomains --no-live        nur Preview-Channels prüfen
+    vos-authdomains --project X      anderes Firebase-Projekt (Default fitness-aos)
+Key: $GOOGLE_APPLICATION_CREDENTIALS oder ~/.env/firebase-fitness.json (wird nie ausgegeben).
+Hinweis: Preview-Channels laufen ab (--expires). Die URL-Kennung ist je Site+Channel-Name stabil, ein Eintrag bleibt
+also nach einem erneuten Deploy desselben Channels gültig; neue Channel-Namen brauchen einen neuen Lauf.
+"""
+from __future__ import annotations
+
+import os
+import sys
+from pathlib import Path
+from urllib.parse import urlparse
+
+import typer
+from loguru import logger
+from rich.console import Console
+from rich.table import Table
+
+app = typer.Typer(add_completion=False)
+console = Console()
+logger.remove()
+logger.add(sys.stderr, level="INFO", format="<level>{message}</level>")
+
+HOSTING = "https://firebasehosting.googleapis.com/v1beta1"
+IDTK = "https://identitytoolkit.googleapis.com/admin/v2"
+
+
+def session():
+    from google.auth.transport.requests import AuthorizedSession
+    from google.oauth2 import service_account
+
+    key = os.environ.get("GOOGLE_APPLICATION_CREDENTIALS") or str(Path.home() / ".env" / "firebase-fitness.json")
+    if not Path(key).is_file():
+        logger.error(f"Service-Account-Key nicht gefunden: {key}")
+        raise typer.Exit(2)
+    creds = service_account.Credentials.from_service_account_file(key, scopes=["https://www.googleapis.com/auth/cloud-platform"])
+    return AuthorizedSession(creds)
+
+
+def paged(s, url: str, key: str):
+    token = None
+    while True:
+        r = s.get(url, params={"pageSize": 100, **({"pageToken": token} if token else {})})
+        r.raise_for_status()
+        data = r.json()
+        yield from data.get(key, [])
+        token = data.get("nextPageToken")
+        if not token:
+            return
+
+
+@app.command()
+def main(
+    apply: bool = typer.Option(False, "--apply", help="fehlende Domains eintragen (nur hinzufügen)"),
+    live: bool = typer.Option(True, "--live/--no-live", help="auch Live-Domains (web.app + firebaseapp.com) aller Sites prüfen"),
+    project: str = typer.Option("fitness-aos", "--project"),
+) -> None:
+    s = session()
+    cfg = s.get(f"{IDTK}/projects/{project}/config")
+    cfg.raise_for_status()
+    have = set(cfg.json().get("authorizedDomains", []))
+
+    wanted: dict[str, str] = {}  # Domain -> Herkunft
+    for site in paged(s, f"{HOSTING}/projects/{project}/sites", "sites"):
+        sid = site["name"].split("/")[-1]
+        if live:
+            wanted.setdefault(f"{sid}.web.app", f"{sid} live")
+            wanted.setdefault(f"{sid}.firebaseapp.com", f"{sid} live")
+        for ch in paged(s, f"{HOSTING}/sites/{sid}/channels", "channels"):
+            name = ch["name"].split("/")[-1]
+            if name == "live":
+                continue
+            host = urlparse(ch.get("url", "")).hostname
+            if host:
+                wanted[host] = f"{sid} Preview-Channel {name} (läuft ab {ch.get('expireTime', '—')[:16]})"
+
+    missing = {d: why for d, why in wanted.items() if d not in have}
+    console.print(f"Projekt {project}: {len(have)} eingetragen, {len(wanted)} erwartet (Sites + aktive Channels), [bold]{len(missing)} fehlen[/]")
+    if missing:
+        t = Table()
+        t.add_column("Domain"); t.add_column("Herkunft")
+        for d, why in sorted(missing.items()):
+            t.add_row(d, why)
+        console.print(t)
+    if not missing:
+        return
+    if not apply:
+        console.print("Eintragen mit: vos-authdomains --apply")
+        return
+    merged = sorted(have | set(missing))
+    r = s.patch(f"{IDTK}/projects/{project}/config", params={"updateMask": "authorizedDomains"}, json={"authorizedDomains": merged})
+    if not r.ok:
+        logger.error(f"Eintragen fehlgeschlagen: HTTP {r.status_code} {r.text[:300]}")
+        raise typer.Exit(1)
+    after = set(r.json().get("authorizedDomains", []))
+    still = [d for d in missing if d not in after]
+    logger.info(f"✔ {len(missing) - len(still)} Domain(s) hinzugefügt; jetzt {len(after)} eingetragen" + (f"; weiterhin fehlend: {still}" if still else ""))
+    raise typer.Exit(1 if still else 0)
+
+
+if __name__ == "__main__":
+    app()
