@@ -432,3 +432,11 @@ Slug oder Vorname aus `~/vital/Klienten/*/client.json` (z.B. `vos-firestore pull
 `ich`/`operator`/`coach` = Operator. Trefferreihenfolge exakt → Präfix → Teilstring; mehrdeutig oder
 unbekannt bricht mit Liste der bekannten Klienten ab. Relax akzeptiert nur den Operator. `--uid` bleibt
 als exakte Alternative.
+
+**Journal & Habits als eigene Pull-Bereiche (2026-10-16):** `vos-firestore pull journal|habits [KLIENT…] [--dry-run]`;
+`pull fitness` = Sessions + Journal + Habits. Handler des alten Mirrors schreiben (Format-SOT), aber die
+„bereits gesehen"-Listen werden geleert (später in Firestore geänderte Einträge kommen an), eine leere/kaputte
+`habits/definitions.json` wird als `.bak-<zeit>` beiseitegelegt (lag als 0-Byte-Datei vor), der Dry-Run läuft auf
+einer Kopie und listet exakt neue (+) und geänderte (~) Dateien. Es wird nie lokal gelöscht. **Kein Push:**
+Firestore ist die Quelle; ein Push lokaler Reste (z.B. die beiden gelöschten Test-Einträge vom 2026-05-20) würde
+in Firestore gelöschte Einträge wiederbeleben.

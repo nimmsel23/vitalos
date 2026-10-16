@@ -7,6 +7,7 @@ Python-Funktionen aus fitness-dev (`fitness.firestore.*`) — kein Fork, keine K
 
   vos-firestore status
   vos-firestore push fuel|fitness [KLIENT…] [--dry-run]     KLIENT = Name/Slug/Vorname, z.B. jakob; "ich" = Operator
+  vos-firestore pull journal|habits [KLIENT…] [--dry-run]    (nur Pull — Firestore ist dort die Quelle)
   vos-firestore push relax|alle                [--dry-run]
   vos-firestore pull fuel|fitness|relax|alle [KLIENT…] [--dry-run]
   (exakte UID weiterhin mit --uid U)
@@ -52,7 +53,9 @@ app = typer.Typer(add_completion=False, no_args_is_help=True, help=__doc__)
 
 class Domain(str, Enum):
     fuel = "fuel"
-    fitness = "fitness"
+    fitness = "fitness"   # Sessions + Journal + Habits
+    journal = "journal"   # nur fitness/<uid>/journal
+    habits = "habits"     # habits, habitRecords, habitJournals
     relax = "relax"
     alle = "alle"
 
@@ -267,11 +270,8 @@ def fitness_push(uid: Optional[str], dry_run: bool) -> int:
 
 
 def fitness_pull(uid: Optional[str], dry_run: bool) -> int:
-    """Sessions: neues Backend (`backend sync pull sessions`, decide()+Lock). Journal, Habits,
-    Habit-Records, Habit-Journals: Handler des alten Daemons als ADDED-Replay (das neue Backend
-    synchronisiert nur Sessions; die Dateien sind disjunkt, es schreibt nie zweimal dasselbe)."""
-    from fitness.firestore import mirror as m
-    from fitness.firestore._db import get_db
+    """Sessions: neues Backend (`backend sync pull sessions`, decide()+Lock). Danach Journal und
+    Habits (eigene Funktionen unten) — das neue Backend synchronisiert nur Sessions."""
     known = known_uids()
     if uid and uid not in known:
         logger.error(f"UID {uid} ist weder Operator noch Klient — abgebrochen.")
@@ -283,28 +283,141 @@ def fitness_pull(uid: Optional[str], dry_run: bool) -> int:
     if dry_run:
         args.append("--dry-run")
     rc = 1 if _backend(args) else 0
-
-    db = get_db()
-    specs = [("journal", m.on_journal), ("habits", m.on_habits),
-             ("habitRecords", m.on_habit_records), ("habitJournals", m.on_habit_journals)]
-    for name, handler in specs:
-        try:
-            docs, unknown = [], set()
-            for d in db.collection_group(name).stream():
-                if not m._is_fitness_scoped(d):
-                    continue  # gleiche Collection-Namen unter relax/, habits/ usw.
-                u = m._uid_of(d)
-                if u not in known:
-                    unknown.add(u)
-                elif not uid or u == uid:
-                    docs.append(d)
-            if unknown:
-                logger.warning(f"fitness {name}: unbekannte UID(s) in Firestore übersprungen: {sorted(unknown)}")
-            _replay(f"fitness {name}", docs, handler, dry_run)
-        except Exception as e:
-            rc = 1
-            logger.error(f"fitness {name}: {type(e).__name__}: {e}")
+    rc |= journal_pull(uid, dry_run)
+    rc |= habits_pull(uid, dry_run)
     return rc
+
+
+# ── Journal & Habits (Firestore → lokal) ───────────────────────────────────────
+# Firestore ist hier die Quelle (die App schreibt dort); lokal sind journal/*.entries.jsonl (+ .md),
+# habits/definitions.json und habits/records/*.json abgeleitet. Gepullt wird mit den Handlern des
+# alten Mirrors (Format-SOT: fitness.firestore.mirror), aber:
+#   * die "bereits gesehen"-Listen werden geleert → später in Firestore geänderte Einträge werden
+#     übernommen (der alte Daemon holte jedes Dokument nur einmal, ADDED);
+#   * eine leere/kaputte habits/definitions.json (liegt aktuell als 0-Byte-Datei vor) bricht den
+#     Handler nicht mehr ab, sie wird als .bak-<zeit> beiseitegelegt;
+#   * der Dry-Run läuft auf einer Kopie und meldet exakt, welche Dateien neu/geändert würden.
+# Es wird nie lokal gelöscht (in Firestore gelöschte Einträge bleiben lokal liegen).
+
+GROUPS = {
+    "journal": [("journal", "on_journal")],
+    "habits": [("habits", "on_habits"), ("habitRecords", "on_habit_records"), ("habitJournals", "on_habit_journals")],
+}
+SUBDIRS = ("journal", "habits")
+
+
+def _snapshot(root: Path) -> dict[str, str]:
+    import hashlib
+    out: dict[str, str] = {}
+    for dp, _dn, files in os.walk(root, followlinks=True):
+        for f in files:
+            p = Path(dp) / f
+            try:
+                out[str(p.relative_to(root))] = hashlib.md5(p.read_bytes()).hexdigest()
+            except OSError:
+                pass
+    return out
+
+
+def _guard_definitions(fit_dir: Path) -> None:
+    """0-Byte/kaputte habits/definitions.json beiseitelegen (mv, kein Löschen)."""
+    f = fit_dir / "habits" / "definitions.json"
+    if not f.exists():
+        return
+    try:
+        if json.loads(f.read_text() or "null") is not None:
+            return
+    except Exception:
+        pass
+    target = f.with_name(f"definitions.json.bak-{datetime.now().strftime('%Y%m%d-%H%M%S')}")
+    f.rename(target)
+    logger.warning(f"{f} war leer/kaputt → beiseitegelegt als {target.name}")
+
+
+def _group_pull(group: str, uid: Optional[str], dry_run: bool) -> int:
+    import shutil
+    import tempfile
+    from fitness.firestore import mirror as m
+    from fitness.firestore._db import get_db
+    known = known_uids()
+    if uid and uid not in known:
+        logger.error(f"UID {uid} ist weder Operator noch Klient — abgebrochen.")
+        raise typer.Exit(1)
+    db = get_db()
+    rc = 0
+    batches: list[tuple[str, list, object]] = []
+    for coll, handler_name in GROUPS[group]:
+        docs, unknown = [], set()
+        for d in db.collection_group(coll).stream():
+            if not m._is_fitness_scoped(d):
+                continue  # gleiche Collection-Namen unter relax/, habits/ usw.
+            u = m._uid_of(d)
+            if u not in known:
+                unknown.add(u)
+            elif not uid or u == uid:
+                docs.append(d)
+        if unknown:
+            logger.warning(f"{coll}: unbekannte UID(s) in Firestore übersprungen: {sorted(unknown)}")
+        batches.append((coll, docs, getattr(m, handler_name)))
+    uids = sorted({m._uid_of(d) for _c, docs, _h in batches for d in docs})
+
+    for g in ("_known_journal", "_known_hr", "_known_hj"):
+        getattr(m, g).clear()  # sonst überspringt der Handler bereits gesehene (auch geänderte) Dokumente
+
+    orig_dir, orig_save = m._user_fitness_dir, m._save_known
+    tmp = tempfile.TemporaryDirectory() if dry_run else None
+    try:
+        if dry_run:
+            tmp_root = Path(tmp.name)
+            for u in uids:
+                for sub in SUBDIRS:
+                    src = orig_dir(u) / sub
+                    if src.exists():
+                        shutil.copytree(src.resolve(), tmp_root / u / "fitness" / sub, symlinks=False)
+            m._user_fitness_dir = lambda u: tmp_root / u / "fitness"
+            m._save_known = lambda *a, **k: None
+        for u in uids:
+            _guard_definitions(m._user_fitness_dir(u))
+        roots = {u: m._user_fitness_dir(u) for u in uids}
+        before = {u: _snapshot(r) for u, r in roots.items()}
+        for coll, docs, handler in batches:
+            try:
+                handler(docs, _added(docs), None)
+            except Exception as e:
+                rc = 1
+                logger.error(f"{coll}: {type(e).__name__}: {e}")
+        for u, r in roots.items():
+            after = _snapshot(r)
+            new = sorted(p for p in after if p not in before[u])
+            changed = sorted(p for p in after if p in before[u] and after[p] != before[u][p])
+            tag = "würde" if dry_run else "hat"
+            logger.info(f"{group} {u[:8]} ({known.get(u, '?')}): {len(new)} neu, {len(changed)} geändert"
+                        + ("  [dry-run]" if dry_run else ""))
+            for p in (new + changed)[:12]:
+                logger.info(f"   {'+' if p in new else '~'} {p}")
+    finally:
+        m._user_fitness_dir, m._save_known = orig_dir, orig_save
+        if tmp:
+            tmp.cleanup()
+    total = sum(len(docs) for _c, docs, _h in batches)
+    logger.info(f"{group}: {total} Firestore-Dokument(e) geprüft ({', '.join(c for c, _d, _h in batches)})")
+    return rc
+
+
+def journal_pull(uid: Optional[str], dry_run: bool) -> int:
+    return _group_pull("journal", uid, dry_run)
+
+
+def habits_pull(uid: Optional[str], dry_run: bool) -> int:
+    return _group_pull("habits", uid, dry_run)
+
+
+def _no_push(domain: str):
+    def _fn(uid: Optional[str], dry_run: bool) -> int:
+        logger.error(f"{domain}: kein Push — Firestore ist die Quelle (die App schreibt dort), lokal ist es abgeleitet. "
+                     "Ein Push würde in Firestore gelöschte Einträge wiederbeleben.")
+        return 1
+    return _fn
 
 
 # ── Relax ──────────────────────────────────────────────────────────────────────
@@ -382,6 +495,8 @@ ACTIONS = {
     ("push", "fuel"): fuel_push, ("pull", "fuel"): fuel_pull,
     ("push", "fitness"): fitness_push, ("pull", "fitness"): fitness_pull,
     ("push", "relax"): relax_push, ("pull", "relax"): relax_pull,
+    ("pull", "journal"): journal_pull, ("pull", "habits"): habits_pull,
+    ("push", "journal"): _no_push("journal"), ("push", "habits"): _no_push("habits"),
 }
 
 
