@@ -395,9 +395,10 @@ commit_parent_bumps() {
     local filtered
     filtered="$(parent_status_filtered)"
     if [[ -n "$filtered" ]]; then
-        error "$VITALOS_DIR has unexpected changes:"
+        # Der Pointer-Commit läuft mit Pathspec nur auf die gebumpten Submodule — fremde/parallele
+        # Änderungen im Meta-Repo (z. B. neue Submodule anderer Sessions) bleiben unangetastet.
+        warn "$VITALOS_DIR hat fremde Änderungen (werden NICHT mitcommittet):"
         printf '%s\n' "$filtered" >&2
-        exit 1
     fi
 
     local unique=()
