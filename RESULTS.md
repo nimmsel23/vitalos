@@ -42,3 +42,23 @@ oder Lockfile-Änderung wurde in den Release aufgenommen.
 Das anschließende Coach-Upgrade liegt separat als geprüfter Entwicklungscommit
 `af1f4cd` in coach-dev (gemeinsamer Plan-Editor und Klientenablauf). Es ist nicht
 Teil dieses bereits ausgeführten Plan-/Fitness-Releases.
+
+
+## 2026-10-16: Coach Strong-Workflow veröffentlicht
+
+Coach-Upgrade `af1f4cd` über dev in den vitalos-Release-Branch übernommen;
+finaler Coach-Stand `5a0d012`, Parent-Verweis `b419ff9`, alle Branches gepusht.
+Firebase Hosting unter https://vos-coach.web.app erfolgreich veröffentlicht.
+Vorlageneditor, Trainingsplanbereitstellung, Yuhonas-Auswahl und Workout-Ergebnisse
+im ausgelieferten JavaScript sowie gemeinsame Plan-Dialogklassen im Live-CSS
+geprüft. Authentifizierte reale Coach-/Klienten-Cloud-Schreibvorgänge bleiben
+unverifiziert; der isolierte Browser-Durchlauf verwendete Testdaten.
+
+Der erste Upload scheiterte am Netzwerk und wurde erfolgreich wiederholt.
+Zusätzlich Tailwind auf die eingebundenen Plan-Quellen erweitert. Preview-CI
+repariert: vollständiger Plan-Commit statt Kurz-ID, pnpm statt npm für die
+Standalone-Installation und explizite temporäre Workspace-Konfiguration.
+Preview `38965346842` erfolgreich. Produktions-CI Coach `38964936285` und
+`38965094966` sowie Shell `38964936288` und `38965094970` erfolgreich.
+Der abschließende Parent-Sync übernimmt ausschließlich die weiteren CI- und
+Dokumentationskorrekturen; die veröffentlichte Produktfunktion bleibt gleich.
