@@ -1,5 +1,8 @@
 # AGENTS.md — VitalOS
 
+## Paketmanager für Apps
+pnpm 
+
 ## Commit-Regel (verbindlich)
 
 **Immer committen, nie fragen.** Sobald eine Aufgabe — egal ob vom Hauptagenten
