@@ -426,3 +426,9 @@ vos-firestore pull fuel|fitness|relax|alle [--uid U] [--dry-run]
 zieht `pull fitness` weiter über die Handler des alten Daemons (das neue Backend kennt nur Sessions);
 Fuel-Pull nutzt die Daemon-Handler für den Operator und `pull_fuel` für Klienten. Live-Sync während
 der Console: `fitness-sync.service` (siehe `fitness-dev/fitness/log/console/CLAUDE.md`).
+
+**Klienten-Namen statt UIDs (2026-10-16):** `vos-firestore pull|push fuel|fitness [KLIENT…]` — Name,
+Slug oder Vorname aus `~/vital/Klienten/*/client.json` (z.B. `vos-firestore pull fitness jakob matthias`);
+`ich`/`operator`/`coach` = Operator. Trefferreihenfolge exakt → Präfix → Teilstring; mehrdeutig oder
+unbekannt bricht mit Liste der bekannten Klienten ab. Relax akzeptiert nur den Operator. `--uid` bleibt
+als exakte Alternative.

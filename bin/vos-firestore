@@ -6,11 +6,10 @@ Server-gebundenen Sync-Endpunkte (relax-firestore.py). Nutzt die vorhandenen
 Python-Funktionen aus fitness-dev (`fitness.firestore.*`) — kein Fork, keine Kopie.
 
   vos-firestore status
-  vos-firestore push fuel      [--uid U] [--dry-run]
-  vos-firestore push fitness   [--uid U] [--dry-run]
-  vos-firestore push relax     [--dry-run]
-  vos-firestore push alle      [--dry-run]
-  vos-firestore pull fuel|fitness|relax|alle [--uid U]
+  vos-firestore push fuel|fitness [KLIENT…] [--dry-run]     KLIENT = Name/Slug/Vorname, z.B. jakob; "ich" = Operator
+  vos-firestore push relax|alle                [--dry-run]
+  vos-firestore pull fuel|fitness|relax|alle [KLIENT…] [--dry-run]
+  (exakte UID weiterhin mit --uid U)
 
 Fitness-Sessions laufen über das neue Backend (`python -m backend sync …` in fitness-dev,
 decide()-Konfliktlogik, Ein-Instanz-Lock). Journal/Habits werden weiter über die Handler des
@@ -93,6 +92,57 @@ def known_uids() -> dict[str, str]:
         for u in cands:
             uids.setdefault(u, f.parent.name)
     return uids
+
+
+def people() -> list[dict]:
+    """[{slug, name, uids, operator}] — Klienten aus client.json; der Operator ist die Person,
+    deren UID die Operator-UID ist (z.B. Klient 'daniel') und bekommt zusätzlich die Aliase ich/operator/coach."""
+    _prepare_imports()
+    from fitness.firestore._db import UID as operator
+    out: list[dict] = []
+    for f in sorted(KLIENTEN_DIR.glob("*/client.json")) if KLIENTEN_DIR.exists() else []:
+        try:
+            data = json.loads(f.read_text())
+        except Exception:
+            continue
+        uids = list(data.get("firebase_uids") or [])
+        if data.get("firebase_uid") and data["firebase_uid"] not in uids:
+            uids.insert(0, data["firebase_uid"])
+        if uids:
+            out.append({"slug": f.parent.name, "name": data.get("name") or f.parent.name, "uids": uids,
+                        "operator": operator in uids})
+    if not any(p["operator"] for p in out):
+        out.append({"slug": "operator", "name": "Operator", "uids": [operator], "operator": True})
+    return out
+
+
+def resolve_names(tokens: list[str]) -> list[str]:
+    """Namen/Slugs → UIDs. Exakt (Slug, Name, Vorname) vor Präfix vor Teilstring; mehrdeutig = Fehler."""
+    persons = people()
+    result: list[str] = []
+    for tok in tokens:
+        t = tok.strip().lower()
+        if t in {"ich", "operator", "coach"}:
+            hits = [p for p in persons if p["operator"]]
+        else:
+            def keys(p):
+                name = p["name"].lower()
+                return [p["slug"].lower(), name, name.split()[0] if name.split() else name]
+            for test in (lambda k: k == t, lambda k: k.startswith(t), lambda k: t in k):
+                hits = [p for p in persons if any(test(k) for k in keys(p))]
+                if hits:
+                    break
+        if not hits:
+            logger.error(f"Kein Klient passt zu '{tok}'. Bekannt: " + ", ".join(sorted(p["slug"] for p in persons)))
+            raise typer.Exit(1)
+        if len(hits) > 1:
+            logger.error(f"'{tok}' ist mehrdeutig: " + ", ".join(p["slug"] for p in hits))
+            raise typer.Exit(1)
+        for u in hits[0]["uids"]:
+            if u not in result:
+                result.append(u)
+        logger.info(f"'{tok}' → {hits[0]['name']} ({', '.join(u[:8] for u in hits[0]['uids'])})")
+    return result
 
 
 def local_uid_dirs(domain: str) -> list[str]:
@@ -335,43 +385,54 @@ ACTIONS = {
 }
 
 
-def _run(direction: str, domain: Domain, uid: Optional[str], dry_run: bool) -> None:
+def _run(direction: str, domain: Domain, uid: Optional[str], names: Optional[list[str]], dry_run: bool) -> None:
     _reexec_in_fitness_env()
     _prepare_imports()
+    targets: list[str] = ([uid] if uid else []) + (resolve_names(list(names)) if names else [])
     domains = ["fuel", "fitness", "relax"] if domain == Domain.alle else [domain.value]
+    from fitness.firestore._db import UID as operator
     rc = 0
     for d in domains:
-        if d == "relax" and uid and domain == Domain.alle:
-            continue  # --uid gilt nur für die UID-basierten Bereiche
-        try:
-            rc |= ACTIONS[(direction, d)](uid, dry_run)
-        except typer.Exit:
-            raise
-        except Exception as e:
-            logger.error(f"{d}: {type(e).__name__}: {e}")
-            rc = 1
+        run_for: list[Optional[str]] = list(dict.fromkeys(targets)) or [None]
+        if d == "relax" and targets:
+            if operator not in targets:
+                if domain == Domain.alle:
+                    continue  # Relax-Daten gehören dem Operator — bei 'alle' still überspringen
+                logger.error("Relax-Daten (~/relax-dev/data) gehören dem Operator — nur 'ich'/'operator'/Operator-Name erlaubt.")
+                raise typer.Exit(1)
+            run_for = [operator]
+        for u in run_for:
+            try:
+                rc |= ACTIONS[(direction, d)](u, dry_run)
+            except typer.Exit:
+                raise
+            except Exception as e:
+                logger.error(f"{d}: {type(e).__name__}: {e}")
+                rc = 1
     raise typer.Exit(rc)
 
 
 @app.command()
 def push(
     domain: Domain = typer.Argument(..., help="fuel | fitness | relax | alle"),
-    uid: Optional[str] = typer.Option(None, "--uid", help="Nur diese UID (Default: alle bekannten lokalen UIDs)"),
+    klienten: Optional[list[str]] = typer.Argument(None, help="Klienten-Namen (z.B. jakob matthias, 'ich'); leer = alle bekannten"),
+    uid: Optional[str] = typer.Option(None, "--uid", help="Alternativ: exakte UID"),
     dry_run: bool = typer.Option(False, "--dry-run", help="Nichts schreiben"),
 ) -> None:
     """Lokal → Firestore."""
-    _run("push", domain, uid, dry_run)
+    _run("push", domain, uid, klienten, dry_run)
 
 
 @app.command()
 def pull(
     domain: Domain = typer.Argument(..., help="fuel | fitness | relax | alle"),
-    uid: Optional[str] = typer.Option(None, "--uid"),
+    klienten: Optional[list[str]] = typer.Argument(None, help="Klienten-Namen (z.B. jakob matthias, 'ich'); leer = alle bekannten"),
+    uid: Optional[str] = typer.Option(None, "--uid", help="Alternativ: exakte UID"),
     dry_run: bool = typer.Option(False, "--dry-run"),
 ) -> None:
     """Firestore → lokal. Fuel/Fitness über die Daemon-Handler (rev-Konfliktprüfung, owner_uid-Schutz);
     Relax überschreibt nie abweichende lokale Tage."""
-    _run("pull", domain, uid, dry_run)
+    _run("pull", domain, uid, klienten, dry_run)
 
 
 @app.command()
