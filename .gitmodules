@@ -42,3 +42,23 @@
 	url = git@github.com:nimmsel23/coach-dev.git
 	ignore = untracked
 	branch = vitalos
+[submodule "vos-fuel-log-app"]
+	path = vos-fuel-log-app
+	url = git@github.com:nimmsel23/fuel-dev.git
+	branch = vitalos
+	ignore = untracked
+[submodule "vos-fuel-supplements-app"]
+	path = vos-fuel-supplements-app
+	url = git@github.com:nimmsel23/fuel-dev.git
+	branch = vitalos
+	ignore = untracked
+[submodule "vos-fuel-mikros-app"]
+	path = vos-fuel-mikros-app
+	url = git@github.com:nimmsel23/fuel-dev.git
+	branch = vitalos
+	ignore = untracked
+[submodule "vos-fuel-protokoll-app"]
+	path = vos-fuel-protokoll-app
+	url = git@github.com:nimmsel23/fuel-dev.git
+	branch = vitalos
+	ignore = untracked

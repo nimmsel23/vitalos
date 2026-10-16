@@ -221,7 +221,7 @@ Hosting-*Site* im selben Projekt (alle `.firebaserc` → `fitness-aos`):
 | fitness-vos | `fitness-vos` → fitness-vos.web.app | lokal via `fitness-vos/firebase.json`, automatisiert seit 2026-10-13 über `.githooks/pre-push` (siehe unten) |
 | fuel-app | `fuel-vos` → fuel-vos.web.app | CI `deploy-fuel.yml` / `fuel-app/firebase.json` |
 | fuel-os | `fuel-os` → fuel-os.web.app | lokal via `fuel-os/firebase.json` |
-| fuel-app (Mini-Apps, seit 2026-10-16) | `vos-fuel-log`, `vos-fuel-supplements`, `vos-fuel-mikros`, `vos-fuel-protokoll` → je `<site>.web.app` | aus **demselben** Repo fuel-dev (Targets `log`/`supplements`/`mikros`/`protokoll` in `firebase.json`, Build `VITE_SOLO=<tab>`, `pnpm run deploy:solo:<x>`); Hosting-Target der vollen App heißt jetzt `client` (`--only hosting:client`) |
+| fuel-app (Mini-Apps, seit 2026-10-16) | `vos-fuel-log`, `vos-fuel-supplements`, `vos-fuel-mikros`, `vos-fuel-protokoll` → je `<site>.web.app` | aus **demselben** Repo fuel-dev (Targets `log`/`supplements`/`mikros`/`protokoll` in `firebase.json`, Build `VITE_SOLO=<tab>`, `pnpm run deploy:solo:<x>`); Hosting-Target der vollen App heißt jetzt `client` (`--only hosting:client`). Lokale Checkouts als Submodule `vos-fuel-<x>-app` (alle vier = Klon von fuel-dev, Branch `vitalos`, `ignore = untracked`; bewusst NICHT in `pnpm-workspace.yaml`) — Arbeitskopie bleibt `~/fuel-dev` (Branch `dev`) |
 | journal-app / habit-app / learn-dev | je eigene Site | CI `deploy-journal/habits/learn.yml` |
 
 **Fitness-Rollen sind absichtlich getrennt:** `~/fitness-dev` ist der OG-Source-Code
