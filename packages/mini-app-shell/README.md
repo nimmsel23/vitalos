@@ -35,6 +35,7 @@ Der HTML-Root-Container muss `id="root"` haben (sonst `splash: { "rootId": "app"
 `sw`-Optionen: `prefix` (Default `vos-<id>-`; nur solche Caches räumt activate ab), `shell`, `api.swr` / `api.networkFirst`
 (Pfade relativ zum Scope), `imageCaches` (`[{cache, hosts}]`, überlebt Updates), `keepCaches`, `assetsPath`,
 `cacheAllSameOrigin`, `navTimeoutMs`, `sync` (`{tag, db}` → Background-Sync der IndexedDB-Queue),
+`notificationClick: false` (eingebauten Klick-Handler abschalten, wenn die App ihren eigenen per `extraFile` liefert, z. B. Fuel), `assetFallback: "none"` (offline kein `index.html` für nicht gecachte Assets, sondern Netzwerkfehler),
 `neverCache` (Pfade, die der SW gar nicht anfasst, z. B. `/api/`), `navTimeoutMs` (Default 4000; `null` = unbegrenzt aufs Netz warten),
 `sync.conflicts` / `sync.conflictMessage` (HTTP 409 in der Queue → als `conflict` markieren, Seiten benachrichtigen),
 `notificationLink`, `workoutLink`, `file` (SW-Dateiname, Default `sw.js`), `precacheAssets` (alle `/assets/*` beim Installieren laden),
@@ -47,6 +48,13 @@ App-Ebene: `html`, `manifest` (Dateiname), `register: true | {expose: true}` (`e
 - SW: Navigation Netz-zuerst (4 s Timeout) → Cache-Fallback; `/assets/*` Cache-zuerst; Skip-Waiting + `GET_VERSION`-Message.
 - Jeder Build bekommt einen Zeitstempel (`<prefix>v<build>`), dadurch erkennt der Browser den neuen SW.
 - Stempeln ist idempotent (Blöcke zwischen `vos-splash`/`vos-sw-register`-Markern werden ersetzt).
+
+## Umstellung eines bestehenden SW prüfen (Parität)
+
+Alten SW archivieren, Config in `mini-app.json` anlegen, dann:
+`node scripts/mini-app-shell/cli.mjs parity --app <id> --old <alter-sw.js> [--ignore Navigation,POST]`
+Der alte und der generierte SW laufen in einer `vm`-Sandbox gegen dieselben Szenarien (aus der Config abgeleitet: API-Pfade, Assets, Navigation, POST, Bilder, Fremd-Hosts, Install/Activate/Messages/Listener-Anzahl) und werden verglichen. `--ignore` markiert gewollte Abweichungen. Nicht abgedeckt: Push/Notification-Inhalte und der Queue-Konfliktpfad — die braucht ein eigener Funktionstest (Beispiel: Fuel-Push-Smoke-Test in `~/fuel-dev/RESULTS.md`).
+Stand: fitness (`fitness`, `frontend`) und fuel (`fuel`) sind so umgestellt.
 
 ## Überblick über alle Repos
 
