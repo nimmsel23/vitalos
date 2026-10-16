@@ -391,3 +391,30 @@ vlog day "<Freitext>"      # Gemini zerlegt → Vorschau als vlog-Kommandos → 
   (z.B. „360dag") kommt als Rückfrage. Key aus `~/.env/gemini.env`.
 - Test ohne echte Daten: `HOME=<scratch> VLOG_FITNESS_ENV=1 <fitness-venv-python> -I vlog fitness … --uid x --offline --no-enrich`
   (Pfade folgen `$HOME`; SQLite-History liegt dann ebenfalls im Scratch).
+
+---
+
+## `bin/vos-firestore` — lokale VOS-Daten ↔ Firestore ohne Server (seit 2026-10-16)
+
+```bash
+vos-firestore status
+vos-firestore push fuel|fitness|relax|alle [--uid U] [--dry-run]
+vos-firestore pull fuel|fitness|relax|alle [--uid U] [--dry-run]
+```
+
+- Läuft in der fitness-agent-uv-venv, nutzt `fitness.firestore.*` aus fitness-dev (kein Fork).
+- **pull** (Fitness/Fuel) spielt die Handler des `fitness-firestore-daemon` einmalig als
+  ADDED-Replay ab (`mirror.on_session/on_journal/on_habits/on_habit_records/on_habit_journals/
+  on_nutrition/on_supplements/on_supplements_catalog`) — gleiche rev-Konfliktprüfung,
+  `owner_uid`-Schutz und SQLite-Gateway wie der Daemon beim Start. Der Daemon selbst
+  (Echtzeit) startet/stoppt mit `fitness-log console` (`console/daemon.py`).
+  Nicht enthalten: Katalog-Listener (`inbox`, `kb/exercises` — gehören zum :9150-Prozess).
+- **push** nutzt `fitness.firestore.sync.push` / `fuel.push_fuel` / eigenen Relax-Push.
+- **UID-Schutz:** nur Operator + `~/vital/Klienten/*/client.json`-UIDs; andere Ordner
+  (z.B. `~/.aos/fitness/users/matthias`) und Test-UIDs in Firestore werden gemeldet, übersprungen.
+- **Relax:** schreibt im PWA-Format nach `relax/{operator-uid}/sessions/{date}` im Projekt
+  `fitness-aos`. Das alte `relax-firestore.py` schrieb nach `relax/default/...` mit einem
+  Service-Account des Projekts `relax-aos` und erreichte die PWA nie.
+- Bekannt: `sync.push` schreibt bei fehlendem Firestore-Vorsprung immer alles neu (kein
+  Skip bei Gleichstand); `remote_wins` bricht bei Simon mit `str > dict` ab (`saved_at` als
+  Dict) — pro UID abgefangen. Für einen Stunden-Timer beides vorher beheben.

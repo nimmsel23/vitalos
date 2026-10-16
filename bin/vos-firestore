@@ -1,0 +1,379 @@
+#!/usr/bin/env python3
+"""vos-firestore — lokale VOS-Daten (Fitness, Fuel, Relax) ↔ Firestore, ohne laufende Server.
+
+Ersetzt die Sync-Schleife im Fuel-Node-Server (firestore-admin.mjs) und die
+Server-gebundenen Sync-Endpunkte (relax-firestore.py). Nutzt die vorhandenen
+Python-Funktionen aus fitness-dev (`fitness.firestore.*`) — kein Fork, keine Kopie.
+
+  vos-firestore status
+  vos-firestore push fuel      [--uid U] [--dry-run]
+  vos-firestore push fitness   [--uid U] [--dry-run]
+  vos-firestore push relax     [--dry-run]
+  vos-firestore push alle      [--dry-run]
+  vos-firestore pull fuel|fitness|relax|alle [--uid U]
+
+UID-Schutz: Es werden nur UIDs synchronisiert, die der Operator oder ein Eintrag
+in ~/vital/Klienten/*/client.json (firebase_uid/firebase_uids) sind. Andere Ordner
+(z.B. ~/.aos/fitness/users/matthias) werden gemeldet und übersprungen — sie würden
+sonst als eigene Firestore-"UIDs" angelegt. Die `owner_uid`-Prüfung der
+fitness-dev-Funktionen bleibt unverändert aktiv.
+
+Relax: Die Relax-PWA liest `relax/{firebaseUid}/sessions/{date}` im Projekt
+fitness-aos. Das alte relax-firestore.py schrieb nach `relax/default/...` mit einem
+Service-Account des Projekts relax-aos und erreichte die PWA deshalb nie.
+vos-firestore schreibt im Format der PWA (`{date, items, saved_at}`) in das
+Projekt fitness-aos, unter der Operator-UID.
+"""
+from __future__ import annotations
+
+import json
+import os
+import sys
+from datetime import datetime, timezone
+from enum import Enum
+from pathlib import Path
+from typing import Optional
+
+import typer
+from loguru import logger
+
+HOME = Path.home()
+SELF = Path(__file__).resolve()
+FITNESS_PY = HOME / ".local/share/uv/tools/fitness-agent/bin/python3"
+KLIENTEN_DIR = HOME / "vital" / "Klienten"
+AOS = HOME / ".aos"
+RELAX_DATA_DIR = Path(os.environ.get("RELAX_DATA_DIR", str(HOME / "relax-dev" / "data"))).expanduser()
+
+app = typer.Typer(add_completion=False, no_args_is_help=True, help=__doc__)
+
+
+class Domain(str, Enum):
+    fuel = "fuel"
+    fitness = "fitness"
+    relax = "relax"
+    alle = "alle"
+
+
+def _reexec_in_fitness_env() -> None:
+    """firebase_admin lebt in der fitness-agent-uv-venv."""
+    if os.environ.get("VOS_FIRESTORE_ENV") == "1":
+        return
+    if not FITNESS_PY.exists():
+        logger.error(f"{FITNESS_PY} fehlt — fitness-agent uv-Tool installiert?")
+        raise typer.Exit(1)
+    os.environ["VOS_FIRESTORE_ENV"] = "1"
+    os.execv(str(FITNESS_PY), [str(FITNESS_PY), "-I", str(SELF), *sys.argv[1:]])
+
+
+def _prepare_imports() -> None:
+    # Reihenfolge wichtig: fitness/http.py überschattet sonst das stdlib-`http`,
+    # sobald fitness.api.config den fitness/-Ordner in sys.path einhängt.
+    import http.client  # noqa: F401
+    import firebase_admin  # noqa: F401
+
+
+def known_uids() -> dict[str, str]:
+    """uid → Bezeichnung (Operator + Klienten aus client.json)."""
+    _prepare_imports()
+    from fitness.firestore._db import UID as operator
+    uids: dict[str, str] = {operator: "operator"}
+    for f in sorted(KLIENTEN_DIR.glob("*/client.json")) if KLIENTEN_DIR.exists() else []:
+        try:
+            data = json.loads(f.read_text())
+        except Exception as e:
+            logger.warning(f"{f}: {e}")
+            continue
+        cands = list(data.get("firebase_uids") or [])
+        if data.get("firebase_uid"):
+            cands.append(data["firebase_uid"])
+        for u in cands:
+            uids.setdefault(u, f.parent.name)
+    return uids
+
+
+def local_uid_dirs(domain: str) -> list[str]:
+    base = {"fuel": AOS / "fuel" / "users", "fitness": AOS / "fitness" / "users"}[domain]
+    return sorted(d.name for d in base.iterdir() if d.is_dir()) if base.exists() else []
+
+
+def select_uids(domain: str, uid: Optional[str]) -> list[str]:
+    known = known_uids()
+    if uid:
+        if uid not in known:
+            logger.error(f"UID {uid} ist weder Operator noch in {KLIENTEN_DIR}/*/client.json — abgebrochen.")
+            raise typer.Exit(1)
+        return [uid]
+    chosen = []
+    for d in local_uid_dirs(domain):
+        if d in known:
+            chosen.append(d)
+        else:
+            logger.warning(f"{domain}: Ordner '{d}' ist keine bekannte UID — übersprungen")
+    return chosen
+
+
+def _now_iso() -> str:
+    return datetime.now(timezone.utc).isoformat()
+
+
+# ── Pull: Replay der Daemon-Handler ────────────────────────────────────────────
+# `vos-firestore pull` führt dieselben Handler aus wie der fitness-firestore-daemon
+# (fitness.firestore.mirror.on_*), einmalig statt als Dauer-Listener: jedes Dokument
+# kommt als ADDED an — exakt das, was der Daemon bei jedem Start tut. Damit gelten
+# unverändert rev-/saved_at-Konfliktprüfung, owner_uid-Schutz, sync_gateway→SQLite
+# und die Pfade unter ~/.aos/users/<uid>/fitness bzw. ~/.aos/fuel.
+
+def _added(docs: list):
+    from types import SimpleNamespace
+    return [SimpleNamespace(type=SimpleNamespace(name="ADDED"), document=d) for d in docs]
+
+
+def _replay(label: str, docs: list, handler, dry_run: bool) -> None:
+    if dry_run:
+        logger.info(f"{label}: {len(docs)} Dokument(e) würden verarbeitet (Konfliktprüfung im echten Lauf)")
+        return
+    handler(docs, _added(docs), None)
+    logger.success(f"{label}: {len(docs)} Dokument(e) verarbeitet")
+
+
+# ── Fuel ───────────────────────────────────────────────────────────────────────
+
+def fuel_push(uid: Optional[str], dry_run: bool) -> int:
+    from fitness.firestore import fuel as ff
+    uids = select_uids("fuel", uid)
+    rc = 0
+    for u in uids:
+        data_dir = ff._data_dir(u)
+        dates = ff._collect_dates(data_dir)
+        label = known_uids().get(u, "?")
+        if dry_run:
+            logger.info(f"fuel  {u} ({label}): {len(dates)} Tage lokal in {data_dir} — Hash-Vergleich nur im echten Lauf")
+            continue
+        try:
+            logger.success(f"fuel  {u} ({label}): {ff.push_fuel(u)}")
+        except Exception as e:
+            rc = 1
+            logger.error(f"fuel  {u} ({label}): {type(e).__name__}: {e}")
+    return rc
+
+
+def fuel_pull(uid: Optional[str], dry_run: bool) -> int:
+    """Operator: dieselben Handler wie der Daemon (nutrition, supplements, Supplement-Katalog).
+    Weitere bekannte UIDs: pull_fuel(uid) wie bisher die Node-Schleife."""
+    from fitness.firestore import fuel as ff, mirror as m
+    from fitness.firestore._db import UID as operator, get_db
+    known = known_uids()
+    if uid and uid not in known:
+        logger.error(f"UID {uid} ist weder Operator noch Klient — abgebrochen.")
+        raise typer.Exit(1)
+    targets = [uid] if uid else list(known)
+    rc = 0
+    db = get_db()
+    for u in targets:
+        label = known.get(u, "?")
+        try:
+            if u == operator:
+                _replay(f"fuel {u} ({label}) nutrition", list(db.collection("nutrition").document(u).collection("logs").stream()), m.on_nutrition, dry_run)
+                _replay(f"fuel {u} ({label}) supplements", list(db.collection("supplements").document(u).collection("logs").stream()), m.on_supplements, dry_run)
+                cat = db.collection("supplements").document(u).collection("meta").document("catalog").get()
+                if cat.exists:
+                    if dry_run:
+                        logger.info(f"fuel {u} ({label}) supplements-katalog: vorhanden")
+                    else:
+                        m.on_supplements_catalog([cat], None, None)
+                        logger.success(f"fuel {u} ({label}) supplements-katalog verarbeitet")
+            elif dry_run:
+                logger.info(f"fuel {u} ({label}): (dry-run) pull_fuel hat kein Dry-Run — nicht ausgeführt")
+            else:
+                logger.success(f"fuel {u} ({label}): {ff.pull_fuel(u)}")
+        except Exception as e:
+            rc = 1
+            logger.error(f"fuel {u} ({label}): {type(e).__name__}: {e}")
+    return rc
+
+
+# ── Fitness ────────────────────────────────────────────────────────────────────
+
+def fitness_push(uid: Optional[str], dry_run: bool) -> int:
+    from fitness.firestore import sync
+    rc = 0
+    for u in select_uids("fitness", uid):
+        try:
+            res = sync.push(u, dry_run=dry_run)
+            (logger.info if dry_run else logger.success)(f"fitness {u} ({known_uids().get(u, '?')}): {res}")
+        except Exception as e:  # eine kaputte UID darf die anderen nicht blockieren
+            rc = 1
+            logger.error(f"fitness {u} ({known_uids().get(u, '?')}): {type(e).__name__}: {e}")
+    return rc
+
+
+def fitness_pull(uid: Optional[str], dry_run: bool) -> int:
+    """sessions, journal, habits, habitRecords, habitJournals über alle bekannten UIDs
+    (collectionGroup wie der Daemon), über die Daemon-Handler."""
+    from fitness.firestore import mirror as m
+    from fitness.firestore._db import get_db
+    known = known_uids()
+    if uid and uid not in known:
+        logger.error(f"UID {uid} ist weder Operator noch Klient — abgebrochen.")
+        raise typer.Exit(1)
+    db = get_db()
+    specs = [("sessions", m.on_session), ("journal", m.on_journal), ("habits", m.on_habits),
+             ("habitRecords", m.on_habit_records), ("habitJournals", m.on_habit_journals)]
+    rc = 0
+    for name, handler in specs:
+        try:
+            docs, unknown = [], set()
+            for d in db.collection_group(name).stream():
+                if not m._is_fitness_scoped(d):
+                    continue  # gleiche Collection-Namen unter relax/, habits/ usw.
+                u = m._uid_of(d)
+                if u not in known:
+                    unknown.add(u)
+                elif not uid or u == uid:
+                    docs.append(d)
+            if unknown:
+                logger.warning(f"fitness {name}: unbekannte UID(s) in Firestore übersprungen: {sorted(unknown)}")
+            _replay(f"fitness {name}", docs, handler, dry_run)
+        except Exception as e:
+            rc = 1
+            logger.error(f"fitness {name}: {type(e).__name__}: {e}")
+    return rc
+
+
+# ── Relax ──────────────────────────────────────────────────────────────────────
+
+def _relax_operator(uid: Optional[str]) -> str:
+    from fitness.firestore._db import UID as operator
+    if uid and uid != operator:
+        logger.error("Relax-Daten (~/relax-dev/data) gehören dem Operator — --uid darf nur die Operator-UID sein.")
+        raise typer.Exit(1)
+    return operator
+
+
+def _relax_items(doc: dict | None) -> list:
+    return list((doc or {}).get("items") or [])
+
+
+def relax_push(uid: Optional[str], dry_run: bool) -> int:
+    operator = _relax_operator(uid)
+    sessions = sorted((RELAX_DATA_DIR / "sessions").glob("*.json"))
+    from fitness.firestore._db import get_db
+    from firebase_admin import firestore as fb
+    db = get_db()
+    pushed = skipped = 0
+    for f in sessions:
+        try:
+            local = json.loads(f.read_text())
+        except Exception as e:
+            logger.warning(f"relax {f.name}: {e}")
+            continue
+        day = f.stem
+        ref = db.collection("relax").document(operator).collection("sessions").document(day)
+        remote = ref.get()
+        if remote.exists and _relax_items(remote.to_dict()) == _relax_items(local):
+            skipped += 1
+            continue
+        if not dry_run:
+            ref.set({"date": day, "items": _relax_items(local), "saved_at": fb.SERVER_TIMESTAMP})
+        pushed += 1
+        logger.info(f"relax {day}: {'würde pushen' if dry_run else 'gepusht'} ({len(_relax_items(local))} Einträge)")
+    (logger.info if dry_run else logger.success)(
+        f"relax {operator}: {pushed} {'zu pushen' if dry_run else 'gepusht'}, {skipped} unverändert")
+    return 0
+
+
+def relax_pull(uid: Optional[str], dry_run: bool) -> int:
+    operator = _relax_operator(uid)
+    from fitness.firestore._db import get_db
+    db = get_db()
+    written = conflicts = same = 0
+    for doc in db.collection("relax").document(operator).collection("sessions").stream():
+        data = doc.to_dict() or {}
+        day = doc.id
+        path = RELAX_DATA_DIR / "sessions" / f"{day}.json"
+        items = _relax_items(data)
+        if path.exists():
+            local = json.loads(path.read_text())
+            if _relax_items(local) == items:
+                same += 1
+            else:
+                conflicts += 1
+                logger.warning(f"relax {day}: lokal ≠ Firestore — lokal bleibt (kein Überschreiben)")
+            continue
+        if not dry_run:
+            path.parent.mkdir(parents=True, exist_ok=True)
+            path.write_text(json.dumps({"date": day, "items": items, "saved_at": _now_iso()}, indent=2, ensure_ascii=False) + "\n")
+        written += 1
+        logger.info(f"relax {day}: {'würde schreiben' if dry_run else 'geschrieben'} ({len(items)} Einträge)")
+    logger.info(f"relax {operator}: {written} neu, {same} gleich, {conflicts} Konflikte (nicht überschrieben)")
+    return 0
+
+
+# ── Dispatch ───────────────────────────────────────────────────────────────────
+
+ACTIONS = {
+    ("push", "fuel"): fuel_push, ("pull", "fuel"): fuel_pull,
+    ("push", "fitness"): fitness_push, ("pull", "fitness"): fitness_pull,
+    ("push", "relax"): relax_push, ("pull", "relax"): relax_pull,
+}
+
+
+def _run(direction: str, domain: Domain, uid: Optional[str], dry_run: bool) -> None:
+    _reexec_in_fitness_env()
+    _prepare_imports()
+    domains = ["fuel", "fitness", "relax"] if domain == Domain.alle else [domain.value]
+    rc = 0
+    for d in domains:
+        if d == "relax" and uid and domain == Domain.alle:
+            continue  # --uid gilt nur für die UID-basierten Bereiche
+        try:
+            rc |= ACTIONS[(direction, d)](uid, dry_run)
+        except typer.Exit:
+            raise
+        except Exception as e:
+            logger.error(f"{d}: {type(e).__name__}: {e}")
+            rc = 1
+    raise typer.Exit(rc)
+
+
+@app.command()
+def push(
+    domain: Domain = typer.Argument(..., help="fuel | fitness | relax | alle"),
+    uid: Optional[str] = typer.Option(None, "--uid", help="Nur diese UID (Default: alle bekannten lokalen UIDs)"),
+    dry_run: bool = typer.Option(False, "--dry-run", help="Nichts schreiben"),
+) -> None:
+    """Lokal → Firestore."""
+    _run("push", domain, uid, dry_run)
+
+
+@app.command()
+def pull(
+    domain: Domain = typer.Argument(..., help="fuel | fitness | relax | alle"),
+    uid: Optional[str] = typer.Option(None, "--uid"),
+    dry_run: bool = typer.Option(False, "--dry-run"),
+) -> None:
+    """Firestore → lokal. Fuel/Fitness über die Daemon-Handler (rev-Konfliktprüfung, owner_uid-Schutz);
+    Relax überschreibt nie abweichende lokale Tage."""
+    _run("pull", domain, uid, dry_run)
+
+
+@app.command()
+def status() -> None:
+    """Bekannte UIDs, lokale Ordner und Zugangsdaten — ohne Netz."""
+    _reexec_in_fitness_env()
+    _prepare_imports()
+    from fitness.firestore._db import CRED_PATH, PROJECT, UID as operator
+    known = known_uids()
+    logger.info(f"Projekt {PROJECT}  Service-Account {'OK' if CRED_PATH.exists() else 'FEHLT'} ({CRED_PATH})")
+    logger.info(f"Operator-UID {operator}")
+    for u, name in known.items():
+        logger.info(f"  bekannt: {u}  {name}")
+    for d in ("fuel", "fitness"):
+        for name in local_uid_dirs(d):
+            logger.info(f"  {d:8s} lokaler Ordner {name}  {'✓' if name in known else '— unbekannt, wird übersprungen'}")
+    n = len(list((RELAX_DATA_DIR / 'sessions').glob('*.json'))) if (RELAX_DATA_DIR / 'sessions').exists() else 0
+    logger.info(f"  relax    {n} Session-Tage in {RELAX_DATA_DIR}/sessions  → relax/{operator}/sessions")
+
+
+if __name__ == "__main__":
+    app()
