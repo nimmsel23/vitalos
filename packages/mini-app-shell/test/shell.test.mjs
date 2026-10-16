@@ -7,7 +7,7 @@ import vm from "node:vm";
 import { injectSplash, splashSnippets } from "../splash.mjs";
 import { buildSw } from "../sw.mjs";
 import { injectRegister } from "../register.mjs";
-import { stampApp } from "../stamp.mjs";
+import { stampApp, stampSplash } from "../stamp.mjs";
 
 const HTML = `<!doctype html><html><head><title>X</title></head><body><div id="root"></div></body></html>`;
 
@@ -135,4 +135,17 @@ test("stampApp: eigener SW-Dateiname, fremdes Manifest, Precache der Assets, Sta
   assert.ok(!existsSync(join(out, "sw.js")));
   const html = readFileSync(join(out, "index.html"), "utf8");
   assert.ok(html.includes("coach-sw.js") && html.includes("coach-icon-192.png"));
+});
+
+test("stampSplash: nur Splash in index.html, idempotent, eigenes Icon", () => {
+  const dir = mkdtempSync(join(tmpdir(), "vos-shell-"));
+  writeFileSync(join(dir, "index.html"), HTML);
+  const app = { short: "Fuel", accent: "#fb923c", splash: { icon: "./icons/icon-192.png" } };
+  stampSplash({ outDir: dir, app, log: () => {} });
+  const once = readFileSync(join(dir, "index.html"), "utf8");
+  stampSplash({ outDir: dir, app, log: () => {} });
+  assert.equal(once, readFileSync(join(dir, "index.html"), "utf8"));
+  assert.ok(once.includes("./icons/icon-192.png") && once.includes("Fuel") && once.includes("vos-splash"));
+  assert.ok(!once.includes("serviceWorker.register")); // keine SW-Registrierung — das macht die App selbst
+  assert.throws(() => stampSplash({ outDir: dir, app: { short: "X" }, log: () => {} }), /Pflicht/);
 });

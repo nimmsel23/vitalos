@@ -17,7 +17,8 @@ Keine Abhängigkeiten, reines Node-ESM. Wirkt nur auf den Build-Output, nie auf 
    } } }
    ```
 3. Build-Script: `vite build && node scripts/mini-app-shell/cli.mjs stamp dist --app relax-timer`
-   (nur Service Worker + Manifest-Version, ohne Splash/Icons/HTML: `cli.mjs sw dist --app <id>` — so läuft der Fitness-Haupt-SW)
+   (nur Service Worker + Manifest-Version, ohne Splash/Icons/HTML: `cli.mjs sw dist --app <id>` — so läuft der Fitness-Haupt-SW;
+   nur Splash + Update-Loader in die index.html: `cli.mjs splash dist --app <id>` — für Haupt-Apps, die Manifest und SW-Registrierung selbst verwalten, z. B. Fitness und Fuel)
 
 Der HTML-Root-Container muss `id="root"` haben (sonst `splash: { "rootId": "app" }`).
 
