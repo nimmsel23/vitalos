@@ -44,8 +44,15 @@ Alle vier Repos: gebaut, `node --check` auf den generierten SW, Splash/Register 
 Jedes Modul existiert bis zu **dreimal**:
 `~/<m>-dev` (dev, kanonisch) · `~/vitalos/<m>-app` (Branch `vitalos`, Build/CI) · nur 6pack/coach/plan zusätzlich `~/fitness-dev/<m>` (nested, `master`).
 Mein erster Anlauf für plan/coach landete versehentlich auf den nested-Kopien (alte Basis; die echte Plan-/Coach-Arbeit von gestern liegt in
-`~/plan-dev`/`~/coach-dev`). Dort liegt je 1 lokaler Commit (`6pack 59f832a`, `coach 92414ca`, `plan 5bd9dd1`) — **überholt**, aber nicht gelöscht.
-Entscheidung offen: `git -C ~/fitness-dev/<m> reset --hard origin/master` (verwirft diese Commits) und/oder die nested Submodule aus fitness-dev entfernen.
+`~/plan-dev`/`~/coach-dev`). Auf User-Wunsch sind die nested Kopien jetzt **lokale Branches**: Branch `lokal` (ohne Upstream) trägt je 1 Commit (`6pack 59f832a`, `coach 92414ca`, `plan 5bd9dd1`, überholt aber erhalten);
+`master` zeigt wieder auf `origin/master`. Nichts davon wird gepusht; `vos-overview` meldet `lokal*` als gewollt.
+
+## vos-release für plan/coach (wie fitness: dev → vitalos)
+
+Flow unverändert: `dev` pushen → in `~/vitalos/<m>-app` `origin/dev` in `vitalos` mergen → push → Pointer bumpen. Neu in `vos-release`:
+- **Preflight** vor dem ersten Push (`git merge-tree`, lesend): Konflikte werden vorab gemeldet, bei unlösbaren wird nichts gepusht.
+- Konflikte in `.githooks/*` löst es zugunsten von **dev** ("-dev nach -app"); sonst `git merge --abort` statt halb gemergtem Submodul.
+- Befund: plan und coach haben genau EINEN Konflikt (`.githooks/pre-push`; die `vitalos`-Variante ist app-spezifisch, die dev-Variante bei plan eine Kopie des Fitness-Hooks inkl. KB-Push). Nach dem ersten Release gewinnt dev; der Fitness-spezifische KB-Block läuft dann auch aus plan-app — ggf. in plan-dev bereinigen.
 
 ## Neu: `~/vitalos/bin/vos-overview` (nur lesen)
 

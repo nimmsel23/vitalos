@@ -271,15 +271,49 @@ resolve_backup_conflicts() {
     unresolved="$("$REAL_GIT" -C "$repo" diff --name-only --diff-filter=U || true)"
     [[ -n "$unresolved" ]] || return 0
 
+    # Konflikte vorab prüfen, damit wir nie halb gemergt zurückbleiben
     local file
     while IFS= read -r file; do
         [[ -n "$file" ]] || continue
-        if [[ ! "$file" =~ \.bak($|[.]) && ! "$file" =~ \.baks && ! "$file" =~ \.mjs\.bak- ]]; then
-            error "Non-backup merge conflict remains in $repo: $file"
+        if [[ ! "$file" =~ \.bak($|[.]) && ! "$file" =~ \.baks && ! "$file" =~ \.mjs\.bak- && ! "$file" =~ ^\.githooks/ ]]; then
+            error "Non-backup merge conflict remains in $repo: $file — breche Merge ab (git merge --abort)"
+            "$REAL_GIT" -C "$repo" merge --abort || true
             return 1
         fi
-        run "$REAL_GIT" -C "$repo" rm -- "$file"
     done <<< "$unresolved"
+
+    while IFS= read -r file; do
+        [[ -n "$file" ]] || continue
+        if [[ "$file" =~ ^\.githooks/ ]]; then
+            # -dev kommt nach -app: bei Hook-Konflikten gewinnt der gemergte dev-Stand ("theirs")
+            warn "Hook-Konflikt $file — dev-Stand gewinnt"
+            run "$REAL_GIT" -C "$repo" checkout --theirs -- "$file"
+            run "$REAL_GIT" -C "$repo" add -- "$file"
+        else
+            run "$REAL_GIT" -C "$repo" rm -- "$file"
+        fi
+    done <<< "$unresolved"
+}
+
+# Vorab-Check VOR jedem Push: lässt sich lokales dev sauber nach origin/<target> mergen?
+# Lesend (git merge-tree). Erlaubte Konflikte: Backup-Dateien und .githooks/* (dev gewinnt).
+preflight_merge() {
+    local module="$1"
+    local standalone="${STANDALONE_DIRS[$module]}"
+    local source_branch="${SOURCE_BRANCHES[$module]}"
+    local target_branch="${TARGET_BRANCHES[$module]:-master}"
+    "$REAL_GIT" -C "$standalone" fetch -q origin "$target_branch" 2>/dev/null || warn "[$module] fetch origin/$target_branch fehlgeschlagen — Preflight mit altem Stand"
+    local out conflicts blocking
+    out="$("$REAL_GIT" -C "$standalone" merge-tree --write-tree --name-only --no-messages "origin/$target_branch" "$source_branch" 2>&1 || true)"
+    conflicts="$(printf '%s\n' "$out" | tail -n +2 | grep -v '^$' || true)"
+    [[ -n "$conflicts" ]] || { info "[$module] Preflight: dev -> $target_branch mergt konfliktfrei"; return 0; }
+    blocking="$(printf '%s\n' "$conflicts" | grep -vE '\.bak($|[.])|\.baks|\.mjs\.bak-|^\.githooks/' || true)"
+    if [[ -n "$blocking" ]]; then
+        error "[$module] Preflight: dev -> $target_branch hat Konflikte, die vos-release nicht lösen darf:"
+        printf '%s\n' "$blocking" >&2
+        return 1
+    fi
+    warn "[$module] Preflight: nur Hook-/Backup-Konflikte ($(printf '%s' "$conflicts" | tr '\n' ' ')) — dev gewinnt"
 }
 
 merge_module() {
@@ -410,7 +444,12 @@ main() {
 
     ensure_symlinks_if_available
 
-    local module
+    local module pre_fail=0
+    for module in "${SELECTED_MODULES[@]}"; do
+        preflight_merge "$module" || pre_fail=1
+    done
+    [[ "$pre_fail" -eq 0 ]] || { error "Preflight fehlgeschlagen — nichts wurde gepusht."; exit 1; }
+
     for module in "${SELECTED_MODULES[@]}"; do
         merge_module "$module"
     done

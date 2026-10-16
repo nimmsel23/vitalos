@@ -119,13 +119,14 @@ def inspect_clone(module: str, role: str, path: Path, fetch: bool) -> Clone:
     c.store = hashlib.sha1(str((path / common).resolve()).encode()).hexdigest()[:4]
     _, contains = git(path, "branch", "-r", "--contains", "HEAD")
     c.unpushed = not contains.strip()
-    if role == "nested":
-        c.problems.append("Nebenlinie — kanonisch ist ~/" + MODULES[module][0] + " (dev)")
-    if c.unpushed:
+    local_branch = role == "nested" and c.branch.startswith("lokal")
+    if role == "nested" and not local_branch:
+        c.problems.append("Nebenlinie auf `" + c.branch + "` — soll ein lokaler Branch (`lokal`) sein; kanonisch ist ~/" + MODULES[module][0] + " (dev)")
+    if c.unpushed and not local_branch:
         c.problems.append("HEAD in keinem Remote-Branch (nur lokal)")
     if c.branch == "(detached)":
         c.problems.append("detached HEAD")
-    if not c.upstream and c.branch != "(detached)":
+    if not c.upstream and c.branch != "(detached)" and not local_branch:
         c.problems.append("kein Upstream")
     return c
 
@@ -185,7 +186,10 @@ def inspect_pointers(clones: dict[tuple[str, str], Clone]) -> list[Pointer]:
                 rec = recorded_pointer(FITNESS_DEV, nested)
                 _, cur = git(np_, "rev-parse", "HEAD")
                 state, detail = "ok", ""
-                if not sha_in_remote(np_, rec):
+                _, nb = git(np_, "branch", "--show-current")
+                if nb.startswith("lokal"):
+                    detail = "nested auf lokalem Branch (gewollt, wird nicht gepusht)"
+                elif not sha_in_remote(np_, rec):
                     state, detail = "local-only", "Pointer zeigt auf Commit, der in keinem Remote-Branch liegt"
                 elif rec != cur:
                     state, detail = "stale", "nested Checkout ≠ Pointer in fitness-dev (Pointer-Commit nötig)"
@@ -307,7 +311,7 @@ def build_plan(clones: dict[tuple[str, str], Clone], pointers: list[Pointer], re
     # 1) nested-Nebenlinien: NICHT pushen, Arbeit gehört nach ~/<m>-dev (dev)
     for m in ("6pack", "coach", "plan"):
         c = clones.get((m, "nested"))
-        if c and c.exists and (c.ahead or c.unpushed):
+        if c and c.exists and not c.branch.startswith("lokal") and (c.ahead or c.unpushed):
             add(c.path, f"{m}: nested `{c.branch}` hat {c.ahead} lokale Commit(s) — Nebenlinie",
                 f"nicht pushen. Prüfen, ob die Arbeit schon in ~/{m}-dev (dev) liegt; wenn ja nested zurücksetzen: git -C {c.path} reset --hard origin/{c.branch}",
                 "Entscheidung nötig (reset verwirft die lokalen Commits)")
