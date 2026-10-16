@@ -90,6 +90,10 @@ NOISE_PATTERNS[plan]='^\?\? (node_modules|functions/node_modules)$|^.{2} fitness
 # und fließen nicht in Build/Deploy ein. Gilt für alle Module.
 DOC_NOISE='^.{2} (docs/.*|.*\.md)$'
 
+# Firebase-CLI-Cache (entsteht bei jedem firebase deploy) ist nie ein Release-Hindernis;
+# in den Repos steht .firebase/ in der .gitignore, aber vor dem Merge fehlt der Eintrag u. U. noch.
+CACHE_NOISE='^\?\? \.firebase/$'
+
 MODULE_ORDER=(fitness fuel habits journal learn relax 6pack coach plan)
 SELECTED_MODULES=()
 PARENT_BUMPS=()
@@ -176,7 +180,7 @@ status_filtered() {
     if [[ -z "$status" ]]; then
         return 0
     fi
-    status="$(printf '%s\n' "$status" | grep -vE "$DOC_NOISE" || true)"
+    status="$(printf '%s\n' "$status" | grep -vE "$DOC_NOISE" | grep -vE "$CACHE_NOISE" || true)"
     if [[ -z "$status" ]]; then
         return 0
     fi
