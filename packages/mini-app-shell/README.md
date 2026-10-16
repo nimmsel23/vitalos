@@ -17,6 +17,7 @@ Keine Abhängigkeiten, reines Node-ESM. Wirkt nur auf den Build-Output, nie auf 
    } } }
    ```
 3. Build-Script: `vite build && node scripts/mini-app-shell/cli.mjs stamp dist --app relax-timer`
+   (nur Service Worker + Manifest-Version, ohne Splash/Icons/HTML: `cli.mjs sw dist --app <id>` — so läuft der Fitness-Haupt-SW)
 
 Der HTML-Root-Container muss `id="root"` haben (sonst `splash: { "rootId": "app" }`).
 
@@ -34,6 +35,8 @@ Der HTML-Root-Container muss `id="root"` haben (sonst `splash: { "rootId": "app"
 `sw`-Optionen: `prefix` (Default `vos-<id>-`; nur solche Caches räumt activate ab), `shell`, `api.swr` / `api.networkFirst`
 (Pfade relativ zum Scope), `imageCaches` (`[{cache, hosts}]`, überlebt Updates), `keepCaches`, `assetsPath`,
 `cacheAllSameOrigin`, `navTimeoutMs`, `sync` (`{tag, db}` → Background-Sync der IndexedDB-Queue),
+`neverCache` (Pfade, die der SW gar nicht anfasst, z. B. `/api/`), `navTimeoutMs` (Default 4000; `null` = unbegrenzt aufs Netz warten),
+`sync.conflicts` / `sync.conflictMessage` (HTTP 409 in der Queue → als `conflict` markieren, Seiten benachrichtigen),
 `notificationLink`, `workoutLink`, `file` (SW-Dateiname, Default `sw.js`), `precacheAssets` (alle `/assets/*` beim Installieren laden),
 `extras` (Bausteine aus `extras/`, z. B. `"workout-notifications"`), `extraFile` (eigener SW-Code, wird angehängt).
 App-Ebene: `html`, `manifest` (Dateiname), `register: true | {expose: true}` (`expose` setzt `window.__swRegistration` + feuert `sw-update-available`).
