@@ -1,0 +1,471 @@
+#!/usr/bin/env python3
+"""vos-overview — Adlerblick über den VOS-Repo-Wildwuchs (nur lesen, ändert nichts).
+
+Jede VOS-Mini-App existiert mehrfach:
+  standalone  ~/<m>-dev            Arbeitsbranch `dev`, hier arbeitet man und `vos-release` pusht von hier
+  vitalos     ~/vitalos/<m>-app    Submodul auf Branch `vitalos` (Build/CI im Meta-Repo)
+  nested      ~/fitness-dev/<m>    6pack/coach/plan zusätzlich als Submodul INNERHALB von fitness-dev
+
+Das Skript zeigt je Klon Branch/Stand/Sync/Dirty, ob Pointer auf lokal-only Commits zeigen (CI-Falle
+"fatal: not our ref"), wie dev/vitalos/master gegeneinander stehen, alle Service Worker (inkl. Kopien und
+mini-app-shell-Drift) und leitet daraus die Push-Reihenfolge ab. Ausführen tut es nichts — dafür gibt es
+`vos-release` (der Plan nennt den passenden Aufruf).
+
+Usage:
+    vos-overview                 alles
+    vos-overview --sw            nur Service-Worker-Inventar
+    vos-overview --plan          nur Push-Reihenfolge
+    vos-overview --fetch         vorher `git fetch` in allen Klonen (aktualisiert nur Remote-Tracking-Refs)
+    vos-overview --json          maschinenlesbar
+"""
+from __future__ import annotations
+
+import hashlib
+import json
+import re
+import subprocess
+import sys
+from dataclasses import asdict, dataclass, field
+from pathlib import Path
+from typing import Optional
+
+import typer
+from loguru import logger
+from rich.console import Console
+from rich.table import Table
+
+app = typer.Typer(add_completion=False, no_args_is_help=False)
+console = Console(width=max(Console().width, 100))
+logger.remove()
+logger.add(sys.stderr, level="WARNING", format="<level>{message}</level>")
+
+HOME = Path.home()
+GIT = "/usr/bin/git"  # am ~/aos/bin/git-Wrapper vorbei (nur lesende Befehle)
+VITALOS = HOME / "vitalos"
+FITNESS_DEV = HOME / "fitness-dev"
+SHELL_PKG = VITALOS / "packages" / "mini-app-shell"
+
+# Modul -> (standalone-Ordner, vitalos-Submodul, nested-Pfad in fitness-dev | None)
+MODULES: dict[str, tuple[str, str, Optional[str]]] = {
+    "fitness": ("fitness-dev", "fitness-app", None),
+    "fuel": ("fuel-dev", "fuel-app", None),
+    "habits": ("habits-dev", "habit-app", None),
+    "journal": ("journal-dev", "journal-app", None),
+    "learn": ("learn-dev", "learn-app", None),
+    "relax": ("relax-dev", "relax-app", None),
+    "6pack": ("6pack-dev", "6pack-app", "6pack"),
+    "coach": ("coach-dev", "coach-app", "coach"),
+    "plan": ("plan-dev", "plan-app", "plan"),
+}
+# Reihenfolge wie vos-release: Blätter vor fitness (das 6pack/coach/plan als nested Submodule trägt)
+RELEASE_ORDER = ["6pack", "coach", "plan", "fitness", "fuel", "habits", "journal", "learn", "relax"]
+NESTED_PARENT = "fitness"
+
+
+def git(repo: Path, *args: str) -> tuple[int, str]:
+    try:
+        p = subprocess.run([GIT, "-C", str(repo), *args], capture_output=True, text=True, timeout=30)
+    except (subprocess.TimeoutExpired, OSError) as e:
+        return 1, str(e)
+    return p.returncode, p.stdout.strip()
+
+
+def is_repo(path: Path) -> bool:
+    return (path / ".git").exists()
+
+
+@dataclass
+class Clone:
+    module: str
+    role: str  # standalone | vitalos | nested
+    path: str
+    exists: bool = False
+    branch: str = ""
+    head: str = ""
+    upstream: str = ""
+    ahead: int = 0
+    behind: int = 0
+    tracked_changes: int = 0
+    untracked: int = 0
+    store: str = ""  # Objekt-DB-Kennung; gleiche Kennung = geteilte .git (Worktree-Familie)
+    unpushed: bool = False  # HEAD steckt in keinem Remote-Tracking-Branch
+    problems: list[str] = field(default_factory=list)
+
+
+def inspect_clone(module: str, role: str, path: Path, fetch: bool) -> Clone:
+    c = Clone(module=module, role=role, path=str(path).replace(str(HOME), "~"))
+    if not is_repo(path):
+        return c
+    c.exists = True
+    if fetch:
+        git(path, "fetch", "--quiet", "--prune")
+    _, c.branch = git(path, "branch", "--show-current")
+    c.branch = c.branch or "(detached)"
+    _, c.head = git(path, "rev-parse", "--short=7", "HEAD")
+    rc, up = git(path, "rev-parse", "--abbrev-ref", "@{u}")
+    c.upstream = up if rc == 0 else ""
+    if c.upstream:
+        _, counts = git(path, "rev-list", "--left-right", "--count", "@{u}...HEAD")
+        parts = counts.split()
+        if len(parts) == 2:
+            c.behind, c.ahead = int(parts[0]), int(parts[1])
+    _, st = git(path, "status", "--porcelain=v1")
+    for line in st.splitlines():
+        if line.startswith("??"):
+            c.untracked += 1
+        elif line.strip():
+            c.tracked_changes += 1
+    _, common = git(path, "rev-parse", "--git-common-dir")
+    c.store = hashlib.sha1(str((path / common).resolve()).encode()).hexdigest()[:4]
+    _, contains = git(path, "branch", "-r", "--contains", "HEAD")
+    c.unpushed = not contains.strip()
+    if role == "nested":
+        c.problems.append("Nebenlinie — kanonisch ist ~/" + MODULES[module][0] + " (dev)")
+    if c.unpushed:
+        c.problems.append("HEAD in keinem Remote-Branch (nur lokal)")
+    if c.branch == "(detached)":
+        c.problems.append("detached HEAD")
+    if not c.upstream and c.branch != "(detached)":
+        c.problems.append("kein Upstream")
+    return c
+
+
+def rel(repo: Path, a: str, b: str) -> str:
+    """a gegenüber b: '=' | '+n' (a voraus) | '-m' (a hinten) | '+n/-m' (divergiert) | '?' (Ref fehlt)."""
+    rc, out = git(repo, "rev-list", "--left-right", "--count", f"{b}...{a}")
+    if rc != 0:
+        return "?"
+    behind, ahead = (int(x) for x in out.split())
+    if not ahead and not behind:
+        return "="
+    return "/".join(x for x in (f"+{ahead}" if ahead else "", f"-{behind}" if behind else "") if x)
+
+
+def recorded_pointer(parent: Path, subpath: str) -> str:
+    rc, out = git(parent, "ls-tree", "HEAD", subpath)
+    return out.split()[2] if rc == 0 and out else ""
+
+
+def sha_in_remote(clone: Path, sha: str) -> bool:
+    if not sha:
+        return True
+    rc, out = git(clone, "branch", "-r", "--contains", sha)
+    return rc == 0 and bool(out.strip())
+
+
+@dataclass
+class Pointer:
+    parent: str
+    child: str
+    recorded: str
+    checked_out: str
+    state: str  # ok | stale | local-only | missing
+    detail: str = ""
+
+
+def inspect_pointers(clones: dict[tuple[str, str], Clone]) -> list[Pointer]:
+    out: list[Pointer] = []
+    for m, (_, sub, nested) in MODULES.items():
+        # vitalos -> Submodul
+        sp = VITALOS / sub
+        if is_repo(sp):
+            rec = recorded_pointer(VITALOS, sub)
+            _, cur = git(sp, "rev-parse", "HEAD")
+            state, detail = "ok", ""
+            if not sha_in_remote(sp, rec):
+                state, detail = "local-only", "Pointer zeigt auf Commit, der in keinem Remote-Branch liegt (CI: not our ref)"
+            elif rec != cur:
+                _, which = git(sp, "rev-list", "--left-right", "--count", f"{rec}...{cur}")
+                state, detail = "stale", f"Checkout ≠ Pointer (Pointer -{which.split()[0]}/+{which.split()[1]} gegenüber Checkout)"
+            out.append(Pointer("vitalos", sub, rec[:7], cur[:7], state, detail))
+        # fitness-dev -> nested Submodul
+        if nested:
+            np_ = FITNESS_DEV / nested
+            if is_repo(np_):
+                rec = recorded_pointer(FITNESS_DEV, nested)
+                _, cur = git(np_, "rev-parse", "HEAD")
+                state, detail = "ok", ""
+                if not sha_in_remote(np_, rec):
+                    state, detail = "local-only", "Pointer zeigt auf Commit, der in keinem Remote-Branch liegt"
+                elif rec != cur:
+                    state, detail = "stale", "nested Checkout ≠ Pointer in fitness-dev (Pointer-Commit nötig)"
+                out.append(Pointer("fitness-dev", nested, rec[:7], cur[:7], state, detail))
+    return out
+
+
+@dataclass
+class BranchRel:
+    module: str
+    repo: str
+    dev_vs_vitalos: str
+    master_vs_vitalos: str
+    dev_vs_master: str
+
+
+def branch_relations() -> list[BranchRel]:
+    out = []
+    for m, (sa, _, _) in MODULES.items():
+        repo = HOME / sa
+        if not is_repo(repo):
+            continue
+        out.append(
+            BranchRel(
+                m,
+                str(repo).replace(str(HOME), "~"),
+                rel(repo, "origin/dev", "origin/vitalos"),
+                rel(repo, "origin/master", "origin/vitalos"),
+                rel(repo, "origin/dev", "origin/master"),
+            )
+        )
+    return out
+
+
+# ---------------------------------------------------------------- Service Worker
+@dataclass
+class SwFile:
+    repo: str
+    file: str
+    kind: str
+    lines: int
+    sha: str
+    cache: str
+
+
+def classify_sw(text: str, name: str) -> str:
+    if "firebase-messaging" in text or "onBackgroundMessage" in text:
+        return "push (firebase-messaging)"
+    if "GENERIERT aus @vos/mini-app-shell" in text:
+        return "generiert (mini-app-shell)"
+    if "workbox" in text.lower():
+        return "workbox"
+    return "handgeschrieben"
+
+
+def sw_inventory() -> tuple[list[SwFile], list[dict]]:
+    files: list[SwFile] = []
+    shells: list[dict] = []
+    seen_stores: set[str] = set()
+    roots: list[Path] = []
+    for _, (sa, _, nested) in MODULES.items():
+        roots.append(HOME / sa)
+        if nested:
+            roots.append(FITNESS_DEV / nested)
+    roots.append(VITALOS)  # Meta-Shell
+    for root in dict.fromkeys(roots):
+        if not is_repo(root):
+            continue
+        rc, tracked = git(root, "ls-files", "--", "*sw.js", "*-sw.js", "*sw-*.js")
+        for rel_path in tracked.splitlines():
+            base = rel_path.split("/")[-1]
+            if "sw-template" in base or "/mini-app-shell/" in rel_path or "/archive/" in rel_path or "/node_modules/" in rel_path:
+                continue
+            p = root / rel_path
+            if not p.is_file():
+                continue
+            text = p.read_text(errors="replace")
+            m = re.search(r"""const\s+CACHE\s*=\s*['"]([^'"]+)['"]""", text)
+            files.append(
+                SwFile(str(root).replace(str(HOME), "~"), rel_path, classify_sw(text, base), text.count("\n") + 1,
+                       hashlib.sha1(text.encode()).hexdigest()[:8], m.group(1) if m else "")
+            )
+        shell_dir = root / "scripts" / "mini-app-shell"
+        if shell_dir.is_dir() and SHELL_PKG.is_dir():
+            r = subprocess.run(["node", str(SHELL_PKG / "cli.mjs"), "vendor", str(shell_dir), "--check"], capture_output=True, text=True)
+            apps = []
+            cfg = root / "mini-app.json"
+            if cfg.is_file():
+                try:
+                    apps = list(json.loads(cfg.read_text()).get("apps", {}))
+                except json.JSONDecodeError:
+                    apps = ["(mini-app.json defekt)"]
+            shells.append({"repo": str(root).replace(str(HOME), "~"), "drift": r.returncode != 0, "apps": apps,
+                           "detail": (r.stderr or r.stdout).strip().split("—")[0].replace("❌", "").strip() if r.returncode else ""})
+    return files, shells
+
+
+# ---------------------------------------------------------------- Push-Plan
+@dataclass
+class Step:
+    n: int
+    where: str
+    action: str
+    cmd: str
+    blocked: str = ""
+
+
+def build_plan(clones: dict[tuple[str, str], Clone], pointers: list[Pointer], rels: list[BranchRel]) -> list[Step]:
+    steps: list[Step] = []
+    n = 0
+
+    def add(where: str, action: str, cmd: str, blocked: str = "") -> None:
+        nonlocal n
+        n += 1
+        steps.append(Step(n, where, action, cmd, blocked))
+
+    rel_by = {r.module: r for r in rels}
+
+    # 1) nested-Nebenlinien: NICHT pushen, Arbeit gehört nach ~/<m>-dev (dev)
+    for m in ("6pack", "coach", "plan"):
+        c = clones.get((m, "nested"))
+        if c and c.exists and (c.ahead or c.unpushed):
+            add(c.path, f"{m}: nested `{c.branch}` hat {c.ahead} lokale Commit(s) — Nebenlinie",
+                f"nicht pushen. Prüfen, ob die Arbeit schon in ~/{m}-dev (dev) liegt; wenn ja nested zurücksetzen: git -C {c.path} reset --hard origin/{c.branch}",
+                "Entscheidung nötig (reset verwirft die lokalen Commits)")
+    # 2) standalone dev pushen (vos-release Schritt 1)
+    for m in RELEASE_ORDER:
+        c = clones.get((m, "standalone"))
+        if not (c and c.exists):
+            continue
+        if c.branch != "dev":
+            add(c.path, f"{m}: steht auf `{c.branch}` statt `dev`", f"vos-release {m}",
+                f"vos-release bricht ab (erwartet dev); Arbeit auf `{c.branch}` zuerst abschließen/mergen")
+        elif c.behind:
+            add(c.path, f"{m}: dev ist {c.behind} Commit(s) hinter origin/dev", f"git -C {c.path} pull --ff-only", "zuerst pullen")
+        elif c.ahead:
+            blocked = f"{c.tracked_changes} getrackte Änderungen offen" if c.tracked_changes else ""
+            add(c.path, f"{m}: dev ist {c.ahead} Commit(s) vor origin/dev", f"vos-release --dry-run {m}", blocked)
+    # 3) fitness-dev: nested-Pointer nachziehen, bevor fitness released wird
+    stale = [p for p in pointers if p.parent == "fitness-dev" and p.state in ("stale", "local-only")]
+    if stale:
+        names = " ".join(p.child for p in stale)
+        add("~/fitness-dev", f"nested Pointer in fitness-dev ({names}) weichen ab — nur relevant, solange 6pack/coach/plan dort Submodule bleiben",
+            "Strukturfrage: sind die nested Submodule neben ~/<m>-dev + vitalos/<m>-app überhaupt noch nötig?",
+            "Entscheidung nötig; kein Pointer-Commit auf lokal-only Commits (CI: not our ref)")
+    # 4) dev -> vitalos-Branch mergen (macht vos-release)
+    for m in RELEASE_ORDER:
+        r = rel_by.get(m)
+        if r and r.dev_vs_vitalos not in ("=", "?") and r.dev_vs_vitalos.startswith("+"):
+            add(f"~/vitalos/{MODULES[m][1]}", f"{m}: origin/dev ist {r.dev_vs_vitalos} gegenüber origin/vitalos", f"vos-release {m}")
+    # 5) vitalos-Meta: Pointer-Bump
+    vs = [p for p in pointers if p.parent == "vitalos" and p.state in ("stale", "local-only")]
+    if vs:
+        add("~/vitalos", "Meta-Repo: Submodul-Pointer bumpen (macht vos-release am Ende)",
+            "vos-release … (committet + pusht vitalos master) — nie vorher manuell, sonst 'not our ref'",
+            "; ".join(f"{p.child}: {p.detail}" for p in vs if p.state == "local-only"))
+    v = clones.get(("vitalos-meta", "meta"))
+    if v and v.exists and v.ahead:
+        add("~/vitalos", f"vitalos master ist {v.ahead} Commit(s) vor origin/master", "git -C ~/vitalos push   # recurseSubmodules=on-demand pusht Submodule vorab")
+    return steps
+
+
+# ---------------------------------------------------------------- Ausgabe
+def short(path: str) -> str:
+    return path
+
+
+def render(clones, pointers, rels, sw_files, shells, plan, parts: set[str]) -> None:
+    if "repos" in parts:
+        t = Table(title="Klone je Modul  (store = gleiche Kennung → geteilte .git / Worktree-Familie)", show_lines=False)
+        for col in ("Modul", "Rolle", "Branch", "HEAD", "Sync", "geänd.", "store"):
+            t.add_column(col)
+        notes: list[str] = []
+        for m in RELEASE_ORDER:
+            for role in ("standalone", "vitalos", "nested"):
+                c = clones.get((m, role))
+                if not c:
+                    continue
+                if not c.exists:
+                    t.add_row(m, role, "[red]fehlt[/]", "", "", "", "")
+                    continue
+                sync = f"↑{c.ahead} ↓{c.behind}" if c.upstream else "—"
+                if c.ahead:
+                    sync = f"[yellow]{sync}[/]"
+                dirty = (f"[red]{c.tracked_changes}[/]" if c.tracked_changes else "·") + (f" +{c.untracked}?" if c.untracked else "")
+                t.add_row(m, role, c.branch, c.head, sync, dirty, c.store)
+                for pr in c.problems:
+                    notes.append(f"[red]•[/] {m}/{role} ({c.path}): {pr}")
+        console.print(t)
+        for n in notes:
+            console.print(n)
+
+        t = Table(title="Pointer (Submodul-Verweise)")
+        for col in ("Eltern", "Kind", "Pointer", "Checkout", "Zustand"):
+            t.add_column(col)
+        for p in pointers:
+            color = {"ok": "green", "stale": "yellow", "local-only": "red"}.get(p.state, "white")
+            t.add_row(p.parent, p.child, p.recorded, p.checked_out, f"[{color}]{p.state}[/] {p.detail}")
+        console.print(t)
+
+        t = Table(title="Branch-Verhältnis je Modul (Remote-Refs im standalone-Klon; + = links voraus)")
+        for col in ("Modul", "dev vs vitalos", "master vs vitalos", "dev vs master"):
+            t.add_column(col)
+        for r in rels:
+            t.add_row(r.module, r.dev_vs_vitalos, r.master_vs_vitalos, r.dev_vs_master)
+        console.print(t)
+
+    if "sw" in parts:
+        t = Table(title="Service Worker (getrackte Quellen)")
+        for col in ("Repo", "Datei", "Art", "Zeilen", "Hash", "CACHE"):
+            t.add_column(col)
+        by_hash: dict[str, list[SwFile]] = {}
+        for f in sw_files:
+            by_hash.setdefault(f.sha, []).append(f)
+        for f in sorted(sw_files, key=lambda x: (x.sha, x.repo)):
+            dup = len(by_hash[f.sha]) > 1
+            t.add_row(f.repo, f.file, f.kind, str(f.lines), f"[yellow]{f.sha}[/]" if dup else f.sha, f.cache)
+        console.print(t)
+        dups = [v for v in by_hash.values() if len(v) > 1]
+        if dups:
+            console.print(f"[yellow]⚠ {sum(len(v) - 1 for v in dups)} identische SW-Kopien (gleicher Hash) — Kandidaten für mini-app-shell[/]")
+        names: dict[str, list[str]] = {}
+        for f in sw_files:
+            if f.cache:
+                names.setdefault(re.sub(r"[-_]?v?\d+$", "", f.cache), []).append(f.repo + "/" + f.file)
+        for k, v in names.items():
+            if len({x.split("/")[0] for x in v}) > 1:
+                console.print(f"[yellow]⚠ gleicher Cache-Präfix \"{k}\" in: {', '.join(v)}[/]")
+        t = Table(title="@vos/mini-app-shell (vendored)")
+        for col in ("Repo", "Apps", "Zustand"):
+            t.add_column(col)
+        for s in shells:
+            t.add_row(s["repo"], ", ".join(s["apps"]) or "—", "[red]Drift[/] " + s["detail"] if s["drift"] else "[green]aktuell[/]")
+        console.print(t)
+
+    if "plan" in parts:
+        t = Table(title="Push-Reihenfolge (Blätter → Wurzel). Ausführen: vos-release; dieses Skript führt nichts aus.")
+        for col in ("#", "Wo", "Was", "Befehl", "Blockiert"):
+            t.add_column(col)
+        for s in plan:
+            t.add_row(str(s.n), s.where, s.action, s.cmd, f"[red]{s.blocked}[/]" if s.blocked else "")
+        if not plan:
+            console.print("[green]Nichts zu pushen — alles synchron.[/]")
+        else:
+            console.print(t)
+
+
+@app.command()
+def main(
+    sw: bool = typer.Option(False, "--sw", help="nur Service-Worker-Inventar"),
+    plan_only: bool = typer.Option(False, "--plan", help="nur Push-Reihenfolge"),
+    fetch: bool = typer.Option(False, "--fetch", help="vorher git fetch in allen Klonen"),
+    as_json: bool = typer.Option(False, "--json", help="JSON statt Tabellen"),
+) -> None:
+    clones: dict[tuple[str, str], Clone] = {}
+    for m, (sa, sub, nested) in MODULES.items():
+        clones[(m, "standalone")] = inspect_clone(m, "standalone", HOME / sa, fetch)
+        clones[(m, "vitalos")] = inspect_clone(m, "vitalos", VITALOS / sub, fetch)
+        if nested:
+            clones[(m, "nested")] = inspect_clone(m, "nested", FITNESS_DEV / nested, fetch)
+    clones[("vitalos-meta", "meta")] = inspect_clone("vitalos", "meta", VITALOS, fetch)
+    pointers = inspect_pointers(clones)
+    rels = branch_relations()
+    sw_files, shells = sw_inventory()
+    steps = build_plan(clones, pointers, rels)
+
+    if as_json:
+        print(json.dumps({
+            "clones": [asdict(c) for c in clones.values()],
+            "pointers": [asdict(p) for p in pointers],
+            "branches": [asdict(r) for r in rels],
+            "service_workers": [asdict(f) for f in sw_files],
+            "mini_app_shell": shells,
+            "plan": [asdict(s) for s in steps],
+        }, indent=2, ensure_ascii=False))
+        return
+
+    parts = {"sw"} if sw else {"plan"} if plan_only else {"repos", "sw", "plan"}
+    render(clones, pointers, rels, sw_files, shells, steps, parts)
+
+
+if __name__ == "__main__":
+    app()

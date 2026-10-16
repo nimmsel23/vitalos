@@ -98,3 +98,41 @@ test("stampApp: Manifest, Titel, Splash, SW, Icons im Build-Output", () => {
   assert.equal(html2.match(/vos-splash:start/g).length, 2);
   assert.equal(html2.match(/vos-sw-register:start/g).length, 1);
 });
+
+test("SW: extra workout-notifications eingebunden + lauffähig, Build-Optionen nicht in der Config", async () => {
+  const src = buildSw({ appId: "p", version: "1", sw: { extras: ["workout-notifications"], file: "x.js", precacheAssets: true } });
+  assert.doesNotThrow(() => new vm.Script(src));
+  assert.ok(src.includes("SHOW_WORKOUT_TIMER_NOTIFICATION"));
+  const cfg = src.slice(src.indexOf("const CFG = {"), src.indexOf("const CACHE"));
+  assert.ok(!cfg.includes("precacheAssets") && !cfg.includes("extras") && !cfg.includes('"file"'));
+  assert.throws(() => buildSw({ appId: "p", version: "1", sw: { extras: ["gibt-es-nicht"] } }), /nicht gefunden/);
+});
+
+test("Register: expose setzt window.__swRegistration, Reload nur im Startfenster", () => {
+  const a = injectRegister(HTML, { exposeRegistration: true, swUrl: "./coach-sw.js" });
+  assert.ok(a.includes("window.__swRegistration") && a.includes("sw-update-available") && a.includes("coach-sw.js"));
+  const js = a.match(/<script>([\s\S]*?)<\/script>/)[1];
+  assert.doesNotThrow(() => new vm.Script(js));
+  assert.ok(a.includes("> 10000"));
+  assert.ok(!injectRegister(HTML, {}).includes("__swRegistration"));
+});
+
+test("stampApp: eigener SW-Dateiname, fremdes Manifest, Precache der Assets, Start/Scope nur wenn gesetzt", () => {
+  const dir = mkdtempSync(join(tmpdir(), "vos-shell-"));
+  const out = join(dir, "dist");
+  mkdirSync(join(out, "assets"), { recursive: true });
+  writeFileSync(join(out, "index.html"), HTML);
+  writeFileSync(join(out, "assets", "a-123.js"), "x");
+  writeFileSync(join(out, "coach-manifest.webmanifest"), JSON.stringify({ name: "alt", start_url: "/", scope: "/" }));
+  const app = { id: "coach", name: "VitalOS Coach", short: "Coach", accent: "#a78bfa", manifest: "coach-manifest.webmanifest", register: { expose: true },
+    splash: { icon: "./coach-icon-192.png" }, sw: { file: "coach-sw.js", prefix: "vos-coach-", precacheAssets: true, shell: ["./index.html"] } };
+  stampApp({ outDir: out, app, root: dir, log: () => {} });
+  const m = JSON.parse(readFileSync(join(out, "coach-manifest.webmanifest"), "utf8"));
+  assert.equal(m.short_name, "Coach");
+  assert.equal(m.start_url, "/"); // unverändert
+  const sw = readFileSync(join(out, "coach-sw.js"), "utf8");
+  assert.ok(sw.includes("./assets/a-123.js") && sw.includes('"prefix": "vos-coach-"'));
+  assert.ok(!existsSync(join(out, "sw.js")));
+  const html = readFileSync(join(out, "index.html"), "utf8");
+  assert.ok(html.includes("coach-sw.js") && html.includes("coach-icon-192.png"));
+});

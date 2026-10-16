@@ -441,3 +441,17 @@ als exakte Alternative.
 einer Kopie und listet exakt neue (+) und geänderte (~) Dateien. Es wird nie lokal gelöscht. **Kein Push:**
 Firestore ist die Quelle; ein Push lokaler Reste (z.B. die beiden gelöschten Test-Einträge vom 2026-05-20) würde
 in Firestore gelöschte Einträge wiederbeleben.
+
+---
+
+## Repo-Landschaft & Mini-Apps (seit 2026-10-16)
+
+- **`bin/vos-overview`** (nur lesen): Adlerblick über alle Klone/Pointer/Service Worker + abgeleitete Push-Reihenfolge
+  (`--plan`, `--sw`, `--fetch`, `--json`). Ausführen tut `vos-release`. Vor jedem Push/Release zuerst `vos-overview`.
+- **Kanonisch ist `~/<m>-dev` auf `dev`** (hier arbeitet man, hier pusht `vos-release`). `~/vitalos/<m>-app` (Branch `vitalos`) ist der
+  Build-/CI-Checkout. `~/fitness-dev/{6pack,coach,plan}` (nested Submodule, `master`) sind **Nebenlinien auf alter Basis** — nicht dort
+  arbeiten, nicht pushen.
+- **`packages/mini-app-shell`** (`@vos/mini-app-shell`): Splash, generischer Service Worker, SW-Register, Stamp-/Vendor-CLI für alle
+  Mini-Apps (training/atlas/6pack/plan/coach, später fuel/relax). Consumer bauen standalone (GitHub Actions ohne vitalos) → Paket wird per
+  `node packages/mini-app-shell/cli.mjs vendor scripts/mini-app-shell` ins Repo kopiert, `--check` meldet Drift. Bewusste Ausnahme von
+  „Kein Doppel-Code“; nicht in `pnpm-workspace.yaml` eintragen (Lockfile-Drift). Doku: `packages/mini-app-shell/README.md`, Stand/Übergabe: `REPORT.md`.

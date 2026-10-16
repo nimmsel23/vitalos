@@ -34,7 +34,9 @@ Der HTML-Root-Container muss `id="root"` haben (sonst `splash: { "rootId": "app"
 `sw`-Optionen: `prefix` (Default `vos-<id>-`; nur solche Caches räumt activate ab), `shell`, `api.swr` / `api.networkFirst`
 (Pfade relativ zum Scope), `imageCaches` (`[{cache, hosts}]`, überlebt Updates), `keepCaches`, `assetsPath`,
 `cacheAllSameOrigin`, `navTimeoutMs`, `sync` (`{tag, db}` → Background-Sync der IndexedDB-Queue),
-`notificationLink`, `extraFile` (eigener SW-Code, z. B. Workout-Notifications, wird angehängt).
+`notificationLink`, `workoutLink`, `file` (SW-Dateiname, Default `sw.js`), `precacheAssets` (alle `/assets/*` beim Installieren laden),
+`extras` (Bausteine aus `extras/`, z. B. `"workout-notifications"`), `extraFile` (eigener SW-Code, wird angehängt).
+App-Ebene: `html`, `manifest` (Dateiname), `register: true | {expose: true}` (`expose` setzt `window.__swRegistration` + feuert `sw-update-available`).
 
 ## Verhalten
 
@@ -42,6 +44,10 @@ Der HTML-Root-Container muss `id="root"` haben (sonst `splash: { "rootId": "app"
 - SW: Navigation Netz-zuerst (4 s Timeout) → Cache-Fallback; `/assets/*` Cache-zuerst; Skip-Waiting + `GET_VERSION`-Message.
 - Jeder Build bekommt einen Zeitstempel (`<prefix>v<build>`), dadurch erkennt der Browser den neuen SW.
 - Stempeln ist idempotent (Blöcke zwischen `vos-splash`/`vos-sw-register`-Markern werden ersetzt).
+
+## Überblick über alle Repos
+
+`vos-overview` (in `~/vitalos/bin`) zeigt Klone, Pointer, Service Worker und Mini-App-Shell-Drift; Push-Reihenfolge: `vos-overview --plan`.
 
 ## Drift
 

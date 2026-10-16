@@ -25,23 +25,38 @@ trägt hier nicht. Deshalb: Paket wird per `cli.mjs vendor <ordner>` ins Repo ko
 Das ist bewusste, kontrollierte Duplizierung (vitalos-Regel „Kein Doppel-Code“ → Ausnahme, hier dokumentiert).
 Das Paket ist **nicht** in `pnpm-workspace.yaml` eingetragen (würde Lockfile-Drift in der CI auslösen).
 
-## Migriert (committed, NICHT gepusht)
+## Migriert (alles committed auf den kanonischen `dev`-Branches, NICHTS gepusht)
 
-- **6pack** (`~/fitness-dev/6pack`, Commit `59f832a`): `scripts/mini-app-shell/` + `mini-app.json`; `npm run build` stempelt Splash,
-  Register und generierten `sw.js` (`vos-6pack-v<build>`); Inline-Splash/-Register aus `index.html` entfernt; alter
-  `public/sw.js` → `docs/archive/sw.static-v1.js`. Build grün (`npm run build`), `dist/sw.js` Syntax ok.
-  Unterschied zum alten SW: `activate` räumt nur Caches mit Präfix `vos-6pack-` (vorher alle fremden).
-- **fitness-dev Solo-Builds training/atlas** (Commit `d71ddcb`): `scripts/stamp-training.mjs` ruft `stampApp` (SW bleibt der
-  Haupt-SW → `mode: "keep"`, `stamp-sw.mjs` versioniert ihn weiter); `scripts/solo-splash.mjs` ist Shim mit altem Import-Pfad.
-  An Kopie von `dist-atlas` getestet (Manifest, Icons, Splash identisch zu vorher bis auf Kommentar/Quote-Stil).
-  `package.json`-Scripts in fitness-dev unverändert. Dabei nur eigene Dateien gestaged — die ungestagte Arbeit im Repo
-  (`backend/pusher/`, `NEXT.md`, `RESULTS.md`, `NotificationsSection.jsx`, `pyproject.toml`) ist **nicht** von mir.
+Kanonisch ist je Modul `~/<m>-dev` auf `dev` (so arbeitet `vos-release`). Die Kopien unter `~/fitness-dev/{6pack,coach,plan}`
+(nested Submodule, Branch `master`) sind Nebenlinien auf alter Basis — siehe „Wildwuchs“ unten.
 
-## Offen / nicht gemacht
+| Repo (Branch) | Commit(s) | Stand |
+|---|---|---|
+| `~/fitness-dev` (dev) | `d71ddcb`, `5b461b5` | training/atlas: `stamp-training.mjs` → `stampApp` (SW bleibt Haupt-SW, `mode: keep`); `solo-splash.mjs` = Shim; vendored Paket aktuell |
+| `~/6pack-dev` (**dev**, nicht der WIP-Branch `agent/photo-auth`) | `34a2c8c`, `7049696` | Splash/Register/SW generiert, `npm run build` stempelt; via temporärem Worktree auf `dev` gebracht, damit die fremde Arbeit in `~/6pack-dev` unberührt blieb. Lokales `dev` dafür auf `origin/dev` vorgespult |
+| `~/coach-dev` (dev) | `7500de0` | `coach-sw.js` (Dateiname + Präfix `vos-coach-` bleiben), Precache aller Assets, Register mit `window.__swRegistration`; Build geprüft |
+| `~/plan-dev` (dev) | `67e3c8f` | `plan-sw.js` (Name + Präfix bleiben), Cache jetzt pro Build versioniert (vorher statisch `vos-plan-v1` → Updates nicht erkennbar), Workout-Notifications-Extra; Build geprüft |
 
-1. **Pointer-Bump:** `fitness-dev` zeigt noch auf den alten 6pack-Commit (`6pack`-Submodul → `59f832a`); danach ggf. `vitalos` bumpen. Push/Merge wartet auf den User (AGENTS.md: nie auto-push; 6pack-Push = Live-Deploy).
-2. **plan / coach** (`fitness-dev/plan`, `coach`) haben noch ihre kopierten 235-Zeilen-SWs und eigene Inline-Splashes (`coach.html`). Nicht migriert, weil sie den Haupt-SW samt Push-/Workout-Code duplizieren — Kandidaten für `sw.extraFile` + `stampApp`. Erst klären, was davon wirklich gebraucht wird.
-3. **fuel / relax:** noch nicht angebunden. fuel-dev hat einen eigenen 54-Zeilen-SW (`frontend/public/sw.js`, API-Pfade `/fuel/ /nutrition/ /supplements/` → `sw.api.networkFirst`), relax-dev nutzt `vite-plugin-pwa`/workbox (SW dort generiert → nur Splash + Stamp mit `sw: {mode:"keep"}` sinnvoll). Lean Apps (journal/habit/fuel-app) laufen laut `vitalos/CLAUDE.md` bewusst mit `useRegisterSW()`; nicht überschreiben.
-4. **Icon-Generator:** `fitness-dev/scripts/solo-icons.py` ist weiter fitness-lokal (Icons je Mini-App). Wäre der nächste Schritt zum Mitverallgemeinern.
-5. **Nicht im Browser getestet:** SW-Verhalten ist per vm-Sandbox + Syntaxcheck geprüft, nicht auf einem Gerät. Vor Push von 6pack einmal `npm run preview` und Update-Szenario (zweiter Build über installierte PWA) ansehen.
-6. Das Paket selbst ist in `~/vitalos` committed (nur `packages/mini-app-shell/`), nicht gepusht.
+Alle vier Repos: gebaut, `node --check` auf den generierten SW, Splash/Register im `index.html` genau einmal.
+
+## Wildwuchs (Befund, mit `vos-overview` jederzeit prüfbar)
+
+Jedes Modul existiert bis zu **dreimal**:
+`~/<m>-dev` (dev, kanonisch) · `~/vitalos/<m>-app` (Branch `vitalos`, Build/CI) · nur 6pack/coach/plan zusätzlich `~/fitness-dev/<m>` (nested, `master`).
+Mein erster Anlauf für plan/coach landete versehentlich auf den nested-Kopien (alte Basis; die echte Plan-/Coach-Arbeit von gestern liegt in
+`~/plan-dev`/`~/coach-dev`). Dort liegt je 1 lokaler Commit (`6pack 59f832a`, `coach 92414ca`, `plan 5bd9dd1`) — **überholt**, aber nicht gelöscht.
+Entscheidung offen: `git -C ~/fitness-dev/<m> reset --hard origin/master` (verwirft diese Commits) und/oder die nested Submodule aus fitness-dev entfernen.
+
+## Neu: `~/vitalos/bin/vos-overview` (nur lesen)
+
+Adlerblick über alle Klone (Branch, Sync, Dirty, geteilte .git), Pointer (ok/stale/**local-only** = CI-Falle „not our ref“), Branch-Verhältnis
+dev/master/vitalos, alle Service Worker (Kopien erkannt, mini-app-shell-Drift) und eine abgeleitete Push-Reihenfolge. `--sw`, `--plan`, `--fetch`, `--json`.
+Ausführen tut es nichts — das bleibt `vos-release` (existiert schon, deckt alle 9 Module ab).
+
+## Offen
+
+1. **Pushen** (wartet auf den User, 6pack-Push = Live-Deploy). Reihenfolge laut `vos-overview --plan`; `fitness-dev` ist durch fremde WIP (`backend/pusher/` u. a.) für `vos-release` blockiert; `~/6pack-dev` steht auf `agent/photo-auth`.
+2. **fuel-dev** hat das Paket schon vendored (Kollege) — Stand jetzt veraltet → `node ~/vitalos/packages/mini-app-shell/cli.mjs vendor <fuel-dev>/scripts/mini-app-shell` (oder `vos-overview --sw` zeigt „Drift“).
+3. **SW abstimmen:** `vos-overview --sw` zeigt 6 identische Kopien des Fitness-Haupt-SW (u. a. `plan-dev/public/sw.js`, `coach-dev/public/sw.js`, in den nested Kopien) und mehrfach `fitness-v0`/`fuel-v0` als Cache-Präfix. Nächster Schritt: Haupt-SW von fitness selbst auf `sw-template` + Extras umstellen, fuel (`fuel-dev/public/sw.js`, `frontend/public/sw.js`, `vitalos/fuel-os`) anbinden, tote `public/sw.js` in plan/coach entfernen.
+4. relax / habits / journal / learn bleiben bei workbox / `useRegisterSW` (Lean Apps, laut `vitalos/CLAUDE.md` bewusst).
+5. Nicht auf Gerät getestet — vor dem Push SW-Update einmal an einer installierten PWA prüfen.
