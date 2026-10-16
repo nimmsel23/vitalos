@@ -119,6 +119,11 @@ def inspect_clone(module: str, role: str, path: Path, fetch: bool) -> Clone:
     c.store = hashlib.sha1(str((path / common).resolve()).encode()).hexdigest()[:4]
     _, contains = git(path, "branch", "-r", "--contains", "HEAD")
     c.unpushed = not contains.strip()
+    if role == "standalone" and c.branch not in ("dev", "(detached)"):
+        c.problems.append(f"Regel-Verstoß: ~/{MODULES[module][0]} gehört fest auf `dev` (steht auf `{c.branch}`) — Agent-/Feature-Branches als Worktree: "
+                          f"git -C ~/{MODULES[module][0]} worktree add .worktrees/<name> {c.branch}")
+    if role == "vitalos" and c.branch not in ("vitalos", "(detached)"):
+        c.problems.append(f"Regel-Verstoß: ~/vitalos/{MODULES[module][1]} gehört fest auf `vitalos` (steht auf `{c.branch}`)")
     local_branch = role == "nested" and c.branch.startswith("lokal")
     if role == "nested" and not local_branch:
         c.problems.append("Nebenlinie auf `" + c.branch + "` — soll ein lokaler Branch (`lokal`) sein; kanonisch ist ~/" + MODULES[module][0] + " (dev)")

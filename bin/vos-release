@@ -92,7 +92,10 @@ DOC_NOISE='^.{2} (docs/.*|.*\.md)$'
 
 # Firebase-CLI-Cache (entsteht bei jedem firebase deploy) ist nie ein Release-Hindernis;
 # in den Repos steht .firebase/ in der .gitignore, aber vor dem Merge fehlt der Eintrag u. U. noch.
-CACHE_NOISE='^\?\? \.firebase/$'
+CACHE_NOISE='^\?\? (\.firebase/|firebase-debug\.log|ui-debug\.log|\.worktrees/)$'
+
+# Agent-/Hook-Tooling unter .claude/ (wird parallel von anderen Sessions bearbeitet) ist nie Release-Inhalt
+TOOLING_NOISE='^.{2} \.claude/'
 
 MODULE_ORDER=(fitness fuel habits journal learn relax 6pack coach plan)
 SELECTED_MODULES=()
@@ -180,7 +183,7 @@ status_filtered() {
     if [[ -z "$status" ]]; then
         return 0
     fi
-    status="$(printf '%s\n' "$status" | grep -vE "$DOC_NOISE" | grep -vE "$CACHE_NOISE" || true)"
+    status="$(printf '%s\n' "$status" | grep -vE "$DOC_NOISE" | grep -vE "$CACHE_NOISE" | grep -vE "$TOOLING_NOISE" || true)"
     if [[ -z "$status" ]]; then
         return 0
     fi
@@ -385,7 +388,7 @@ parent_status_filtered() {
     # der Pointer-Commit läuft mit Pathspec (nur die Submodule), Doku bleibt unangetastet.
     "$REAL_GIT" -C "$VITALOS_DIR" status --short 2>/dev/null \
         | grep -vE '^( M|\?\?) (fitness-app|fuel-app|habit-app|journal-app|learn-app|relax-app|6pack-app|plan-app|coach-app)$' \
-        | grep -vE "$DOC_NOISE" | grep -vE "$CACHE_NOISE" || true
+        | grep -vE "$DOC_NOISE" | grep -vE "$CACHE_NOISE" | grep -vE "$TOOLING_NOISE" || true
 }
 
 commit_parent_bumps() {

@@ -456,3 +456,11 @@ in Firestore gelöschte Einträge wiederbeleben.
   Mini-Apps (training/atlas/6pack/plan/coach, später fuel/relax). Consumer bauen standalone (GitHub Actions ohne vitalos) → Paket wird per
   `node packages/mini-app-shell/cli.mjs vendor scripts/mini-app-shell` ins Repo kopiert, `--check` meldet Drift. Bewusste Ausnahme von
   „Kein Doppel-Code“; nicht in `pnpm-workspace.yaml` eintragen (Lockfile-Drift). Doku: `packages/mini-app-shell/README.md`, Stand/Übergabe: `REPORT.md`.
+
+### Branch-Regel für Checkouts (User-Vorgabe 2026-10-16)
+
+- `~/<m>-dev` stehen **fest auf `dev`**, `~/vitalos/<m>-app` **fest auf `vitalos`** — `vos-release` bricht sonst ab, `vos-overview` meldet Abweichungen als „Regel-Verstoß“.
+- Agent-/Feature-Branches nie im `~/<m>-dev`-Hauptordner auschecken, sondern als **Worktree**: `git -C ~/<m>-dev worktree add .worktrees/<name> <branch>` (Muster existiert in `~/fitness-dev/.worktrees/`). `.worktrees/` stört `vos-release` nicht.
+- Nested Kopien in `~/fitness-dev/{6pack,coach,plan}` stehen auf `master` (= veröffentlichter Pointer), eigene Commits darauf nur in `lokal`.
+- `vos-release` ignoriert für die Sauber-Prüfung: Doku (`*.md`, `docs/`), `.claude/`, Firebase-Cache/-Logs, `.worktrees/`. Nie `vos-release` editieren, solange ein Release läuft (Bash liest Skripte stückweise).
+
