@@ -12,6 +12,10 @@ Python-Funktionen aus fitness-dev (`fitness.firestore.*`) — kein Fork, keine K
   vos-firestore push alle      [--dry-run]
   vos-firestore pull fuel|fitness|relax|alle [--uid U]
 
+Fitness-Sessions laufen über das neue Backend (`python -m backend sync …` in fitness-dev,
+decide()-Konfliktlogik, Ein-Instanz-Lock). Journal/Habits werden weiter über die Handler des
+alten Daemons gezogen, weil das neue Backend nur Sessions synchronisiert.
+
 UID-Schutz: Es werden nur UIDs synchronisiert, die der Operator oder ein Eintrag
 in ~/vital/Klienten/*/client.json (firebase_uid/firebase_uids) sind. Andere Ordner
 (z.B. ~/.aos/fitness/users/matthias) werden gemeldet und übersprungen — sie würden
@@ -194,32 +198,45 @@ def fuel_pull(uid: Optional[str], dry_run: bool) -> int:
 
 # ── Fitness ────────────────────────────────────────────────────────────────────
 
+def _backend(args: list[str]) -> int:
+    """Neues Fitness-Backend (fitness-dev/backend): Sessions-Sync mit decide(), Lock, Tombstones."""
+    import subprocess
+    argv = [sys.executable, "-I", "-m", "backend", *args]
+    logger.info("backend " + " ".join(args))
+    return subprocess.call(argv, cwd=str(HOME / "fitness-dev"))
+
+
 def fitness_push(uid: Optional[str], dry_run: bool) -> int:
-    from fitness.firestore import sync
+    """Sessions über `python -m backend sync push sessions` (Standard dort: Dry-Run, --apply schreibt)."""
     rc = 0
     for u in select_uids("fitness", uid):
-        try:
-            res = sync.push(u, dry_run=dry_run)
-            (logger.info if dry_run else logger.success)(f"fitness {u} ({known_uids().get(u, '?')}): {res}")
-        except Exception as e:  # eine kaputte UID darf die anderen nicht blockieren
-            rc = 1
-            logger.error(f"fitness {u} ({known_uids().get(u, '?')}): {type(e).__name__}: {e}")
+        args = ["sync", "push", "sessions", "--uid", u] + ([] if dry_run else ["--apply"])
+        logger.info(f"fitness {u} ({known_uids().get(u, '?')})")
+        rc |= 1 if _backend(args) else 0
     return rc
 
 
 def fitness_pull(uid: Optional[str], dry_run: bool) -> int:
-    """sessions, journal, habits, habitRecords, habitJournals über alle bekannten UIDs
-    (collectionGroup wie der Daemon), über die Daemon-Handler."""
+    """Sessions: neues Backend (`backend sync pull sessions`, decide()+Lock). Journal, Habits,
+    Habit-Records, Habit-Journals: Handler des alten Daemons als ADDED-Replay (das neue Backend
+    synchronisiert nur Sessions; die Dateien sind disjunkt, es schreibt nie zweimal dasselbe)."""
     from fitness.firestore import mirror as m
     from fitness.firestore._db import get_db
     known = known_uids()
     if uid and uid not in known:
         logger.error(f"UID {uid} ist weder Operator noch Klient — abgebrochen.")
         raise typer.Exit(1)
+    targets = [uid] if uid else list(known)
+    args = ["sync", "pull", "sessions"]
+    for u in targets:
+        args += ["--uid", u]
+    if dry_run:
+        args.append("--dry-run")
+    rc = 1 if _backend(args) else 0
+
     db = get_db()
-    specs = [("sessions", m.on_session), ("journal", m.on_journal), ("habits", m.on_habits),
+    specs = [("journal", m.on_journal), ("habits", m.on_habits),
              ("habitRecords", m.on_habit_records), ("habitJournals", m.on_habit_journals)]
-    rc = 0
     for name, handler in specs:
         try:
             docs, unknown = [], set()

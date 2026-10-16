@@ -418,3 +418,11 @@ vos-firestore pull fuel|fitness|relax|alle [--uid U] [--dry-run]
 - Bekannt: `sync.push` schreibt bei fehlendem Firestore-Vorsprung immer alles neu (kein
   Skip bei Gleichstand); `remote_wins` bricht bei Simon mit `str > dict` ab (`saved_at` als
   Dict) — pro UID abgefangen. Für einen Stunden-Timer beides vorher beheben.
+
+**Update 2026-10-16 (Daemon-Ablösung):** Fitness-**Sessions** gehen jetzt über das neue Backend
+(`python -m backend sync pull|push sessions`, fitness-dev) — `vos-firestore push fitness` ruft
+`sync push sessions --uid U` (ohne `--dry-run` mit `--apply`), `pull fitness` ruft
+`sync pull sessions --uid …` (Lock + `decide()`). Journal, Habits, Habit-Records und Habit-Journals
+zieht `pull fitness` weiter über die Handler des alten Daemons (das neue Backend kennt nur Sessions);
+Fuel-Pull nutzt die Daemon-Handler für den Operator und `pull_fuel` für Klienten. Live-Sync während
+der Console: `fitness-sync.service` (siehe `fitness-dev/fitness/log/console/CLAUDE.md`).
