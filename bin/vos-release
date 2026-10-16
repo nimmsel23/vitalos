@@ -279,7 +279,7 @@ resolve_backup_conflicts() {
     local file
     while IFS= read -r file; do
         [[ -n "$file" ]] || continue
-        if [[ ! "$file" =~ \.bak($|[.]) && ! "$file" =~ \.baks && ! "$file" =~ \.mjs\.bak- && ! "$file" =~ ^\.githooks/ ]]; then
+        if [[ ! "$file" =~ \.bak($|[.]) && ! "$file" =~ \.baks && ! "$file" =~ \.mjs\.bak- && ! "$file" =~ ^(\.githooks|\.claude/hooks)/ ]]; then
             error "Non-backup merge conflict remains in $repo: $file — breche Merge ab (git merge --abort)"
             "$REAL_GIT" -C "$repo" merge --abort || true
             return 1
@@ -288,7 +288,7 @@ resolve_backup_conflicts() {
 
     while IFS= read -r file; do
         [[ -n "$file" ]] || continue
-        if [[ "$file" =~ ^\.githooks/ ]]; then
+        if [[ "$file" =~ ^(\.githooks|\.claude/hooks)/ ]]; then
             # -dev kommt nach -app: bei Hook-Konflikten gewinnt der gemergte dev-Stand ("theirs")
             warn "Hook-Konflikt $file — dev-Stand gewinnt"
             run "$REAL_GIT" -C "$repo" checkout --theirs -- "$file"
@@ -311,7 +311,7 @@ preflight_merge() {
     out="$("$REAL_GIT" -C "$standalone" merge-tree --write-tree --name-only --no-messages "origin/$target_branch" "$source_branch" 2>&1 || true)"
     conflicts="$(printf '%s\n' "$out" | tail -n +2 | grep -v '^$' || true)"
     [[ -n "$conflicts" ]] || { info "[$module] Preflight: dev -> $target_branch mergt konfliktfrei"; return 0; }
-    blocking="$(printf '%s\n' "$conflicts" | grep -vE '\.bak($|[.])|\.baks|\.mjs\.bak-|^\.githooks/' || true)"
+    blocking="$(printf '%s\n' "$conflicts" | grep -vE '\.bak($|[.])|\.baks|\.mjs\.bak-|^(\.githooks|\.claude/hooks)/' || true)"
     if [[ -n "$blocking" ]]; then
         error "[$module] Preflight: dev -> $target_branch hat Konflikte, die vos-release nicht lösen darf:"
         printf '%s\n' "$blocking" >&2
@@ -381,7 +381,11 @@ parent_status_filtered() {
     # noch "??" und liess JEDEN Pointer-Bump als "unexpected changes"
     # durchfallen — nie aufgefallen, weil der volle Flow vorher nie
     # tatsaechlich per Skript durchlief.
-    "$REAL_GIT" -C "$VITALOS_DIR" status --short 2>/dev/null | grep -vE '^( M|\?\?) (fitness-app|fuel-app|habit-app|journal-app|learn-app|relax-app|6pack-app|plan-app|coach-app)$' || true
+    # Reine Doku-Änderungen (Markdown, docs/) und Firebase-Cache blockieren auch das Meta-Repo nie —
+    # der Pointer-Commit läuft mit Pathspec (nur die Submodule), Doku bleibt unangetastet.
+    "$REAL_GIT" -C "$VITALOS_DIR" status --short 2>/dev/null \
+        | grep -vE '^( M|\?\?) (fitness-app|fuel-app|habit-app|journal-app|learn-app|relax-app|6pack-app|plan-app|coach-app)$' \
+        | grep -vE "$DOC_NOISE" | grep -vE "$CACHE_NOISE" || true
 }
 
 commit_parent_bumps() {
