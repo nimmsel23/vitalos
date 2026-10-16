@@ -1,0 +1,413 @@
+#!/usr/bin/env python3
+"""vlog — Fitness + Relax + Fuel loggen, ohne laufende Server.
+
+Ein Einstieg für das, was sonst drei Tools in drei Repos sind. Alle Pfade
+schreiben direkt in die Dateien unter ~/.aos bzw. ~/relax-dev/data — kein
+:9150, :9000, :9123 nötig.
+
+  vlog fitness "Kreuzheben 60" "Back Squat 3x5@60" "Frontkniebeuge 60" \\
+       --block Legs --art Kraft --ort "Fitness First, 1030 Wien" --zeit 13-14
+  vlog relax Sauna 20 --note "nach Workout"
+  vlog fuel "360g Käseleberkäse, 3 Semmeln" --zeit 14:30
+  vlog day "Heute Legs bei Fitness First 13-14 Uhr, Kreuzheben 60kg ..., danach 20min Sauna, ..."
+
+Übungs-Spec (fitness): NAME [SÄTZExREPS] [@GEWICHT]
+  "Kreuzheben 60"            1 Satz, 60 kg, Reps nicht getrackt
+  "Back Squat 3x5@60"        3 Sätze à 5 Reps mit 60 kg
+  "Bankdrücken 3x8,8,6@60,60,65"   Werte pro Satz (Anzahl muss zu SÄTZE passen)
+  "Klimmzüge 3x8"            Bodyweight
+
+Fitness schreibt über dieselben Funktionen wie POST /session der Fitness-API
+(JSON, training_history.sqlite, Firestore-Mirror) — nur im eigenen Prozess.
+Relax und Fuel rufen ihre bestehenden CLIs (relax-add, fuel-meal log) auf.
+"""
+from __future__ import annotations
+
+import json
+import os
+import re
+import shlex
+import shutil
+import subprocess
+import sys
+import urllib.error
+import urllib.request
+from datetime import date, datetime, timedelta
+from pathlib import Path
+from typing import Optional
+
+import typer
+from loguru import logger
+
+HOME = Path.home()
+SELF = Path(__file__).resolve()
+FITNESS_PY = HOME / ".local/share/uv/tools/fitness-agent/bin/python3"
+RELAX_ADD = HOME / "relax-dev/bin/relax-add"
+FUEL_MEAL = HOME / "fuel-dev/bin/fuel-meal"
+GEMINI_ENV = HOME / ".env/gemini.env"
+
+app = typer.Typer(add_completion=False, no_args_is_help=True, help=__doc__)
+
+
+# ── Helfer ─────────────────────────────────────────────────────────────────────
+
+def resolve_day(value: Optional[str]) -> str:
+    """heute|gestern|vorgestern|-N|YYYY-MM-DD → ISO-Datum."""
+    if not value or value == "heute":
+        return date.today().isoformat()
+    if value == "gestern":
+        return (date.today() - timedelta(days=1)).isoformat()
+    if value == "vorgestern":
+        return (date.today() - timedelta(days=2)).isoformat()
+    if re.fullmatch(r"-\d+", value):
+        return (date.today() + timedelta(days=int(value))).isoformat()
+    try:
+        return datetime.strptime(value, "%Y-%m-%d").date().isoformat()
+    except ValueError:
+        raise typer.BadParameter(f"Datum '{value}' — erwartet heute|gestern|vorgestern|-N|YYYY-MM-DD")
+
+
+def run_tool(argv: list[str], dry_run: bool) -> int:
+    """Bestehendes CLI-Tool aufrufen (Ausgabe direkt durchreichen)."""
+    pretty = shlex.join(argv)
+    if dry_run:
+        logger.info(f"(dry-run) {pretty}")
+        return 0
+    if not Path(argv[0]).exists():
+        logger.error(f"{argv[0]} fehlt")
+        return 1
+    return subprocess.call(argv)
+
+
+# ── Fitness ────────────────────────────────────────────────────────────────────
+
+SPEC_RE = re.compile(
+    r"""^(?P<name>.+?)\s*
+        (?:(?P<sets>\d+)\s*[x×]\s*(?P<reps>\d+(?:,\d+)*)?)?\s*
+        (?:@?\s*(?P<weight>\d+(?:\.\d+)?(?:,\d+(?:\.\d+)?)*)\s*(?:kg)?)?\s*$""",
+    re.X | re.I,
+)
+
+
+def parse_spec(spec: str) -> dict:
+    m = SPEC_RE.match(spec.strip())
+    if not m or not m["name"].strip():
+        raise typer.BadParameter(f"Übungs-Spec nicht lesbar: '{spec}' (Form: NAME [SÄTZExREPS] [@GEWICHT])")
+    return {
+        "name": m["name"].strip(),
+        "sets": int(m["sets"]) if m["sets"] else 1,
+        "reps": m["reps"] or "",
+        "weight": m["weight"] or "",
+    }
+
+
+def _reexec_in_fitness_env() -> None:
+    """Fitness-Code braucht die uv-venv (firebase_admin, fastapi, ...) — dorthin wechseln."""
+    if os.environ.get("VLOG_FITNESS_ENV") == "1":
+        return
+    if not FITNESS_PY.exists():
+        logger.error(f"{FITNESS_PY} fehlt — fitness-agent uv-Tool installiert?")
+        raise typer.Exit(1)
+    os.environ["VLOG_FITNESS_ENV"] = "1"
+    os.execv(str(FITNESS_PY), [str(FITNESS_PY), "-I", str(SELF), *sys.argv[1:]])
+
+
+def _same_sets(a: list[dict], b: list[dict]) -> bool:
+    norm = lambda sets: [(str(s.get("reps", "")), str(s.get("weight", ""))) for s in sets]  # noqa: E731
+    return norm(a) == norm(b)
+
+
+@app.command()
+def fitness(
+    exercises: Optional[list[str]] = typer.Argument(None, help="Übungs-Specs: NAME [SÄTZExREPS] [@GEWICHT]"),
+    block: Optional[str] = typer.Option(None, "--block", "-b", help="Trainingsblock, z.B. Legs/Push/Pull"),
+    art: Optional[str] = typer.Option(None, "--art", help="Trainingsart, z.B. Kraft"),
+    ort: Optional[str] = typer.Option(None, "--ort", "-l", help="Trainingsort (Studio)"),
+    zeit: Optional[str] = typer.Option(None, "--zeit", "-z", help="Uhrzeit/Zeitfenster, z.B. 13-14 → Session-Notiz"),
+    effort: Optional[int] = typer.Option(None, "--effort", "--rpe", "-e", min=1, max=10, help="RPE 1-10"),
+    dauer: Optional[int] = typer.Option(None, "--dauer", help="Dauer in Minuten"),
+    notiz: Optional[str] = typer.Option(None, "--notiz", "-n", help="Session-Notiz"),
+    datum: Optional[str] = typer.Option(None, "--datum", "-d", help="heute|gestern|vorgestern|-N|YYYY-MM-DD"),
+    uid: Optional[str] = typer.Option(None, "--uid", help="Default: $FITNESS_UID bzw. uid mit den meisten Sessions"),
+    nochmal: bool = typer.Option(False, "--nochmal", help="Identische Übung+Sätze trotzdem anhängen"),
+    enrich: bool = typer.Option(True, "--enrich/--no-enrich", help="Unbekannte Übungen für den Katalog vormerken (Gemini)"),
+    firestore: bool = typer.Option(True, "--firestore/--offline", help="Firestore-Mirror (braucht Netz, keinen Server)"),
+    dry_run: bool = typer.Option(False, "--dry-run"),
+) -> None:
+    """Kraft-Session des Tages ergänzen (merged, überschreibt nicht)."""
+    if not (exercises or block or art or ort or zeit or effort or dauer or notiz):
+        raise typer.BadParameter("Nichts zu loggen — Übungen oder Session-Felder angeben.")
+    parsed = [parse_spec(s) for s in (exercises or [])]
+    day = resolve_day(datum)
+
+    _reexec_in_fitness_env()
+    import http.client  # noqa: F401  — vor fitness.*, sonst überschattet fitness/http.py das stdlib-Modul
+    import firebase_admin  # noqa: F401
+
+    from fitness.api.config import (
+        _freeze_snapshot, _read_json, _session_file, _sync_session_to_db, _write_json,
+    )
+    from fitness.log.strength import _parse_series, detect_uid, merge_exercise_into_session, resolve_exercise
+
+    uid = uid or detect_uid()
+    path = _session_file(uid, day, None)
+    session = _read_json(path, {}) if path.exists() else {}
+    before = json.dumps(session, sort_keys=True)
+    logger.info(f"Fitness {day}  uid={uid}  ({'bestehende Session' if session else 'neue Session'})")
+
+    for p in parsed:
+        ex = resolve_exercise(p["name"])
+        reps_s = _parse_series(p["reps"], p["sets"], "reps")
+        weight_s = _parse_series(p["weight"], p["sets"], "weight")
+        sets_array = [{"reps": reps_s[i], "weight": weight_s[i]} for i in range(p["sets"])]
+        label = f"{ex['name']}  " + " / ".join((f"{r or '?'}×{w}kg" if w else f"{r or '?'}×KG") for r, w in zip(reps_s, weight_s))
+        existing = next((e for e in (session.get("exercises") or []) if e.get("id") == ex["id"]), None)
+        if existing and not nochmal and _same_sets(existing.get("setsArray") or [], sets_array):
+            logger.warning(f"schon vorhanden, übersprungen (--nochmal zum Anhängen): {label}")
+            continue
+        session = merge_exercise_into_session(session, ex, sets_array, block, effort=effort, duration=dauer)
+        logger.info(f"+ {label}")
+
+    # Session-Felder (auch ohne neue Übungen setzbar)
+    if block:
+        session["block"] = block
+    if art:
+        session["trainingsart"] = art
+    if ort is not None:
+        session["location"] = ort
+    if effort is not None:
+        session["effort"] = effort
+    if dauer is not None:
+        session["duration"] = dauer
+    session.setdefault("sessionMode", "strength")
+    for line in ([f"Uhrzeit {zeit}"] if zeit else []) + ([notiz] if notiz else []):
+        if line not in (session.get("notes") or ""):
+            session["notes"] = ((session.get("notes") or "") + "\n" + line).strip()
+
+    if json.dumps(session, sort_keys=True) == before:
+        logger.info("Keine Änderung — nichts geschrieben.")
+        return
+    if dry_run:
+        logger.info(f"(dry-run) würde schreiben: {path}")
+        return
+
+    session = _freeze_snapshot({**session, "date": day, "session_id": None, "saved_at": datetime.utcnow().isoformat()})
+    _write_json(path, session)
+    logger.success(f"geschrieben: {path}  (rev {session.get('rev')}, {len(session.get('exercises') or [])} Übungen)")
+    try:
+        _sync_session_to_db(day, session, None)
+    except Exception as e:  # JSON ist schon da — History-DB lässt sich nachziehen
+        logger.error(f"training_history.sqlite nicht aktualisiert: {e}")
+    if firestore:
+        from fitness.firestore.mirror import mirror_session
+        mirror_session(day, session, uid)  # warnt selbst bei Fehler, wirft nicht
+    if enrich and parsed:
+        try:
+            from fitness.api.routers.sessions import _queue_unreviewed_enrichment
+            _queue_unreviewed_enrichment(session)
+        except Exception as e:
+            logger.warning(f"Katalog-Enrichment übersprungen: {e}")
+
+
+# ── Relax ──────────────────────────────────────────────────────────────────────
+
+@app.command()
+def relax(
+    technik: str = typer.Argument(..., help="z.B. Sauna / Meditation / PMR"),
+    minuten: int = typer.Argument(..., min=0, max=240),
+    note: str = typer.Option("", "--note", "-n"),
+    vorher: Optional[int] = typer.Option(None, "--vorher", min=1, max=5, help="Stimmung vorher 1-5 (sonst relax-add-Default 3)"),
+    nachher: Optional[int] = typer.Option(None, "--nachher", min=1, max=5, help="Stimmung nachher 1-5 (sonst relax-add-Default 4)"),
+    datum: Optional[str] = typer.Option(None, "--datum", "-d"),
+    dry_run: bool = typer.Option(False, "--dry-run"),
+) -> None:
+    """Entspannungs-Session loggen (relax-add)."""
+    argv = [str(RELAX_ADD), technik, str(minuten), "--date", resolve_day(datum)]
+    if note:
+        argv += ["--note", note]
+    if vorher is not None:
+        argv += ["--before", str(vorher)]
+    if nachher is not None:
+        argv += ["--after", str(nachher)]
+    raise typer.Exit(run_tool(argv, dry_run))
+
+
+# ── Fuel ───────────────────────────────────────────────────────────────────────
+
+@app.command()
+def fuel(
+    beschreibung: str = typer.Argument(..., help="NUR Items + Mengen, z.B. '360g Käseleberkäse, 3 Semmeln'"),
+    zeit: Optional[str] = typer.Option(None, "--zeit", "-z", help="HH:MM (sonst jetzt)"),
+    typ: str = typer.Option("lunch", "--typ", "-m", help="breakfast|lunch|dinner|snack"),
+    kcal: Optional[float] = typer.Option(None, "--kcal"),
+    protein: Optional[float] = typer.Option(None, "--protein"),
+    carbs: Optional[float] = typer.Option(None, "--carbs"),
+    fat: Optional[float] = typer.Option(None, "--fat"),
+    note: str = typer.Option("", "--note", "-n"),
+    catalog: bool = typer.Option(False, "--catalog", "-s", help="Im Catalog speichern"),
+    datum: Optional[str] = typer.Option(None, "--datum", "-d"),
+    dry_run: bool = typer.Option(False, "--dry-run", help="nur Kommando zeigen (fuel-meal log hat kein eigenes Dry-Run)"),
+) -> None:
+    """Mahlzeit loggen (fuel-meal log; ohne Makros schätzt Gemini)."""
+    argv = [str(FUEL_MEAL), "log", beschreibung, "--tag", resolve_day(datum), "-m", typ]
+    if zeit:
+        argv += ["--zeit", zeit]
+    for flag, val in (("--kcal", kcal), ("--protein", protein), ("--carbs", carbs), ("--fat", fat)):
+        if val is not None:
+            argv += [flag, str(val)]
+    if note:
+        argv += ["--notes", note]
+    if catalog:
+        argv += ["--save-catalog"]
+    raise typer.Exit(run_tool(argv, dry_run))
+
+
+# ── Tag als Freitext ───────────────────────────────────────────────────────────
+
+PROMPT = """Du zerlegst einen deutschen Freitext über einen Trainings-/Ernährungstag in strukturierte Log-Einträge.
+Heute ist {today}. Antworte NUR mit JSON nach diesem Schema:
+
+{{
+  "datum": "YYYY-MM-DD",
+  "fitness": null | {{"block": str|null, "art": str|null, "ort": str|null, "zeit": str|null,
+                      "effort": int|null, "dauer": int|null, "notiz": str|null,
+                      "uebungen": [{{"name": str, "saetze": int|null, "reps": str|null, "gewicht": str|null}}]}},
+  "relax": [{{"technik": str, "minuten": int, "notiz": str|null, "vorher": int|null, "nachher": int|null}}],
+  "fuel": [{{"text": str, "zeit": "HH:MM"|null, "typ": "breakfast"|"lunch"|"dinner"|"snack"|null}}],
+  "fragen": [str]
+}}
+
+Regeln:
+- NICHTS erfinden. Was nicht im Text steht, ist null (Sätze, Reps, Gewicht, RPE, Dauer, Stimmung ...).
+- "reps"/"gewicht": eine Zahl als String oder kommagetrennt pro Satz. Gewicht in kg, nur die Zahl.
+- Bei unplausiblen oder mehrdeutigen Angaben (z.B. Einheit "dag" = Dekagramm, 360 dag = 3,6 kg) NICHT raten:
+  trag den plausibelsten Wert ein UND stelle in "fragen" eine kurze Rückfrage.
+- fuel[].text: nur Items + Mengen ("360g Käseleberkäse, 3 Semmeln"), keine Erzählung, keine Ortsangaben.
+- fitness.art ist EIN Wort (Kraft, Cardio, Mobility ...), fitness.block z.B. Legs/Push/Pull/Upper.
+- Zeitfenster wie "13-14" bleiben als String in fitness.zeit. Eine Mahlzeit "nach der Sauna" ohne Uhrzeit: zeit = null.
+- Leere Bereiche: fitness = null bzw. leere Listen.
+
+Text:
+{text}
+"""
+
+
+def _load_gemini() -> tuple[str, str]:
+    env: dict[str, str] = {}
+    if GEMINI_ENV.exists():
+        for line in GEMINI_ENV.read_text().splitlines():
+            if "=" in line and not line.lstrip().startswith("#"):
+                k, v = line.split("=", 1)
+                env[k.strip()] = v.strip().strip('"').strip("'")
+    key = os.environ.get("GEMINI_API_KEY") or env.get("GEMINI_API_KEY", "")
+    model = os.environ.get("GEMINI_MODEL") or env.get("GEMINI_MODEL") or "gemini-2.5-flash"
+    if not key:
+        logger.error(f"GEMINI_API_KEY fehlt (erwartet in {GEMINI_ENV})")
+        raise typer.Exit(1)
+    return key, model
+
+
+def gemini_plan(text: str) -> dict:
+    key, model = _load_gemini()
+    body = {
+        "contents": [{"parts": [{"text": PROMPT.format(today=date.today().isoformat(), text=text)}]}],
+        "generationConfig": {"responseMimeType": "application/json", "temperature": 0},
+    }
+    req = urllib.request.Request(
+        f"https://generativelanguage.googleapis.com/v1beta/models/{model}:generateContent",
+        data=json.dumps(body).encode(),
+        headers={"Content-Type": "application/json", "x-goog-api-key": key},
+    )
+    try:
+        with urllib.request.urlopen(req, timeout=60) as r:
+            data = json.loads(r.read())
+        return json.loads(data["candidates"][0]["content"]["parts"][0]["text"])
+    except (urllib.error.URLError, KeyError, IndexError, json.JSONDecodeError) as e:
+        logger.error(f"Gemini-Antwort unbrauchbar: {type(e).__name__}: {e}")
+        raise typer.Exit(1)
+
+
+def plan_to_commands(plan: dict) -> list[list[str]]:
+    """Plan → vlog-Subcommand-Argumente (jeder Eintrag ist ein eigenständiger, wiederholbarer Aufruf)."""
+    cmds: list[list[str]] = []
+    datum = plan.get("datum") or date.today().isoformat()
+    f = plan.get("fitness")
+    if f:
+        argv = ["fitness"]
+        for u in f.get("uebungen") or []:
+            spec = u["name"]
+            sets, reps, gew = u.get("saetze"), u.get("reps"), u.get("gewicht")
+            if sets or reps:
+                spec += f" {sets or 1}x{reps or ''}"
+            if gew:
+                spec += f"@{gew}"
+            argv.append(spec)
+        for flag, key in (("--block", "block"), ("--art", "art"), ("--ort", "ort"), ("--zeit", "zeit"),
+                          ("--effort", "effort"), ("--dauer", "dauer"), ("--notiz", "notiz")):
+            if f.get(key) not in (None, ""):
+                argv += [flag, str(f[key])]
+        argv += ["--datum", datum]
+        cmds.append(argv)
+    for r in plan.get("relax") or []:
+        argv = ["relax", r["technik"], str(r["minuten"])]
+        for flag, key in (("--note", "notiz"), ("--vorher", "vorher"), ("--nachher", "nachher")):
+            if r.get(key) not in (None, ""):
+                argv += [flag, str(r[key])]
+        cmds.append(argv + ["--datum", datum])
+    for m in plan.get("fuel") or []:
+        argv = ["fuel", m["text"]]
+        if m.get("zeit"):
+            argv += ["--zeit", m["zeit"]]
+        if m.get("typ"):
+            argv += ["--typ", m["typ"]]
+        cmds.append(argv + ["--datum", datum])
+    return cmds
+
+
+def _confirm(question: str) -> bool:
+    if shutil.which("gum"):
+        return subprocess.call(["gum", "confirm", question]) == 0
+    return typer.confirm(question, default=False)
+
+
+@app.command()
+def day(
+    text: str = typer.Argument(..., help="Freitext: was heute trainiert/entspannt/gegessen wurde"),
+    ja: bool = typer.Option(False, "--ja", "-y", help="Ohne Rückfrage schreiben (nur wenn keine offenen Fragen)"),
+    dry_run: bool = typer.Option(False, "--dry-run", help="Nur Vorschau, nichts schreiben"),
+) -> None:
+    """Freitext → Vorschau (als vlog-Kommandos) → nach Bestätigung loggen."""
+    plan = gemini_plan(text)
+    cmds = plan_to_commands(plan)
+    if not cmds:
+        logger.warning("Nichts erkannt, was sich loggen lässt.")
+        raise typer.Exit(1)
+
+    logger.info(f"Datum {plan.get('datum')} — {len(cmds)} Eintrag/Einträge:")
+    for argv in cmds:
+        print("  vlog " + shlex.join(argv))
+    fragen = plan.get("fragen") or []
+    for q in fragen:
+        logger.warning(f"Rückfrage: {q}")
+
+    if dry_run:
+        return
+    if fragen:
+        logger.error("Offene Rückfragen — nichts geschrieben. Text präzisieren und neu aufrufen "
+                     "(oder die Kommandos oben angepasst von Hand ausführen).")
+        raise typer.Exit(2)
+    if not ja and not _confirm("So loggen?"):
+        logger.info("Abgebrochen.")
+        raise typer.Exit(1)
+
+    failed = 0
+    for argv in cmds:
+        rc = subprocess.call([sys.executable, str(SELF), *argv])
+        if rc != 0:
+            failed += 1
+            logger.error(f"fehlgeschlagen (rc={rc}): vlog {shlex.join(argv)}")
+    raise typer.Exit(1 if failed else 0)
+
+
+if __name__ == "__main__":
+    app()

@@ -364,3 +364,30 @@ Er ruft KEINE Hooks auf.
   `mobile/mobile-optimizations-safe-area` (uralter Snapshot vor der
   Fitness-Pfadtrennung) und `rename/local-app-dirs` (identisch zu master) —
   Löschung ausstehend, User-Bestätigung angefragt (2026-08-16).
+
+---
+
+## `bin/vlog` — Fitness + Relax + Fuel loggen ohne Server (seit 2026-10-16)
+
+Ein typer-Skript (`~/vitalos/bin` ist im PATH), das Tages-Logs schreibt, ohne dass
+`fitness-api` (:9150), Fuel-Node (:9000) oder Relax-API (:9123) laufen müssen.
+
+```bash
+vlog fitness "Kreuzheben 60" "Back Squat 3x5@60" --block Legs --art Kraft --ort "Fitness First, 1030 Wien" --zeit 13-14
+vlog relax Sauna 20 --note "nach Workout"
+vlog fuel "360g Käseleberkäse, 3 Semmeln" --zeit 14:30
+vlog day "<Freitext>"      # Gemini zerlegt → Vorschau als vlog-Kommandos → Rückfrage → schreibt
+```
+
+- **fitness:** re-exec't in die uv-venv `~/.local/share/uv/tools/fitness-agent` und ruft dieselben
+  Funktionen wie `POST /session` (`_freeze_snapshot`, `_write_json`, `_sync_session_to_db`,
+  `mirror_session`, `_queue_unreviewed_enrichment`) im eigenen Prozess auf. Identische
+  Übung+Sätze werden übersprungen (`--nochmal` hängt an). Firestore-Mirror braucht Netz, keinen
+  Server (`--offline` überspringt ihn). `import http.client` + `firebase_admin` MÜSSEN vor
+  `fitness.*` importiert werden, sonst überschattet `fitness/http.py` das stdlib-`http`.
+- **relax / fuel:** dünne Wrapper um `relax-add` bzw. `fuel-meal log`. `relax-add` setzt Stimmung
+  3→4 als Default, wenn `--vorher/--nachher` fehlen.
+- **day:** schreibt nie bei offenen Rückfragen (Exit 2); Gemini darf nichts erfinden, Unklares
+  (z.B. „360dag") kommt als Rückfrage. Key aus `~/.env/gemini.env`.
+- Test ohne echte Daten: `HOME=<scratch> VLOG_FITNESS_ENV=1 <fitness-venv-python> -I vlog fitness … --uid x --offline --no-enrich`
+  (Pfade folgen `$HOME`; SQLite-History liegt dann ebenfalls im Scratch).
