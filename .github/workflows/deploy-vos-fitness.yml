@@ -45,11 +45,19 @@ jobs:
       - name: Install (Workspaces)
         run: pnpm install --frozen-lockfile
 
+      # Generierte Daten, die fitness-app/6pack-Quellen beim Import erwarten
+      # (wie das prebuild der Shell) — lokal liegen sie schon, in der CI nicht.
+      - name: Generierte Daten (KB, 6pack)
+        run: |
+          pnpm run build:fitness-kb-data
+          pnpm run build:6pack-data
+
+      # vos-fitness ist kein Workspace-Mitglied -> vite aus dem Root-node_modules.
       - name: Build VOS Fitness
         working-directory: vos-fitness
         env:
           VITE_APP_MODE: client
-        run: pnpm exec vite build --config vite.config.cjs
+        run: ../node_modules/.bin/vite build --config vite.config.cjs
 
       # Nur Hosting. Firestore-Rules-SSOT liegt im Root (deploy-shell.yml).
       - name: Deploy VOS Fitness to Firebase Hosting
