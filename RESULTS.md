@@ -1,3 +1,13 @@
+## 2026-10-17 — vos-fitness: Build repariert, Ordner umbenannt, eigene CI
+
+Der Ordner `fitness-vos/` baute nicht mehr; er wurde repariert, in `vos-fitness/` umbenannt und bekam einen eigenen CI-Deploy. Die Hosting-Site-ID `vos-fitness` ist bei Firebase global an ein anderes Projekt vergeben, deshalb bleibt die Site `fitness-vos` (`fitness-vos.web.app`, Auth-Domains unverändert). Live deployt; nicht im Browser oder auf einem Gerät getestet.
+
+- **`vos-fitness/` Build-Fix (`47e6c7c`):** Das lokale `NavigationItems.js`-Override exportierte `IS_SOLO` nicht (von fitness-app seit 15.10. gebraucht); `@cloud` zeigte auf eine `firebase.js` ohne `httpsCallable`. Override und toter Code (`App.jsx`, `App.Premium.jsx`, `vite.config.js`, `public/index.html`, `public/v1.html`) entfernt; `vite.config.cjs`, `tailwind.config.cjs`, `AGENTS.md`, `public/sw.js` angepasst.
+- **Ordner-Rename (`5b05f0b`):** `fitness-vos/` → `vos-fitness/`; `.githooks/pre-push`, `CLAUDE.md`, `package.json`/`package-lock.json` und `AGENTS.md` auf den neuen Pfad umgestellt.
+- **`.github/workflows/deploy-vos-fitness.yml`:** neuer CI-Deploy nach `fitness-vos`, Trigger auf `vos-fitness/**` und den `fitness-app`-Pointer. Erster Lauf scheiterte (fehlende generierte KB-/6pack-Daten, `vite` nicht gefunden); mit `c1f75ce` baut er mit generierten Daten und Root-vite und läuft grün.
+
+---
+
 ## 2026-10-17 — Privater Skills-Checkout in CI
 
 Skills bleibt privat. Nach ausdrücklicher Nutzerfreigabe liest VitalOS-CI das neue verschachtelte Submodule über einen separaten Nur-Lese-Deploy-Key (SKILLS_DEPLOY_KEY). Die gemeinsame Composite-Action konfiguriert ausschließlich den Skills-Repository-SSH-Pfad; Hostkeys stammen aus GitHubs HTTPS-Metadaten. Alle 12 rekursiven Checkout-Jobs verwenden sie vor dem Submodule-Update. YAML, Shell-Syntax und Schritt-Reihenfolge geprüft. Der Firebase-Service-Account unter ~/.env/firebase-fitness.json gehört zum Projekt fitness-aos; der vorhandene CI-Service-Account wird weiterverwendet.
