@@ -69,6 +69,12 @@ service cloud.firestore {
       allow read, write: if owner(uid) || isCoach();
     }
 
+    // Journal-v2-Apps (journal-dev): journal/{uid}/frame/{domain} (Game v2 · Frame Map) und weitere
+    // nutzereigene Daten der Raster-Apps. Nur der Besitzer; Coach bewusst ausgenommen.
+    match /journal/{uid}/{document=**} {
+      allow read, write: if owner(uid);
+    }
+
     // Geteilte Exercise-KB (pseudo-uid "kb"): alle lesen, nur Coach schreibt
     // (approveInbox promoted Inbox-Einträge nach fitness/kb/exercises)
     match /fitness/kb/{document=**} {
