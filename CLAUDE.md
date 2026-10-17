@@ -299,6 +299,15 @@ Hosting-*Site* im selben Projekt (alle `.firebaserc` → `fitness-aos`):
 | fuel-app (Mini-Apps, seit 2026-10-16) | `vos-fuel-log`, `vos-fuel-supplements`, `vos-fuel-mikros`, `vos-fuel-protokoll` → je `<site>.web.app` | aus **demselben** Repo fuel-dev (Targets `log`/`supplements`/`mikros`/`protokoll` in `firebase.json`, Build `VITE_SOLO=<tab>`, `pnpm run deploy:solo:<x>`); Hosting-Target der vollen App heißt jetzt `client` (`--only hosting:client`). Lokale Checkouts als Submodule `vos-fuel-<x>-app` (alle vier = Klon von fuel-dev, Branch `vitalos`, `ignore = untracked`; bewusst NICHT in `pnpm-workspace.yaml`) — Arbeitskopie bleibt `~/fuel-dev` (Branch `dev`). **Bewusst KEINE CI-Deploys** für die vier Mini-Apps: stable-prod-/Fallback-Apps, die nie durch einen versehentlichen Pointer-Bump oder Push überschrieben werden dürfen; Deploy nur manuell und gewollt (`pnpm run deploy:solo:<x>` in fuel-dev). `deploy-fuel.yml` deployt ausschließlich `hosting:client` |
 | journal-app / habit-app / learn-dev | je eigene Site | CI `deploy-journal/habits/learn.yml` |
 
+**Fuel-Mini-Apps als Wrapper `vos-fuel-mini/` (seit 2026-10-17):** Ein Ordner statt vier Klonen — analog `vos-fitness`.
+Code kommt unverändert aus `fuel-app` (`VITE_SOLO=log|supplements|micros|report`); `vos-fuel-mini/vite.config.cjs` lädt
+`../fuel-app/vite.config.cjs` und biegt nur `root`/`outDir` um (Output `vos-fuel-mini/dist-<app>/`), `scripts/build.mjs`
+baut + stempelt (mini-app-shell) wie `fuel-app/scripts/stamp-solo.mjs`. Eigene `firebase.json`/`.firebaserc`
+(Targets `log`/`supplements`/`mikros`/`protokoll` → Sites `vos-fuel-<x>`). Deploy manuell, bewusst keine CI:
+`cd vos-fuel-mini && npm run deploy:<log|supplements|mikros|protokoll>` bzw. `npm run deploy:all`.
+Stand der Mini-Apps = Submodule-Pointer von `fuel-app`. Die vier Submodule `vos-fuel-*-app` (Klone von fuel-dev) sind damit
+überflüssig, aber noch nicht entfernt.
+
 **Fitness-Rollen sind absichtlich getrennt:** `~/fitness-dev` ist der OG-Source-Code
 und primäre Dev-Worktree; `~/vitalos/fitness-app` ist der in VitalOS integrierte
 Shell-Teil/Submodule-Checkout und deployed nach `fitness-aos.web.app`;
