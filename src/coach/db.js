@@ -27,6 +27,7 @@ export async function getAllHabitJournalsHistory(_limit) { return []; }
 // Lokaler Coach-Build ist Single-User, UserContext nutzt isLocalMode()-Guard.
 export async function getUserProfile(_uid) { return null; }
 export async function updateUserProfile(_uid, _data) { return true; }
+export async function registerShellDevice() {}
 
 // Stub — Push-Notifications brauchen FCM + Firestore, existieren nur im
 // Firebase-Build. Lokaler Coach-Build zeigt die Settings-Section entsprechend

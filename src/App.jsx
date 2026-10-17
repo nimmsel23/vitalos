@@ -2,7 +2,7 @@ import { useState, useEffect, useCallback, useRef } from 'react'
 import { RefreshCw, X, Zap } from 'lucide-react'
 import { useEscapeKey } from './hooks/useEscapeKey.js'
 import { useSwipeToDismiss } from '@fitness/hooks/useSwipeToDismiss.js'
-import { watchAuth, signIn, signInEmail, signUpEmail, signOut, isLocalMode, auth, getUserProfile } from '@db'
+import { watchAuth, signIn, signInEmail, signUpEmail, signOut, isLocalMode, auth, getUserProfile, registerShellDevice } from '@db'
 import { NAV_ITEMS, VALID_TABS, SUB_NAV, buildFitnessGateItems } from './shell/NavigationItems.js'
 import Settings from '@view/settings/index.jsx'
 import Sidebar from './shell/layout/Sidebar.jsx'
@@ -298,6 +298,7 @@ export default function App() {
   // Shell-Store übernehmen — SSOT bleibt der Store, Firestore ist Backup/Sync.
   useEffect(() => {
     if (!user?.uid || isLocalMode()) return
+    registerShellDevice()
     getUserProfile(user.uid).then(p => {
       if (!p) return
       const s = useShellSettings.getState()

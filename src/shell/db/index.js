@@ -33,6 +33,7 @@ export * from "./relax.js";
 export {
   getUserProfile,
   updateUserProfile,
+  registerShellDevice,
   getPushSettings,
   savePushSettings,
 } from "./settings.js";
