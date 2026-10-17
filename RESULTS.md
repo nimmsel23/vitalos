@@ -1,3 +1,13 @@
+## 2026-10-18 — journal-app: Journal v2 / Door v2 per Pointer-Bump nach vitalos
+
+Die Arbeit an Journal v2 passierte in `~/journal-dev` (Branch `dev`); in `~/vitalos` wurde sie über mehrere Merges und Pointer-Bumps nachgezogen. Nicht im Browser oder auf einem Gerät getestet.
+
+- **`journal-app` (Branch `vitalos`):** mehrfach `origin/dev` hineingemergt — v2-Ansicht (Raster, Woche/Monat, gcal), Splash/Auto-Updater, iPad-Vollbild, Habits-Ansicht im Raster-Design, Service-Worker-Font-Caching, Doku Journal v2, Door v2 / Door-App (`vos-door`), Google Tasks, Fire-Map-Kalender. Beim ersten Merge blieb `package.json` mit `workspace:*` (vitalos-Workspace); `pnpm-lock.yaml`/`pnpm-workspace.yaml` aus dev gehören nicht ins Submodul.
+- **`pnpm-lock.yaml` (Root):** per `pnpm install --frozen-lockfile --lockfile-only` nachgezogen (`workbox-window` für journal-app).
+- **Meta-Repo-Commits:** Pointer-Bumps `journal-app: v2-Ansicht …`, `journal-app: Service Worker Font-Caching`, `journal-app: Hosting-Target v2, deploy:v2`, `journal-app: Doku Journal v2`, `journal-app: Door v2, Door-App, Google Tasks, Fire-Map-Kalender`, `journal-app: Doku Door v2 / Door-App`.
+
+---
+
 ## 2026-10-17 — vos-fitness: Build repariert, Ordner umbenannt, eigene CI
 
 Der Ordner `fitness-vos/` baute nicht mehr; er wurde repariert, in `vos-fitness/` umbenannt und bekam einen eigenen CI-Deploy. Die Hosting-Site-ID `vos-fitness` ist bei Firebase global an ein anderes Projekt vergeben, deshalb bleibt die Site `fitness-vos` (`fitness-vos.web.app`, Auth-Domains unverändert). Live deployt; nicht im Browser oder auf einem Gerät getestet.
