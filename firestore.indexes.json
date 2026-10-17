@@ -39,6 +39,11 @@
       "indexes": [
         { "queryScope": "COLLECTION_GROUP", "order": "ASCENDING" }
       ]
+    },
+    {
+      "collectionGroup": "photos",
+      "fieldPath": "dataUrl",
+      "indexes": []
     }
   ]
 }
