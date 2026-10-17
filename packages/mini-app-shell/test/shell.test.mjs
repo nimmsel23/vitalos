@@ -45,7 +45,7 @@ test("SW: install/activate/fetch laufen in einer Sandbox", async () => {
   const handlers = {};
   const store = new Map();
   const caches = {
-    open: async () => ({ addAll: async () => {}, put: async (r, v) => store.set(r.url ?? r, v), match: async (r) => store.get(r.url ?? r) }),
+    open: async () => ({ keys: async () => [], addAll: async () => {}, put: async (r, v) => store.set(r.url ?? r, v), match: async (r) => store.get(r.url ?? r) }),
     keys: async () => ["vos-t-v0", "vos-t-v1", "other-app"],
     delete: async (k) => { deleted.push(k); },
     match: async () => undefined,
@@ -62,10 +62,10 @@ test("SW: install/activate/fetch laufen in einer Sandbox", async () => {
   assert.deepEqual(deleted, ["vos-t-v0"]); // alte Version weg, fremde App + aktuelle bleiben
   // Nicht-GET wird nicht abgefangen
   let responded = false;
-  handlers.fetch({ request: { method: "POST", url: "https://x.test/app/api" }, respondWith: () => (responded = true) });
+  handlers.fetch({ request: { headers: new Headers(), method: "POST", url: "https://x.test/app/api" }, respondWith: () => (responded = true) });
   assert.equal(responded, false);
   // API unter Präfix /app → swr greift auf "/api" (Scope-relativ)
-  handlers.fetch({ request: { method: "GET", url: "https://x.test/app/api", mode: "cors" }, respondWith: () => (responded = true) });
+  handlers.fetch({ request: { headers: new Headers(), method: "GET", url: "https://x.test/app/api", mode: "cors" }, respondWith: () => (responded = true) });
   assert.equal(responded, true);
 });
 

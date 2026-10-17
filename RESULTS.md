@@ -89,3 +89,6 @@ Preview `38965346842` erfolgreich. Produktions-CI Coach `38964936285` und
 `38965094966` sowie Shell `38964936288` und `38965094970` erfolgreich.
 Der abschließende Parent-Sync übernimmt ausschließlich die weiteren CI- und
 Dokumentationskorrekturen; die veröffentlichte Produktfunktion bleibt gleich.
+
+## 2026-10-17 — Offline-Cache bei Updates
+Gemeinsame mini-app-shell erweitert bzw. aktualisiert: versionsunabhängiger öffentlicher API-Cache mit Migration, Asset-Precache standardmäßig aktiv, fehlgeschlagene Installation ersetzt bestehenden Worker nicht. IndexedDB/localStorage bleiben unverändert. Geprüft: 13 Shell-/Update-Tests, Private-Request-Test, Vendor-Parität. Kein Push/Release; kein physischer Geräte-Test.

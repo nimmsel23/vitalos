@@ -39,7 +39,7 @@ Der HTML-Root-Container muss `id="root"` haben (sonst `splash: { "rootId": "app"
 `notificationClick: false` (eingebauten Klick-Handler abschalten, wenn die App ihren eigenen per `extraFile` liefert, z. B. Fuel), `assetFallback: "none"` (offline kein `index.html` für nicht gecachte Assets, sondern Netzwerkfehler),
 `neverCache` (Pfade, die der SW gar nicht anfasst, z. B. `/api/`), `navTimeoutMs` (Default 4000; `null` = unbegrenzt aufs Netz warten),
 `sync.conflicts` / `sync.conflictMessage` (HTTP 409 in der Queue → als `conflict` markieren, Seiten benachrichtigen),
-`notificationLink`, `workoutLink`, `file` (SW-Dateiname, Default `sw.js`), `precacheAssets` (alle `/assets/*` beim Installieren laden),
+`notificationLink`, `workoutLink`, `file` (SW-Dateiname, Default `sw.js`), `precacheAssets` (Default `true`: alle `/assets/*` beim Installieren laden; mit `false` abwählbar),
 `extras` (Bausteine aus `extras/`, z. B. `"workout-notifications"`), `extraFile` (eigener SW-Code, wird angehängt).
 App-Ebene: `html`, `manifest` (Dateiname), `register: true | {expose: true}` (`expose` setzt `window.__swRegistration` + feuert `sw-update-available`).
 
@@ -66,3 +66,15 @@ Stand: fitness (`fitness`, `frontend`) und fuel (`fuel`) sind so umgestellt.
 Die Kopien sind generiert: nie in `scripts/mini-app-shell/` editieren, sondern hier ändern und neu `vendor`en.
 Prüfen: `node ~/vitalos/packages/mini-app-shell/cli.mjs vendor <ordner> --check` (Exit 1 bei Abweichung).
 Tests: `node --test test/`.
+
+## Offline bei Updates
+
+Öffentliche API-Antworten aus `api.swr`/`api.networkFirst` liegen in einem
+versionsunabhängigen `<prefix>offline-data-v1`-Cache. Beim ersten Wechsel werden
+passende alte API-Antworten übernommen. `neverCache`, Authorization und no-store
+bleiben ausgeschlossen. IndexedDB/localStorage werden nicht verändert.
+Build-Assets werden standardmäßig vorgeladen. Schlägt die Installation fehl,
+bleibt der bisherige Worker aktiv. Alte Build-Caches werden erst nach erfolgreicher
+Installation entfernt. Daten- und Bild-Caches bleiben erhalten.
+Browser-Speicherlöschung, Quota und nicht zuvor geladene API-Daten sind damit
+nicht abgedeckt. Private Daten gehören in die kontogebundene App-Datenschicht.
