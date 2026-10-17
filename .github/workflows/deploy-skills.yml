@@ -36,7 +36,7 @@ jobs:
           node-version: 22
       - name: Install Skills standalone dependencies
         working-directory: fitness-app/Skills
-        run: pnpm install --ignore-workspace --frozen-lockfile
+        run: pnpm install --ignore-workspace --frozen-lockfile --ignore-scripts
       - name: Verify exercise videos
         working-directory: fitness-app/Skills
         run: node scripts/test-exercise-videos.mjs
