@@ -24,6 +24,11 @@ jobs:
       - name: Checkout (ohne Submodules)
         uses: actions/checkout@v5
 
+      - name: Private Skills submodule access
+        uses: ./.github/actions/skills-submodule-auth
+        with:
+          deploy-key: ${{ secrets.SKILLS_DEPLOY_KEY }}
+
       - name: Submodules via HTTPS + Token
         run: |
           git config --global url."https://x-access-token:${{ secrets.GH_SUBMODULE_TOKEN || secrets.GITHUB_TOKEN }}@github.com/".insteadOf "git@github.com:"

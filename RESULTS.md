@@ -1,3 +1,7 @@
+## 2026-10-17 — Privater Skills-Checkout in CI
+
+Skills bleibt privat. Nach ausdrücklicher Nutzerfreigabe liest VitalOS-CI das neue verschachtelte Submodule über einen separaten Nur-Lese-Deploy-Key (SKILLS_DEPLOY_KEY). Die gemeinsame Composite-Action konfiguriert ausschließlich den Skills-Repository-SSH-Pfad; Hostkeys stammen aus GitHubs HTTPS-Metadaten. Alle 12 rekursiven Checkout-Jobs verwenden sie vor dem Submodule-Update. YAML, Shell-Syntax und Schritt-Reihenfolge geprüft. Der Firebase-Service-Account unter ~/.env/firebase-fitness.json gehört zum Projekt fitness-aos; der vorhandene CI-Service-Account wird weiterverwendet.
+
 ## 2026-10-17 — Skills-Videos und gemeinsame Release-Quelle
 
 Fitness/Skills ist ein direktes skills-dev-Submodule auf Branch fitness. Der neue Production-Workflow deploy-skills.yml baut denselben gepinnten verschachtelten Checkout separat nach vos-skills.web.app; deploy-fitness.yml baut den Host. Tailwind der VitalOS-Shell erfasst die Skills-Root-UI-Dateien. Keine parallele UI-Kopie mehr.

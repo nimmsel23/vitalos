@@ -1,0 +1,32 @@
+name: Read-only Skills submodule access
+description: Configure the private Skills repository deploy key before recursive checkout
+inputs:
+  deploy-key:
+    description: Read-only deploy key for nimmsel23/skills-dev
+    required: true
+runs:
+  using: composite
+  steps:
+    - shell: bash
+      env:
+        SKILLS_DEPLOY_KEY: ${{ inputs.deploy-key }}
+      run: |
+        set -euo pipefail
+        if [ -z "$SKILLS_DEPLOY_KEY" ]; then
+          echo '::error::SKILLS_DEPLOY_KEY is required for the private Skills submodule.'
+          exit 1
+        fi
+        key_path="$RUNNER_TEMP/skills-submodule-key"
+        hosts_path="$RUNNER_TEMP/skills-known-hosts"
+        umask 077
+        printf '%s\n' "$SKILLS_DEPLOY_KEY" > "$key_path"
+        curl --fail --silent --show-error https://api.github.com/meta > "$RUNNER_TEMP/github-meta.json"
+        python3 - "$RUNNER_TEMP/github-meta.json" "$hosts_path" <<'PY'
+        import json, sys
+        with open(sys.argv[1]) as source:
+            keys = json.load(source)['ssh_keys']
+        with open(sys.argv[2], 'w') as target:
+            target.write(''.join('github.com ' + key + '\n' for key in keys))
+        PY
+        git config --global core.sshCommand "ssh -i $key_path -o IdentitiesOnly=yes -o StrictHostKeyChecking=yes -o UserKnownHostsFile=$hosts_path"
+        git config --global url."ssh://git@github.com/nimmsel23/skills-dev.git".insteadOf "git@github.com:nimmsel23/skills-dev.git"
