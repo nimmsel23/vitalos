@@ -44,6 +44,9 @@ jobs:
       - name: Install (Workspaces)
         run: pnpm install --frozen-lockfile
 
+      - name: Check embedded 6Pack auth
+        run: node scripts/test-sixpack-auth.mjs
+
       - name: Build (firebase mode)
         run: pnpm run build:firebase
 

@@ -189,7 +189,7 @@ function Views({ tab, fitnessProps, fuelTab, setFuelTab, relaxTab, setRelaxTab, 
       </div>
     )}
     {tab === 'fitness'  && <FitnessApp  {...fitnessProps} />}
-    {tab === 'sixpack'  && <div data-theme="sixpack" className="min-h-[100dvh] overflow-y-auto bg-[var(--bg)] text-[var(--ink)]"><div className="mx-auto max-w-xl px-4 py-4"><SixPackPromiseCard onSubNav={(id) => navigate('fitness', id)} /></div></div>}
+    {tab === 'sixpack'  && <div data-theme="sixpack" className="min-h-[100dvh] overflow-y-auto bg-[var(--bg)] text-[var(--ink)]"><div className="mx-auto max-w-xl px-4 py-4"><SixPackPromiseCard key={user?.uid || 'anonymous'} uid={user?.uid || null} onSubNav={(id) => navigate('fitness', id)} /></div></div>}
     {tab === 'fuel'     && <FuelWrapper user={user} subTab={fuelTab} onSubTab={setFuelTab} onNavigateShell={navigate} embedded />}
     {tab === 'journal'  && <JournalApp onOpenSession={openSession} onNavigateShell={navigate} runtimeDate={runtimeDate} onRuntimeDateChange={onRuntimeDateChange} />}
     {tab === 'habits'   && <HabitsApp runtimeDate={runtimeDate} onRuntimeDateChange={onRuntimeDateChange} />}
