@@ -1,3 +1,7 @@
+## 2026-10-17 — Skills-Videos und gemeinsame Release-Quelle
+
+Fitness/Skills ist ein direktes skills-dev-Submodule auf Branch fitness. Der neue Production-Workflow deploy-skills.yml baut denselben gepinnten verschachtelten Checkout separat nach vos-skills.web.app; deploy-fitness.yml baut den Host. Tailwind der VitalOS-Shell erfasst die Skills-Root-UI-Dateien. Keine parallele UI-Kopie mehr.
+
 ## 2026-10-17 — Gemeinsames Profil + Geräteliste in der Shell, Pointer-Bump fuel-app/fitness-app deployt
 
 - **`src/shell/db/settings.js`:** Shell liest/schreibt das app-übergreifende Profil `users/{uid}/meta/profile` (`gender` m/f, `age`, `heightCm`, `weightKg`, `chronicConditions`, `medications`). Lesen: Profil gewinnt, fehlende Felder werden einmalig aus `users/{uid}` übernommen (Backfill); Schreiben: Profil plus Write-through auf `users/{uid}` (Coach-Tools lesen dort). Geräte-Registrierung unter `users/{uid}/devices/{deviceId}` mit `app=vitalos` (Commit `353dcbb`).

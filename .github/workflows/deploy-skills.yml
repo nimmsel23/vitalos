@@ -1,0 +1,49 @@
+name: Deploy Skills PWA
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [master]
+    paths:
+      - 'fitness-app'
+      - 'fitness-app/**'
+      - '.github/workflows/deploy-skills.yml'
+
+concurrency:
+  group: production-skills
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - name: Submodules via HTTPS + Token
+        run: |
+          git config --global url."https://x-access-token:${{ secrets.GH_SUBMODULE_TOKEN || secrets.GITHUB_TOKEN }}@github.com/".insteadOf "git@github.com:"
+          git submodule sync --recursive
+          git submodule update --init --recursive
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 11.3.0
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 22
+      - name: Install Skills standalone dependencies
+        working-directory: fitness-app/Skills
+        run: pnpm install --ignore-workspace --frozen-lockfile
+      - name: Verify exercise videos
+        working-directory: fitness-app/Skills
+        run: node scripts/test-exercise-videos.mjs
+      - name: Build Skills
+        working-directory: fitness-app/Skills
+        run: pnpm run build
+      - name: Deploy Skills to Firebase Hosting
+        working-directory: fitness-app/Skills
+        env:
+          FIREBASE_SA: ${{ secrets.FIREBASE_SERVICE_ACCOUNT || secrets.FIREBASE_SERVICE_ACCOUNT_FITNESS_AOS }}
+        run: |
+          printf '%s' "$FIREBASE_SA" > "$RUNNER_TEMP/skills-sa.json"
+          GOOGLE_APPLICATION_CREDENTIALS="$RUNNER_TEMP/skills-sa.json" \
+            npx firebase-tools@latest deploy --only hosting:skills \
+            --project fitness-aos --non-interactive
