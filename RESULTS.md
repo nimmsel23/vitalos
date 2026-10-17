@@ -1,3 +1,10 @@
+## 2026-10-17 — Selfie-Sync vom Nutzer auf zwei Geräten bestätigt
+
+- Nutzer bestätigt nach Upload eines Fotos am Handy die erfolgreiche Anzeige am Laptop mit demselben Konto. Der reale geräteübergreifende Upload-/Lese-Ablauf funktioniert; frühere Hinweise „Geräte-Sync noch ungeprüft“ sind für diesen Ablauf erledigt.
+- Finaler Stand: 6pack 21c804d, Shell-Fix 42e1168; bestehender VitalOS-Login wird wiederverwendet. Production-CI erfolgreich: [VitalOS](https://github.com/nimmsel23/vitalos/actions/runs/39028533456), [6pack](https://github.com/nimmsel23/vitalos/actions/runs/39028533446). Live-Bundles einschließlich Shell-UID-Anbindung geprüft.
+- Speicher: `sixpackSelfies/{uid}/photos/{photoId}`, nur Eigentümer; normaler Sync benötigt keinen Laptop-Dienst. Dokumentation und Abnahme ebenfalls in 6pack README/RESULTS und Fitness docs/6pack-integration.md/RESULTS festgehalten.
+- Die Nutzerbestätigung deckt keine zusätzlichen Offline-/Altbestand-/HEIC-Gerätetests ab. Persönliche Fotos oder Tokens wurden nicht für die Dokumentation ausgelesen.
+
 ## 2026-10-17 — 6pack übernimmt den VitalOS-Login
 
 - Ursache: Der eigenständige Shell-Tab importierte noch 6pack-app b3e070b und übergab keine UID. Der bereits veröffentlichte Fitness-Release nutzte dagegen den neuen 6pack-Stand. Deshalb zeigte die Shell trotz Anmeldung die alte Login-Sperre.
