@@ -1,3 +1,15 @@
+## 2026-10-17 — Gemeinsames Profil + Geräteliste in der Shell, Pointer-Bump fuel-app/fitness-app deployt
+
+- **`src/shell/db/settings.js`:** Shell liest/schreibt das app-übergreifende Profil `users/{uid}/meta/profile` (`gender` m/f, `age`, `heightCm`, `weightKg`, `chronicConditions`, `medications`). Lesen: Profil gewinnt, fehlende Felder werden einmalig aus `users/{uid}` übernommen (Backfill); Schreiben: Profil plus Write-through auf `users/{uid}` (Coach-Tools lesen dort). Geräte-Registrierung unter `users/{uid}/devices/{deviceId}` mit `app=vitalos` (Commit `353dcbb`).
+- **Pointer-Bump:** `fuel-app` (`dc0c7c8`) und `fitness-app` (`f784df6`) enthalten jetzt dasselbe Profil-/Geräte-Schema (Commits `d029182`, `6b22bd9`). Reihenfolge von innen nach außen gepusht: Teil-Repos `coach`/`plan`/`plan/coach-dev`, dann `fitness-dev`/`fuel-dev` `dev`, dann Submodul-Branches `vitalos`, zuletzt Meta-Repo `master`. Die vier `vos-fuel-*-app`-Mini-Apps bewusst nicht mitgebumpt.
+- **`plan/coach-dev`:** Commit hing im Detached HEAD, `origin/dev` war 47 Commits weiter — per Cherry-Pick auf `origin/dev` gelegt und als Fast-Forward gepusht.
+- **Mitgepusht:** Die Pushes von `fuel-dev`/`fitness-dev` nahmen auch fremde, bis dahin ungepushte Commits mit (5 bzw. 11); Staging-Hooks liefen (Fitness-Preview :8100, Fuel nach `~/.local/fuel`), kein Prod-Deploy außerhalb der CI.
+- **CI:** `Deploy Fitness PWA`, `Deploy Fuel PWA`, `Deploy VitalOS Shell` für `2fe37d0` mit `success`. Alle sieben Builds (fuel cloud, fitness lokal/firebase, vitalos lokal/firebase) liefen durch; im Browser mit echten Firestore-Daten nicht getestet.
+- **`CLAUDE.md`:** Neue Abschnitte „Pointer-Bump fuel-app / fitness-app: Schritt für Schritt“ und „Gemeinsamer User-Kontext in Firestore“ (Tabelle der Pfade, Backfill-/Write-through-Regeln, Geräte-ID pro Origin).
+- Firestore-Rules unverändert (`users/{uid}/{document=**}` deckt die neuen Dokumente ab).
+
+---
+
 ## 2026-10-17 — Selfie-Sync vom Nutzer auf zwei Geräten bestätigt
 
 - Nutzer bestätigt nach Upload eines Fotos am Handy die erfolgreiche Anzeige am Laptop mit demselben Konto. Der reale geräteübergreifende Upload-/Lese-Ablauf funktioniert; frühere Hinweise „Geräte-Sync noch ungeprüft“ sind für diesen Ablauf erledigt.
