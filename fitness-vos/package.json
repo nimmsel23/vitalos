@@ -4,7 +4,7 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "vite",
+    "dev": "vite --config vite.config.cjs --port 9140",
     "build": "VITE_APP_MODE=client vite build --config vite.config.cjs",
     "preview": "vite preview",
     "build:cloud": "npm run build",

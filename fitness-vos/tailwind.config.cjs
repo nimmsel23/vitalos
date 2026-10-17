@@ -18,7 +18,7 @@ module.exports = {
     siblingGlob("fitness-dev", "fitness-app"),
     siblingGlob("journal-dev", "journal-app"),
     siblingGlob("habits-dev", "habit-app"),
-    path.resolve(__dirname, "..", "learn-dev", "src", "**", "*.{js,jsx,ts,tsx}"),
+    siblingGlob("learn-dev", "learn-app"),
     "../src/**/*.{js,jsx,ts,tsx}",
   ],
   safelist: [

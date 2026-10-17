@@ -10,8 +10,7 @@ import PulseApp from './pulse/PulseApp.jsx'
  * Eingabe unten, die sofort loggt (kein Formular, kein Zwischenschritt).
  * Alles andere (Review/Lernen/Verlauf/Settings) sitzt in einem einzigen
  * Overlay-Sheet statt in persistenter Nav-Chrome — siehe src/pulse/.
- * Die alte Shell (App.jsx + fitness-app-Sidebar/MobileNav) bleibt im Repo
- * unverändert erhalten, wird aber von hier aus nicht mehr gerendert.
+ * Die alte Shell (App.jsx + Sidebar/MobileNav) wurde entfernt (Git-Historie).
  */
 export default function AppWrapper() {
   return <PulseApp />

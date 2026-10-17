@@ -21,17 +21,7 @@ module.exports = defineConfig(({ mode }) => {
       "import.meta.env.VITE_APP_MODE": JSON.stringify(appMode),
     },
     plugins: [
-      react(),
-      {
-        name: 'override-nav-items',
-        enforce: 'pre',
-        resolveId(source, importer) {
-          if (source.includes('constants/NavigationItems')) {
-            return path.resolve(__dirname, 'src/NavigationItems.js');
-          }
-          return null;
-        }
-      }
+      react()
     ],
     resolve: {
       preserveSymlinks: true,
@@ -39,6 +29,9 @@ module.exports = defineConfig(({ mode }) => {
         "@src": path.resolve(VITALOS, "src"),
         "@shell": path.resolve(VITALOS, "src/shell"),
         "@coach": path.resolve(VITALOS, "src/coach"),
+        // wie in fitness-app/vite.config.js: dessen firebase.js exportiert
+        // functionsInstance/httpsCallable (Push), die Shell-Variante nicht.
+        "@cloud/firebase.js": path.resolve(FITNESS, "src/firebase.js"),
         "@cloud": path.resolve(VITALOS, "src/cloud"),
         "@components": path.resolve(FITNESS, "src/components"),
         "@lib": path.resolve(FITNESS, "src/lib"),

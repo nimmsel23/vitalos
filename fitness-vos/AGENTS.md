@@ -3,9 +3,11 @@
 ## Project Structure & Module Organization
 
 `fitness-vos` is a Vite/React wrapper for the VitalOS fitness Firebase surface.
-Local source lives in `src/`: `App.jsx` owns the shell, `main.jsx` wires React
-providers, `NavigationItems.js` overrides the imported fitness navigation, and
-`styles.css` contains VOS-local CSS. Most runtime UI is imported from sibling
+Local source lives in `src/`: `main.jsx` wires React providers, `AppWrapper.jsx`
+renders the "Pulse" UI (`src/pulse/`, look in `src/styles/vos-pulse.css`), and
+`styles.css` contains VOS-local CSS. The old tab shell (`App.jsx`) and the
+`NavigationItems.js` override were removed; navigation constants come straight
+from `fitness-app`. Most runtime UI is imported from sibling
 VitalOS modules through aliases in `vite.config.cjs`, especially
 `../fitness-app/src`. Static assets and PWA files live in `public/`; production
 Firebase output is `dist-firebase/`. Do not edit generated `dist*` files by
@@ -13,7 +15,7 @@ hand.
 
 ## Build, Test, and Development Commands
 
-- `npm run dev` starts the Vite dev server.
+- `npm run dev` starts the Vite dev server (`vite.config.cjs`, port 9140).
 - `npm run build` creates the cloud/Firebase build in `dist-firebase`.
 - `npm run build:cloud` is a compatibility alias for `npm run build`.
 - `npm run deploy` deploys the existing `dist-firebase` build only.
