@@ -185,6 +185,31 @@ Stolpersteine:
   Views aus `fitness-app` importieren, brauchen auch einen Stub in `src/coach/db.js`
   (lokaler Build).
 
+### Gemeinsamer User-Kontext in Firestore (seit 2026-10-17)
+
+Alles zum Menschen liegt unter `users/{uid}/…` (Rules: `match /users/{uid}/{document=**}`),
+App-Daten bleiben in `nutrition|supplements|fitness|relax/{uid}/…`.
+
+| Pfad | Inhalt | Schreiber |
+|---|---|---|
+| `users/{uid}/meta/profile` | **app-übergreifende** Stammdaten: `gender` (`m`/`f`), `age`, `heightCm`, `weightKg`, `chronicConditions`, `medications` | fuel, fitness, vitalos (Merge-Write) |
+| `users/{uid}/meta/settings` | nur fuel-eigene Einstellungen (Ziele, Reminder, …) — Dokument wird bei jedem Save **komplett überschrieben**, deshalb nichts App-Fremdes hineinlegen | fuel |
+| `users/{uid}/devices/{deviceId}` | Geräteliste: `app` (`fuel`/`fitness`/`vitalos`), `label`, `registered_at`, `last_seen_at`, `prefs.<app>` (fuel: `prefs.fuel.frontdoor` = Schnelleinstieg) | jede App für ihr Gerät |
+| `users/{uid}` (Root-Dokument) | vitalos-Altbestand (Anamnese, split, …) — wird weitergeschrieben | vitalos |
+| `fitness/{uid}/profile/metadata` | fitness-Altbestand + Coach-Daten (`clientStatus`, Anamnese) — Coach-Panel liest hier | fitness |
+
+Regeln:
+- Lesen: `meta/profile` gewinnt; fehlende Felder werden einmalig aus dem Altbestand der jeweiligen
+  App übernommen (Backfill). Schreiben: `meta/profile` **und** Write-through auf den Altbestand
+  (fitness, vitalos), solange Coach-Tools dort lesen. fuel schreibt die Felder nur noch ins Profil.
+- Die Geräte-ID liegt im localStorage und gilt **pro Origin**: dasselbe Telefon hat in fuel und
+  fitness zwei Einträge. Gelöschter Browserspeicher = neues Gerät (fuel fragt dann den
+  Schnelleinstieg neu ab, `FrontdoorChooser`).
+- Neues geteiltes Feld → in allen drei Apps gleichzeitig aufnehmen
+  (`fuel-dev/src/client/lib/db/firestore/profile.js`, `fitness-dev/src/lib/db/firestore/user.js`
+  inkl. der Kopien in `frontend/`, `coach/`, `plan/`, `plan/coach-dev/`, und
+  `vitalos/src/shell/db/settings.js`).
+
 ---
 
 ## CI/CD: Dezentrale Deploy-Workflows (`.github/workflows/deploy-master.yml`)
