@@ -1,0 +1,61 @@
+name: Deploy VOS Fitness PWA
+
+# Ordner vos-fitness/ -> Hosting-Site `fitness-vos` (fitness-vos.web.app).
+# Baut aus dem Meta-Repo, weil vos-fitness per Vite-Alias Quellen aus
+# fitness-app (Branch vitalos) und den Geschwister-Apps importiert.
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [master]
+    paths:
+      - 'vos-fitness/**'
+      - 'fitness-app'
+      - 'fitness-app/**'
+      - 'firebase.config.js'
+      - '.github/workflows/deploy-vos-fitness.yml'
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Private Skills submodule access
+        uses: ./.github/actions/skills-submodule-auth
+        with:
+          deploy-key: ${{ secrets.SKILLS_DEPLOY_KEY }}
+
+      - name: Submodules via HTTPS + Token
+        run: |
+          git config --global url."https://x-access-token:${{ secrets.GH_SUBMODULE_TOKEN || secrets.GITHUB_TOKEN }}@github.com/".insteadOf "git@github.com:"
+          git submodule sync
+          git submodule update --init --recursive
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 11.3.0
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - name: Install (Workspaces)
+        run: pnpm install --frozen-lockfile
+
+      - name: Build VOS Fitness
+        working-directory: vos-fitness
+        env:
+          VITE_APP_MODE: client
+        run: pnpm exec vite build --config vite.config.cjs
+
+      # Nur Hosting. Firestore-Rules-SSOT liegt im Root (deploy-shell.yml).
+      - name: Deploy VOS Fitness to Firebase Hosting
+        working-directory: vos-fitness
+        run: |
+          echo '${{ secrets.FIREBASE_SERVICE_ACCOUNT || secrets.FIREBASE_SERVICE_ACCOUNT_FITNESS_AOS }}' > /tmp/sa.json
+          GOOGLE_APPLICATION_CREDENTIALS=/tmp/sa.json \
+            npx firebase-tools@latest deploy --only hosting \
+            --project fitness-aos --non-interactive

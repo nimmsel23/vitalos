@@ -5,12 +5,12 @@ ROOT_DIR="$(git rev-parse --show-toplevel)"
 
 "$ROOT_DIR/bin/vos-sync-submodule-pointers" --check-push
 
-# fitness-vos: schlanke VOS-Standalone-Variante, liegt als normaler Ordner
+# vos-fitness: schlanke VOS-Standalone-Variante, liegt als normaler Ordner
 # (kein Submodule) direkt im vitalos-Meta-Repo und deployed bewusst NICHT
-# über die Meta-Repo-CI, sondern nur lokal via `fitness-vos/firebase.json`
+# über die Meta-Repo-CI, sondern nur lokal via `vos-fitness/firebase.json`
 # (siehe CLAUDE.md "Deploy-Flow Gesamtbild" — fitness-vos-Zeile). Ohne
 # diesen Hook bräuchte jede Änderung dort ein manuelles
-# `cd fitness-vos && npm run firebase` — Push nach master triggert das
+# `cd vos-fitness && npm run firebase` — Push nach master triggert das
 # jetzt automatisch, analog zum pre-push-Hook in fitness-dev (dort Vorbild
 # für Struktur/Fehlerverhalten).
 should_deploy_fitness_vos=false
@@ -29,7 +29,7 @@ while read -r local_ref local_sha remote_ref remote_sha; do
   # dist-firebase/.firebase sind Build-Output des vorherigen Laufs — nie
   # selbst ein Deploy-Grund, sonst triggert der Hook sich bei jedem Push auf
   # sich selbst.
-  relevant=$(echo "$changed" | grep -E '^fitness-vos/' | grep -Ev '\.(md|bak)$|^fitness-vos/dist(-firebase)?/|^fitness-vos/\.firebase/' || true)
+  relevant=$(echo "$changed" | grep -E '^vos-fitness/' | grep -Ev '\.(md|bak)$|^vos-fitness/dist(-firebase)?/|^vos-fitness/\.firebase/' || true)
   if [ -n "$relevant" ]; then
     should_deploy_fitness_vos=true
   fi
@@ -37,14 +37,14 @@ done
 
 if [ "$should_deploy_fitness_vos" = true ]; then
   if command -v gum >/dev/null 2>&1; then
-    gum log --level info "fitness-vos: relevante Änderungen im Push zu master — baue + deploye zu Firebase (fitness-vos.web.app)…"
+    gum log --level info "vos-fitness: relevante Änderungen im Push zu master — baue + deploye zu Firebase (fitness-vos.web.app)…"
   else
-    echo "🔍 fitness-vos: relevante Änderungen im Push zu master — baue + deploye zu Firebase (fitness-vos.web.app)…"
+    echo "🔍 vos-fitness: relevante Änderungen im Push zu master — baue + deploye zu Firebase (fitness-vos.web.app)…"
   fi
-  if ! (cd "$ROOT_DIR/fitness-vos" && npm run firebase); then
-    echo "❌ fitness-vos 'npm run firebase' fehlgeschlagen — Push wird abgebrochen (kein halb-deployter Stand)." >&2
+  if ! (cd "$ROOT_DIR/vos-fitness" && npm run firebase); then
+    echo "❌ vos-fitness 'npm run firebase' fehlgeschlagen — Push wird abgebrochen (kein halb-deployter Stand)." >&2
     echo "   Mit 'git push --no-verify' kannst du den Hook überspringen, falls das Absicht ist." >&2
     exit 1
   fi
-  echo "✅ fitness-vos Deploy abgeschlossen (fitness-vos.web.app)."
+  echo "✅ vos-fitness Deploy abgeschlossen (fitness-vos.web.app)."
 fi

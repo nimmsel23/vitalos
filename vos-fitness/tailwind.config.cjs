@@ -1,7 +1,7 @@
 const path = require("path")
 const fs = require("fs")
 
-// fitness-vos rendert Komponenten direkt aus den VitalOS-Submodules. Tailwind
+// vos-fitness rendert Komponenten direkt aus den VitalOS-Submodules. Tailwind
 // muss diese Quellen scannen, sonst fehlen mobile/responsive Utility-Klassen im
 // Build, obwohl Vite die Komponenten korrekt importiert.
 function siblingGlob(devName, appName) {

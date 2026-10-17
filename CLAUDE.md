@@ -293,7 +293,7 @@ Hosting-*Site* im selben Projekt (alle `.firebaserc` → `fitness-aos`):
 |---|---|---|
 | vitalos (Shell) | `vitalos` → vitalos.web.app | CI `deploy-shell.yml` |
 | fitness-app | `fitness-aos` → fitness-aos.web.app | CI `deploy-fitness.yml` |
-| fitness-vos | `fitness-vos` → fitness-vos.web.app | lokal via `fitness-vos/firebase.json`, automatisiert seit 2026-10-13 über `.githooks/pre-push` (siehe unten) |
+| vos-fitness (Ordner) | `fitness-vos` → fitness-vos.web.app | CI `deploy-vos-fitness.yml` (seit 2026-10-17) + lokal via `vos-fitness/firebase.json`, automatisiert seit 2026-10-13 über `.githooks/pre-push` (siehe unten) |
 | fuel-app | `fuel-vos` → fuel-vos.web.app | CI `deploy-fuel.yml` / `fuel-app/firebase.json` |
 | fuel-os | `fuel-os` → fuel-os.web.app | lokal via `fuel-os/firebase.json` |
 | fuel-app (Mini-Apps, seit 2026-10-16) | `vos-fuel-log`, `vos-fuel-supplements`, `vos-fuel-mikros`, `vos-fuel-protokoll` → je `<site>.web.app` | aus **demselben** Repo fuel-dev (Targets `log`/`supplements`/`mikros`/`protokoll` in `firebase.json`, Build `VITE_SOLO=<tab>`, `pnpm run deploy:solo:<x>`); Hosting-Target der vollen App heißt jetzt `client` (`--only hosting:client`). Lokale Checkouts als Submodule `vos-fuel-<x>-app` (alle vier = Klon von fuel-dev, Branch `vitalos`, `ignore = untracked`; bewusst NICHT in `pnpm-workspace.yaml`) — Arbeitskopie bleibt `~/fuel-dev` (Branch `dev`). **Bewusst KEINE CI-Deploys** für die vier Mini-Apps: stable-prod-/Fallback-Apps, die nie durch einen versehentlichen Pointer-Bump oder Push überschrieben werden dürfen; Deploy nur manuell und gewollt (`pnpm run deploy:solo:<x>` in fuel-dev). `deploy-fuel.yml` deployt ausschließlich `hosting:client` |
@@ -302,17 +302,17 @@ Hosting-*Site* im selben Projekt (alle `.firebaserc` → `fitness-aos`):
 **Fitness-Rollen sind absichtlich getrennt:** `~/fitness-dev` ist der OG-Source-Code
 und primäre Dev-Worktree; `~/vitalos/fitness-app` ist der in VitalOS integrierte
 Shell-Teil/Submodule-Checkout und deployed nach `fitness-aos.web.app`;
-`~/vitalos/fitness-vos` ist die separate, schlanke VOS-Standalone-Variante und
-deployed nach `fitness-vos.web.app`. `fitness-vos` importiert absichtlich nur
+`~/vitalos/vos-fitness` ist die separate, schlanke VOS-Standalone-Variante und
+deployed nach `fitness-vos.web.app`. `vos-fitness` importiert absichtlich nur
 die noetigen Bausteine aus `fitness-app` und soll schlank bleiben, statt die
 volle `fitness-app`-Shell zu duplizieren. Zweck: eine live Fitness-Variante,
 die einfach funktioniert, auch wenn die VitalOS-Shell oder die AOS-Version
 gerade nicht gesund ist. Diese drei Pfade nicht zusammenziehen.
 
-**fitness-vos Auto-Deploy (seit 2026-10-13):** `.githooks/pre-push` löst bei
-jedem Push nach `master`, der Dateien unter `fitness-vos/` ändert (außer
+**vos-fitness Auto-Deploy (Ordner bis 2026-10-17 `fitness-vos/`, Site-ID bleibt `fitness-vos`; `vos-fitness` ist bei Firebase global vergeben) (seit 2026-10-13):** `.githooks/pre-push` löst bei
+jedem Push nach `master`, der Dateien unter `vos-fitness/` ändert (außer
 `.md`/`.bak`/eigenem Build-Output `dist-firebase/`/`.firebase/`), automatisch
-`cd fitness-vos && npm run firebase` aus (Build + `firebase deploy --only
+`cd vos-fitness && npm run firebase` aus (Build + `firebase deploy --only
 hosting --project fitness-aos`) — analog zum bestehenden Pre-Push-Hook in
 `~/fitness-dev`. Schlägt der Build/Deploy fehl, bricht der Push ab (kein
 halb-deployter Stand), Override via `git push --no-verify`. User hat

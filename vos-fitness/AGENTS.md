@@ -2,7 +2,7 @@
 
 ## Project Structure & Module Organization
 
-`fitness-vos` is a Vite/React wrapper for the VitalOS fitness Firebase surface.
+`vos-fitness` (Hosting site `fitness-vos`) is a Vite/React wrapper for the VitalOS fitness Firebase surface.
 Local source lives in `src/`: `main.jsx` wires React providers, `AppWrapper.jsx`
 renders the "Pulse" UI (`src/pulse/`, look in `src/styles/vos-pulse.css`), and
 `styles.css` contains VOS-local CSS. The old tab shell (`App.jsx`) and the
