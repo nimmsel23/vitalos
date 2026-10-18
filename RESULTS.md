@@ -1,3 +1,15 @@
+## 2026-10-18 — Journal-v2-Rules, CI-Reparaturen und coach-Submodul-Fix
+
+Fortsetzung des Journal-v2-Pointer-Bumps (siehe nächster Eintrag): Firestore-Rules für die Raster-Apps, Lockfile-/Workflow-Fehler beim Push und ein defekter Submodul-Pointer. `~/vitalos` ist komplett gepusht; die Journal-Seiten waren zuvor direkt per `deploy:all` aus `~/journal-dev` ausgeliefert worden. Nicht im Browser oder auf einem Gerät getestet.
+
+- **`firestore.rules` (`876a0d3`):** neuer Block `match /journal/{uid}/{document=**}` nur für den Besitzer (Frame Map je Domain unter `journal/{uid}/frame/{domain}`, Door-Quellenwahl unter `journal/{uid}/settings/door`; Coach bewusst ausgenommen). Rules per `firebase deploy --only firestore:rules --project fitness-aos` ausgerollt.
+- **`journal-app`-Pointer-Bumps:** Fire × Google Calendar, Frame Map + Quellenwahl `journal/`, Freedom/Focus Maps + Fire-Woche, Potential-Wischen (Quadranten per Swipe), `+hot`/`+profit` aus dem Journal, TaskChampion-Härtung. Das Lockfile `pnpm-lock.yaml` im Submodul wird nicht mehr getrackt (CI nutzt das Root-Lockfile).
+- **`fitness-app` (`1f16bda`):** `coach`-Submodul entfernt (Coach lebt als `coach-app` in vitalos); behebt den CI-Checkout-Fehler `not our ref` (der referenzierte Commit `a190434` war zuvor nach `origin master` von coach gepusht worden).
+- **`pnpm-lock.yaml` (Root, `701b2e8`):** neu erzeugt, weil `fflate` (journal-app) fehlte und `--frozen-lockfile` in der CI abbrach.
+- **`.github/workflows/deploy-journal.yml` (`1c6022a`):** `firebase deploy --only hosting:journal` statt `--only hosting`, da `journal-app` jetzt sechs Hosting-Targets hat und der Workflow nur `journal` baut. CI „Deploy Journal PWA“ und Shell danach grün.
+
+---
+
 ## 2026-10-18 — journal-app: Journal v2 / Door v2 per Pointer-Bump nach vitalos
 
 Die Arbeit an Journal v2 passierte in `~/journal-dev` (Branch `dev`); in `~/vitalos` wurde sie über mehrere Merges und Pointer-Bumps nachgezogen. Nicht im Browser oder auf einem Gerät getestet.

@@ -2,6 +2,11 @@
 
 Aktive Arbeitsliste (max. 5 Punkte) für das vitalos Meta-Repo.
 
+## 2026-10-18 (journal-app)
+
+- [ ] Prüfen, ob `deploy-habits.yml` / `deploy-learn.yml` ebenfalls `--only hosting` mit mehreren Hosting-Einträgen nutzen (gleiches Muster wie bei `deploy-journal.yml`); nicht geprüft.
+- [ ] `journal/{uid}/**`-Rules und Frame-Map-Pfad mit echten Daten im Browser testen (bisher nur deployt).
+
 ## 2026-10-17 (vos-fitness)
 
 - [ ] Entscheidung offen: Soll die Shell `PulseApp` aus `vos-fitness` rendern (neuer Fitness-Tab oder Ersatz für `FitnessApp.jsx`)? Koppelt die Shell an `vos-fitness`, dessen Zweck die Shell-Unabhängigkeit war.
@@ -37,3 +42,8 @@ Aktive Arbeitsliste (max. 5 Punkte) für das vitalos Meta-Repo.
 *   **Ambiguität der "Fire Map" Kalender-Auswahl:** Die Doku beschreibt die Auswahl als "Name enthält 'fire'". Es wird nicht berichtet, wie das System bei mehreren passenden Kalendern priorisiert oder ob dies zu unvorhersehbarem Verhalten führen kann.
 *   **Ungeprüfte Konsistenz des `journal:flavor-html` Plugins:** Es wird nicht berichtet, ob die String-Ersetzungen des Plugins in `index.html` für die unterschiedlichen Builds (Journal/Door) auf unbeabsichtigte Überlappungen oder Seiteneffekte hin getestet wurden.
 *   **Fehlende Verifikation manueller GCP-Schritte:** Obwohl die Notwendigkeit manueller OAuth-
+
+**Gemini-Review (potenzielle blinde Flecken, 2026-10-18):**
+*   **Ungetestete Funktionalität:** Die Kernfunktionalität der "Journal-v2-Pointer-Bumps" (z.B. Google Calendar Integration, Frame Maps, Swipe-Funktionen) wurde laut Selbstzusammenfassung "nicht im Browser oder auf einem Gerät getestet", was alle funktionalen Änderungen unbestätigt lässt.
+*   **Ungeprüfte Auswirkungen der Firestore-Regeln:** Die neuen Firestore-Regeln wurden ausgerollt, aber es wurde nicht verifiziert, ob sie die beabsichtigte Zugriffskontrolle korrekt umsetzen und keine unbeabsichtigten Seiteneffekte oder Datenzugriffsprobleme verursachen (z.B. für die "bewusst ausgenommene" Coach-Funktionalität).
+*   **Partielle Lösung des Deployment-Problems:** Claude hat erkannt, dass das `firebase deploy --only hosting`-Problem, das `journal` betraf, auch `habits` und `learn` betreffen *könnte*, hat dies aber nicht überprüft.
