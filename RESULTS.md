@@ -132,3 +132,15 @@ Dokumentationskorrekturen; die veröffentlichte Produktfunktion bleibt gleich.
 
 ## 2026-10-17 — Offline-Cache bei Updates
 Gemeinsame mini-app-shell erweitert bzw. aktualisiert: versionsunabhängiger öffentlicher API-Cache mit Migration, Asset-Precache standardmäßig aktiv, fehlgeschlagene Installation ersetzt bestehenden Worker nicht. IndexedDB/localStorage bleiben unverändert. Geprüft: 13 Shell-/Update-Tests, Private-Request-Test, Vendor-Parität. Kein Push/Release; kein physischer Geräte-Test.
+## 2026-10-19 — VitalOS-eigener Push-Worker
+
+VitalOS registriert `/vitalos-messaging-sw.js` auf `/vitalos-push/` und nutzt
+`apps.vitalos` für Geräte-Tokens und Einstellungen. VitalOS-Funktionen senden
+mit `app: "vitalos"`; sein Worker ignoriert Nachrichten anderer Apps.
+Aktivierte Altgeräte migrieren beim nächsten Öffnen automatisch in die eigene
+Token-Lane. Fitness verwendet parallel die Fitness-Lane und den separaten
+Worker/Scope.
+
+Statische Syntax-, JSON- und Diff-Prüfungen erfolgreich. Kein Produktions-
+Deploy; der lokale VitalOS-Stand enthält außerdem Änderungen im Habit-Submodul.
+

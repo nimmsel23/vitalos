@@ -871,12 +871,16 @@ const DEFAULT_PUSH_SETTINGS = {
 export async function getPushSettings() {
   const snap = await getDoc(doc(db, "fitness", getUid(), "settings", "push"));
   if (!snap.exists()) return DEFAULT_PUSH_SETTINGS;
-  return { ...DEFAULT_PUSH_SETTINGS, ...snap.data() };
+  const stored = snap.data() || {};
+  const legacy = { ...stored, tokens: [], token: null };
+  delete legacy.apps;
+  const lane = stored.apps?.vitalos || legacy;
+  return { ...DEFAULT_PUSH_SETTINGS, ...lane, tokens: lane.tokens || [], token: lane.token || null };
 }
 
 export async function savePushSettings(settings) {
   await setDoc(doc(db, "fitness", getUid(), "settings", "push"), {
-    ...settings,
+    apps: { vitalos: settings },
     updated_at: serverTimestamp(),
   }, { merge: true });
   return { ok: true };

@@ -154,6 +154,7 @@ async function sendReminder(pushRef, tokens, payload) {
   const message = {
     tokens,
     data: {
+      app: "vitalos",
       title: payload.title,
       body: payload.body,
       tab: payload.tab,
@@ -190,8 +191,7 @@ async function sendReminder(pushRef, tokens, payload) {
   if (invalidTokens.length > 0) {
     const remaining = tokens.filter((token) => !invalidTokens.includes(token));
     await pushRef.set({
-      tokens: remaining,
-      token: remaining[0] || null,
+      apps: { vitalos: { tokens: remaining, token: remaining[0] || null } },
     }, { merge: true });
   }
 
@@ -209,7 +209,7 @@ exports.scheduledPushReminders = functions
     const pushDocs = await admin
       .firestore()
       .collectionGroup("settings")
-      .where("enabled", "==", true)
+      .where("apps.vitalos.enabled", "==", true)
       .get();
 
     if (pushDocs.empty) {
@@ -220,7 +220,8 @@ exports.scheduledPushReminders = functions
     for (const pushDoc of pushDocs.docs) {
       if (pushDoc.id !== "push") continue;
 
-      const data = pushDoc.data() || {};
+      const stored = pushDoc.data() || {};
+      const data = stored.apps?.vitalos || {};
       const tokens = normalizeTokens(data);
       if (tokens.length === 0) continue;
       if (!isReminderDue(data.reminderTime || "18:00", now.minutes)) continue;
@@ -249,11 +250,13 @@ exports.scheduledPushReminders = functions
 
       const response = await sendReminder(pushDoc.ref, tokens, reminder);
       await pushDoc.ref.set({
-        last_sent_at: admin.firestore.FieldValue.serverTimestamp(),
-        last_sent_date: now.date,
-        last_sent_kind: reminder.kind,
-        token: tokens[0] || null,
-        tokens,
+        apps: { vitalos: {
+          last_sent_at: admin.firestore.FieldValue.serverTimestamp(),
+          last_sent_date: now.date,
+          last_sent_kind: reminder.kind,
+          token: tokens[0] || null,
+          tokens,
+        } },
       }, { merge: true });
 
       functions.logger.info("Push reminder sent", {

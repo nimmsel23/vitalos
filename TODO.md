@@ -1,5 +1,8 @@
 # TODO — VitalOS
 
+- [x] 2026-10-19: VitalOS- und Fitness-Pushes nach App getrennt; VitalOS nutzt
+  eigenen Worker, Scope und Token-Lane. Lokal geprüft, noch nicht released.
+
 - [x] Eingebettetes 6pack auf aktuellen Cloud-Sync bringen und vorhandenen Shell-Login weiterreichen.
 
 - [x] 2026-10-17: Nutzer-Abnahme für Selfie-Sync Handy → Laptop und erfolgreiche Production-Veröffentlichung dokumentieren.
