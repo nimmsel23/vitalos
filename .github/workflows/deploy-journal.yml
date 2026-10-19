@@ -58,3 +58,11 @@ jobs:
           GOOGLE_APPLICATION_CREDENTIALS=/tmp/sa.json \
             npx firebase-tools@latest deploy --only hosting:journal \
             --project fitness-aos --non-interactive
+
+      - name: Deploy Journal push reminder function
+        run: |
+          cd journal-app
+          echo '${{ secrets.FIREBASE_SERVICE_ACCOUNT || secrets.FIREBASE_SERVICE_ACCOUNT_FITNESS_AOS }}' > /tmp/sa.json
+          GOOGLE_APPLICATION_CREDENTIALS=/tmp/sa.json \
+            npx firebase-tools@latest deploy --only functions:scheduledPushReminders \
+            --project fitness-aos --non-interactive
