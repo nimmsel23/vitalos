@@ -25,12 +25,13 @@ import RelaxApp from './shell/RelaxApp.jsx'
 import SixPackPromiseCard from '../6pack-app/SixPackPromiseCard.jsx'
 import '../6pack-app/sixpack.css'
 import CoachApp from '@view/coach'
+import { localISO } from './shell/runtimeDate.js'
 
 const DAY_START = 8
 const DAY_END   = 20
 
 function localToday() {
-  return new Date().toISOString().slice(0, 10)
+  return localISO()
 }
 
 const DATE_LIKE = /^\d{4}-\d{2}-\d{2}$/
@@ -46,7 +47,9 @@ const FITNESS_DATE_ROUTES = new Set(['session'])
 
 function resolveHashDate(value) {
   if (value === 'today') return localToday()
-  return DATE_LIKE.test(value || '') ? value : null
+  if (!DATE_LIKE.test(value || '')) return null
+  const date = new Date(`${value}T12:00:00`)
+  return localISO(date) === value ? value : null
 }
 
 function HomeSheet({ label, onDismiss, children }) {
@@ -159,7 +162,7 @@ function buildHashState({ tab, subTab = null, date = null }) {
   }
   if (tab === 'fuel' && subTab) {
     const parts = [subTab]
-    if (date) parts.push(date)
+    if (date) parts.push(date === localToday() ? 'today' : date)
     return `#${parts.join('/')}`
   }
   if (tab === 'relax' && subTab && RELAX_DIRECT_ROUTES.has(subTab)) {
@@ -273,6 +276,9 @@ export default function App() {
   } = useShellSettings()
   const fuelActiveDate = useFuelAppStore(s => s.activeDate)
   const setFuelActiveDate = useFuelAppStore(s => s.setActiveDate)
+  const previousRuntimeDateRef = useRef(runtimeDate)
+  const previousFuelActiveDateRef = useRef(fuelActiveDate)
+  const previousTabRef = useRef(null)
   const [taxonomy, setTaxonomy] = useState(null)
 
   useEffect(() => {
@@ -285,11 +291,20 @@ export default function App() {
   }, [])
 
   useEffect(() => {
-    if (runtimeDate && fuelActiveDate !== runtimeDate) setFuelActiveDate(runtimeDate)
-  }, [runtimeDate, fuelActiveDate, setFuelActiveDate])
-  useEffect(() => {
-    if (tab === 'fuel' && fuelActiveDate && fuelActiveDate !== runtimeDate) setRuntimeDate(fuelActiveDate)
-  }, [tab, fuelActiveDate, runtimeDate, setRuntimeDate])
+    const runtimeDateChanged = runtimeDate !== previousRuntimeDateRef.current
+    const fuelDateChanged = fuelActiveDate !== previousFuelActiveDateRef.current
+    const enteredFuel = previousTabRef.current !== tab && tab === 'fuel'
+    previousRuntimeDateRef.current = runtimeDate
+    previousFuelActiveDateRef.current = fuelActiveDate
+    previousTabRef.current = tab
+
+    if (tab !== 'fuel' || !runtimeDate || fuelActiveDate === runtimeDate) return
+    if (runtimeDateChanged || (enteredFuel && !fuelDateChanged)) {
+      setFuelActiveDate(runtimeDate)
+    } else if (fuelDateChanged) {
+      setRuntimeDate(fuelActiveDate)
+    }
+  }, [tab, fuelActiveDate, runtimeDate, setFuelActiveDate, setRuntimeDate])
 
   // User-Settings global: vitalos-Profil (Alter/Geschlecht) in den Fuel-Store spiegeln,
   // damit z. B. DACH-Referenzwerte im Mikros-Tab dieselben Werte nutzen — unabhängig
@@ -361,6 +376,8 @@ export default function App() {
   }, [])
 
   useEffect(() => {
+    // Apply a deep-link date before replacing it with the persisted shell date.
+    if (initialHashState.date && initialHashState.date !== runtimeDate) return
     const nextHash = tab === 'fitness'
       ? buildHashState({ tab, subTab: fitnessTab, date: fitnessTab === 'session' ? (sessionDate || runtimeDate) : null })
       : tab === 'home'
