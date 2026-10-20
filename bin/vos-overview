@@ -54,11 +54,10 @@ MODULES: dict[str, tuple[str, str, Optional[str]]] = {
     "learn": ("learn-dev", "learn-app", None),
     "relax": ("relax-dev", "relax-app", None),
     "6pack": ("6pack-dev", "6pack-app", "6pack"),
-    "coach": ("coach-dev", "coach-app", "coach"),
     "plan": ("plan-dev", "plan-app", "plan"),
 }
 # Reihenfolge wie vos-release: Blätter vor fitness (das 6pack/coach/plan als nested Submodule trägt)
-RELEASE_ORDER = ["6pack", "coach", "plan", "fitness", "fuel", "habits", "journal", "learn", "relax"]
+RELEASE_ORDER = ["6pack", "plan", "fitness", "fuel", "habits", "journal", "learn", "relax"]
 NESTED_PARENT = "fitness"
 
 
@@ -314,7 +313,7 @@ def build_plan(clones: dict[tuple[str, str], Clone], pointers: list[Pointer], re
     rel_by = {r.module: r for r in rels}
 
     # 1) nested-Nebenlinien: NICHT pushen, Arbeit gehört nach ~/<m>-dev (dev)
-    for m in ("6pack", "coach", "plan"):
+    for m in ("6pack", "plan"):
         c = clones.get((m, "nested"))
         if c and c.exists and not c.branch.startswith("lokal") and (c.ahead or c.unpushed):
             add(c.path, f"{m}: nested `{c.branch}` hat {c.ahead} lokale Commit(s) — Nebenlinie",

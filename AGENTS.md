@@ -42,3 +42,7 @@ Endstand erreicht hat: sofort committen, ohne vorher um Erlaubnis zu fragen.
 committed wurde — die Arbeit ging verloren, der User musste manuell
 nachfassen. Diese Regel überschreibt für dieses Repo das generelle
 "nie ohne explizite Erlaubnis committen"-Verhalten.
+
+## Coach ownership (2026-10-20)
+
+Coach is independent in `~/coach-dev`; it is no longer a VitalOS submodule or release target. `coach-release` belongs to Coach. VitalOS branch `coach` is consumed at `~/coach-dev/vitalos`; merge general Shell changes into that branch deliberately. Do not add Coach back as a submodule.
