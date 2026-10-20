@@ -33,6 +33,11 @@ Endstand erreicht hat: sofort committen, ohne vorher um Erlaubnis zu fragen.
 - Ein App-Branch-Push aktualisiert den Meta-Repo-Gitlink nicht. Standalone-App-Release und Shell-Release sind getrennte CI-Ziele.
 - `main` ist für diese Branch-Aufteilung nicht erforderlich; keine Branch-Rolle allein aus dem Namen ableiten.
 
+## Plan-Integration für Fitness
+
+- Plan-Änderungen für Fitness starten in `~/plan-dev` auf `dev`. Der Plan-Pre-Push-Hook synchronisiert `src/views/Plan/` nach `~/fitness-dev/src/views/Plan/` und committet/pusht `fitness-dev/dev`; Fitness-Preview läuft dort per CI.
+- Der integrierte Fitness-Produktionsweg ist `fitness-dev/dev` -> `fitness-app` auf Branch `vitalos` -> `fitness-app`-Gitlink in `~/vitalos` auf `master`. Das Fitness-Repo deployt seine Standalone-Produktion; der VitalOS-Parent deployt die Shell. `fitness-dev/plan` ist nicht mehr der Plan-Quellpfad.
+
 **Grund:** Ein Agent hat am 2026-08-06 seinen Context aufgegeben, bevor
 committed wurde — die Arbeit ging verloren, der User musste manuell
 nachfassen. Diese Regel überschreibt für dieses Repo das generelle
