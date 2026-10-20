@@ -3,4 +3,13 @@ set -euo pipefail
 
 ROOT_DIR="$(git rev-parse --show-toplevel)"
 
+staged_files="$(git diff --cached --name-only)"
+if [ -z "$staged_files" ]; then
+  exit 0
+fi
+non_docs="$(printf '%s\n' "$staged_files" | grep -Ev '(^|/)(AGENTS\.md|README([^/]*)?\.md)$|(^|/)docs/|\.(md|mdx|markdown|txt)$' || true)"
+if [ -z "$non_docs" ]; then
+  exit 0
+fi
+
 "$ROOT_DIR/bin/vos-sync-submodule-pointers" --stage

@@ -16,6 +16,13 @@ on:
   workflow_dispatch:
   push:
     branches: [master]
+    paths-ignore:
+      - '**/*.md'
+      - '**/*.mdx'
+      - '**/*.markdown'
+      - '**/*.txt'
+      - '**/AGENTS.md'
+      - '**/docs/**'
 
 jobs:
   deploy:
