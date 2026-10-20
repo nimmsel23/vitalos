@@ -2,7 +2,6 @@ packages:
   - "."
   - "fitness-app"
   - "6pack-app"
-  - "coach-app"
   - "plan-app"
   - "fuel-app"
   - "journal-app"

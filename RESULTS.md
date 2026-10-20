@@ -1,3 +1,7 @@
+## 2026-10-20 — Coach owns the client Shell
+
+Removed direct `coach-app` gitlink, workspace/lockfile importer and Coach deployment workflow. Removed Coach from VitalOS release/pointer/overview inventories; compatibility `coach-release` delegates to Coach. Branch `coach` starts from this cleaned Shell. Existing unrelated submodule changes are excluded. Old Coach checkout retained locally under `~/coach-dev/.worktrees/legacy-vitalos-coach`. No push or deploy.
+
 ## 2026-10-18 — Journal-v2-Rules, CI-Reparaturen und coach-Submodul-Fix
 
 Fortsetzung des Journal-v2-Pointer-Bumps (siehe nächster Eintrag): Firestore-Rules für die Raster-Apps, Lockfile-/Workflow-Fehler beim Push und ein defekter Submodul-Pointer. `~/vitalos` ist komplett gepusht; die Journal-Seiten waren zuvor direkt per `deploy:all` aus `~/journal-dev` ausgeliefert worden. Nicht im Browser oder auf einem Gerät getestet.

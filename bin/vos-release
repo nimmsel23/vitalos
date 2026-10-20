@@ -24,7 +24,6 @@ STANDALONE_DIRS[journal]="/home/alpha/journal-dev"
 STANDALONE_DIRS[learn]="/home/alpha/learn-dev"
 STANDALONE_DIRS[relax]="/home/alpha/relax-dev"
 STANDALONE_DIRS[6pack]="/home/alpha/6pack-dev"
-STANDALONE_DIRS[coach]="/home/alpha/coach-dev"
 STANDALONE_DIRS[plan]="/home/alpha/plan-dev"
 
 SUBMODULE_DIRS[fitness]="/home/alpha/vitalos/fitness-app"
@@ -34,7 +33,6 @@ SUBMODULE_DIRS[journal]="/home/alpha/vitalos/journal-app"
 SUBMODULE_DIRS[learn]="/home/alpha/vitalos/learn-app"
 SUBMODULE_DIRS[relax]="/home/alpha/vitalos/relax-app"
 SUBMODULE_DIRS[6pack]="/home/alpha/vitalos/6pack-app"
-SUBMODULE_DIRS[coach]="/home/alpha/vitalos/coach-app"
 SUBMODULE_DIRS[plan]="/home/alpha/vitalos/plan-app"
 
 SOURCE_BRANCHES[fitness]="dev"
@@ -44,7 +42,6 @@ SOURCE_BRANCHES[journal]="dev"
 SOURCE_BRANCHES[learn]="dev"
 SOURCE_BRANCHES[relax]="dev"
 SOURCE_BRANCHES[6pack]="dev"
-SOURCE_BRANCHES[coach]="dev"
 SOURCE_BRANCHES[plan]="dev"
 
 # Submodule-Master-Branch je Modul — alle Module heissen "vitalos" (Rename,
@@ -60,7 +57,6 @@ TARGET_BRANCHES[journal]="vitalos"
 TARGET_BRANCHES[learn]="vitalos"
 TARGET_BRANCHES[relax]="vitalos"
 TARGET_BRANCHES[6pack]="vitalos"
-TARGET_BRANCHES[coach]="vitalos"
 TARGET_BRANCHES[plan]="vitalos"
 
 # vos-release deployt für fitness ausschliesslich npm run build:firebase
@@ -82,7 +78,6 @@ NOISE_PATTERNS[6pack]='^(D .+\.bak([.].*)?|D .+\.baks.*|D .+\.mjs\.bak-.*|\?\? n
 # coach/plan sind Forks des fitness-dev-Codebase (eigene Apps, gleiches
 # Katalog-/Backend-Tooling) — gleiches Noise-Muster wie fitness: Python-
 # Backend + kb/inbox-Drafts werden vom Firebase-Build nie gelesen.
-NOISE_PATTERNS[coach]='^\?\? (node_modules|functions/node_modules)$|^.{2} fitness/catalog/kb/inbox/|^.{2} fitness/.*\.py$'
 NOISE_PATTERNS[plan]='^\?\? (node_modules|functions/node_modules)$|^.{2} fitness/catalog/kb/inbox/|^.{2} fitness/.*\.py$'
 
 # Reine Doku-Änderungen (Markdown, docs/) blockieren nie einen Release —
@@ -97,7 +92,7 @@ CACHE_NOISE='^\?\? (\.firebase/|firebase-debug\.log|ui-debug\.log|\.worktrees/)$
 # Agent-/Hook-Tooling unter .claude/ (wird parallel von anderen Sessions bearbeitet) ist nie Release-Inhalt
 TOOLING_NOISE='^.{2} \.claude/'
 
-MODULE_ORDER=(fitness fuel habits journal learn relax 6pack coach plan)
+MODULE_ORDER=(fitness fuel habits journal learn relax 6pack plan)
 SELECTED_MODULES=()
 PARENT_BUMPS=()
 DRY_RUN=0
@@ -114,7 +109,7 @@ Usage:
   vos-release --help
 
 Modules:
-  fitness fuel habits journal learn relax 6pack coach plan
+  fitness fuel habits journal learn relax 6pack plan
 
 Behavior:
   - For every module: push standalone dev -> origin/dev, merge dev into the
@@ -387,7 +382,7 @@ parent_status_filtered() {
     # Reine Doku-Änderungen (Markdown, docs/) und Firebase-Cache blockieren auch das Meta-Repo nie —
     # der Pointer-Commit läuft mit Pathspec (nur die Submodule), Doku bleibt unangetastet.
     "$REAL_GIT" -C "$VITALOS_DIR" status --short 2>/dev/null \
-        | grep -vE '^( M|\?\?) (fitness-app|fuel-app|habit-app|journal-app|learn-app|relax-app|6pack-app|plan-app|coach-app)$' \
+        | grep -vE '^( M|\?\?) (fitness-app|fuel-app|habit-app|journal-app|learn-app|relax-app|6pack-app|plan-app)$' \
         | grep -vE "$DOC_NOISE" | grep -vE "$CACHE_NOISE" | grep -vE "$TOOLING_NOISE" || true
 }
 

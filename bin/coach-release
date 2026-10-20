@@ -1,5 +1,4 @@
 #!/usr/bin/env bash
+# Compatibility entrypoint; Coach now owns its release.
 set -euo pipefail
-
-SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-exec "$SCRIPT_DIR/vos-release" coach "$@"
+exec /home/alpha/coach-dev/bin/coach-release "$@"

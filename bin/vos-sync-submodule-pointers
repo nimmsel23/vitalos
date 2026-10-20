@@ -2,7 +2,7 @@
 set -euo pipefail
 
 REAL_GIT="/usr/bin/git"
-ROOT_DIR="/home/alpha/vitalos"
+ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 MODE="${1:---stage}"
 
 declare -a SUBMODULE_PATHS=(
@@ -13,7 +13,6 @@ declare -a SUBMODULE_PATHS=(
   "learn-app"
   "relax-app"
   "6pack-app"
-  "coach-app"
   "plan-app"
 )
 
