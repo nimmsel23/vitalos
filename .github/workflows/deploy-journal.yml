@@ -2,6 +2,12 @@ name: Deploy Journal PWA
 
 on:
   workflow_dispatch:
+    inputs:
+      deploy_functions:
+        description: 'Auch die Push-Function deployen (benötigt Service Account User)'
+        required: false
+        type: boolean
+        default: false
   push:
     branches: [master]
     paths:
@@ -61,6 +67,7 @@ jobs:
             --project fitness-aos --non-interactive
 
       - name: Deploy Journal push reminder function
+        if: github.event_name == 'workflow_dispatch' && inputs.deploy_functions
         run: |
           cd journal-app
           echo '${{ secrets.FIREBASE_SERVICE_ACCOUNT || secrets.FIREBASE_SERVICE_ACCOUNT_FITNESS_AOS }}' > /tmp/sa.json
