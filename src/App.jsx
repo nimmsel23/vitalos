@@ -428,7 +428,7 @@ export default function App() {
       setHomeGate('hub')
       return
     }
-    if (tab === 'home' && homeGate === 'hub' && id === 'fitness') {
+    if (tab === 'home' && homeGate === 'hub' && id === 'fitness' && !subTab) {
       setHomeGate('fitness')
       setTab('home')
       return

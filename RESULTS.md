@@ -1,3 +1,9 @@
+## 2026-10-21 — Hub Fuel-Einstiege und App-Kontextmenüs
+
+Fuel Tap Board, Shutter und Tagesfaden sind unter den Fuel-Karten im Home-Hub eingebettet; Klassisch öffnet Fuel. Der gemeinsame Hub-QueryClient aktualisiert Dashboard und Durchschnitte nach Logs. Die vier App-Buttons bieten ihre Unterbereiche per Rechtsklick, Long Tap, Menütaste oder Shift+F10 an. Gemeinsame Menü-/Tastaturbausteine in `packages/mini-app-shell/react/` werden auch von journal-dev v1 genutzt. Direkte Fitness-Ziele umgehen die Hub-Auswahl; Stärke führt zu Lernen. Pfeiltasten, Pos1/Ende, Buchstabensuche, Escape und Fokusrückgabe sind geprüft.
+
+Validierung: VitalOS- und Journal-Firebase-Build erfolgreich; isolierte Browserprüfung bei exakt 320px und 390px für Rechtsklick, Tastatur, Long Tap, Scroll-Abbruch, Menüränder und alle drei Journal-Buttons bestanden. Kein Push/Deploy; journal-dev ist noch nicht in journal-app integriert. Bestehende 6Pack-Änderung bleibt unberührt.
+
 ## 2026-10-20 — Coach owns the client Shell
 
 Removed direct `coach-app` gitlink, workspace/lockfile importer and Coach deployment workflow. Removed Coach from VitalOS release/pointer/overview inventories; compatibility `coach-release` delegates to Coach. Branch `coach` starts from this cleaned Shell. Existing unrelated submodule changes are excluded. Old Coach checkout retained locally under `~/coach-dev/.worktrees/legacy-vitalos-coach`. No push or deploy.

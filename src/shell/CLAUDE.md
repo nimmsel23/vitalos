@@ -64,6 +64,10 @@ an; Griff und Home-Indicator bleiben frei. Die Geste gehört zur Shell und
 - Pfeiltasten sowie `Pos1`/`Ende`: Fokus innerhalb markierter Shell-Navs;
   `Enter`/Leertaste aktiviert Buttons. Kein automatischer Appwechsel beim
   Bewegen des Fokus. Raster berücksichtigen die sichtbare Spaltenzahl.
+- Die vier Hub-App-Buttons öffnen ihre Unterbereiche per Rechtsklick,
+  langem Tippen, Menütaste oder `Shift+F10`. Im Menü funktionieren
+  Pfeiltasten, `Pos1`/`Ende`, Buchstabensuche, `Enter` und `Escape`.
+  Der gemeinsame Trigger liegt in `packages/mini-app-shell/react/`.
 - Shell-Sheets fokussieren beim Öffnen ein Bedienelement, halten den
   Tab-Fokus im Sheet und geben ihn beim Schließen zurück. Escape schließt
   die oberste Shell-Ebene; die native Hilfe lässt darunterliegende Sheets offen.

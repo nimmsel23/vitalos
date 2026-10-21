@@ -30,7 +30,7 @@ export default function FuelFrontdoors({ navigate }) {
         <h3 className="text-lg font-semibold text-fit-ink">Essen erfassen</h3>
         <p className="mt-1 text-sm text-fit-dim">Für heute · per Tap, Foto oder Text</p>
       </div>
-      <div className="mb-5 grid grid-cols-2 gap-3 sm:grid-cols-4">
+      <div data-shell-nav="grid" className="mb-5 grid grid-cols-2 gap-3 sm:grid-cols-4">
         {FRONTDOORS.map(({ key, label, tagline, Icon, View }) => (
           <button
             key={key}

@@ -5,6 +5,8 @@ import { localToday } from '@utils'
 import { VOS_APPS } from './VitalOSApps.js'
 import FuelHubStat from './FuelHubStat.jsx'
 import { DashboardSections } from './Dashboard.jsx'
+import ContextMenuButton from '@vos-shell-ui/ContextMenuButton.jsx'
+import { getAppDestinations } from '@vos-shell-ui/appDestinations.js'
 
 const HUB_TILES = VOS_APPS
 
@@ -87,8 +89,13 @@ export default function Hub({ navigate, variant = 'page', runtimeDate, openSessi
 
         <nav aria-label="Apps" data-shell-nav="grid" className="grid grid-cols-2 gap-3 sm:grid-cols-4">
           {HUB_TILES.map(({ id, label, Icon, color }) => (
-            <button
+            <ContextMenuButton
               key={id}
+              menuLabel={`${label} – Unterbereiche`}
+              items={getAppDestinations(id).map((item) => id === 'journal' && item.href ? item : {
+                label: item.label,
+                onSelect: () => handleNavigate(id, item.subTab),
+              })}
               onClick={() => handleNavigate(id)}
               className="vos-press relative flex min-h-[128px] flex-col justify-between overflow-hidden rounded-[22px] p-4 text-left"
               style={{
@@ -108,7 +115,7 @@ export default function Hub({ navigate, variant = 'page', runtimeDate, openSessi
                   <TileStat appId={id} fallback={TILE_HINTS[id]} />
                 </span>
               </span>
-            </button>
+            </ContextMenuButton>
           ))}
         </nav>
 

@@ -38,6 +38,7 @@ export function crossAppAliases() {
   // spezifischeren '@x/y'- und '@x-db'-artigen Keys VOR dem kurzen '@x'-Key
   // stehen, sonst gewinnt der falsche (kürzere) Alias.
   return {
+    '@vos-shell-ui': `${VITALOS_ROOT}/packages/mini-app-shell/react`,
     '@fitness/components': `${FITNESS}/src/components`,
     '@fitness/constants':  `${FITNESS}/src/constants`,
     '@fitness/lib':        `${FITNESS}/src/lib`,

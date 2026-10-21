@@ -10,6 +10,7 @@ const BASICS = [
   ['Pfeiltasten', 'Fokus innerhalb einer Navigation bewegen'],
   ['Pos1 / Ende', 'Erster / letzter Navigationseintrag'],
   ['Enter / Leertaste', 'Fokussierten Button aktivieren'],
+  ['Shift + F10 / Menütaste', 'Unterbereiche eines App-Buttons öffnen'],
   ['Escape', 'Offenes Menü oder Sheet schließen'],
   ['?', 'Diese Übersicht öffnen'],
 ]

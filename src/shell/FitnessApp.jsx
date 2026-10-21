@@ -19,11 +19,11 @@ function resolveFitnessRoute(id) {
   }
   if (id === 'review') return { tab: 'review', sessionSubTab: null, reviewSubTab: null, learnSubTab: null }
   if (id === 'report') return { tab: 'review', sessionSubTab: null, reviewSubTab: 'report', learnSubTab: null }
-  if (id === 'muscles' || id === 'readiness' || id === 'strength' || id === 'verlauf') {
+  if (id === 'muscles' || id === 'readiness' || id === 'verlauf') {
     return { tab: 'review', sessionSubTab: null, reviewSubTab: id, learnSubTab: null }
   }
   if (id === 'learn') return { tab: 'learn', sessionSubTab: null, reviewSubTab: null, learnSubTab: 'exercises' }
-  if (id === 'exercises' || id === 'anatomy' || id === 'quiz') return { tab: 'learn', sessionSubTab: null, reviewSubTab: null, learnSubTab: id }
+  if (id === 'exercises' || id === 'anatomy' || id === 'quiz' || id === 'strength') return { tab: 'learn', sessionSubTab: null, reviewSubTab: null, learnSubTab: id }
   return { tab: id, sessionSubTab: null, reviewSubTab: null, learnSubTab: null }
 }
 
