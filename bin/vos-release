@@ -368,6 +368,19 @@ merge_module() {
     run "$REAL_GIT" -C "$submodule" push origin "$target_branch"
 
     PARENT_BUMPS+=("$submodule_name")
+
+    # Mini-apps share Fuel's published source. Pin them too so recursive CI
+    # checkouts never inherit an old or local-only commit from a mini checkout.
+    if [[ "$module" == "fuel" ]]; then
+        local mini mini_repo
+        for mini in vos-fuel-log-app vos-fuel-supplements-app vos-fuel-mikros-app vos-fuel-protokoll-app; do
+            mini_repo="$VITALOS_DIR/$mini"
+            require_clean_repo fuel "$mini_repo" "$mini_repo"
+            run "$REAL_GIT" -C "$mini_repo" fetch origin "$target_branch"
+            run "$REAL_GIT" -C "$mini_repo" checkout --detach "origin/$target_branch"
+            PARENT_BUMPS+=("$mini")
+        done
+    fi
 }
 
 parent_status_filtered() {
