@@ -1,3 +1,19 @@
+## 2026-10-21 — Gemeinsamer VitalOS-Changelog
+
+6Pack-Pilot in drei wiederverwendbare Module überführt: vos-changelog-screen.mjs,
+vos-release-info.mjs und vos-changelog-vite.mjs unter packages/mini-app-shell.
+Die Shell nutzt den Plugin direkt, Habits und 6Pack vendorte Kopien. CLI mit
+vendor-changelog für eine minimale Standalone-Kopie ergänzt. App-spezifische
+Browser-Bestätigung erst beim Schließen; nativer modaler Dialog, Text statt
+HTML und HTTPS-Links. Release-Daten im jeweiligen Build eingebettet, GitHub-
+Events nur bei passendem Repo/HEAD, sonst jüngste zehn Nicht-Merge-Commits.
+
+Geprüft: gemeinsame Node-Tests, VitalOS-Firebase-Build, Habits in beiden Modi,
+6Pack-Vite-Build und Vendor-Parität. Isolierter Browser bei 320/390px: erste/neue
+Version, Bestätigung, Escape, Fokus, Links, Layout und blockierter localStorage.
+Keine Veröffentlichung, keine Submodule-Pointer geändert; vorhandene Änderung
+an 6pack-app unberührt.
+
 ## 2026-10-21 — Hub Fuel-Einstiege und App-Kontextmenüs
 
 Fuel Tap Board, Shutter und Tagesfaden sind unter den Fuel-Karten im Home-Hub eingebettet; Klassisch öffnet Fuel. Der gemeinsame Hub-QueryClient aktualisiert Dashboard und Durchschnitte nach Logs. Die vier App-Buttons bieten ihre Unterbereiche per Rechtsklick, Long Tap, Menütaste oder Shift+F10 an. Gemeinsame Menü-/Tastaturbausteine in `packages/mini-app-shell/react/` werden auch von journal-dev v1 genutzt. Direkte Fitness-Ziele umgehen die Hub-Auswahl; Stärke führt zu Lernen. Pfeiltasten, Pos1/Ende, Buchstabensuche, Escape und Fokusrückgabe sind geprüft.

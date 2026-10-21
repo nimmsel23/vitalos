@@ -1,5 +1,6 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
+import { vosChangelog } from './packages/mini-app-shell/vos-changelog-vite.mjs'
 import tailwindcss from 'tailwindcss'
 import { resolve, dirname } from 'path'
 import { fileURLToPath } from 'url'
@@ -100,6 +101,7 @@ export default defineConfig(({ mode }) => {
     root: __dirname,
     base: '/',
     plugins: [
+      vosChangelog({ appId: 'vitalos', appName: 'VitalOS', accent: '#fb923c' }),
       firebaseRedirect,
       react(),
       ...federationPlugin,

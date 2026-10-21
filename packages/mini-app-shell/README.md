@@ -78,3 +78,43 @@ bleibt der bisherige Worker aktiv. Alte Build-Caches werden erst nach erfolgreic
 Installation entfernt. Daten- und Bild-Caches bleiben erhalten.
 Browser-Speicherlöschung, Quota und nicht zuvor geladene API-Daten sind damit
 nicht abgedeckt. Private Daten gehören in die kontogebundene App-Datenschicht.
+
+## Gemeinsamer Changelog-Screen
+
+`vos-changelog-screen.mjs` ersetzt den bisherigen 6Pack-Pilot durch einen
+frameworkunabhängigen Dialog. `vos-changelog-vite.mjs` bindet ihn mit einem
+Plugin ein, in Dev sowie allen Build-Modi:
+
+```js
+import { vosChangelog } from './scripts/vos-changelog/vos-changelog-vite.mjs';
+// In plugins:
+vosChangelog({ appId: 'habits', appName: 'Habits', accent: '#fb923c' })
+```
+
+Standalone-Repos erhalten nur die drei Changelog-Module mit:
+
+```sh
+node ~/vitalos/packages/mini-app-shell/cli.mjs vendor-changelog scripts/vos-changelog
+node ~/vitalos/packages/mini-app-shell/cli.mjs vendor-changelog scripts/vos-changelog --check
+```
+
+Der vollständige `vendor`-Befehl enthält diese Module ebenfalls. Die Shell
+nutzt die Quelle direkt; Habits und 6Pack nutzen vendorte Kopien. Andere
+Apps können mit demselben Plugin angebunden werden. Kein Laufzeit-React,
+Tailwind oder Nachbar-Checkout nötig.
+
+Die Daten stammen aus dem Git-HEAD des gebauten Repos. Ein GitHub-Push-Event
+wird nur bei passendem Repository und SHA genutzt; in anderen Fällen
+werden die letzten zehn Nicht-Merge-Commits angezeigt. Parent-CI-SHAs
+werden dadurch nicht auf Submodule übertragen. Die Daten sind im Build
+eingebettet, zusätzlich entsteht `release-info.json`; kein Fetch einer
+neueren JSON neben einem älteren gecachten Bundle. Kein Git-HEAD: kein Dialog.
+
+Beim ersten Start und jeder neuen Release-ID erscheint der Dialog.
+„Weiter“ oder Escape bestätigt ihn in `<appId>:seen-release`, optional
+über `storageKey` überschreibbar. 6Pack behält `sixpack:seen-release`.
+Native Dialog-Semantik hält den Tastaturfokus im Dialog; beim Schließen
+kehrt er zurück. Blockierter localStorage verhindert die Anzeige nicht.
+Texte werden als Text gerendert, Repository-Links nur mit HTTPS.
+
+Tests: `node --test test/`; Integration zusätzlich über die App-Builds prüfen.
