@@ -72,7 +72,7 @@ function greeting(date = new Date()) {
 
 export default function Hub({ navigate, variant = 'page', runtimeDate, openSession }) {
   const isSheet = variant === 'sheet'
-  const handleNavigate = (id) => navigate(id === 'journal' ? 'home' : id)
+  const handleNavigate = (id, subTab) => navigate(id === 'journal' ? 'home' : id, subTab)
   const now = new Date()
 
   return (

@@ -5,6 +5,7 @@ import { localToday } from '@utils'
 import { VOS_APPS } from './VitalOSApps.js'
 import FuelHubStat from './FuelHubStat.jsx'
 import FuelDashboardWidget from './FuelDashboardWidget.jsx'
+import FuelFrontdoors from './FuelFrontdoors.jsx'
 import SessionStatus from '../components/dashboard/SessionStatus.jsx'
 import ActivityHeatmap from '../components/dashboard/ActivityHeatmap.jsx'
 import { getRolling10Days } from '../components/dashboard/utils.js'
@@ -169,6 +170,7 @@ export function DashboardSections({ navigate, openSession, runtimeDate, showHero
             </button>
           </div>
           <FuelDashboardWidget runtimeDate={runtimeDate} navigate={() => navigate?.('fuel', 'food')} />
+          <FuelFrontdoors navigate={navigate} />
         </div>
 
         {showQuickLinks ? (

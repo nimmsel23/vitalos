@@ -1,4 +1,4 @@
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
+import { QueryClientProvider } from '@tanstack/react-query'
 import { useApp } from '@fuel/store.js'
 import { useAppData } from '@fuel/hooks/useAppData.js'
 import { useMacroTrend } from '@fuel/hooks/useNutrition.js'
@@ -7,8 +7,7 @@ import StatsGrid from '@fuel/views/Dashboard/StatsGrid.jsx'
 import DailyGoals from '@fuel/views/Dashboard/DailyGoals.jsx'
 import { shiftISODate } from './runtimeDate.js'
 import { averageMacros } from './fuelAverages.js'
-
-const qc = new QueryClient({ defaultOptions: { queries: { staleTime: 60_000 } } })
+import { fuelHubQueryClient } from './fuelHubQueryClient.js'
 
 function FuelAverageCard({ title, days, date, trend, isPending, isError }) {
   const averages = averageMacros(trend, days)
@@ -66,7 +65,7 @@ function FuelDashboardInner({ navigate, runtimeDate }) {
 
 export default function FuelDashboardWidget(props) {
   return (
-    <QueryClientProvider client={qc}>
+    <QueryClientProvider client={fuelHubQueryClient}>
       <FuelDashboardInner {...props} />
     </QueryClientProvider>
   )
