@@ -88,3 +88,14 @@ test('one shell release combines app repos and ignores uninitialized app directo
   assert.match(plugin.load(plugin.resolveId('virtual:vos-changelog')), /Habits change/);
   assert.equal(plugin.transformIndexHtml.handler()[0].injectTo, 'head-prepend');
 });
+
+test('wrapper uses the owning app repository instead of a non-repository build root', t => {
+  const { root, id } = fixture(t);
+  const wrapper = join(root, 'wrapper');
+  mkdirSync(wrapper);
+  const plugin = vosChangelog({ appId: 'wrapper', releaseRoot: root });
+  plugin.configResolved({ root: wrapper });
+  let asset;
+  plugin.generateBundle.call({ emitFile: file => { asset = file; } });
+  assert.equal(JSON.parse(asset.source).id, id);
+});

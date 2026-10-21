@@ -37,6 +37,7 @@ function vendor(target, check, files = VENDOR_FILES, command = "vendor") {
 }
 
 async function main(argv) {
+  if (argv[0] === "vendor-ui" && argv[1]) return vendor(argv[1], argv.includes("--check"), ["react/ContextMenuButton.jsx", "react/contextMenu.css", "react/navigation.js", "react/appDestinations.js"], "vendor-ui");
   if (argv[0] === "vendor-changelog" && argv[1]) return vendor(argv[1], argv.includes("--check"), CHANGELOG_FILES, "vendor-changelog");
   if (argv[0] === "vendor" && argv[1]) return vendor(argv[1], argv.includes("--check"));
   if (argv[0] === "parity") {

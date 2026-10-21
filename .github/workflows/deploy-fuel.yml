@@ -58,12 +58,14 @@ jobs:
           FIREBASE_CONFIG: ${{ secrets.FIREBASE_CONFIG }}
 
       - name: Build Fuel
-        run: pnpm --filter ./fuel-app run build:cloud
+        run: |
+          pnpm --filter ./fuel-app run build:cloud
+          pnpm --filter ./fuel-app run build:solo
 
       - name: Deploy Fuel to Firebase Hosting
         run: |
           cd fuel-app
           echo '${{ secrets.FIREBASE_SERVICE_ACCOUNT || secrets.FIREBASE_SERVICE_ACCOUNT_FITNESS_AOS }}' > /tmp/sa.json
           GOOGLE_APPLICATION_CREDENTIALS=/tmp/sa.json \
-            npx firebase-tools@latest deploy --only hosting:client \
+            npx firebase-tools@latest deploy --only hosting:client,hosting:log,hosting:supplements,hosting:mikros,hosting:protokoll \
             --project fitness-aos --non-interactive

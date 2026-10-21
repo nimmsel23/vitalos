@@ -49,6 +49,11 @@ jobs:
       - name: Build Fitness
         run: pnpm --filter ./fitness-app run build:firebase
 
+      - name: Build Training and Atlas
+        run: |
+          pnpm --filter ./fitness-app run build:training
+          pnpm --filter ./fitness-app run build:atlas
+
       # KEIN firestore:rules/indexes mehr: Rules-SSOT ist ~/vitalos/firestore.rules,
       # deployed nur von deploy-shell.yml. Per-App-Rules haben sich gegenseitig
       # überschrieben (letzter Deploy gewann → fitness/kb-Reads verweigert).
@@ -57,5 +62,5 @@ jobs:
           cd fitness-app
           echo '${{ secrets.FIREBASE_SERVICE_ACCOUNT || secrets.FIREBASE_SERVICE_ACCOUNT_FITNESS_AOS }}' > /tmp/sa.json
           GOOGLE_APPLICATION_CREDENTIALS=/tmp/sa.json \
-            npx firebase-tools@latest deploy --only hosting:client \
+            npx firebase-tools@latest deploy --only hosting:client,hosting:training,hosting:atlas \
             --project fitness-aos --non-interactive

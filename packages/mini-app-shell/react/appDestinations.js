@@ -1,11 +1,16 @@
-import { NAV_ITEMS as fitnessNav } from '@fitness/constants/NavigationItems.js'
+// Navigation metadata stays independent of app bundles so Journal can build alone.
+const fitnessNav = [
+  { id: 'session', label: 'Training', sub: [['today', 'Heute'], ['timer', 'Timer'], ['skills', 'Skills'], ['plan', 'Plan'], ['history', 'History']] },
+  { id: 'review', label: 'Review', sub: [['muscles', 'Muskeln'], ['readiness', 'Readiness'], ['verlauf', 'Verlauf']] },
+  { id: 'learn', label: 'Lernen', sub: [['exercises', 'Übungen'], ['anatomy', 'Anatomie'], ['quiz', 'Quiz'], ['strength', 'Stärke']] },
+]
 
 // Shell IDs and standalone hashes differ for nested Fitness views.
 export function getAppDestinations(app) {
   if (app === 'fitness') {
     return fitnessNav.filter(({ id }) => ['session', 'review', 'learn'].includes(id)).flatMap(({ id, label, sub = [] }) => [
       { label, subTab: id, href: `https://fitness-vos.web.app/#${id}` },
-      ...sub.map((item) => ({ label: `${label} · ${item.label}`, subTab: item.id, href: `https://fitness-vos.web.app/#${id}/${item.id}` })),
+      ...sub.map(([key, name]) => ({ label: `${label} · ${name}`, subTab: key, href: `https://fitness-vos.web.app/#${id}/${key}` })),
     ])
   }
   if (app === 'fuel') {

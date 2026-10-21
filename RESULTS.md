@@ -1,3 +1,9 @@
+## 2026-10-21 — Universeller Changelog in allen Apps
+
+Gemeinsamen Vite-Plugin in Fitness, Fuel, Journal, Learn, Relax, Plan und Skills eingebunden; Habits/6Pack auf den aktuellen gemeinsamen Stand gebracht. Skills verwendet keine separate React-UpdateNotes-/Fetch-Lösung mehr. Mini-Apps erhalten eigene IDs/Namen. VOS Fitness verwendet die Release-Metadaten des tatsächlichen Fitness-Checkouts. Die Shell behält genau einen gebündelten Dialog mit allen eingebetteten App-Versionen. CI-Deploys umfassen auch Training/Atlas, vier Fuel-Mini-Apps und alle sechs Journal-Targets.
+
+Stand vor Veröffentlichung: neun App-Builds erfolgreich; Journal origin/dev-Divergenz mit eigenständigem Build integriert und erneut geprüft. Browserprüfung bei 320px/390px bestätigt Standalone-Anzeige, Unterdrückung eingebetteter Dialoge, genau einen Shell-Dialog, gemeinsame Bestätigung, sicheren Text und Fokus. Fitness generiert auch die vom neuen Plan-Submodul benötigten KB-Daten; Learn findet dev- und app-Checkouts. Journal vendort die gemeinsamen Kontextmenüs für seinen eigenständigen Build.
+
 ## 2026-10-21 — Ein gemeinsamer Shell-Changelog
 
 VitalOS sammelt die Änderungen von Shell und neun eingebundenen Apps,

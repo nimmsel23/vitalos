@@ -99,8 +99,9 @@ node ~/vitalos/packages/mini-app-shell/cli.mjs vendor-changelog scripts/vos-chan
 ```
 
 Der vollständige `vendor`-Befehl enthält diese Module ebenfalls. Die Shell
-nutzt die Quelle direkt; Habits und 6Pack nutzen vendorte Kopien. Andere
-Apps können mit demselben Plugin angebunden werden. Kein Laufzeit-React,
+nutzt die Quelle direkt; Fitness, Fuel, Journal, Habits, Learn, Relax,
+6Pack, Plan und Skills nutzen vendorte Kopien. Mini-App-Builds erhalten
+eigene App-IDs. Kein Laufzeit-React,
 Tailwind oder Nachbar-Checkout nötig.
 
 Die Daten stammen aus dem Git-HEAD des gebauten Repos. Ein GitHub-Push-Event
@@ -109,6 +110,12 @@ werden die letzten zehn Nicht-Merge-Commits angezeigt. Parent-CI-SHAs
 werden dadurch nicht auf Submodule übertragen. Die Daten sind im Build
 eingebettet, zusätzlich entsteht `release-info.json`; kein Fetch einer
 neueren JSON neben einem älteren gecachten Bundle. Kein Git-HEAD: kein Dialog.
+Wrapper ohne eigenes Git-Repository können mit `releaseRoot` den tatsächlichen
+App-Checkout benennen (z. B. VOS Fitness → `fitness-app`).
+
+Die gemeinsamen React-Kontextmenüs und Tastaturbausteine lassen sich mit
+`cli.mjs vendor-ui scripts/vos-ui` übernehmen. Journal nutzt diese Kopie,
+damit sein Standalone-Build keinen VitalOS-Nachbarcheckout voraussetzt.
 
 Beim ersten Start und jeder neuen Release-ID erscheint der Dialog.
 „Weiter“ oder Escape bestätigt ihn in `<appId>:seen-release`, optional

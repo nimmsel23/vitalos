@@ -47,7 +47,7 @@ jobs:
         run: pnpm --filter ./fitness-app run build:kb-data
 
       - name: Build Journal
-        run: pnpm --filter ./journal-app run build:cloud
+        run: pnpm --filter ./journal-app run deploy:all:build
 
       # KEIN firestore:rules mehr: Rules-SSOT ist ~/vitalos/firestore.rules,
       # deployed nur von deploy-shell.yml. Per-App-Rules haben sich gegenseitig
@@ -57,7 +57,7 @@ jobs:
           cd journal-app
           echo '${{ secrets.FIREBASE_SERVICE_ACCOUNT || secrets.FIREBASE_SERVICE_ACCOUNT_FITNESS_AOS }}' > /tmp/sa.json
           GOOGLE_APPLICATION_CREDENTIALS=/tmp/sa.json \
-            npx firebase-tools@latest deploy --only hosting:journal \
+            npx firebase-tools@latest deploy --only hosting:journal,hosting:v2,hosting:door,hosting:voice,hosting:game,hosting:tent \
             --project fitness-aos --non-interactive
 
       - name: Deploy Journal push reminder function
