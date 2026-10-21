@@ -168,7 +168,7 @@ export function DashboardSections({ navigate, openSession, runtimeDate, showHero
               Öffnen <Flame size={14} />
             </button>
           </div>
-          <FuelDashboardWidget navigate={() => navigate?.('fuel', 'food')} />
+          <FuelDashboardWidget runtimeDate={runtimeDate} navigate={() => navigate?.('fuel', 'food')} />
         </div>
 
         {showQuickLinks ? (
