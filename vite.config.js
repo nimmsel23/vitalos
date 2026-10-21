@@ -101,7 +101,20 @@ export default defineConfig(({ mode }) => {
     root: __dirname,
     base: '/',
     plugins: [
-      vosChangelog({ appId: 'vitalos', appName: 'VitalOS', accent: '#fb923c' }),
+      vosChangelog({
+        appId: 'vitalos', appName: 'VitalOS', accent: '#fb923c', shell: true,
+        apps: [
+          { path: 'fitness-app', name: 'Fitness' },
+          { path: 'fuel-app', name: 'Fuel' },
+          { path: 'journal-app', name: 'Journal' },
+          { path: 'habit-app', name: 'Habits' },
+          { path: 'learn-app', name: 'Learn' },
+          { path: 'relax-app', name: 'Relax' },
+          { path: '6pack-app', name: '6Pack' },
+          { path: 'plan-app', name: 'Plan' },
+          { path: 'fitness-app/Skills', name: 'Skills' },
+        ],
+      }),
       firebaseRedirect,
       react(),
       ...federationPlugin,

@@ -118,3 +118,18 @@ kehrt er zurück. Blockierter localStorage verhindert die Anzeige nicht.
 Texte werden als Text gerendert, Repository-Links nur mit HTTPS.
 
 Tests: `node --test test/`; Integration zusätzlich über die App-Builds prüfen.
+
+### Ein gemeinsamer Dialog im Shell-Betrieb
+
+Die VitalOS-Shell nutzt `shell: true` und eine `apps`-Liste mit `{path, name}`.
+Der Plugin sammelt Shell und App-Repositories einschließlich Skills in
+`release.sections`; ein Dialog gruppiert ihre Änderungen nach App. Die
+gemeinsame Release-ID berücksichtigt alle eingebauten Versionen, und
+`vitalos:seen-release` bestätigt den gesamten Stand einmalig. Leere oder
+nicht initialisierte Submodule übernehmen keine Daten aus dem Parent.
+
+Der Plugin markiert das Shell-Dokument bereits im HTML-Head. Die gemeinsame
+Screen-Funktion unterdrückt separate App-Dialoge in diesem Dokument und in
+Frames. Die Shell importiert App-Komponenten direkt; deren Standalone-
+Einstiege werden dabei nicht ausgeführt. Eigenständig geöffnete Apps
+behalten ihre eigenen Changelogs und Bestätigungsschlüssel.

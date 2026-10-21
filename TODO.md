@@ -12,3 +12,5 @@
 - [x] 2026-10-17: Skills aus Fitness-Gitlink auf Production veröffentlichen (eigene Skills-PWA plus Fitness-Host).
 
 - [x] 2026-10-21: 6Pack-Changelog universalisieren, gemeinsame Quelle für VitalOS/Habits/6Pack und Vendor-CLI bereitstellen.
+
+- [x] 2026-10-21: Im Shell-Betrieb einen gemeinsamen VitalOS-Changelog mit App-Änderungen und zentraler Bestätigung nutzen.

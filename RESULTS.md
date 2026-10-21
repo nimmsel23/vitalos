@@ -1,3 +1,19 @@
+## 2026-10-21 — Ein gemeinsamer Shell-Changelog
+
+VitalOS sammelt die Änderungen von Shell und neun eingebundenen Apps,
+einschließlich Skills, in einem Dialog mit Abschnitten und passenden
+Repository-Links. Eine gemeinsame Release-ID berücksichtigt alle gebauten
+Repo-Stände; vitalos:seen-release bestätigt den gesamten Stand. Der Shell-
+Marker im HTML-Head und die Frame-Prüfung unterdrücken eigene App-Dialoge
+im eingebetteten Betrieb. Standalone-Dialoge bleiben unabhängig. Leere
+Submodule erben keine Parent-Git-Metadaten.
+
+Geprüft: fünf isolierte Metadaten-/Plugin-Tests, bestehende Shell-Tests,
+VitalOS-Firebase- und Habits-Client-Build, alle zehn Gruppen im Build-JSON,
+Vendor-Parität. Browser bei 320/390px: ein Dialog, App-Links, gemeinsame
+Bestätigung, Unterdrückung vor/nach Schließen und Standalone-Verhalten.
+Kein Push/Deployment oder Pointer-Bump; bestehender 6pack-app-Stand erhalten.
+
 ## 2026-10-21 — Gemeinsamer VitalOS-Changelog
 
 6Pack-Pilot in drei wiederverwendbare Module überführt: vos-changelog-screen.mjs,
