@@ -1,0 +1,9 @@
+title: VitalOS Push Scheduler Deployer
+description: Create and maintain Cloud Scheduler jobs for scheduled Firebase Functions from CI.
+stage: GA
+includedPermissions:
+  - cloudscheduler.jobs.create
+  - cloudscheduler.jobs.get
+  - cloudscheduler.jobs.update
+  - cloudscheduler.jobs.delete
+  - serviceusage.services.use

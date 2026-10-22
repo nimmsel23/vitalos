@@ -21,6 +21,11 @@ Das CI-Konto benötigt `iam.serviceAccounts.actAs` auf dem Laufzeitkonto.
 Die Reparatur verwendet dafür `roles/iam.serviceAccountUser` als Binding auf
 genau diesem Servicekonto, nicht als projektweite Rolle. Das Deploy-Konto
 wird aus der tatsächlich verwendeten CI-Credential ermittelt.
+Bestätigter Actor: `fitness-pwa-deploy@fitness-aos.iam.gserviceaccount.com`.
+Seine vorhandene Firebase-Admin-Rolle erlaubt Function-Deploys, aber keine
+Scheduler-Verwaltung. Die eigene Rolle `vitalosPushSchedulerDeployer` ergänzt
+nur Job-Create/Get/Update/Delete und `serviceusage.services.use` auf Projektebene;
+die Definition liegt in `.github/iam/push-scheduler-deployer.yaml`.
 
 ## Migration des alten gemeinsamen Namens
 
