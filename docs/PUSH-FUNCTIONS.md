@@ -47,6 +47,21 @@ Bei einem Fehlschlag vor dem Ersatz lässt sich der alte Job wieder aktivieren.
 Die Function-Quellen bleiben in Git erhalten. `scheduledSixpackReminders`
 und die anderen Fitness-Functions werden bei dieser Migration nicht verändert.
 
+## Live-Abschluss 2026-10-22
+
+Alle drei neuen Sender wurden über das reparierte CI-Konto deployed und sind
+`ACTIVE`, mit eigener Codebase, eigenem Pub/Sub-Topic und aktiviertem
+Fünf-Minuten-Scheduler in `us-central1`. Die heruntergeladenen Live-Quellen
+stimmen mit den gepinnten Git-Quellen überein. Der alte gemeinsame Sender,
+sein pausierter Job und sein Topic wurden nach bestätigtem Journal-Ersatz
+entfernt. Journal hat einen regulären Lauf mit Status `ok` abgeschlossen.
+
+Die VitalOS-Abfrage benötigt außerdem einen Collection-Group-Index auf
+`settings.apps.vitalos.enabled`. Dieser ist in `firestore.indexes.json`
+definiert; die drei vorhandenen Collection-Indizes des Felds bleiben erhalten.
+Bei der Migration wurde ausschließlich dieses Feld über die Firestore-API
+aktualisiert, ohne Rules oder andere Indizes zu veröffentlichen.
+
 ## Prüfung ohne Benachrichtigungen
 
 `node scripts/test-push-function-isolation.mjs` lädt die drei tatsächlichen

@@ -34,6 +34,16 @@
   ],
   "fieldOverrides": [
     {
+      "collectionGroup": "settings",
+      "fieldPath": "apps.vitalos.enabled",
+      "indexes": [
+        { "queryScope": "COLLECTION", "order": "ASCENDING" },
+        { "queryScope": "COLLECTION", "order": "DESCENDING" },
+        { "queryScope": "COLLECTION", "arrayConfig": "CONTAINS" },
+        { "queryScope": "COLLECTION_GROUP", "order": "ASCENDING" }
+      ]
+    },
+    {
       "collectionGroup": "inbox",
       "fieldPath": "status",
       "indexes": [

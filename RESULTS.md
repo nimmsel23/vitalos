@@ -4,6 +4,8 @@ Die drei Reminder-Sender bekommen eindeutige Function-IDs und Firebase-Codebases
 
 Migration und eng begrenzte IAM-Reparatur: siehe docs/PUSH-FUNCTIONS.md. Der alte Journal-Scheduler wird vor dem Ersatz pausiert und erst nach bestätigtem Ersatz entfernt. Keine manuellen Testnachrichten an echte Benutzer.
 
+Live verifiziert: CI-Lauf 39722742884 veröffentlicht Journal erfolgreich; Lauf 39722974187 veröffentlicht alle drei getrennten Sender erfolgreich. Alle drei Functions ACTIVE, Live-Quellen identisch mit Git, drei eigene aktivierte Scheduler/Topics. Legacy-Function, Job und Topic entfernt. Journal hat einen regulären Lauf mit Status ok abgeschlossen. CI erhält actAs gezielt auf Laufzeit- und tatsächlichem Cloud-Build-Konto sowie die minimale eigene Scheduler-Rolle. Fehlenden VitalOS-Collection-Group-Index ergänzt und im zentralen Index-Manifest festgehalten. Shell-CI und wiederholter Skills-Deploy erfolgreich.
+
 ## 2026-10-21 — Universeller Changelog in allen Apps
 
 Gemeinsamen Vite-Plugin in Fitness, Fuel, Journal, Learn, Relax, Plan und Skills eingebunden; Habits/6Pack auf den aktuellen gemeinsamen Stand gebracht. Skills verwendet keine separate React-UpdateNotes-/Fetch-Lösung mehr. Mini-Apps erhalten eigene IDs/Namen. VOS Fitness verwendet die Release-Metadaten des tatsächlichen Fitness-Checkouts. Die Shell behält genau einen gebündelten Dialog mit allen eingebetteten App-Versionen. CI-Deploys umfassen auch Training/Atlas, vier Fuel-Mini-Apps und alle sechs Journal-Targets.
