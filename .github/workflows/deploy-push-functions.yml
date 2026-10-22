@@ -1,0 +1,75 @@
+name: Deploy app push functions
+
+on:
+  workflow_dispatch:
+    inputs:
+      app:
+        description: 'Reminder-Sender'
+        type: choice
+        options: [all, journal, fitness, vitalos]
+        default: all
+      verify_only:
+        description: 'Nur das Deploy-Konto anzeigen, nichts veröffentlichen'
+        type: boolean
+        default: false
+
+concurrency:
+  group: production-push-functions
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - name: Prepare deploy credentials
+        env:
+          FIREBASE_SA: ${{ secrets.FIREBASE_SERVICE_ACCOUNT || secrets.FIREBASE_SERVICE_ACCOUNT_FITNESS_AOS }}
+        run: |
+          python3 - <<'PY'
+          import json, os
+          from pathlib import Path
+          credentials = json.loads(os.environ['FIREBASE_SA'])
+          path = Path(os.environ['RUNNER_TEMP']) / 'push-deploy-sa.json'
+          path.write_text(json.dumps(credentials))
+          path.chmod(0o600)
+          with open(os.environ['GITHUB_ENV'], 'a') as target:
+              target.write(f'GOOGLE_APPLICATION_CREDENTIALS={path}\n')
+          print('Deploy service account: ' + credentials['client_email'])
+          PY
+      - name: Checkout function sources
+        if: ${{ !inputs.verify_only }}
+        env:
+          SUBMODULE_TOKEN: ${{ secrets.GH_SUBMODULE_TOKEN || github.token }}
+        run: |
+          git config --global url."https://x-access-token:${SUBMODULE_TOKEN}@github.com/".insteadOf "git@github.com:"
+          git submodule update --init fitness-app journal-app
+      - uses: actions/setup-node@v5
+        if: ${{ !inputs.verify_only }}
+        with:
+          node-version: 22
+      - name: Install and deploy selected reminder functions
+        if: ${{ !inputs.verify_only }}
+        env:
+          PUSH_APP: ${{ inputs.app }}
+        run: |
+          node scripts/test-push-function-isolation.mjs
+          case "$PUSH_APP" in
+            all) apps="vitalos fitness journal" ;;
+            vitalos|fitness|journal) apps="$PUSH_APP" ;;
+            *) echo 'Invalid app'; exit 1 ;;
+          esac
+          for app in $apps; do
+            case "$app" in
+              vitalos) source=functions; function=scheduledVitalosPushReminders ;;
+              fitness) source=fitness-app/functions; function=scheduledFitnessPushReminders ;;
+              journal) source=journal-app/functions; function=scheduledJournalPushReminders ;;
+            esac
+            npm ci --prefix "$source" --no-audit --no-fund
+            npx --yes firebase-tools@15.34.0 deploy \
+              --config firebase.push.json --only "functions:$app:$function" \
+              --project fitness-aos --non-interactive
+          done
+      - name: Remove temporary deploy credentials
+        if: always()
+        run: rm -f "$RUNNER_TEMP/push-deploy-sa.json"

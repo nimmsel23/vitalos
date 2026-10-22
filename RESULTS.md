@@ -1,3 +1,9 @@
+## 2026-10-22 — Push-Functions und CI-Rechte reparieren
+
+Die drei Reminder-Sender bekommen eindeutige Function-IDs und Firebase-Codebases (vitalos/fitness/journal). Ein eigener manueller CI-Workflow deployt alle oder einen gezielten Sender; Hosting bleibt unabhängig. Journal liest Push-Einstellungen aus dem tatsächlichen Pfad fitness/{uid}/settings/push statt einer nicht vorhandenen push-CollectionGroup. Der Regressionstest führt die echten Handler gegen isolierte SDK-/Firestore-Doubles aus und prüft, dass aktivierte fremde App-Lanes keinen Push auslösen. Bestehende 6Pack-Reminders und andere Fitness-Functions sind keine Deploy-Ziele.
+
+Migration und eng begrenzte IAM-Reparatur: siehe docs/PUSH-FUNCTIONS.md. Der alte Journal-Scheduler wird vor dem Ersatz pausiert und erst nach bestätigtem Ersatz entfernt. Keine manuellen Testnachrichten an echte Benutzer.
+
 ## 2026-10-21 — Universeller Changelog in allen Apps
 
 Gemeinsamen Vite-Plugin in Fitness, Fuel, Journal, Learn, Relax, Plan und Skills eingebunden; Habits/6Pack auf den aktuellen gemeinsamen Stand gebracht. Skills verwendet keine separate React-UpdateNotes-/Fetch-Lösung mehr. Mini-Apps erhalten eigene IDs/Namen. VOS Fitness verwendet die Release-Metadaten des tatsächlichen Fitness-Checkouts. Die Shell behält genau einen gebündelten Dialog mit allen eingebetteten App-Versionen. CI-Deploys umfassen auch Training/Atlas, vier Fuel-Mini-Apps und alle sechs Journal-Targets.

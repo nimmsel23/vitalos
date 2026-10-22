@@ -20,6 +20,7 @@
     ]
   },
   "functions": {
+    "codebase": "vitalos",
     "source": "functions",
     "runtime": "nodejs22"
   }

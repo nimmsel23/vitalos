@@ -1,0 +1,7 @@
+{
+  "functions": [
+    { "source": "functions", "codebase": "vitalos", "runtime": "nodejs22" },
+    { "source": "fitness-app/functions", "codebase": "fitness", "runtime": "nodejs22" },
+    { "source": "journal-app/functions", "codebase": "journal", "runtime": "nodejs22" }
+  ]
+}
