@@ -61,6 +61,9 @@ Die VitalOS-Abfrage benötigt außerdem einen Collection-Group-Index auf
 definiert; die drei vorhandenen Collection-Indizes des Felds bleiben erhalten.
 Bei der Migration wurde ausschließlich dieses Feld über die Firestore-API
 aktualisiert, ohne Rules oder andere Indizes zu veröffentlichen.
+Index-Aufbau abgeschlossen (`READY`). Reguläre Ausführungen nach der
+Migration: Journal 04:36 UTC, Fitness 04:41 UTC und VitalOS 04:44 UTC jeweils
+mit Status `ok`. Keine manuellen Test-Pushs ausgelöst.
 
 ## Prüfung ohne Benachrichtigungen
 
