@@ -102,7 +102,7 @@ export default defineConfig(({ mode }) => {
     base: '/',
     plugins: [
       vosChangelog({
-        appId: 'vitalos', appName: 'VitalOS', accent: '#fb923c', shell: true,
+        appId: 'vitalos', appName: 'VitalOS', accent: '#6ee7b7', shell: true,
         apps: [
           { path: 'fitness-app', name: 'Fitness' },
           { path: 'fuel-app', name: 'Fuel' },

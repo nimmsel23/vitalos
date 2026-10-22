@@ -45,7 +45,7 @@ App-Ebene: `html`, `manifest` (Dateiname), `register: true | {expose: true}` (`e
 
 ## Verhalten
 
-- Splash bleibt bis `#root` Inhalt hat (min. 700 ms, Failsafe 12 s); zeigt „Update wird geladen …“ nur in den ersten 10 s.
+- Splash bleibt bis `#root` Inhalt hat (min. 200 ms, Failsafe 12 s); ein Service-Worker-Update ändert den Hinweis, verlängert aber die Anzeige nicht.
 - SW: Navigation Netz-zuerst (4 s Timeout) → Cache-Fallback; `/assets/*` Cache-zuerst; Skip-Waiting + `GET_VERSION`-Message.
 - Jeder Build bekommt einen Zeitstempel (`<prefix>v<build>`), dadurch erkennt der Browser den neuen SW.
 - Stempeln ist idempotent (Blöcke zwischen `vos-splash`/`vos-sw-register`-Markern werden ersetzt).
@@ -104,12 +104,13 @@ nutzt die Quelle direkt; Fitness, Fuel, Journal, Habits, Learn, Relax,
 eigene App-IDs. Kein Laufzeit-React,
 Tailwind oder Nachbar-Checkout nötig.
 
-Die Daten stammen aus dem Git-HEAD des gebauten Repos. Ein GitHub-Push-Event
-wird nur bei passendem Repository und SHA genutzt; in anderen Fällen
-werden die letzten zehn Nicht-Merge-Commits angezeigt. Parent-CI-SHAs
-werden dadurch nicht auf Submodule übertragen. Die Daten sind im Build
-eingebettet, zusätzlich entsteht `release-info.json`; kein Fetch einer
-neueren JSON neben einem älteren gecachten Bundle. Kein Git-HEAD: kein Dialog.
+Der VitalOS-Shell-Dialog listet nur Commits, die Dateien unter `src/views/`
+geändert haben. Die Änderungen seit dem vorherigen App-Gitlink werden je App
+als eine Push-Gruppe angezeigt. Andere historische Commits werden nicht
+ergänzt. Die Bestätigung wird beim Öffnen lokal gespeichert, damit ein Reload
+denselben Release-Dialog nicht erneut zeigt. Die Daten sind im Build
+eingebettet, zusätzlich entsteht `release-info.json`; kein Fetch einer neueren
+JSON neben einem älteren gecachten Bundle. Keine passenden View-Commits: kein Dialog.
 Wrapper ohne eigenes Git-Repository können mit `releaseRoot` den tatsächlichen
 App-Checkout benennen (z. B. VOS Fitness → `fitness-app`).
 

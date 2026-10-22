@@ -24,6 +24,8 @@ jobs:
     steps:
       - name: Checkout (ohne Submodules)
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - name: Private Skills submodule access
         uses: ./.github/actions/skills-submodule-auth
