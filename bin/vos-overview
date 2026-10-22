@@ -1,10 +1,13 @@
 #!/usr/bin/env python3
-"""vos-overview — Adlerblick über den VOS-Repo-Wildwuchs (nur lesen, ändert nichts).
+"""vos-overview — Adlerblick über VitalOS und seine App-Checkouts (nur lesen, ändert nichts).
 
 Jede VOS-Mini-App existiert mehrfach:
   standalone  ~/<m>-dev            Arbeitsbranch `dev`, hier arbeitet man und `vos-release` pusht von hier
   vitalos     ~/vitalos/<m>-app    Submodul auf Branch `vitalos` (Build/CI im Meta-Repo)
-  nested      ~/fitness-dev/<m>    6pack/coach/plan zusätzlich als Submodul INNERHALB von fitness-dev
+  nested      ~/fitness-dev/<m>    6pack/plan zusätzlich als Submodul INNERHALB von fitness-dev
+
+Coach ist eigenständig in ~/coach-dev. Dort liegt `vitalos` als Checkout des
+VitalOS-Branches `coach`; dieser Integrationspfad gehört nicht zu vos-release.
 
 Das Skript zeigt je Klon Branch/Stand/Sync/Dirty, ob Pointer auf lokal-only Commits zeigen (CI-Falle
 "fatal: not our ref"), wie dev/vitalos/master gegeneinander stehen, alle Service Worker (inkl. Kopien und
@@ -15,6 +18,7 @@ Usage:
     vos-overview                 alles
     vos-overview --sw            nur Service-Worker-Inventar
     vos-overview --plan          nur Push-Reihenfolge
+    vos-overview --coach         nur Coach- und VitalOS-Integration
     vos-overview --fetch         vorher `git fetch` in allen Klonen (aktualisiert nur Remote-Tracking-Refs)
     vos-overview --json          maschinenlesbar
 """
@@ -43,6 +47,7 @@ HOME = Path.home()
 GIT = "/usr/bin/git"  # am ~/aos/bin/git-Wrapper vorbei (nur lesende Befehle)
 VITALOS = HOME / "vitalos"
 FITNESS_DEV = HOME / "fitness-dev"
+COACH_DEV = HOME / "coach-dev"
 SHELL_PKG = VITALOS / "packages" / "mini-app-shell"
 
 # Modul -> (standalone-Ordner, vitalos-Submodul, nested-Pfad in fitness-dev | None)
@@ -56,7 +61,7 @@ MODULES: dict[str, tuple[str, str, Optional[str]]] = {
     "6pack": ("6pack-dev", "6pack-app", "6pack"),
     "plan": ("plan-dev", "plan-app", "plan"),
 }
-# Reihenfolge wie vos-release: Blätter vor fitness (das 6pack/coach/plan als nested Submodule trägt)
+# Reihenfolge wie vos-release: Blätter vor fitness (das 6pack/plan als nested Submodule trägt)
 RELEASE_ORDER = ["6pack", "plan", "fitness", "fuel", "habits", "journal", "learn", "relax"]
 NESTED_PARENT = "fitness"
 
@@ -91,7 +96,7 @@ class Clone:
     problems: list[str] = field(default_factory=list)
 
 
-def inspect_clone(module: str, role: str, path: Path, fetch: bool) -> Clone:
+def inspect_clone(module: str, role: str, path: Path, fetch: bool, expected_branch: str | None = None) -> Clone:
     c = Clone(module=module, role=role, path=str(path).replace(str(HOME), "~"))
     if not is_repo(path):
         return c
@@ -118,13 +123,15 @@ def inspect_clone(module: str, role: str, path: Path, fetch: bool) -> Clone:
     c.store = hashlib.sha1(str((path / common).resolve()).encode()).hexdigest()[:4]
     _, contains = git(path, "branch", "-r", "--contains", "HEAD")
     c.unpushed = not contains.strip()
-    if role == "standalone" and c.branch not in ("dev", "(detached)"):
+    if expected_branch and c.branch not in (expected_branch, "(detached)"):
+        c.problems.append(f"Regel-Verstoß: {module} soll auf `{expected_branch}` stehen (steht auf `{c.branch}`)")
+    elif role == "standalone" and module in MODULES and c.branch not in ("dev", "(detached)"):
         c.problems.append(f"Regel-Verstoß: ~/{MODULES[module][0]} gehört fest auf `dev` (steht auf `{c.branch}`) — Agent-/Feature-Branches als Worktree: "
                           f"git -C ~/{MODULES[module][0]} worktree add .worktrees/<name> {c.branch}")
-    if role == "vitalos" and c.branch not in ("vitalos", "(detached)"):
+    if role == "vitalos" and module in MODULES and c.branch not in ("vitalos", "(detached)"):
         c.problems.append(f"Regel-Verstoß: ~/vitalos/{MODULES[module][1]} gehört fest auf `vitalos` (steht auf `{c.branch}`)")
     local_branch = role == "nested" and c.branch.startswith("lokal")
-    if role == "nested" and not local_branch:
+    if role == "nested" and module in MODULES and not local_branch:
         c.problems.append("Nebenlinie auf `" + c.branch + "` — soll ein lokaler Branch (`lokal`) sein; kanonisch ist ~/" + MODULES[module][0] + " (dev)")
     if c.unpushed and not local_branch:
         c.problems.append("HEAD in keinem Remote-Branch (nur lokal)")
@@ -166,6 +173,34 @@ class Pointer:
     checked_out: str
     state: str  # ok | stale | local-only | missing
     detail: str = ""
+
+
+@dataclass
+class CoachOverview:
+    product: Clone
+    vitalos_checkout: Clone
+    pointer: Pointer
+
+
+def inspect_coach(fetch: bool) -> CoachOverview:
+    """Inspect Coach's owned dev repo and its pinned VitalOS `coach` checkout."""
+    product = inspect_clone("coach", "standalone", COACH_DEV, fetch, expected_branch="dev")
+    shell_path = COACH_DEV / "vitalos"
+    shell = inspect_clone("coach", "vitalos-consumer", shell_path, fetch, expected_branch="coach")
+    recorded = recorded_pointer(COACH_DEV, "vitalos") if is_repo(COACH_DEV) else ""
+    rc, checked = git(shell_path, "rev-parse", "HEAD") if is_repo(shell_path) else (1, "")
+    checked = checked if rc == 0 else ""
+
+    if not product.exists or not shell.exists or not recorded or not checked:
+        state, detail = "missing", "Coach-Repo, VitalOS-Checkout oder gespeicherter Gitlink fehlt"
+    elif not sha_in_remote(shell_path, recorded):
+        state, detail = "local-only", "Coach-Gitlink zeigt auf einen VitalOS-Commit ohne Remote-Branch"
+    elif recorded != checked:
+        state, detail = "stale", "VitalOS-Checkout weicht vom im Coach-Repo gespeicherten Gitlink ab"
+    else:
+        state, detail = "ok", ""
+    pointer = Pointer("coach-dev", "vitalos", recorded[:7], checked[:7], state, detail)
+    return CoachOverview(product, shell, pointer)
 
 
 def inspect_pointers(clones: dict[tuple[str, str], Clone]) -> list[Pointer]:
@@ -336,7 +371,7 @@ def build_plan(clones: dict[tuple[str, str], Clone], pointers: list[Pointer], re
     stale = [p for p in pointers if p.parent == "fitness-dev" and p.state in ("stale", "local-only")]
     if stale:
         names = " ".join(p.child for p in stale)
-        add("~/fitness-dev", f"nested Pointer in fitness-dev ({names}) weichen ab — nur relevant, solange 6pack/coach/plan dort Submodule bleiben",
+        add("~/fitness-dev", f"nested Pointer in fitness-dev ({names}) weichen ab — nur relevant, solange 6pack/plan dort Submodule bleiben",
             "Strukturfrage: sind die nested Submodule neben ~/<m>-dev + vitalos/<m>-app überhaupt noch nötig?",
             "Entscheidung nötig; kein Pointer-Commit auf lokal-only Commits (CI: not our ref)")
     # 4) dev -> vitalos-Branch mergen (macht vos-release)
@@ -361,7 +396,7 @@ def short(path: str) -> str:
     return path
 
 
-def render(clones, pointers, rels, sw_files, shells, plan, parts: set[str]) -> None:
+def render(clones, pointers, rels, sw_files, shells, plan, coach: CoachOverview, parts: set[str]) -> None:
     if "repos" in parts:
         t = Table(title="Klone je Modul  (store = gleiche Kennung → geteilte .git / Worktree-Familie)", show_lines=False)
         for col in ("Modul", "Rolle", "Branch", "HEAD", "Sync", "geänd.", "store"):
@@ -429,6 +464,32 @@ def render(clones, pointers, rels, sw_files, shells, plan, parts: set[str]) -> N
             t.add_row(s["repo"], ", ".join(s["apps"]) or "—", "[red]Drift[/] " + s["detail"] if s["drift"] else "[green]aktuell[/]")
         console.print(t)
 
+    if "coach" in parts:
+        t = Table(title="Coach (eigenständiges Repo; eigener Releaseweg)")
+        for col in ("Rolle", "Repo", "Branch", "HEAD", "Sync", "geänd."):
+            t.add_column(col)
+        for label, c in (("Produkt", coach.product), ("VitalOS-Integration", coach.vitalos_checkout)):
+            if not c.exists:
+                t.add_row(label, c.path, "[red]fehlt[/]", "", "", "")
+                continue
+            sync = f"↑{c.ahead} ↓{c.behind}" if c.upstream else "—"
+            if c.ahead or c.behind:
+                sync = f"[yellow]{sync}[/]"
+            dirty = (f"[red]{c.tracked_changes}[/]" if c.tracked_changes else "·") + (f" +{c.untracked}?" if c.untracked else "")
+            t.add_row(label, c.path, c.branch, c.head, sync, dirty)
+            for problem in c.problems:
+                console.print(f"[red]•[/] Coach ({label}, {c.path}): {problem}")
+        console.print(t)
+
+        p = coach.pointer
+        color = {"ok": "green", "stale": "yellow", "local-only": "red", "missing": "red"}.get(p.state, "white")
+        t = Table(title="Coach → VitalOS (gespeicherter Gitlink)")
+        for col in ("Eltern", "Kind", "Pointer", "Checkout", "Zustand"):
+            t.add_column(col)
+        t.add_row(p.parent, p.child, p.recorded or "—", p.checked_out or "—", f"[{color}]{p.state}[/] {p.detail}")
+        console.print(t)
+        console.print("[dim]Coach-Releases gehören zu ~/coach-dev/bin/coach-release. Shell-Änderungen in den Branch coach werden bewusst integriert.[/]")
+
     if "plan" in parts:
         t = Table(title="Push-Reihenfolge (Blätter → Wurzel). Ausführen: vos-release; dieses Skript führt nichts aus.")
         for col in ("#", "Wo", "Was", "Befehl", "Blockiert"):
@@ -445,9 +506,16 @@ def render(clones, pointers, rels, sw_files, shells, plan, parts: set[str]) -> N
 def main(
     sw: bool = typer.Option(False, "--sw", help="nur Service-Worker-Inventar"),
     plan_only: bool = typer.Option(False, "--plan", help="nur Push-Reihenfolge"),
+    coach_only: bool = typer.Option(False, "--coach", help="nur Coach- und VitalOS-Integration"),
     fetch: bool = typer.Option(False, "--fetch", help="vorher git fetch in allen Klonen"),
     as_json: bool = typer.Option(False, "--json", help="JSON statt Tabellen"),
 ) -> None:
+    if sum((sw, plan_only, coach_only)) > 1:
+        raise typer.BadParameter("--sw, --plan und --coach sind Einzelauswahlen und können nicht kombiniert werden")
+    if coach_only and not as_json:
+        render({}, [], [], [], [], [], inspect_coach(fetch), {"coach"})
+        return
+
     clones: dict[tuple[str, str], Clone] = {}
     for m, (sa, sub, nested) in MODULES.items():
         clones[(m, "standalone")] = inspect_clone(m, "standalone", HOME / sa, fetch)
@@ -459,6 +527,7 @@ def main(
     rels = branch_relations()
     sw_files, shells = sw_inventory()
     steps = build_plan(clones, pointers, rels)
+    coach = inspect_coach(fetch)
 
     if as_json:
         print(json.dumps({
@@ -468,11 +537,12 @@ def main(
             "service_workers": [asdict(f) for f in sw_files],
             "mini_app_shell": shells,
             "plan": [asdict(s) for s in steps],
+            "coach": asdict(coach),
         }, indent=2, ensure_ascii=False))
         return
 
-    parts = {"sw"} if sw else {"plan"} if plan_only else {"repos", "sw", "plan"}
-    render(clones, pointers, rels, sw_files, shells, steps, parts)
+    parts = {"sw"} if sw else {"plan"} if plan_only else {"repos", "sw", "plan", "coach"}
+    render(clones, pointers, rels, sw_files, shells, steps, coach, parts)
 
 
 if __name__ == "__main__":
