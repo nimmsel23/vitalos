@@ -11,14 +11,16 @@ VitalOS-Branches `coach`; dieser Integrationspfad gehört nicht zu vos-release.
 
 Das Skript zeigt je Klon Branch/Stand/Sync/Dirty, ob Pointer auf lokal-only Commits zeigen (CI-Falle
 "fatal: not our ref"), wie dev/vitalos/master gegeneinander stehen, alle Service Worker (inkl. Kopien und
-mini-app-shell-Drift) und leitet daraus die Push-Reihenfolge ab. Ausführen tut es nichts — dafür gibt es
-`vos-release` (der Plan nennt den passenden Aufruf).
+mini-app-shell-Drift), die letzten VitalOS-Deploy-Workflow-Läufe und leitet daraus die Push-Reihenfolge ab.
+Deploy-Läufe liest es über die GitHub CLI `gh`; dafür muss ein GitHub-Zugriff eingerichtet sein. Ausführen tut
+es nichts — dafür gibt es `vos-release` (der Plan nennt den passenden Aufruf).
 
 Usage:
     vos-overview                 alles
     vos-overview --sw            nur Service-Worker-Inventar
     vos-overview --plan          nur Push-Reihenfolge
     vos-overview --coach         nur Coach- und VitalOS-Integration
+    vos-overview --deployments   nur letzte Deploy-Workflow-Läufe (GitHub-Zugriff nötig)
     vos-overview --fetch         vorher `git fetch` in allen Klonen (aktualisiert nur Remote-Tracking-Refs)
     vos-overview --json          maschinenlesbar
 """
@@ -27,11 +29,15 @@ from __future__ import annotations
 import hashlib
 import json
 import re
+import shutil
 import subprocess
 import sys
+from concurrent.futures import ThreadPoolExecutor, as_completed
 from dataclasses import asdict, dataclass, field
+from datetime import datetime, timezone
 from pathlib import Path
 from typing import Optional
+from zoneinfo import ZoneInfo
 
 import typer
 from loguru import logger
@@ -49,6 +55,8 @@ VITALOS = HOME / "vitalos"
 FITNESS_DEV = HOME / "fitness-dev"
 COACH_DEV = HOME / "coach-dev"
 SHELL_PKG = VITALOS / "packages" / "mini-app-shell"
+DEPLOY_WORKFLOWS = VITALOS / ".github" / "workflows"
+REPORT_TZ = ZoneInfo("Europe/Vienna")
 
 # Modul -> (standalone-Ordner, vitalos-Submodul, nested-Pfad in fitness-dev | None)
 MODULES: dict[str, tuple[str, str, Optional[str]]] = {
@@ -182,6 +190,22 @@ class CoachOverview:
     pointer: Pointer
 
 
+@dataclass
+class DeployHistory:
+    workflow: str
+    file: str
+    last_run_at: str = ""
+    last_run_status: str = ""
+    last_run_branch: str = ""
+    last_run_sha: str = ""
+    last_run_url: str = ""
+    last_success_at: str = ""
+    last_success_branch: str = ""
+    last_success_sha: str = ""
+    last_success_url: str = ""
+    detail: str = ""
+
+
 def inspect_coach(fetch: bool) -> CoachOverview:
     """Inspect Coach's owned dev repo and its pinned VitalOS `coach` checkout."""
     product = inspect_clone("coach", "standalone", COACH_DEV, fetch, expected_branch="dev")
@@ -201,6 +225,107 @@ def inspect_coach(fetch: bool) -> CoachOverview:
         state, detail = "ok", ""
     pointer = Pointer("coach-dev", "vitalos", recorded[:7], checked[:7], state, detail)
     return CoachOverview(product, shell, pointer)
+
+
+def github_repo_from_remote(remote: str) -> str:
+    match = re.search(r"github\.com[:/]([^/]+/[^/]+?)(?:\.git)?$", remote.strip(), re.IGNORECASE)
+    return match.group(1) if match else ""
+
+
+def workflow_title(path: Path) -> str:
+    content = path.read_text(errors="replace")
+    match = re.search(r"(?m)^name:\s*(.*?)\s*$", content)
+    if not match:
+        return path.stem.removeprefix("deploy-")
+    title = match.group(1).strip()
+    if len(title) >= 2 and title[0] == title[-1] and title[0] in "\"'":
+        title = title[1:-1]
+    return title
+
+
+def timestamp_key(value: str) -> float:
+    try:
+        return datetime.fromisoformat(value.replace("Z", "+00:00")).timestamp()
+    except (ValueError, TypeError, AttributeError):
+        return 0.0
+
+
+def unavailable_deployment(path: Path, detail: str) -> DeployHistory:
+    return DeployHistory(workflow_title(path), path.name, detail=detail)
+
+
+def query_deployment(repo: str, path: Path) -> DeployHistory:
+    try:
+        proc = subprocess.run(
+            [
+                "gh", "run", "list", "--repo", repo, "--workflow", path.name, "--all",
+                "--limit", "100", "--json",
+                "workflowName,event,status,conclusion,headBranch,headSha,createdAt,updatedAt,url",
+            ],
+            capture_output=True,
+            text=True,
+            timeout=12,
+        )
+    except subprocess.TimeoutExpired:
+        return unavailable_deployment(path, "GitHub Actions-Abfrage nach 12 Sekunden abgebrochen")
+    except OSError as exc:
+        return unavailable_deployment(path, f"GitHub CLI nicht verfügbar: {exc}")
+
+    if proc.returncode:
+        detail = (proc.stderr or proc.stdout).strip().replace("\n", " ")[:180]
+        return unavailable_deployment(path, detail or "GitHub Actions-Abfrage fehlgeschlagen")
+    try:
+        runs = json.loads(proc.stdout)
+        if not isinstance(runs, list):
+            raise ValueError("unerwartetes JSON-Format")
+    except (json.JSONDecodeError, ValueError) as exc:
+        return unavailable_deployment(path, f"Antwort von gh konnte nicht gelesen werden: {exc}")
+
+    runs.sort(key=lambda run: timestamp_key(run.get("createdAt", "")), reverse=True)
+    latest = runs[0] if runs else {}
+    successes = [r for r in runs if r.get("status") == "completed" and r.get("conclusion") == "success"]
+    success = max(successes, key=lambda run: timestamp_key(run.get("updatedAt") or run.get("createdAt", "")), default={})
+
+    latest_at = latest.get("updatedAt") if latest.get("status") == "completed" else latest.get("createdAt", "")
+    details: list[str] = []
+    if len(runs) >= 100 and not successes:
+        details.append("kein erfolgreicher Lauf unter den letzten 100; ältere Läufe nicht geprüft")
+    if path.name == "deploy-push-functions.yml":
+        details.append("verify_only kann erfolgreich enden, ohne Funktionen zu deployen")
+    return DeployHistory(
+        workflow=workflow_title(path),
+        file=path.name,
+        last_run_at=latest_at or "",
+        last_run_status=(latest.get("conclusion") or latest.get("status") or "") if latest else "",
+        last_run_branch=latest.get("headBranch", "") if latest else "",
+        last_run_sha=latest.get("headSha", "") if latest else "",
+        last_run_url=latest.get("url", "") if latest else "",
+        last_success_at=(success.get("updatedAt") or success.get("createdAt", "")) if success else "",
+        last_success_branch=success.get("headBranch", "") if success else "",
+        last_success_sha=success.get("headSha", "") if success else "",
+        last_success_url=success.get("url", "") if success else "",
+        detail="; ".join(details),
+    )
+
+
+def deployment_inventory() -> list[DeployHistory]:
+    """Read recent runs for VitalOS production deploy workflows via GitHub CLI."""
+    paths = sorted(DEPLOY_WORKFLOWS.glob("deploy-*.yml"), key=lambda p: p.name)
+    if not paths:
+        return []
+    if not shutil.which("gh"):
+        return [unavailable_deployment(p, "GitHub CLI gh nicht installiert") for p in paths]
+    _, remote = git(VITALOS, "remote", "get-url", "origin")
+    repo = github_repo_from_remote(remote)
+    if not repo:
+        return [unavailable_deployment(p, "GitHub-Repository konnte nicht aus origin ermittelt werden") for p in paths]
+
+    results: list[DeployHistory] = []
+    with ThreadPoolExecutor(max_workers=min(13, len(paths))) as pool:
+        futures = [pool.submit(query_deployment, repo, path) for path in paths]
+        for future in as_completed(futures):
+            results.append(future.result())
+    return sorted(results, key=lambda d: d.file)
 
 
 def inspect_pointers(clones: dict[tuple[str, str], Clone]) -> list[Pointer]:
@@ -396,7 +521,19 @@ def short(path: str) -> str:
     return path
 
 
-def render(clones, pointers, rels, sw_files, shells, plan, coach: CoachOverview, parts: set[str]) -> None:
+def local_timestamp(value: str) -> str:
+    if not value:
+        return "—"
+    try:
+        parsed = datetime.fromisoformat(value.replace("Z", "+00:00"))
+        if parsed.tzinfo is None:
+            parsed = parsed.replace(tzinfo=timezone.utc)
+        return parsed.astimezone(REPORT_TZ).strftime("%d.%m.%Y %H:%M %Z")
+    except (ValueError, TypeError, AttributeError):
+        return value
+
+
+def render(clones, pointers, rels, sw_files, shells, plan, coach: CoachOverview | None, deployments: list[DeployHistory], parts: set[str]) -> None:
     if "repos" in parts:
         t = Table(title="Klone je Modul  (store = gleiche Kennung → geteilte .git / Worktree-Familie)", show_lines=False)
         for col in ("Modul", "Rolle", "Branch", "HEAD", "Sync", "geänd.", "store"):
@@ -436,6 +573,38 @@ def render(clones, pointers, rels, sw_files, shells, plan, coach: CoachOverview,
             t.add_row(r.module, r.dev_vs_vitalos, r.master_vs_vitalos, r.dev_vs_master)
         console.print(t)
 
+    if "deployments" in parts:
+        t = Table(title="VitalOS-Deploy-Historie (GitHub Actions)")
+        for col in ("Workflow", "Letzter Lauf (Wien)", "Ergebnis / Branch / SHA", "Letzter Erfolg (Wien / SHA / Branch)"):
+            t.add_column(col)
+        status_colors = {
+            "success": "green", "failure": "red", "timed_out": "red", "startup_failure": "red",
+            "cancelled": "yellow", "skipped": "yellow", "neutral": "yellow",
+            "queued": "cyan", "in_progress": "cyan", "pending": "cyan", "requested": "cyan",
+        }
+        for d in deployments:
+            status = d.last_run_status or ("nicht verfügbar" if d.detail else "keine Läufe")
+            color = status_colors.get(status, "white")
+            status_cell = f"[{color}]{status}[/]"
+            if d.last_run_url and d.last_run_status:
+                status_cell = f"[link={d.last_run_url}]{status_cell}[/link]"
+            success = "—"
+            if d.last_success_at:
+                success = f"{local_timestamp(d.last_success_at)} · {d.last_success_sha[:7]} ({d.last_success_branch})"
+                if d.last_success_url:
+                    success = f"[link={d.last_success_url}]{success}[/link]"
+            last_run = local_timestamp(d.last_run_at)
+            if d.last_run_url and d.last_run_at:
+                last_run = f"[link={d.last_run_url}]{last_run}[/link]"
+            branch = d.last_run_branch or "—"
+            run_sha = f" · {d.last_run_sha[:7]}" if d.last_run_sha else ""
+            t.add_row(d.workflow, last_run, f"{status_cell} · {branch}{run_sha}", success)
+        console.print(t)
+        for d in deployments:
+            if d.detail:
+                console.print(f"[dim]{d.workflow}: {d.detail}[/]")
+        console.print("[dim]Der letzte erfolgreiche Workflow-Lauf ist der CI-Deploy-Nachweis; eine separate Live-URL-Prüfung ist hier nicht enthalten. Zeiten sind Europe/Vienna.[/]")
+
     if "sw" in parts:
         t = Table(title="Service Worker (getrackte Quellen)")
         for col in ("Repo", "Datei", "Art", "Zeilen", "Hash", "CACHE"):
@@ -465,6 +634,8 @@ def render(clones, pointers, rels, sw_files, shells, plan, coach: CoachOverview,
         console.print(t)
 
     if "coach" in parts:
+        if coach is None:
+            raise ValueError("Coach-Daten fehlen für die ausgewählte Ausgabe")
         t = Table(title="Coach (eigenständiges Repo; eigener Releaseweg)")
         for col in ("Rolle", "Repo", "Branch", "HEAD", "Sync", "geänd."):
             t.add_column(col)
@@ -507,13 +678,17 @@ def main(
     sw: bool = typer.Option(False, "--sw", help="nur Service-Worker-Inventar"),
     plan_only: bool = typer.Option(False, "--plan", help="nur Push-Reihenfolge"),
     coach_only: bool = typer.Option(False, "--coach", help="nur Coach- und VitalOS-Integration"),
+    deployments_only: bool = typer.Option(False, "--deployments", help="nur letzte GitHub Actions Deploy-Läufe (gh-Zugriff nötig)"),
     fetch: bool = typer.Option(False, "--fetch", help="vorher git fetch in allen Klonen"),
     as_json: bool = typer.Option(False, "--json", help="JSON statt Tabellen"),
 ) -> None:
-    if sum((sw, plan_only, coach_only)) > 1:
-        raise typer.BadParameter("--sw, --plan und --coach sind Einzelauswahlen und können nicht kombiniert werden")
+    if sum((sw, plan_only, coach_only, deployments_only)) > 1:
+        raise typer.BadParameter("--sw, --plan, --coach und --deployments sind Einzelauswahlen und können nicht kombiniert werden")
     if coach_only and not as_json:
-        render({}, [], [], [], [], [], inspect_coach(fetch), {"coach"})
+        render({}, [], [], [], [], [], inspect_coach(fetch), [], {"coach"})
+        return
+    if deployments_only and not as_json:
+        render({}, [], [], [], [], [], None, deployment_inventory(), {"deployments"})
         return
 
     clones: dict[tuple[str, str], Clone] = {}
@@ -528,6 +703,7 @@ def main(
     sw_files, shells = sw_inventory()
     steps = build_plan(clones, pointers, rels)
     coach = inspect_coach(fetch)
+    deployments = deployment_inventory() if as_json or not (sw or plan_only) else []
 
     if as_json:
         print(json.dumps({
@@ -538,11 +714,12 @@ def main(
             "mini_app_shell": shells,
             "plan": [asdict(s) for s in steps],
             "coach": asdict(coach),
+            "deployments": [asdict(d) for d in deployments],
         }, indent=2, ensure_ascii=False))
         return
 
-    parts = {"sw"} if sw else {"plan"} if plan_only else {"repos", "sw", "plan", "coach"}
-    render(clones, pointers, rels, sw_files, shells, steps, coach, parts)
+    parts = {"sw"} if sw else {"plan"} if plan_only else {"repos", "sw", "plan", "coach", "deployments"}
+    render(clones, pointers, rels, sw_files, shells, steps, coach, deployments, parts)
 
 
 if __name__ == "__main__":
