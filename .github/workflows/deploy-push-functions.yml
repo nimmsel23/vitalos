@@ -48,6 +48,7 @@ jobs:
         if: ${{ !inputs.verify_only }}
         with:
           node-version: 22
+          package-manager-cache: false
       - name: Install and deploy selected reminder functions
         if: ${{ !inputs.verify_only }}
         env:
