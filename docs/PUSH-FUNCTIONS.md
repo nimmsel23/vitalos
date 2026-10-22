@@ -21,6 +21,11 @@ Das CI-Konto benötigt `iam.serviceAccounts.actAs` auf dem Laufzeitkonto.
 Die Reparatur verwendet dafür `roles/iam.serviceAccountUser` als Binding auf
 genau diesem Servicekonto, nicht als projektweite Rolle. Das Deploy-Konto
 wird aus der tatsächlich verwendeten CI-Credential ermittelt.
+Cloud Build verwendet zusätzlich
+`842575255284-compute@developer.gserviceaccount.com` als bestätigtes
+Build-Konto. Auch darauf erhält nur das CI-Konto ein ressourcenbezogenes
+`roles/iam.serviceAccountUser`-Binding; ohne dieses scheitert CreateFunction
+bereits vor dem Build mit `iam.serviceaccounts.actAs`.
 Bestätigter Actor: `fitness-pwa-deploy@fitness-aos.iam.gserviceaccount.com`.
 Seine vorhandene Firebase-Admin-Rolle erlaubt Function-Deploys, aber keine
 Scheduler-Verwaltung. Die eigene Rolle `vitalosPushSchedulerDeployer` ergänzt
