@@ -457,6 +457,19 @@ commit_parent_bumps() {
     run "$REAL_GIT" -C "$VITALOS_DIR" push origin master
 }
 
+# CI installiert mit --frozen-lockfile: weicht pnpm-lock.yaml von den package.json der (gerade
+# gemergten) Submodule ab, scheitern alle Deploy-Workflows. Deshalb vor dem Master-Push prüfen.
+check_lockfile() {
+    [[ "$DRY_RUN" -eq 1 ]] && return 0
+    command -v pnpm >/dev/null 2>&1 || { warn "pnpm fehlt — Lockfile-Check übersprungen"; return 0; }
+    if ! (cd "$VITALOS_DIR" && pnpm install --frozen-lockfile --lockfile-only >/dev/null 2>&1); then
+        error "pnpm-lock.yaml passt nicht zu den package.json der Module — master wird NICHT gepusht."
+        error "Beheben: cd $VITALOS_DIR && pnpm install --no-frozen-lockfile && git add pnpm-lock.yaml && git commit, dann Release erneut."
+        exit 1
+    fi
+    info "Lockfile-Check: pnpm-lock.yaml ist aktuell"
+}
+
 main() {
     resolve_modules "$@"
     require_dir "$VITALOS_DIR"
@@ -485,6 +498,7 @@ main() {
         merge_module "$module"
     done
 
+    check_lockfile
     commit_parent_bumps
     success "vos release flow complete"
 }
