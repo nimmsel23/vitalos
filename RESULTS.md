@@ -1,3 +1,16 @@
+## 2026-10-23 — Journal-Rules als Modul, Lockfile-Check und Build-Fixes (Fitness/VOS-Fitness)
+
+Aus einer journal-dev-Session: Die Firestore-Rules für `journal/{uid}/**` liegen jetzt als Modul-Fragment im Journal-Repo und werden von vitalos eingebettet. Dazu CI-Reparaturen (Lockfile, Solo-Stub, VOS-Fitness-Plan-Imports). Rules-Deploy per `workflow_dispatch` wurde in dieser Session nicht ausgelöst; Browser-/Handy-Test der TaskChampion-Config steht aus.
+
+- **`scripts/build-rules.mjs` (`81714f8`):** bettet `journal-app/firestore.rules.part` in `firestore.rules` ein (Marker `// >>> module:` / `// <<< module`); `--check` prüft Aktualität (Exit 1 bei Abweichung). Rules inhaltlich unverändert, nur der Block ist umgezogen. Aktuell 2 Module eingebettet (journal, plan). In keinen Deploy-Schritt oder `package.json`-Script verdrahtet.
+- **`pnpm-lock.yaml` (`52f9ab5`):** für `@firebase/rules-unit-testing` in `plan-app` nachgezogen; behebt `ERR_PNPM_OUTDATED_LOCKFILE` in Shell-/Journal-/Plan-/Fitness-Deploys. Nach dem Push waren Shell- und Plan-Deploy grün.
+- **`bin/vos-release` (`fa5e0b8`):** neuer Lockfile-Check (`pnpm install --frozen-lockfile --lockfile-only`) vor `commit_parent_bumps`; bricht vor dem `master`-Push ab. Positivfall getestet (griff im echten `journal-release`-Lauf), Fehlerfall nicht erzwungen; im Dry-Run oder ohne `pnpm` übersprungen.
+- **`fitness-app/vite.config.js` (`403e2f1`, Pointer `2bbfe77`):** Solo-Stub-Regel trifft nur noch den View-Einstieg (`index`), nicht mehr `Session/useTodayGateWatcher.js` (Fehler „not exported by src/solo-stub.jsx“ im `atlas`-Modus). Solo-Builds `training`/`atlas` und `pnpm run build` lokal grün; `Deploy Fitness PWA` grün.
+- **`vos-fitness/vite.config.cjs` (`50d4259`):** Fallback für `planVersions.js` auf das Submodul `fitness-app/plan` (wie in der Shell-Config). Lokaler Build grün, `Deploy VOS Fitness PWA` grün.
+- **Release:** `journal-release --yes` lief durch (`journal-app` `276a37c`, vitalos `fd97cc3`); `deploy:all` aus journal-dev (vom User gestartet) deployte alle sechs Journal-Hosting-Sites ohne Fehler.
+
+---
+
 ## 2026-10-22 — Push-Functions und CI-Rechte reparieren
 
 Die drei Reminder-Sender bekommen eindeutige Function-IDs und Firebase-Codebases (vitalos/fitness/journal). Ein eigener manueller CI-Workflow deployt alle oder einen gezielten Sender; Hosting bleibt unabhängig. Journal liest Push-Einstellungen aus dem tatsächlichen Pfad fitness/{uid}/settings/push statt einer nicht vorhandenen push-CollectionGroup. Der Regressionstest führt die echten Handler gegen isolierte SDK-/Firestore-Doubles aus und prüft, dass aktivierte fremde App-Lanes keinen Push auslösen. Bestehende 6Pack-Reminders und andere Fitness-Functions sind keine Deploy-Ziele.
