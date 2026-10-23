@@ -1,0 +1,21 @@
+# Fuel OS
+
+Fuel OS is an independent local source copy for `fuel-os.web.app`. It starts from
+Fuel client source at `b5ec24b` and combines the four former solo apps as tabs
+inside one application: Log, Supplements, Mikros, and Protokoll. It also includes
+the current Fuel tabs and frontdoors (Tap Board, Shutter, Tagesfaden, and Klassisch).
+
+`src/client` and `src/shared` are copied into this folder. Vite aliases resolve
+Fuel source locally here; changes in `fuel-dev` or `fuel-app` do not silently
+change Fuel OS. Local Firebase config files in this copy are ignored by the parent Git repo. Cross-app aliases still resolve through the VitalOS submodules
+pinned by the parent checkout. To bring newer Fuel work over, copy or merge it
+into this folder deliberately and review the result.
+
+## Build and publish
+
+- Build only: `pnpm run build:cloud`
+- Publish this site explicitly: `pnpm run deploy`
+- Build then publish: `pnpm run firebase`
+
+This directory's `firebase.json` points only to the `fuel-os` Hosting site.
+Fuel OS has no automatic release workflow; `fuel-vos.web.app` remains a separate app.

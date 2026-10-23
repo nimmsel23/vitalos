@@ -4,7 +4,7 @@ const tailwindcss = require("tailwindcss");
 const path = require("path");
 
 const VITALOS = path.resolve(__dirname, "..");
-const FUEL = path.resolve(VITALOS, "fuel-app");
+const FUEL = __dirname;
 const FITNESS = path.resolve(VITALOS, "fitness-app");
 const JOURNAL = path.resolve(VITALOS, "journal-app");
 const HABITS = path.resolve(VITALOS, "habit-app");
@@ -40,6 +40,7 @@ module.exports = defineConfig(({ mode }) => {
         "@journal-db": path.resolve(JOURNAL, "src/db/index.js"),
         "@relax": path.resolve(RELAX, "src"),
         "@fitness/constants": path.resolve(FITNESS, "src/constants"),
+        "@fitness/hooks": path.resolve(FITNESS, "src/hooks"),
         "@fitness-db/index.firestore.js": path.resolve(FITNESS, "src/lib/db/index.firestore.js"),
         "@fitness-db/shared/utils.js": path.resolve(FITNESS, "src/lib/db/shared/utils.js"),
         "@fitness-db": path.resolve(FITNESS, "src/lib/db/index.firestore.js"),

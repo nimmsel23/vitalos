@@ -1,0 +1,87 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color-scheme: dark;
+  font-family: Inter, system-ui, sans-serif;
+  background:
+    radial-gradient(circle at top left, rgba(249, 115, 22, 0.18), transparent 36%),
+    radial-gradient(circle at top right, rgba(59, 130, 246, 0.12), transparent 24%),
+    linear-gradient(180deg, #070b12 0%, #0b1018 100%);
+  /* iOS-Statusbar (standalone, apple-mobile-web-app-status-bar-style:
+     black-translucent, siehe index.html) legt sich über den Content statt
+     ihn zu verdrängen — ohne dieses Padding überlappt sie den Header
+     (Uhrzeit über "Fuel Control Deck V3"). Analog für die Home-Indicator-
+     Leiste unten. Fallback 0px für Browser ohne env()-Support. */
+  --safe-top: env(safe-area-inset-top, 0px);
+  --safe-bottom: env(safe-area-inset-bottom, 0px);
+}
+
+html {
+  /* Absicherung gegen ungewollten horizontalen Overflow (z.B. durch breite
+     Grids/Tabellen in Kind-Komponenten) — der Grund, warum auf iOS
+     manchmal rausgezoomt werden muss, um den ganzen Screen zu sehen. */
+  overflow-x: hidden;
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  /* 100dvh statt 100vh: iOS Safari rechnet 100vh inkl. der (temporär
+     eingeblendeten) Browser-Chrome, wodurch der Inhalt höher als der
+     tatsächlich sichtbare Viewport wird. 100vh bleibt als Fallback für
+     ältere WebKit-Versionen ohne dvh-Support. */
+  min-height: 100vh;
+  min-height: 100dvh;
+  margin: 0;
+  overflow-x: hidden;
+  padding-top: var(--safe-top);
+  padding-bottom: var(--safe-bottom);
+}
+
+.scrollbar-none {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.scrollbar-none::-webkit-scrollbar {
+  display: none;
+}
+
+/* ── Ernährungsprotokoll-Report (NutritionReportView) ──────────────────
+   Der Report wird als weißes „Blatt" gerendert (auch am Bildschirm), damit
+   die Druck-/PDF-Ausgabe für die FFA-Pflichtaufgabe 1:1 der Vorschau
+   entspricht. Bedienelemente tragen .no-print und verschwinden beim Druck. */
+.report-sheet {
+  background: #ffffff;
+  color: #14181f;
+  font-size: 12px;
+  line-height: 1.45;
+}
+.report-sheet table { border-collapse: collapse; width: 100%; }
+.report-sheet th,
+.report-sheet td { border: 1px solid #c8ccd4; padding: 3px 6px; text-align: left; }
+.report-sheet th { background: #eef0f3; font-weight: 600; }
+.report-sheet td.num,
+.report-sheet th.num { text-align: right; font-variant-numeric: tabular-nums; }
+.report-sheet .slot-subtotal td { background: #f6f7f9; font-weight: 600; }
+.report-sheet .day-total td { background: #e9edf4; font-weight: 700; }
+
+@media print {
+  :root { background: #ffffff !important; }
+  body { background: #ffffff !important; }
+  header,
+  .no-print { display: none !important; }
+  main { padding: 0 !important; margin: 0 !important; }
+  .report-sheet {
+    box-shadow: none !important;
+    border: none !important;
+    margin: 0 !important;
+    max-width: none !important;
+    border-radius: 0 !important;
+  }
+  .report-day { break-inside: avoid; }
+  .report-page-break { break-before: page; }
+}
+
+@page { margin: 15mm; }

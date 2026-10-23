@@ -1,6 +1,6 @@
 const path = require("path");
 
-const FUEL_APP = path.resolve(__dirname, "../fuel-app");
+const FUEL_APP = __dirname;
 
 /** @type {import('tailwindcss').Config} */
 module.exports = {

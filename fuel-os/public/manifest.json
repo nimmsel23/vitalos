@@ -1,11 +1,11 @@
 {
-  "name": "Fuel Centre",
-  "short_name": "Fuel",
-  "description": "Offlinefähiges Nutrition Journal für Coach- und Privatnutzung",
+  "name": "Fuel OS",
+  "short_name": "Fuel OS",
+  "description": "Fuel OS vereint Mahlzeiten-Log, Supplements, Mikros, Ernährungsprotokoll und schnelle Einstiege.",
   "start_url": "./",
   "display": "standalone",
-  "background_color": "#080b12",
-  "theme_color": "#5eead4",
+  "background_color": "#090b10",
+  "theme_color": "#090b10",
   "icons": [
     {
       "src": "icons/icon-192.png",

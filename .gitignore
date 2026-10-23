@@ -14,3 +14,5 @@ yarn-debug.log*
 yarn-error.log*
 serviceAccountKey.json
 
+# Local Firebase configuration for the independent Fuel OS copy.
+fuel-os/src/client/lib/firebase.config*.js

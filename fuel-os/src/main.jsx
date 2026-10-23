@@ -1,1 +1,1 @@
-import '@fuel/main.jsx';
+import "./client/main.jsx";
