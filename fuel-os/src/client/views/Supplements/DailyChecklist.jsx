@@ -32,7 +32,8 @@ export default function DailyChecklist({ date, catalog, intakes }) {
       if (permission !== "granted") return;
 
       if (isCloudMode) {
-        const { messaging } = await import("../../lib/firebase.js");
+        const { getMessagingIfSupported } = await import("../../lib/firebase.js");
+        const messaging = await getMessagingIfSupported();
         const { getToken } = await import("firebase/messaging");
         const { saveFcmToken } = await import("../../lib/db.firestore.js");
 

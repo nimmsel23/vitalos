@@ -19,3 +19,15 @@ into this folder deliberately and review the result.
 
 This directory's `firebase.json` points only to the `fuel-os` Hosting site.
 Fuel OS has no automatic release workflow; `fuel-vos.web.app` remains a separate app.
+
+Firebase Cloud Messaging is checked lazily when a push action is used. Browsers without FCM support can still start and use Fuel OS.
+
+## Ernährungspläne
+
+The `Essensplan` tab stores each user's weekly plan in
+`nutrition/{uid}/plans/{weekStart}`. Meals are selected from that user's Fuel
+catalog, portion factors are saved per entry, and a planned meal can be copied
+into the matching nutrition log. A week can be printed or saved as PDF for
+sharing. This feature belongs to Fuel OS and does not read or write the separate
+Plan app. Use the explicit `pnpm run firebase` command when a reviewed change
+should be published to `fuel-os.web.app`.

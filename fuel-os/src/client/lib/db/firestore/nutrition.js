@@ -74,6 +74,21 @@ export async function saveNutritionLog(date, data) {
   }
 }
 
+// Private weekly meal plans live beside the user's nutrition logs and catalog.
+// The document id is the Monday date (YYYY-MM-DD), so every week has one
+// stable, user-scoped document and no Plan-app dependency.
+export async function getNutritionPlan(weekStart) {
+  const snap = await getDoc(doc(db, "nutrition", getUid(), "plans", weekStart));
+  return snap.exists() ? snap.data() : { week_start: weekStart, days: {} };
+}
+
+export async function saveNutritionPlan(weekStart, plan) {
+  await setDoc(
+    doc(db, "nutrition", getUid(), "plans", weekStart),
+    { ...plan, week_start: weekStart, updated_at: serverTimestamp() },
+  );
+}
+
 export async function getNutritionLogsInRange(dates) {
   const uid = getUid();
   const map = {};

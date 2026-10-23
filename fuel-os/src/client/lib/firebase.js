@@ -44,5 +44,17 @@ import { getVertexAI } from "firebase/vertexai";
 export const vertexAI = getVertexAI(app);
 
 // FCM Initialization
-import { getMessaging } from "firebase/messaging";
-export const messaging = typeof window !== "undefined" && "serviceWorker" in navigator ? getMessaging(app) : null;
+import { getMessaging, isSupported as isMessagingSupported } from "firebase/messaging";
+
+let messagingPromise;
+export function getMessagingIfSupported() {
+  if (!messagingPromise) {
+    messagingPromise = Promise.resolve()
+      .then(() => typeof window !== "undefined" && "serviceWorker" in navigator
+        ? isMessagingSupported()
+        : false)
+      .then((supported) => supported ? getMessaging(app) : null)
+      .catch(() => null);
+  }
+  return messagingPromise;
+}
