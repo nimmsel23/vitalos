@@ -21,7 +21,13 @@ function readRepository({ root, env = process.env } = {}) {
   const id = git(root, 'rev-parse', 'HEAD');
   if (!id) return null;
   const remote = git(root, 'remote', 'get-url', 'origin');
-  const repository = remote.replace(/^git@([^:]+):/, 'https://$1/').replace(/^ssh:\/\/git@([^/]+)\//, 'https://$1/').replace(/\.git$/, '');
+  // Only publish a credential-free repository address, never the raw CI remote.
+  let repository = '';
+  try {
+    const url = new URL(remote.replace(/^git@([^:]+):/, 'https://$1/').replace(/^ssh:\/\/git@([^/]+)\//, 'https://$1/'));
+    if (url.protocol === 'https:' || url.protocol === 'http:')
+      repository = `${url.protocol}//${url.host}${url.pathname.replace(/\.git$/, '')}`;
+  } catch { /* Unrecognized remotes must not enter public artifacts. */ }
   const matchingEvent = env.GITHUB_SHA === id && repository === `https://github.com/${env.GITHUB_REPOSITORY}`;
   return { id, repository, matchingEvent };
 }
