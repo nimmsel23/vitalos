@@ -1,6 +1,7 @@
 const { defineConfig, loadEnv } = require("vite");
 const react = require("@vitejs/plugin-react");
 const path = require("path");
+const { existsSync } = require("fs");
 
 const VITALOS = path.resolve(__dirname, "..");
 const FITNESS = path.resolve(VITALOS, "fitness-app");
@@ -9,6 +10,24 @@ const JOURNAL = path.resolve(VITALOS, "journal-app");
 const HABITS = path.resolve(VITALOS, "habit-app");
 const LEARN = path.resolve(VITALOS, "learn-app");
 const RELAX = path.resolve(VITALOS, "relax-app");
+
+// Plan kommt aus dem Submodul fitness-app/plan; die Kopie fitness-app/src/views/Plan ist nur Fallback.
+// Relative Imports der Fitness-DB-Schicht (z. B. planVersions.js) fehlen dort → auf das Submodul auflösen
+// (gleiche Regel wie in ~/vitalos/vite.config.js).
+const PLAN_COPY = path.resolve(FITNESS, "src/views/Plan");
+const PLAN_SUB = path.resolve(FITNESS, "plan/src/views/Plan");
+const planSubmoduleFallback = () => ({
+  name: "vos-fitness-plan-submodule-fallback",
+  enforce: "pre",
+  resolveId(source, importer) {
+    if (!importer || importer.startsWith("\0") || !source.startsWith(".")) return null;
+    const target = path.resolve(path.dirname(importer.split("?")[0]), source.split("?")[0]);
+    const rel = path.relative(PLAN_COPY, target);
+    if (rel.startsWith("..") || path.isAbsolute(rel) || existsSync(target)) return null;
+    const sub = path.resolve(PLAN_SUB, rel);
+    return existsSync(sub) ? sub : null;
+  },
+});
 
 module.exports = defineConfig(async ({ mode }) => {
   const { vosChangelog } = await import('../packages/mini-app-shell/vos-changelog-vite.mjs');
@@ -22,6 +41,7 @@ module.exports = defineConfig(async ({ mode }) => {
       "import.meta.env.VITE_APP_MODE": JSON.stringify(appMode),
     },
     plugins: [
+      planSubmoduleFallback(),
       vosChangelog({ appId: 'vos-fitness', appName: 'VOS Fitness', accent: '#60a5fa', releaseRoot: FITNESS }),
       react()
     ],
