@@ -1,5 +1,5 @@
 import { lazy } from "react";
-import { Flame, UtensilsCrossed, NotebookPen, BookOpen, Pill, Microscope, Settings2, History, LayoutGrid, GitCommitVertical, TerminalSquare, ChefHat, Library, FileText } from "lucide-react";
+import { Flame, UtensilsCrossed, NotebookPen, BookOpen, Pill, Microscope, Settings2, History, LayoutGrid, GitCommitVertical, TerminalSquare, ChefHat, Library, FileText, CalendarDays } from "lucide-react";
 
 const BUILD_IS_LOCAL = import.meta.env.VITE_APP_MODE !== "client" && import.meta.env.MODE !== "firebase";
 const BUILD_IS_SHELL = import.meta.env.MODE === "firebase";
@@ -52,6 +52,13 @@ export const TAB_CONFIG = [
     Icon: ChefHat,
     View: lazy(() => import("./views/RecipeBuilderView.jsx")),
     getProps: () => ({}),
+  }] : []),
+  ...(!SOLO ? [{
+    key: "meal-plan",
+    label: "Essensplan",
+    Icon: CalendarDays,
+    View: lazy(() => import("./views/MealPlanView.jsx")),
+    getProps: (ctx) => ({ setActiveTab: ctx.setActiveTab }),
   }] : []),
   ...((!SOLO || SOLO === "catalog") ? [{
     key: "catalog",
