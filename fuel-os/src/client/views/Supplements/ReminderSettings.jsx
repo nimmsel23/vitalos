@@ -33,7 +33,8 @@ function ReminderForm({ initial }) {
       if (!("Notification" in window) || !("serviceWorker" in navigator)) throw new Error("Push wird in diesem Browser nicht unterstützt.");
       const permission = await Notification.requestPermission();
       if (permission !== "granted") throw new Error("Bitte Benachrichtigungen in den Browser-Einstellungen erlauben.");
-      const { messaging } = await import("../../lib/firebase.js");
+      const { getMessagingIfSupported } = await import("../../lib/firebase.js");
+      const messaging = await getMessagingIfSupported();
       const { getToken } = await import("firebase/messaging");
       const { saveFcmToken } = await import("../../lib/db.firestore.js");
       if (!messaging) throw new Error("Push wird in diesem Browser nicht unterstützt.");

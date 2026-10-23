@@ -140,7 +140,8 @@ export default function PushRemindersCard({ sectionCls, labelCls, inputCls }) {
       if (nextPermission !== "granted") return;
 
       if (cloud) {
-        const { messaging } = await import("../../lib/firebase.js");
+        const { getMessagingIfSupported } = await import("../../lib/firebase.js");
+        const messaging = await getMessagingIfSupported();
         const { getToken } = await import("firebase/messaging");
         const { saveFcmToken } = await import("../../lib/db.firestore.js");
         if (!messaging) throw new Error("FCM wird in diesem Browser nicht unterstützt.");
