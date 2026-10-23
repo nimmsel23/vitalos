@@ -68,26 +68,26 @@ TARGET_BRANCHES[plan]="vitalos"
 # mitten in Bearbeitung durch eine parallele Session. kb/inbox/ zusätzlich
 # ausgenommen: laufende Drafts vom Enrichment-Watcher, reine Datenchurn.
 # node_modules/functions aus demselben Grund wie bei den anderen Modulen.
-NOISE_PATTERNS[fitness]='^\?\? (node_modules|functions/node_modules)$|^.{2} fitness/catalog/kb/inbox/|^.{2} fitness/.*\.py$'
-NOISE_PATTERNS[fuel]='^(D .+\.bak([.].*)?|D .+\.baks.*|D .+\.mjs\.bak-.*|\?\? (node_modules|functions/node_modules))$'
-NOISE_PATTERNS[habits]='^(D .+\.bak([.].*)?|D .+\.baks.*|D .+\.mjs\.bak-.*|\?\? node_modules)$'
-NOISE_PATTERNS[journal]='^(D .+\.bak([.].*)?|D .+\.baks.*|D .+\.mjs\.bak-.*|\?\? (node_modules|functions/node_modules))$'
-NOISE_PATTERNS[learn]='^(D .+\.bak([.].*)?|D .+\.baks.*|D .+\.mjs\.bak-.*|\?\? node_modules)$'
-NOISE_PATTERNS[relax]='^(D .+\.bak([.].*)?|D .+\.baks.*|D .+\.mjs\.bak-.*|\?\? node_modules)$'
-NOISE_PATTERNS[6pack]='^(D .+\.bak([.].*)?|D .+\.baks.*|D .+\.mjs\.bak-.*|\?\? node_modules)$'
+NOISE_PATTERNS[fitness]='^\?\? (node_modules/.*|functions/node_modules/.*)$|^.{2} fitness/catalog/kb/inbox/|^.{2} fitness/.*\.py$'
+NOISE_PATTERNS[fuel]='^(D .+\.bak([.].*)?|D .+\.baks.*|D .+\.mjs\.bak-.*|\?\? (node_modules/.*|functions/node_modules/.*))$'
+NOISE_PATTERNS[habits]='^(D .+\.bak([.].*)?|D .+\.baks.*|D .+\.mjs\.bak-.*|\?\? node_modules/.*)$'
+NOISE_PATTERNS[journal]='^(D .+\.bak([.].*)?|D .+\.baks.*|D .+\.mjs\.bak-.*|\?\? (node_modules/.*|functions/node_modules/.*))$'
+NOISE_PATTERNS[learn]='^(D .+\.bak([.].*)?|D .+\.baks.*|D .+\.mjs\.bak-.*|\?\? node_modules/.*)$'
+NOISE_PATTERNS[relax]='^(D .+\.bak([.].*)?|D .+\.baks.*|D .+\.mjs\.bak-.*|\?\? node_modules/.*)$'
+NOISE_PATTERNS[6pack]='^(D .+\.bak([.].*)?|D .+\.baks.*|D .+\.mjs\.bak-.*|\?\? node_modules/.*)$'
 # coach/plan sind Forks des fitness-dev-Codebase (eigene Apps, gleiches
 # Katalog-/Backend-Tooling) — gleiches Noise-Muster wie fitness: Python-
 # Backend + kb/inbox-Drafts werden vom Firebase-Build nie gelesen.
-NOISE_PATTERNS[plan]='^\?\? (node_modules|functions/node_modules)$|^.{2} fitness/catalog/kb/inbox/|^.{2} fitness/.*\.py$'
+NOISE_PATTERNS[plan]='^\?\? (node_modules/.*|functions/node_modules/.*)$|^.{2} fitness/catalog/kb/inbox/|^.{2} fitness/.*\.py$'
 
-# Reine Doku-Änderungen (Markdown, docs/) blockieren nie einen Release —
-# NEXT.md/RESULTS.md/TODO.md werden laufend von Hooks/Sessions nachgepflegt
-# und fließen nicht in Build/Deploy ein. Gilt für alle Module.
-DOC_NOISE='^.{2} (docs/.*|.*\.md)$'
+# Dokumentation blockiert keinen Release. Die Excludes greifen auch bei
+# untracked Dateien in beliebig tiefen Ordnern, da status --untracked-files=all
+# Verzeichnisse nicht zu einem einzelnen `?? dir/` zusammenfasst.
+DOC_EXCLUDES=(':(exclude,glob)**/*.md' ':(exclude,glob)**/docs/**')
 
 # Firebase-CLI-Cache (entsteht bei jedem firebase deploy) ist nie ein Release-Hindernis;
 # in den Repos steht .firebase/ in der .gitignore, aber vor dem Merge fehlt der Eintrag u. U. noch.
-CACHE_NOISE='^\?\? (\.firebase/|firebase-debug\.log|ui-debug\.log|\.worktrees/)$'
+CACHE_NOISE='^\?\? (\.firebase/.*|firebase-debug\.log|ui-debug\.log|\.worktrees/.*)$'
 
 # Agent-/Hook-Tooling unter .claude/ (wird parallel von anderen Sessions bearbeitet) ist nie Release-Inhalt
 TOOLING_NOISE='^.{2} \.claude/'
@@ -169,16 +169,21 @@ module_exists() {
     [[ -n "${STANDALONE_DIRS[$1]:-}" ]]
 }
 
+is_doc_path() {
+    local path="$1"
+    [[ "$path" == *.md || "$path" == docs || "$path" == docs/* || "$path" == */docs || "$path" == */docs/* ]]
+}
+
 status_filtered() {
     local module="$1"
     local repo="$2"
     local pattern="${NOISE_PATTERNS[$module]}"
     local status
-    status="$("$REAL_GIT" -C "$repo" status --short 2>/dev/null || true)"
+    status="$("$REAL_GIT" -C "$repo" status --short --untracked-files=all -- . "${DOC_EXCLUDES[@]}" 2>/dev/null || true)"
     if [[ -z "$status" ]]; then
         return 0
     fi
-    status="$(printf '%s\n' "$status" | grep -vE "$DOC_NOISE" | grep -vE "$CACHE_NOISE" | grep -vE "$TOOLING_NOISE" || true)"
+    status="$(printf '%s\n' "$status" | grep -vE "$CACHE_NOISE" | grep -vE "$TOOLING_NOISE" || true)"
     if [[ -z "$status" ]]; then
         return 0
     fi
@@ -277,7 +282,7 @@ resolve_backup_conflicts() {
     local file
     while IFS= read -r file; do
         [[ -n "$file" ]] || continue
-        if [[ ! "$file" =~ \.bak($|[.]) && ! "$file" =~ \.baks && ! "$file" =~ \.mjs\.bak- && ! "$file" =~ ^(\.githooks|\.claude/hooks)/ ]]; then
+        if [[ ! "$file" =~ \.bak($|[.]) && ! "$file" =~ \.baks && ! "$file" =~ \.mjs\.bak- && ! "$file" =~ ^(\.githooks|\.claude/hooks)/ ]] && ! is_doc_path "$file"; then
             error "Non-backup merge conflict remains in $repo: $file — breche Merge ab (git merge --abort)"
             "$REAL_GIT" -C "$repo" merge --abort || true
             return 1
@@ -286,8 +291,17 @@ resolve_backup_conflicts() {
 
     while IFS= read -r file; do
         [[ -n "$file" ]] || continue
-        if [[ "$file" =~ ^(\.githooks|\.claude/hooks)/ ]]; then
-            # -dev kommt nach -app: bei Hook-Konflikten gewinnt der gemergte dev-Stand ("theirs")
+        if is_doc_path "$file"; then
+            warn "Doku-Konflikt $file — dev-Stand gewinnt"
+            if "$REAL_GIT" -C "$repo" cat-file -e ":3:$file" 2>/dev/null; then
+                run "$REAL_GIT" -C "$repo" checkout --theirs -- "$file"
+                run "$REAL_GIT" -C "$repo" add -- "$file"
+            else
+                # Falls dev die Datei gelöscht hat, das Entfernen als dev-Stand übernehmen.
+                run "$REAL_GIT" -C "$repo" rm -f -- "$file"
+            fi
+        elif [[ "$file" =~ ^(\.githooks|\.claude/hooks)/ ]]; then
+            # -dev kommt nach -app: bei Hook-Konflikten gewinnt "theirs".
             warn "Hook-Konflikt $file — dev-Stand gewinnt"
             run "$REAL_GIT" -C "$repo" checkout --theirs -- "$file"
             run "$REAL_GIT" -C "$repo" add -- "$file"
@@ -298,7 +312,7 @@ resolve_backup_conflicts() {
 }
 
 # Vorab-Check VOR jedem Push: lässt sich lokales dev sauber nach origin/<target> mergen?
-# Lesend (git merge-tree). Erlaubte Konflikte: Backup-Dateien und .githooks/* (dev gewinnt).
+# Lesend (git merge-tree). Erlaubte Konflikte: Backup-Dateien, Hooks und Doku (dev gewinnt).
 preflight_merge() {
     local module="$1"
     local standalone="${STANDALONE_DIRS[$module]}"
@@ -309,13 +323,21 @@ preflight_merge() {
     out="$("$REAL_GIT" -C "$standalone" merge-tree --write-tree --name-only --no-messages "origin/$target_branch" "$source_branch" 2>&1 || true)"
     conflicts="$(printf '%s\n' "$out" | tail -n +2 | grep -v '^$' || true)"
     [[ -n "$conflicts" ]] || { info "[$module] Preflight: dev -> $target_branch mergt konfliktfrei"; return 0; }
-    blocking="$(printf '%s\n' "$conflicts" | grep -vE '\.bak($|[.])|\.baks|\.mjs\.bak-|^(\.githooks|\.claude/hooks)/' || true)"
+    blocking=""
+    local file
+    while IFS= read -r file; do
+        [[ -n "$file" ]] || continue
+        if [[ "$file" =~ \.bak($|[.]) || "$file" =~ \.baks || "$file" =~ \.mjs\.bak- || "$file" =~ ^(\.githooks|\.claude/hooks)/ ]] || is_doc_path "$file"; then
+            continue
+        fi
+        blocking+="${file}"$'\n'
+    done <<< "$conflicts"
     if [[ -n "$blocking" ]]; then
         error "[$module] Preflight: dev -> $target_branch hat Konflikte, die vos-release nicht lösen darf:"
         printf '%s\n' "$blocking" >&2
         return 1
     fi
-    warn "[$module] Preflight: nur Hook-/Backup-Konflikte ($(printf '%s' "$conflicts" | tr '\n' ' ')) — dev gewinnt"
+    warn "[$module] Preflight: nur Hook-/Doku-/Backup-Konflikte ($(printf '%s' "$conflicts" | tr '\n' ' ')) — automatisch behandelt"
 }
 
 merge_module() {
@@ -394,9 +416,9 @@ parent_status_filtered() {
     # tatsaechlich per Skript durchlief.
     # Reine Doku-Änderungen (Markdown, docs/) und Firebase-Cache blockieren auch das Meta-Repo nie —
     # der Pointer-Commit läuft mit Pathspec (nur die Submodule), Doku bleibt unangetastet.
-    "$REAL_GIT" -C "$VITALOS_DIR" status --short 2>/dev/null \
+    "$REAL_GIT" -C "$VITALOS_DIR" status --short --untracked-files=all -- . "${DOC_EXCLUDES[@]}" 2>/dev/null \
         | grep -vE '^( M|\?\?) (fitness-app|fuel-app|habit-app|journal-app|learn-app|relax-app|6pack-app|plan-app)$' \
-        | grep -vE "$DOC_NOISE" | grep -vE "$CACHE_NOISE" | grep -vE "$TOOLING_NOISE" || true
+        | grep -vE "$CACHE_NOISE" | grep -vE "$TOOLING_NOISE" || true
 }
 
 commit_parent_bumps() {
