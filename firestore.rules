@@ -16,6 +16,7 @@ rules_version = '2';
 // App-Rules werden in ihren App-Repos gepflegt und hier zentral registriert:
 // - fitness-app/firestore.rules
 // - fuel-app/firestore.rules
+// - journal-app/firestore.rules.part (Modul-Fragment, per scripts/build-rules.mjs eingebettet)
 // - coach-dev/firestore.rules (Repo liegt bewusst ausserhalb von ~/vitalos)
 // - plan-dev/firestore.rules (Repo liegt bewusst ausserhalb von ~/vitalos;
 //   nutzt ausschliesslich bereits registrierte fitness/{uid}/...-Pfade,
@@ -69,11 +70,15 @@ service cloud.firestore {
       allow read, write: if owner(uid) || isCoach();
     }
 
-    // Journal-v2-Apps (journal-dev): journal/{uid}/frame/{domain} (Game v2 · Frame Map) und weitere
-    // nutzereigene Daten der Raster-Apps. Nur der Besitzer; Coach bewusst ausgenommen.
+    // >>> module: journal-app/firestore.rules.part
+    // Journal-v2-Apps (journal-dev): journal/{uid}/frame/{domain} (Game v2 · Frame Map),
+    // journal/{uid}/settings/{door,taskchampion} u. a. Nur der Besitzer; Coach bewusst ausgenommen.
+    // Modul-Fragment: wird von ~/vitalos (scripts/build-rules.mjs) in firestore.rules eingebettet
+    // und von dort deployed. Nutzt owner() aus dem Root-Ruleset.
     match /journal/{uid}/{document=**} {
       allow read, write: if owner(uid);
     }
+    // <<< module
 
     // Geteilte Exercise-KB (pseudo-uid "kb"): alle lesen, nur Coach schreibt
     // (approveInbox promoted Inbox-Einträge nach fitness/kb/exercises)
