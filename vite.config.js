@@ -2,7 +2,8 @@ import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 import { vosChangelog } from './packages/mini-app-shell/vos-changelog-vite.mjs'
 import tailwindcss from 'tailwindcss'
-import { resolve, dirname } from 'path'
+import { resolve, dirname, relative, isAbsolute } from 'path'
+import { existsSync } from 'fs'
 import { fileURLToPath } from 'url'
 import { crossAppAliases } from '@vos/cross-app-aliases'
 
@@ -10,6 +11,24 @@ const __dirname    = dirname(fileURLToPath(import.meta.url))  // ~/vitalos/
 const VITALOS_SRC  = resolve(__dirname, 'src')
 const FITNESS_DEV  = resolve(__dirname, 'fitness-app')
 const FITNESS_SRC  = resolve(FITNESS_DEV, 'src')
+
+// fitness-app kompiliert Plan aus dem Submodul fitness-app/plan (siehe fitness-app/vite.config.js);
+// die Kopie unter src/views/Plan ist nur Fallback. Relative Imports aus der Fitness-DB-Schicht
+// (z. B. planVersions.js) fehlen in der Kopie → auf das Submodul auflösen.
+const PLAN_COPY = resolve(FITNESS_SRC, 'views/Plan')
+const PLAN_SUB  = resolve(FITNESS_DEV, 'plan/src/views/Plan')
+const planSubmoduleFallback = () => ({
+  name: 'vitalos-plan-submodule-fallback',
+  enforce: 'pre',
+  resolveId(source, importer) {
+    if (!importer || importer.startsWith('\0') || !source.startsWith('.')) return null
+    const target = resolve(dirname(importer.split('?')[0]), source.split('?')[0])
+    const rel = relative(PLAN_COPY, target)
+    if (rel.startsWith('..') || isAbsolute(rel) || existsSync(target)) return null
+    const sub = resolve(PLAN_SUB, rel)
+    return existsSync(sub) ? sub : null
+  },
+})
 const FUEL_ROOT    = resolve(__dirname, 'fuel-app')
 const JOURNAL_DEV  = resolve(__dirname, 'journal-app')
 const HABITS_DEV   = resolve(__dirname, 'habit-app')
@@ -101,6 +120,7 @@ export default defineConfig(({ mode }) => {
     root: __dirname,
     base: '/',
     plugins: [
+      planSubmoduleFallback(),
       vosChangelog({
         appId: 'vitalos', appName: 'VitalOS', accent: '#6ee7b7', shell: true,
         apps: [
