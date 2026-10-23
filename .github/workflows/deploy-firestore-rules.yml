@@ -15,6 +15,12 @@ name: Deploy Firestore Rules
 
 on:
   workflow_dispatch:
+    inputs:
+      seed_skills_catalog:
+        description: Publish the pinned immutable Skills catalogue after deploying rules
+        type: boolean
+        required: false
+        default: false
 
 jobs:
   deploy:
@@ -23,9 +29,38 @@ jobs:
       - name: Checkout (ohne Submodules)
         uses: actions/checkout@v4
 
+      - uses: actions/setup-node@v4
+        if: inputs.seed_skills_catalog
+        with:
+          node-version: 22
+      - name: Private Skills submodule access
+        if: inputs.seed_skills_catalog
+        uses: ./.github/actions/skills-submodule-auth
+        with:
+          deploy-key: ${{ secrets.SKILLS_DEPLOY_KEY }}
+      - name: Checkout pinned Skills catalogue
+        if: inputs.seed_skills_catalog
+        run: |
+          git config --global url."https://x-access-token:${{ secrets.GH_SUBMODULE_TOKEN || secrets.GITHUB_TOKEN }}@github.com/".insteadOf "git@github.com:"
+          git submodule update --init fitness-app
+          git -C fitness-app submodule update --init Skills
       - name: Deploy Firestore Rules & Indexes
         run: |
           echo '${{ secrets.FIREBASE_SERVICE_ACCOUNT || secrets.FIREBASE_SERVICE_ACCOUNT_FITNESS_AOS }}' > /tmp/sa.json
           GOOGLE_APPLICATION_CREDENTIALS=/tmp/sa.json \
             npx firebase-tools@latest deploy --only firestore:rules,firestore:indexes \
             --project fitness-aos --non-interactive
+
+      - name: Publish immutable Skills catalogue
+        if: inputs.seed_skills_catalog
+        env:
+          FIREBASE_SA: ${{ secrets.FIREBASE_SERVICE_ACCOUNT || secrets.FIREBASE_SERVICE_ACCOUNT_FITNESS_AOS }}
+        run: |
+          seed_dir="$RUNNER_TEMP/skills-catalog-seed"
+          mkdir -p "$seed_dir"
+          npm install --prefix "$seed_dir" --ignore-scripts --no-audit --no-fund firebase-admin@14.5.0
+          cp fitness-app/Skills/scripts/seed-skills-catalog.mjs "$seed_dir/seed.mjs"
+          printf '%s' "$FIREBASE_SA" > "$seed_dir/credentials.json"
+          SKILLS_CATALOG_FILE="$GITHUB_WORKSPACE/fitness-app/Skills/public/skills-catalog.v1.json" \
+            GOOGLE_APPLICATION_CREDENTIALS="$seed_dir/credentials.json" \
+            GCLOUD_PROJECT=fitness-aos node "$seed_dir/seed.mjs" --apply
