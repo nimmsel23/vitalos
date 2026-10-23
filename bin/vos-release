@@ -35,6 +35,15 @@ SUBMODULE_DIRS[relax]="/home/alpha/vitalos/relax-app"
 SUBMODULE_DIRS[6pack]="/home/alpha/vitalos/6pack-app"
 SUBMODULE_DIRS[plan]="/home/alpha/vitalos/plan-app"
 
+# skills ist KEIN eigenes Release-Modul im Sinne der anderen: skills-dev hat keinen
+# eigenen Submodule-Master unter ~/vitalos. Es wird als Git-Submodule `Skills`
+# (Branch `fitness`) von fitness-dev/fitness-app gepinnt und geht deshalb immer
+# zusammen mit fitness live (deploy-skills.yml + deploy-fitness.yml in ~/vitalos,
+# ausgelöst vom fitness-app-Pointer-Bump). Siehe skills_preflight()/release_skills().
+SKILLS_DIR="/home/alpha/skills-dev"
+SKILLS_SUBMODULE_PATH="Skills"
+SKILLS_INTEGRATION_BRANCH="fitness"
+
 SOURCE_BRANCHES[fitness]="dev"
 SOURCE_BRANCHES[fuel]="dev"
 SOURCE_BRANCHES[habits]="dev"
@@ -80,6 +89,9 @@ NOISE_PATTERNS[6pack]='^(D .+\.bak([.].*)?|D .+\.baks.*|D .+\.mjs\.bak-.*|\?\? n
 # Backend + kb/inbox-Drafts werden vom Firebase-Build nie gelesen.
 NOISE_PATTERNS[plan]='^\?\? (node_modules/.*|functions/node_modules/.*)$|^.{2} fitness/catalog/kb/inbox/|^.{2} fitness/.*\.py$'
 
+# skills-dev: nur Backups/Build-Artefakte sind Rauschen (Hooks unter .claude/ filtert TOOLING_NOISE).
+NOISE_PATTERNS[skills]='^\?\? (node_modules/.*|dist/.*)$|^\?\? .*\.bak([.-].*)?$'
+
 # Dokumentation blockiert keinen Release. Die Excludes greifen auch bei
 # untracked Dateien in beliebig tiefen Ordnern, da status --untracked-files=all
 # Verzeichnisse nicht zu einem einzelnen `?? dir/` zusammenfasst.
@@ -93,7 +105,7 @@ CACHE_NOISE='^\?\? (\.firebase/.*|firebase-debug\.log|ui-debug\.log|\.worktrees/
 TOOLING_NOISE='^.{2} \.claude/'
 
 # Fuel mini-app submodules are stable fallbacks; fuel releases must not bump them.
-MODULE_ORDER=(fitness fuel habits journal learn relax 6pack plan)
+MODULE_ORDER=(skills fitness fuel habits journal learn relax 6pack plan)
 SELECTED_MODULES=()
 PARENT_BUMPS=()
 DRY_RUN=0
@@ -110,7 +122,12 @@ Usage:
   vos-release --help
 
 Modules:
-  fitness fuel habits journal learn relax 6pack plan
+  skills fitness fuel habits journal learn relax 6pack plan
+
+  skills wird über Fitness ausgeliefert: skills-dev dev -> origin/dev, origin/fitness
+  per Fast-Forward nachziehen, Skills-Gitlink in fitness-dev bumpen — danach läuft
+  automatisch der komplette fitness-Flow (Merge nach vitalos, Parent-Bump, CI deployt
+  vos-skills + Fitness). `vos-release skills` impliziert daher `fitness`.
 
 Behavior:
   - For every module: push standalone dev -> origin/dev, merge dev into the
@@ -167,7 +184,7 @@ require_dir() {
 }
 
 module_exists() {
-    [[ -n "${STANDALONE_DIRS[$1]:-}" ]]
+    [[ "$1" == "skills" || -n "${STANDALONE_DIRS[$1]:-}" ]]
 }
 
 is_doc_path() {
@@ -261,11 +278,32 @@ resolve_modules() {
     if [[ "${#SELECTED_MODULES[@]}" -eq 0 ]]; then
         select_modules_interactive
     fi
+
+    normalize_selection
+}
+
+# skills geht nur über fitness live -> fitness implizit mitnehmen; Reihenfolge
+# nach MODULE_ORDER (skills vor fitness) und ohne Duplikate.
+normalize_selection() {
+    local m wanted=" ${SELECTED_MODULES[*]} "
+    if [[ "$wanted" == *" skills "* && "$wanted" != *" fitness "* ]]; then
+        info "skills wird über Fitness ausgeliefert — fitness wird mit ausgewählt"
+        wanted+="fitness "
+    fi
+    SELECTED_MODULES=()
+    for m in "${MODULE_ORDER[@]}"; do
+        if [[ "$wanted" == *" $m "* ]]; then
+            SELECTED_MODULES+=("$m")
+        fi
+    done
 }
 
 ensure_symlinks_if_available() {
     if [[ -x "$ENSURE_LINKS_SCRIPT" ]]; then
         for module in "${SELECTED_MODULES[@]}"; do
+            if [[ "$module" == "skills" ]]; then
+                continue
+            fi
             local standalone_name
             standalone_name="$(basename "${STANDALONE_DIRS[$module]}")"
             run "$ENSURE_LINKS_SCRIPT" "$standalone_name"
@@ -339,6 +377,60 @@ preflight_merge() {
         return 1
     fi
     warn "[$module] Preflight: nur Hook-/Doku-/Backup-Konflikte ($(printf '%s' "$conflicts" | tr '\n' ' ')) — automatisch behandelt"
+}
+
+# Lesender Vorab-Check für skills (vor jedem Push): richtige Branches, sauber,
+# origin/fitness lässt sich per Fast-Forward auf dev ziehen, Skills-Submodule in fitness-dev ok.
+skills_preflight() {
+    local fit="${STANDALONE_DIRS[fitness]}"
+    require_dir "$SKILLS_DIR"
+    require_dir "$fit"
+    expect_branch "$SKILLS_DIR" "dev" "$SKILLS_DIR"
+    expect_branch "$fit" "dev" "$fit"
+    require_clean_repo skills "$SKILLS_DIR" "$SKILLS_DIR"
+    [[ -e "$fit/$SKILLS_SUBMODULE_PATH/.git" ]] || { error "[skills] $fit/$SKILLS_SUBMODULE_PATH ist nicht initialisiert (git submodule update --init $SKILLS_SUBMODULE_PATH)"; return 1; }
+    if [[ -n "$("$REAL_GIT" -C "$fit/$SKILLS_SUBMODULE_PATH" status --porcelain 2>/dev/null)" ]]; then
+        error "[skills] $fit/$SKILLS_SUBMODULE_PATH hat lokale Änderungen — nichts wird gepusht."
+        return 1
+    fi
+
+    "$REAL_GIT" -C "$SKILLS_DIR" fetch -q origin dev "$SKILLS_INTEGRATION_BRANCH" || warn "[skills] fetch origin fehlgeschlagen — Preflight mit altem Stand"
+    # dev muss origin/dev enthalten (kein verlorener Remote-Stand) und origin/fitness muss in dev liegen
+    "$REAL_GIT" -C "$SKILLS_DIR" merge-base --is-ancestor origin/dev dev \
+        || { error "[skills] lokales dev hat origin/dev nicht als Vorfahren — erst abgleichen."; return 1; }
+    "$REAL_GIT" -C "$SKILLS_DIR" merge-base --is-ancestor "origin/$SKILLS_INTEGRATION_BRANCH" dev \
+        || { error "[skills] origin/$SKILLS_INTEGRATION_BRANCH enthält Commits, die nicht in dev liegen — Fast-Forward nicht möglich. Manuell: dev nach $SKILLS_INTEGRATION_BRANCH mergen."; return 1; }
+    info "[skills] Preflight: dev ($("$REAL_GIT" -C "$SKILLS_DIR" rev-parse --short dev)) -> $SKILLS_INTEGRATION_BRANCH per Fast-Forward möglich"
+}
+
+# skills: dev pushen, fitness-Branch nachziehen, Skills-Gitlink in fitness-dev bumpen und committen.
+# Pushen/Mergen von fitness-dev selbst übernimmt anschließend merge_module fitness.
+release_skills() {
+    local fit="${STANDALONE_DIRS[fitness]}"
+    local sub="$fit/$SKILLS_SUBMODULE_PATH"
+
+    info "[skills] Push dev -> origin/dev"
+    run "$REAL_GIT" -C "$SKILLS_DIR" push origin dev
+
+    info "[skills] Push dev -> origin/$SKILLS_INTEGRATION_BRANCH (nur Fast-Forward)"
+    run "$REAL_GIT" -C "$SKILLS_DIR" push origin "dev:$SKILLS_INTEGRATION_BRANCH"
+
+    info "[skills] Skills-Gitlink in fitness-dev auf origin/$SKILLS_INTEGRATION_BRANCH setzen"
+    run "$REAL_GIT" -C "$sub" fetch origin "$SKILLS_INTEGRATION_BRANCH"
+    run "$REAL_GIT" -C "$sub" checkout --detach "origin/$SKILLS_INTEGRATION_BRANCH"
+
+    if [[ "$DRY_RUN" -eq 1 ]]; then
+        printf '[dry-run] %q ' "$REAL_GIT" -C "$fit" commit -m "chore(skills): bump Skills submodule" -- "$SKILLS_SUBMODULE_PATH"
+        printf '\n'
+        return 0
+    fi
+    if "$REAL_GIT" -C "$fit" diff --quiet -- "$SKILLS_SUBMODULE_PATH"; then
+        info "[skills] Gitlink in fitness-dev war schon aktuell"
+    else
+        # Pathspec: fremde Änderungen in fitness-dev bleiben unangetastet
+        "$REAL_GIT" -C "$fit" add -- "$SKILLS_SUBMODULE_PATH"
+        "$REAL_GIT" -C "$fit" commit -m "chore(skills): bump Skills submodule to $("$REAL_GIT" -C "$sub" rev-parse --short HEAD)" -- "$SKILLS_SUBMODULE_PATH"
+    fi
 }
 
 merge_module() {
@@ -490,12 +582,20 @@ main() {
 
     local module pre_fail=0
     for module in "${SELECTED_MODULES[@]}"; do
-        preflight_merge "$module" || pre_fail=1
+        if [[ "$module" == "skills" ]]; then
+            skills_preflight || pre_fail=1
+        else
+            preflight_merge "$module" || pre_fail=1
+        fi
     done
     [[ "$pre_fail" -eq 0 ]] || { error "Preflight fehlgeschlagen — nichts wurde gepusht."; exit 1; }
 
     for module in "${SELECTED_MODULES[@]}"; do
-        merge_module "$module"
+        if [[ "$module" == "skills" ]]; then
+            release_skills
+        else
+            merge_module "$module"
+        fi
     done
 
     check_lockfile
