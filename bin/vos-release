@@ -101,8 +101,10 @@ DOC_EXCLUDES=(':(exclude,glob)**/*.md' ':(exclude,glob)**/docs/**')
 # in den Repos steht .firebase/ in der .gitignore, aber vor dem Merge fehlt der Eintrag u. U. noch.
 CACHE_NOISE='^\?\? (\.firebase/.*|firebase-debug\.log|ui-debug\.log|\.worktrees/.*)$'
 
-# Agent-/Hook-Tooling unter .claude/ (wird parallel von anderen Sessions bearbeitet) ist nie Release-Inhalt
-TOOLING_NOISE='^.{2} \.claude/'
+# Agent-/Hook-Tooling unter .claude/ (wird parallel von anderen Sessions bearbeitet) ist nie Release-Inhalt.
+# Ebenso nie Release-Inhalt (blockiert keinen Release): .gitignore/.gitattributes (Repo-Hygiene, steckt nicht
+# in committeten Ständen), Backup-Dateien (*.bak, *.bak-<zeit>), Editor-Reste (*.swp/*.swo), .DS_Store.
+TOOLING_NOISE='^.{2} (\.claude/|(.*/)?\.gitignore$|(.*/)?\.gitattributes$|.*\.bak([.-].*)?$|.*\.sw[po]$|(.*/)?\.DS_Store$)'
 
 # Fuel mini-app submodules are stable fallbacks; fuel releases must not bump them.
 MODULE_ORDER=(skills fitness fuel habits journal learn relax 6pack plan)
