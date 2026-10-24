@@ -27,6 +27,36 @@ test("Splash: Skript-Teil ist gültiges JS", () => {
   assert.ok(js.includes('getElementById("app")'));
 });
 
+test('Splash: root parsed later dismisses promptly and signals the changelog once', () => {
+  const { body } = splashSnippets({ name: 'VitalOS', accent: '#6ee7b7' });
+  const timers = new Map(), events = [];
+  let root, callback, removed = false, disconnected = false, nextTimer = 0;
+  const splash = { querySelector: () => ({}), classList: { add() {} }, remove() { removed = true; } };
+  const document = {
+    body: {}, getElementById: id => id === 'vos-splash' ? splash : root,
+    dispatchEvent: event => events.push(event.type),
+  };
+  vm.runInNewContext(body.match(/<script>([\s\S]*?)<\/script>/)[1], {
+    document, navigator: {}, Event, Date,
+    setTimeout: (fn, delay) => { const id = ++nextTimer; timers.set(id, { fn, delay }); return id; },
+    clearTimeout: id => timers.delete(id),
+    MutationObserver: class {
+      constructor(fn) { callback = fn; }
+      observe(target, options) { assert.equal(target, document.body); assert.equal(options.subtree, true); }
+      disconnect() { disconnected = true; }
+    },
+  });
+  assert.equal(removed, false);
+  root = { childElementCount: 1 };
+  callback();
+  assert.equal(disconnected, true);
+  assert.ok([...timers.values()].every(timer => timer.delay <= 200));
+  const runTimers = () => { const pending = [...timers.values()]; timers.clear(); for (const timer of pending) timer.fn(); };
+  runTimers(); runTimers();
+  assert.equal(removed, true);
+  assert.deepEqual(events, ['vos-splash-hidden']);
+});
+
 test("SW: generiert gültiges JS, Config + Extra eingesetzt, kein Platzhalter übrig", () => {
   const src = buildSw({
     appId: "fuel",

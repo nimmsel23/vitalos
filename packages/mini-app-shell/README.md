@@ -104,11 +104,23 @@ nutzt die Quelle direkt; Fitness, Fuel, Journal, Habits, Learn, Relax,
 eigene App-IDs. Kein Laufzeit-React,
 Tailwind oder Nachbar-Checkout nötig.
 
-Der VitalOS-Shell-Dialog listet nur Commits, die Dateien unter `src/views/`
-geändert haben. Die Änderungen seit dem vorherigen App-Gitlink werden je App
-als eine Push-Gruppe angezeigt. Andere historische Commits werden nicht
-ergänzt. Die Bestätigung wird beim Öffnen lokal gespeichert, damit ein Reload
-denselben Release-Dialog nicht erneut zeigt. Die Daten sind im Build
+Der VitalOS-Shell-Dialog listet Änderungen an UI-Quelldateien unter `src/views/`
+und Fuels `src/client/views/`. Test-, Fixture-, Story- und Dokudateien zählen
+nicht. Technische Commit-Typen (`chore`, `ci`, `build`, `docs`, `test`,
+`refactor`), Infrastruktur-Scopes und Merge-Titel werden entfernt. Die
+Produktänderungen innerhalb eines Release-Merges bleiben erhalten.
+Conventional-Commit-Präfixe werden gekürzt, gleiche Meldungen je App
+zusammengefasst. Diese Auswahl erfolgt beim Build ohne externe API.
+Die Änderungen seit dem vorherigen App-Gitlink werden je App als eine
+Push-Gruppe angezeigt. Andere historische Commits werden nicht ergänzt.
+
+Der Splash beobachtet auch den erst nach seinem Inline-Skript angelegten
+Root-Container und verschwindet nach dem Mounten (200 ms Mindestzeit,
+180 ms Ausblenden). Ein SW-Update verlängert diese Zeit nicht. Der Dialog
+wartet auf `vos-splash-hidden`; ältere Splash-Versionen, die sich mit
+`display:none` ausblenden, werden ebenfalls unterstützt. Ohne Splash öffnet
+er direkt. Die Bestätigung wird erst beim sichtbaren Öffnen lokal gespeichert,
+damit ein Reload denselben Release-Dialog nicht erneut zeigt. Die Daten sind im Build
 eingebettet, zusätzlich entsteht `release-info.json`; kein Fetch einer neueren
 JSON neben einem älteren gecachten Bundle. Keine passenden View-Commits: kein Dialog.
 Wrapper ohne eigenes Git-Repository können mit `releaseRoot` den tatsächlichen

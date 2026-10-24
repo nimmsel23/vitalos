@@ -3,12 +3,32 @@ import { readFileSync, realpathSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { createHash } from 'node:crypto';
 
-const VIEW_PATH = 'src/views';
+const VIEW_PATHS = ['src/views', 'src/client/views'];
 const git = (root, ...args) => {
   try { return execFileSync('git', ['-C', root, ...args], { encoding: 'utf8', stdio: ['ignore', 'pipe', 'ignore'] }).trim(); }
   catch { return ''; }
 };
-const isViewPath = path => path === VIEW_PATH || path.startsWith(`${VIEW_PATH}/`);
+const isViewPath = path => typeof path === 'string'
+  && VIEW_PATHS.some(prefix => path.startsWith(`${prefix}/`))
+  && /\.(?:[cm]?[jt]sx?|css|scss|sass|less|vue|svelte|html|svg)$/.test(path)
+  && !/(?:^|\/)(?:__tests__|__snapshots__|tests?|fixtures?|stories|docs)(?:\/|\.)|\.(?:test|spec|stories)\./i.test(path);
+
+// Keep source selection deterministic in CI: infrastructure and code maintenance
+// do not become product news just because a view file was touched too.
+function releaseNotes(commits) {
+  const notes = new Map();
+  for (const commit of commits) {
+    if (/^(?:merge\b|(?:chore|ci|build|docs|test|refactor)(?:\([^)]*\))?[!:])/i.test(commit.message)) continue;
+    if (/^(?:fix|feat|perf|style)\((?:deps(?:-dev)?|ci|build|release|tooling|tests?)\)[!:]/i.test(commit.message)) continue;
+    const message = commit.message.replace(/^(?:feat|fix|perf|style)(?:\([^)]*\))?!?:\s*/i, '').trim();
+    if (!message) continue;
+    const key = message.toLocaleLowerCase('de').replace(/[.!\s]+$/g, '');
+    // Keep the newest source link for repeated fixes in a single app update.
+    notes.delete(key);
+    notes.set(key, { ...commit, message });
+  }
+  return [...notes.values()];
+}
 const parseLog = (output) => output.split('\n').filter(Boolean).map(line => {
   const [sha, ...subject] = line.split('\t');
   return { sha, message: subject.join('\t') };
@@ -40,11 +60,11 @@ function readEvent({ env, matchingEvent }) {
 
 function commitsFromPush(event) {
   if (!Array.isArray(event?.commits)) return [];
-  return event.commits
+  return releaseNotes(event.commits
     .filter(commit => /^[a-f0-9]{40,64}$/i.test(commit?.id)
       && typeof commit.message === 'string'
       && [...(commit.added || []), ...(commit.modified || []), ...(commit.removed || [])].some(isViewPath))
-    .map(commit => ({ sha: commit.id, message: commit.message.split('\n')[0] }));
+    .map(commit => ({ sha: commit.id, message: commit.message.split('\n')[0] })));
 }
 
 function commitsBetween(root, before, after) {
@@ -52,7 +72,11 @@ function commitsBetween(root, before, after) {
   try {
     execFileSync('git', ['-C', root, 'merge-base', '--is-ancestor', before, after], { stdio: 'ignore' });
   } catch { return []; }
-  return parseLog(git(root, 'log', '--first-parent', '--reverse', '--format=%H%x09%s', `${before}..${after}`, '--', VIEW_PATH));
+  const records = git(root, 'log', '--no-merges', '--reverse', '--format=%x1e%H%x09%s', '--name-only', `${before}..${after}`, '--', ...VIEW_PATHS);
+  return releaseNotes(records.split('\x1e').flatMap(record => {
+    const [subject, ...paths] = record.trim().split('\n');
+    return paths.some(isViewPath) ? parseLog(subject) : [];
+  }));
 }
 
 function rootPushCommits({ root, id, env, matchingEvent }) {
