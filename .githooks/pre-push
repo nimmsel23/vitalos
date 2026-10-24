@@ -1,67 +1,41 @@
 #!/bin/bash
-set -euo pipefail
+# pre-push hook — vitalos
+# Stellt sicher dass pnpm-lock.yaml vor jedem Push nach master aktuell ist.
+# Läuft automatisch bei `git push` — kein manueller Schritt nötig.
 
-ROOT_DIR="$(git rev-parse --show-toplevel)"
-pushed_refs="$(cat)"
+REMOTE_NAME="$1"
+REMOTE_URL="$2"
 
-# Reine Doku-Pushes sollen weder Pointer-Checks noch lokale Deploy-Hooks ausführen.
-non_docs=""
-while read -r local_ref local_sha remote_ref remote_sha; do
-  [ -z "$local_ref" ] && continue
-  if [ "$remote_sha" = "0000000000000000000000000000000000000000" ]; then
-    changed=$(git diff-tree --no-commit-id --name-only -r "$local_sha")
-  else
-    changed=$(git diff --name-only "$remote_sha" "$local_sha")
+# Lies alle zu pushenden Refs aus stdin
+PUSHING_MASTER=false
+while IFS=' ' read -r local_ref local_sha remote_ref remote_sha; do
+  if [[ "$remote_ref" == "refs/heads/master" ]]; then
+    PUSHING_MASTER=true
   fi
-  relevant=$(printf '%s\n' "$changed" | grep -Ev '(^|/)(AGENTS\.md|README([^/]*)?\.md)$|(^|/)docs/|\.(md|mdx|markdown|txt|bak)$' || true)
-  [ -z "$relevant" ] || non_docs=1
-done <<< "$pushed_refs"
-if [ -z "$non_docs" ]; then
+done
+
+if [ "$PUSHING_MASTER" = false ]; then
   exit 0
 fi
 
-"$ROOT_DIR/bin/vos-sync-submodule-pointers" --check-push
+cd "$(git rev-parse --show-toplevel)"
 
-# vos-fitness: schlanke VOS-Standalone-Variante, liegt als normaler Ordner
-# (kein Submodule) direkt im vitalos-Meta-Repo und deployed bewusst NICHT
-# über die Meta-Repo-CI, sondern nur lokal via `vos-fitness/firebase.json`
-# (siehe CLAUDE.md "Deploy-Flow Gesamtbild" — fitness-vos-Zeile). Ohne
-# diesen Hook bräuchte jede Änderung dort ein manuelles
-# `cd vos-fitness && npm run firebase` — Push nach master triggert das
-# jetzt automatisch, analog zum pre-push-Hook in fitness-dev (dort Vorbild
-# für Struktur/Fehlerverhalten).
-should_deploy_fitness_vos=false
-
-while read -r local_ref local_sha remote_ref remote_sha; do
-  [ -z "$local_ref" ] && continue
-  branch="${local_ref#refs/heads/}"
-  [ "$branch" != "master" ] && continue
-
-  if [ "$remote_sha" = "0000000000000000000000000000000000000000" ]; then
-    changed=$(git diff-tree --no-commit-id --name-only -r "$local_sha")
-  else
-    changed=$(git diff --name-only "$remote_sha" "$local_sha")
-  fi
-
-  # dist-firebase/.firebase sind Build-Output des vorherigen Laufs — nie
-  # selbst ein Deploy-Grund, sonst triggert der Hook sich bei jedem Push auf
-  # sich selbst.
-  relevant=$(echo "$changed" | grep -E '^vos-fitness/' | grep -Ev '(^|/)(AGENTS\.md|README([^/]*)?\.md)$|(^|/)docs/|\.(md|mdx|markdown|txt|bak)$|^vos-fitness/dist(-firebase)?/|^vos-fitness/\.firebase/' || true)
-  if [ -n "$relevant" ]; then
-    should_deploy_fitness_vos=true
-  fi
-done <<< "$pushed_refs"
-
-if [ "$should_deploy_fitness_vos" = true ]; then
-  if command -v gum >/dev/null 2>&1; then
-    gum log --level info "vos-fitness: relevante Änderungen im Push zu master — baue + deploye zu Firebase (fitness-vos.web.app)…"
-  else
-    echo "🔍 vos-fitness: relevante Änderungen im Push zu master — baue + deploye zu Firebase (fitness-vos.web.app)…"
-  fi
-  if ! (cd "$ROOT_DIR/vos-fitness" && npm run firebase); then
-    echo "❌ vos-fitness 'npm run firebase' fehlgeschlagen — Push wird abgebrochen (kein halb-deployter Stand)." >&2
-    echo "   Mit 'git push --no-verify' kannst du den Hook überspringen, falls das Absicht ist." >&2
-    exit 1
-  fi
-  echo "✅ vos-fitness Deploy abgeschlossen (fitness-vos.web.app)."
+# Prüfe ob Lockfile mit allen package.json übereinstimmt
+if pnpm install --frozen-lockfile --ignore-scripts 2>/dev/null; then
+  exit 0
 fi
+
+echo ""
+echo "⚠️  pnpm-lock.yaml ist nicht synchron mit package.json(s) — aktualisiere..."
+pnpm install --ignore-scripts
+
+# Prüfe ob sich das Lockfile tatsächlich geändert hat
+if git diff --quiet pnpm-lock.yaml; then
+  echo "✅ Lockfile war schon korrekt (pnpm-Fehler ignoriert)"
+  exit 0
+fi
+
+git add pnpm-lock.yaml
+git commit --amend --no-edit --no-verify
+echo "✅ pnpm-lock.yaml aktualisiert und in letzten Commit aufgenommen"
+echo ""

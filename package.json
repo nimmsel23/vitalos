@@ -5,6 +5,7 @@
   "type": "module",
   "packageManager": "pnpm@11.3.0",
   "scripts": {
+    "prepare": "git config core.hooksPath .githooks",
     "dev": "vite",
     "build:fitness-kb-data": "pnpm --filter fitness-dev run build:kb-data",
     "build:6pack-data": "pnpm --filter 6pack run build:data",
