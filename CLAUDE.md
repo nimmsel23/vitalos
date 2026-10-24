@@ -365,6 +365,15 @@ siehe Hook-Bereinigung unten). Ablauf für eine Sub-App:
    niemand mehr Rules deployen, auch nicht versehentlich.
 4. `pr-preview.yml` baut Preview-Channels — bewusst NUR für Shell-Dateien.
 
+### 6pack: Standalone-Deploy kommt aus `6pack-dev` (seit 2026-10-24)
+
+`vos-6pack.web.app` (Hosting-Target `sixpack`) wird **nicht** mehr aus dem Meta-Repo deployt:
+`deploy-6pack.yml` liegt archiviert in `.github/workflows.disabled/`. Ein Push auf den Branch `vitalos` in
+`6pack-dev` löst dort „6Pack deploy (preview + standalone)“ aus (Schritt „Standalone 6Pack (live)“, Secret
+`FIREBASE_SERVICE_ACCOUNT_FITNESS_AOS`) — das ist das Release. Der Pointer `6pack-app` bleibt im Meta-Repo,
+weil die Shell `6pack-app/SixPackPromiseCard.jsx` einbindet (6Pack-Tab); `deploy-shell.yml` läuft bei jedem
+Master-Push außer reinen Doku-Änderungen und baut ihn mit. Vorher deployten zwei Pipelines dieselbe Site.
+
 ### Preview-CI in den Sub-Repos (seit 2026-07-16)
 
 Jedes Sub-Repo (fitness/fuel/journal/habits/learn) hat
