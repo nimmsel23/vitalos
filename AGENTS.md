@@ -15,6 +15,15 @@ Endstand erreicht hat: sofort committen, ohne vorher um Erlaubnis zu fragen.
 - Der Submodule-Push ist zwingend, weil der Meta-Repo-Pointer sonst auf einen
   lokalen-only Commit zeigt und CI mit `fatal: not our ref` scheitert
   (siehe `CLAUDE.md` → Submodule-Regel).
+- **pnpm-lock.yaml muss immer synchron sein:** Wenn ein Submodule neue
+  Abhängigkeiten bekommt, muss `pnpm install` im vitalos-Root ausgeführt
+  und das aktualisierte `pnpm-lock.yaml` im selben Commit wie der
+  Submodule-Pointer mitgeführt werden. Reihenfolge:
+  1. Sub-Repo: `pnpm add <paket>` → committen + pushen
+  2. vitalos-Root: `pnpm install` (aktualisiert Root-Lockfile)
+  3. `git add <submodule-path> pnpm-lock.yaml && git commit`
+  Der pre-push Hook fängt vergessene Lockfile-Updates automatisch ab
+  (amended den letzten Commit), ist aber kein Ersatz für bewusstes Vorgehen.
 - **Push des Meta-Repos bleibt separat** — nur committen, NICHT pushen, außer
   der User fordert es explizit an.
 
