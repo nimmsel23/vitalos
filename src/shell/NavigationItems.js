@@ -1,7 +1,7 @@
 import {
   Dumbbell, Flame, CheckSquare, Settings2,
   Home, UtensilsCrossed, Pill, Microscope, NotebookPen, MoonStar, Shield,
-  BarChart3, Zap, DoorOpen, Hammer, LayoutGrid, Trophy,
+  BarChart3, Zap, DoorOpen, Hammer, LayoutGrid, Trophy, Compass, Target, Landmark, Mic,
   CalendarDays,
 } from 'lucide-react'
 import { NAV_ITEMS as FITNESS_NAV_ITEMS } from '@constants/NavigationItems.js'
@@ -14,6 +14,7 @@ export const NAV_ITEMS = [
   { id: 'relax',    label: 'Relax',   Icon: MoonStar, standaloneUrl: 'https://relax-vos.web.app' },
   { id: 'habits',   label: 'Habits',  Icon: CheckSquare },
   { id: 'door',     label: 'Door',    Icon: DoorOpen },
+  { id: 'game',     label: 'Game',    Icon: Compass },
   { id: 'settings', label: 'Setup',   Icon: Settings2 },
 ]
 
@@ -47,6 +48,14 @@ export const SUB_NAV = {
     { id: 'plan',       label: 'Plan',       Icon: LayoutGrid },
     { id: 'production', label: 'Production', Icon: Hammer },
     { id: 'profit',     label: 'Profit',     Icon: Trophy },
+  ],
+  // Game-Maps (journal-app/src/views/game/GameV2View.jsx)
+  game: [
+    { id: 'fire',    label: 'Fire',    Icon: Flame },
+    { id: 'focus',   label: 'Focus',   Icon: Target },
+    { id: 'freedom', label: 'Freedom', Icon: Landmark },
+    { id: 'frame',   label: 'Frame',   Icon: LayoutGrid },
+    { id: 'voice',   label: 'Voice',   Icon: Mic },
   ],
   relax: [
     { id: 'dash',    label: 'Heute',   Icon: Home },

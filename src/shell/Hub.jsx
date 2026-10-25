@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { ChevronRight, CheckSquare, DoorOpen, Settings2, Zap } from 'lucide-react'
+import { ChevronRight, CheckSquare, Compass, DoorOpen, Settings2, Zap } from 'lucide-react'
 import { getSession, getPlan, getRelaxStatsSummary } from '@db'
 import { localToday } from '@utils'
 import { VOS_APPS } from './VitalOSApps.js'
@@ -51,9 +51,12 @@ function TileStat({ appId, fallback = null }) {
   return fallback ? <span>{fallback}</span> : null
 }
 
+const MENU_APPS = { door: 'Door – 4 P', game: 'Game – Maps' }
+
 const SECONDARY_LINKS = [
   { id: 'habits',   label: 'Habits', Icon: CheckSquare, color: '#a3e635' },
   { id: 'door',     label: 'Door',   Icon: DoorOpen,    color: '#fbbf24' },
+  { id: 'game',     label: 'Game',   Icon: Compass,     color: '#f87171' },
   { id: 'sixpack',  label: '6Pack',  Icon: Zap,         color: '#facc15' },
   { id: 'settings', label: 'Setup',  Icon: Settings2,   color: '#94a3b8' },
 ]
@@ -123,9 +126,9 @@ export default function Hub({ navigate, variant = 'page', runtimeDate, openSessi
 
         <div data-shell-nav="vertical" className="vos-surface mt-3 overflow-hidden rounded-[18px]">
           {SECONDARY_LINKS.map(({ id, label, Icon, color }, index) => {
-            const Row = id === 'door' ? ContextMenuButton : 'button'
-            const menuProps = id === 'door'
-              ? { menuLabel: 'Door – 4 P', items: SUB_NAV.door.map((item) => ({ label: item.label, onSelect: () => handleNavigate('door', item.id) })) }
+            const Row = SUB_NAV[id] && MENU_APPS[id] ? ContextMenuButton : 'button'
+            const menuProps = SUB_NAV[id] && MENU_APPS[id]
+              ? { menuLabel: MENU_APPS[id], items: SUB_NAV[id].map((item) => ({ label: item.label, onSelect: () => handleNavigate('door', item.id) })) }
               : {}
             return (
             <Row

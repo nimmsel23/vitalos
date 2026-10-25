@@ -3,6 +3,9 @@ import { NAV_ITEMS, SUB_NAV } from '@shell/NavigationItems';
 import ContextMenuButton from '@vos-shell-ui/ContextMenuButton.jsx';
 import { isLocalMode } from "@db";
 
+// Apps mit Direktwahl per Rechtsklick/Long-Press (Untereinträge aus SUB_NAV)
+const MENU_APPS = { door: 'Door – 4 P', game: 'Game – Maps' }
+
 export default function Sidebar({ tab, navigate, pinned, setPinned, children, user, subNav, subTab, onSubTab, onKeyboardHelp }) {
   const hasSubNav = Array.isArray(subNav) && subNav.length > 0
   const visibleNavItems = NAV_ITEMS.filter(({ id }) => id !== 'hub')
@@ -35,10 +38,10 @@ export default function Sidebar({ tab, navigate, pinned, setPinned, children, us
         <nav aria-label="Hauptnavigation" data-shell-nav="vertical" className={`mb-3 flex w-full flex-col gap-1 border-b border-fit-line/30 pb-3 ${!pinned ? 'items-center' : ''}`}>
           {visibleNavItems.map(({ id, label, Icon }, index) => {
             const isActive = tab === id
-            // Rechtsklick/Long-Press/Menü-Taste auf Door: Direktwahl der 4 P's
-            const ItemButton = id === 'door' ? ContextMenuButton : 'button'
-            const menuProps = id === 'door'
-              ? { menuLabel: 'Door – 4 P', items: SUB_NAV.door.map((item) => ({ label: item.label, onSelect: () => navigate('door', item.id) })) }
+            // Rechtsklick/Long-Press/Menü-Taste auf Door/Game: Direktwahl der Untereinträge
+            const ItemButton = MENU_APPS[id] ? ContextMenuButton : 'button'
+            const menuProps = MENU_APPS[id]
+              ? { menuLabel: MENU_APPS[id], items: SUB_NAV[id].map((item) => ({ label: item.label, onSelect: () => navigate('door', item.id) })) }
               : {}
             return (
               <ItemButton key={id} {...menuProps} onClick={() => navigate(id)} title={`${label} (Alt+${index + 1})`} aria-label={label} aria-current={isActive ? 'page' : undefined} aria-keyshortcuts={`Alt+${index + 1}`}
