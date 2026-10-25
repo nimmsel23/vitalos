@@ -6,6 +6,9 @@ import {
 } from 'lucide-react'
 import { NAV_ITEMS as FITNESS_NAV_ITEMS } from '@constants/NavigationItems.js'
 
+// Hash-Routen der Door-/Game-Tabs: #door/<potential|plan|production|profit> (Door v1),
+// #game/<fire|focus|freedom|frame|voice> und #game/door/<phase> (Door v2). Rechtsklick/Long-Press
+// auf Door oder Game öffnet die Direktwahl (SUB_NAV.door / SUB_NAV.game, flattenMenuItems).
 export const NAV_ITEMS = [
   { id: 'home',     label: 'Journal', Icon: NotebookPen },
   { id: 'fitness',  label: 'Fitness', Icon: Dumbbell, standaloneUrl: 'https://fitness-vos.web.app' },
