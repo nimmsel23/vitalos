@@ -1,7 +1,7 @@
 import {
   Dumbbell, Flame, CheckSquare, Settings2,
   Home, UtensilsCrossed, Pill, Microscope, NotebookPen, MoonStar, Shield,
-  BarChart3, Zap,
+  BarChart3, Zap, DoorOpen,
   CalendarDays,
 } from 'lucide-react'
 import { NAV_ITEMS as FITNESS_NAV_ITEMS } from '@constants/NavigationItems.js'
@@ -13,6 +13,7 @@ export const NAV_ITEMS = [
   { id: 'fuel',     label: 'Fuel',    Icon: Flame, standaloneUrl: 'https://fuel-vos.web.app' },
   { id: 'relax',    label: 'Relax',   Icon: MoonStar, standaloneUrl: 'https://relax-vos.web.app' },
   { id: 'habits',   label: 'Habits',  Icon: CheckSquare },
+  { id: 'door',     label: 'Door',    Icon: DoorOpen },
   { id: 'settings', label: 'Setup',   Icon: Settings2 },
 ]
 

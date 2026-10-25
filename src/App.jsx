@@ -20,6 +20,7 @@ import FitnessAppGate from './shell/FitnessAppGate.jsx'
 import FitnessApp from './shell/FitnessApp.jsx'
 import FuelWrapper from './shell/FuelWrapper.jsx'
 import HabitsApp from './shell/HabitsApp.jsx'
+import DoorApp from './shell/DoorApp.jsx'
 import JournalApp from './shell/JournalApp.jsx'
 import RelaxApp from './shell/RelaxApp.jsx'
 import SixPackPromiseCard from '../6pack-app/SixPackPromiseCard.jsx'
@@ -196,6 +197,7 @@ function Views({ tab, fitnessProps, fuelTab, setFuelTab, relaxTab, setRelaxTab, 
     {tab === 'fuel'     && <FuelWrapper user={user} subTab={fuelTab} onSubTab={setFuelTab} onNavigateShell={navigate} embedded />}
     {tab === 'journal'  && <JournalApp onOpenSession={openSession} onNavigateShell={navigate} runtimeDate={runtimeDate} onRuntimeDateChange={onRuntimeDateChange} />}
     {tab === 'habits'   && <HabitsApp runtimeDate={runtimeDate} onRuntimeDateChange={onRuntimeDateChange} />}
+    {tab === 'door'     && <DoorApp />}
     {tab === 'relax'    && <RelaxApp subTab={relaxTab} onSubTab={setRelaxTab} onOpenSession={openSession} runtimeDate={runtimeDate} onRuntimeDateChange={onRuntimeDateChange} />}
     {tab === 'settings' && <div className={`${p} max-w-[1600px] mx-auto`}><Settings {...settingsProps} /></div>}
     {tab === 'coach'    && <div className={`${p} max-w-[1600px] mx-auto`}><CoachApp /></div>}
@@ -484,6 +486,11 @@ export default function App() {
     if (id === 'habits') {
       setHomeGate(null)
       setTab('habits')
+      return
+    }
+    if (id === 'door') {
+      setHomeGate(null)
+      setTab('door')
       return
     }
     if (id === 'fuel') {

@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { ChevronRight, CheckSquare, Settings2, Zap } from 'lucide-react'
+import { ChevronRight, CheckSquare, DoorOpen, Settings2, Zap } from 'lucide-react'
 import { getSession, getPlan, getRelaxStatsSummary } from '@db'
 import { localToday } from '@utils'
 import { VOS_APPS } from './VitalOSApps.js'
@@ -52,6 +52,7 @@ function TileStat({ appId, fallback = null }) {
 
 const SECONDARY_LINKS = [
   { id: 'habits',   label: 'Habits', Icon: CheckSquare, color: '#a3e635' },
+  { id: 'door',     label: 'Door',   Icon: DoorOpen,    color: '#fbbf24' },
   { id: 'sixpack',  label: '6Pack',  Icon: Zap,         color: '#facc15' },
   { id: 'settings', label: 'Setup',  Icon: Settings2,   color: '#94a3b8' },
 ]
