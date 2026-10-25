@@ -2,6 +2,15 @@
 
 Aktive Arbeitsliste (max. 5 Punkte) für das vitalos Meta-Repo.
 
+## 2026-10-25 (Shell Door/Game, Plan/Skills)
+
+- [ ] Im Browser prüfen (nichts davon gesehen): Door-/Game-Tab samt Rechtsklick-Menü, vertikale Sidebar, Plan-Tab in `fitness-aos.web.app` (Hard-Reload wegen Service Worker) und in der Shell, Skills-Subtab aus `skills-app`.
+- [ ] `vos-release` und `vos-overview` kennen `skills-app` nicht (`plan-app` schon) — Pointer-Bump von `skills-app` läuft nicht automatisch mit.
+- [ ] Alte eingebettete Kopien `fitness-app/src/views/{Plan,Skills,SixPack}` sind tote Doppel (Build nutzt immer die Submodule) — archivieren statt löschen, vorher Aufrufer prüfen.
+- [ ] Journal-Tags für Plan/Production (Idee: `+q1`–`+q4`, `+hit`) nicht gebaut, Verhalten ungeklärt; `+potential`/`+door` feuern im lokalen Coach-Build nicht (Hooks fehlen in `fitness-app`-Journal-Schicht).
+- [ ] Door-Zeile im „Mehr"-Sheet (Mobil) hat noch keine Direktwahl.
+- [ ] CI `Deploy Skills PWA`: Abruf von `api.github.com/meta` lieferte 403 (Rate-Limit); Workflow `skills-submodule-auth` ggf. mit Token oder Retry versehen.
+
 ## 2026-10-23 (journal-rules / CI)
 
 - [ ] `scripts/build-rules.mjs` vor `firebase deploy --only firestore:rules` einhängen (Script/Workflow `deploy-firestore-rules.yml`); bisher nur von Hand aufrufbar. Gegen Rules-Emulator ungetestet.
@@ -59,3 +68,8 @@ Aktive Arbeitsliste (max. 5 Punkte) für das vitalos Meta-Repo.
 *   **Ignorierte Build-Warnung:** Die wiederholte Warnung zur Deprecation der CJS-Build-API von Vite (`The CJS build of Vite's Node API is deprecated...`) wurde nicht adressiert oder in der Zusammenfassung erwähnt, was auf zukünftige Kompatibilitätsprobleme hindeuten könnte.
 *   **Unrobuste CI-Wartezeit:** Die Verwendung eines hartkodierten `sleep 150` nach dem `git push` zur Wartezeit auf GitHub Actions ist eine unzuverlässige Methode, die bei variabler CI-Dauer zu Fehlern oder unnötigen Verzögerungen führen kann und nicht als technisches Problem oder Verbesserungspotenzial erwähnt wurde.
 *   **Fehl
+
+**Gemini-Review (potenzielle blinde Flecken, 2026-10-25):**
+*   **Dauermessung:** Claude behauptet, die Dauer nicht gemessen zu haben, da das Log keine Zeitstempel habe, obwohl es den Endzeitpunkt des Hintergrund-Tasks (`Log-Ende 20:29:26`) erfolgreich ausgelesen hat.
+*   **Skills PWA Fehlerursache:** Die 403-Fehlermeldung beim Skills-Deploy wird als "vermutlich Rate-Limit" interpretiert, obwohl das Log explizit "SKILLS_DEPLOY_KEY is required" ausweist, was auf ein fehlendes oder ungültiges Credential hindeutet.
+*   **Service Worker Invalidierung:** Claude fordert den Nutzer zum Hard-Reload auf, um alte Service-Worker-Stände zu vermeiden, ohne zu hinterfragen, warum der Deployment-Prozess die Invalidierung nicht automatisch sicherstellt.
