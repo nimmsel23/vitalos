@@ -31,9 +31,8 @@ export default function Sidebar({ tab, navigate, pinned, setPinned, children, us
           </button>
         </div>
 
-        {/* Haupt-Nav bleibt in App-Views immer kompakt, damit die Rail nicht
-            zwischen Journal/Habits und Apps mit eigener Sub-Navigation springt. */}
-        <nav aria-label="Hauptnavigation" data-shell-nav="horizontal" className="mb-3 flex flex-wrap justify-center gap-1 border-b border-fit-line/30 pb-3">
+        {/* Haupt-Nav: ausgeklappt vertikal mit Beschriftung, eingeklappt als schmale Icon-Spalte. */}
+        <nav aria-label="Hauptnavigation" data-shell-nav="vertical" className={`mb-3 flex w-full flex-col gap-1 border-b border-fit-line/30 pb-3 ${!pinned ? 'items-center' : ''}`}>
           {visibleNavItems.map(({ id, label, Icon }, index) => {
             const isActive = tab === id
             // Rechtsklick/Long-Press/Menü-Taste auf Door: Direktwahl der 4 P's
@@ -43,16 +42,18 @@ export default function Sidebar({ tab, navigate, pinned, setPinned, children, us
               : {}
             return (
               <ItemButton key={id} {...menuProps} onClick={() => navigate(id)} title={`${label} (Alt+${index + 1})`} aria-label={label} aria-current={isActive ? 'page' : undefined} aria-keyshortcuts={`Alt+${index + 1}`}
-                className={`rounded-xl border p-2.5 transition-all duration-200 ${isActive ? 'border-fit-accent/30 bg-fit-accent/14 text-fit-accent shadow-lg shadow-fit-accent/10 backdrop-blur' : 'border-transparent text-fit-dim hover:border-white/10 hover:bg-white/5 hover:text-fit-ink'}`}>
-                <Icon size={16} className={isActive ? 'stroke-[3]' : ''} />
+                className={`flex items-center rounded-xl border transition-all duration-200 ${pinned ? 'w-full gap-3 px-4 py-2.5' : 'p-2.5'} ${isActive ? 'border-fit-accent/30 bg-fit-accent/14 text-fit-accent shadow-lg shadow-fit-accent/10 backdrop-blur' : 'border-transparent text-fit-dim hover:border-white/10 hover:bg-white/5 hover:text-fit-ink'}`}>
+                <Icon size={16} className={`shrink-0 ${isActive ? 'stroke-[3]' : ''}`} />
+                {pinned && <span className="truncate text-sm font-bold">{label}</span>}
               </ItemButton>
             )
           })}
 
           {(isLocalMode() || user?.email?.includes('alpha') || user?.uid === '59ole36uNpNwml5H6VDYCXyCME92') && (
             <button key="coach" onClick={() => navigate('coach')} title="Coach" aria-label="Coach" aria-current={tab === 'coach' ? 'page' : undefined}
-              className={`rounded-xl border p-2.5 transition-all duration-200 ${tab === 'coach' ? 'border-red-500/30 bg-red-500/16 text-red-200 shadow-lg shadow-red-500/10 backdrop-blur' : 'border-transparent text-fit-dim hover:border-red-500/20 hover:bg-red-500/10 hover:text-red-200'}`}>
-              <Shield size={16} className={tab === 'coach' ? 'stroke-[3]' : ''} />
+              className={`flex items-center rounded-xl border transition-all duration-200 ${pinned ? 'w-full gap-3 px-4 py-2.5' : 'p-2.5'} ${tab === 'coach' ? 'border-red-500/30 bg-red-500/16 text-red-200 shadow-lg shadow-red-500/10 backdrop-blur' : 'border-transparent text-fit-dim hover:border-red-500/20 hover:bg-red-500/10 hover:text-red-200'}`}>
+              <Shield size={16} className={`shrink-0 ${tab === 'coach' ? 'stroke-[3]' : ''}`} />
+              {pinned && <span className="truncate text-sm font-bold">Coach</span>}
             </button>
           )}
         </nav>
