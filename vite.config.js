@@ -126,6 +126,7 @@ export default defineConfig(({ mode }) => {
       planSubmoduleFallback(),
       vosChangelog({
         appId: 'vitalos', appName: 'VitalOS', accent: '#6ee7b7', shell: true,
+        shellPaths: ['src/shell', 'src/App.jsx'],
         apps: [
           { path: 'fitness-app', name: 'Fitness' },
           { path: 'fuel-app', name: 'Fuel' },

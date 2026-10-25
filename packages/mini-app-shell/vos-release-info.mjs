@@ -8,8 +8,9 @@ const git = (root, ...args) => {
   try { return execFileSync('git', ['-C', root, ...args], { encoding: 'utf8', stdio: ['ignore', 'pipe', 'ignore'] }).trim(); }
   catch { return ''; }
 };
-const isViewPath = path => typeof path === 'string'
-  && VIEW_PATHS.some(prefix => path.startsWith(`${prefix}/`))
+// prefixes: Ordner (`src/views`) oder einzelne Dateien (`src/App.jsx`); Standard sind die View-Ordner.
+const isViewPath = (path, prefixes = VIEW_PATHS) => typeof path === 'string'
+  && prefixes.some(prefix => path === prefix || path.startsWith(`${prefix}/`))
   && /\.(?:[cm]?[jt]sx?|css|scss|sass|less|vue|svelte|html|svg)$/.test(path)
   && !/(?:^|\/)(?:__tests__|__snapshots__|tests?|fixtures?|stories|docs)(?:\/|\.)|\.(?:test|spec|stories)\./i.test(path);
 
@@ -58,24 +59,24 @@ function readEvent({ env, matchingEvent }) {
   catch { return null; }
 }
 
-function commitsFromPush(event) {
+function commitsFromPush(event, prefixes = VIEW_PATHS) {
   if (!Array.isArray(event?.commits)) return [];
   return releaseNotes(event.commits
     .filter(commit => /^[a-f0-9]{40,64}$/i.test(commit?.id)
       && typeof commit.message === 'string'
-      && [...(commit.added || []), ...(commit.modified || []), ...(commit.removed || [])].some(isViewPath))
+      && [...(commit.added || []), ...(commit.modified || []), ...(commit.removed || [])].some(path => isViewPath(path, prefixes)))
     .map(commit => ({ sha: commit.id, message: commit.message.split('\n')[0] })));
 }
 
-function commitsBetween(root, before, after) {
+function commitsBetween(root, before, after, prefixes = VIEW_PATHS) {
   if (!before || !after || before === after) return [];
   try {
     execFileSync('git', ['-C', root, 'merge-base', '--is-ancestor', before, after], { stdio: 'ignore' });
   } catch { return []; }
-  const records = git(root, 'log', '--no-merges', '--reverse', '--format=%x1e%H%x09%s', '--name-only', `${before}..${after}`, '--', ...VIEW_PATHS);
+  const records = git(root, 'log', '--no-merges', '--reverse', '--format=%x1e%H%x09%s', '--name-only', `${before}..${after}`, '--', ...prefixes);
   return releaseNotes(records.split('\x1e').flatMap(record => {
     const [subject, ...paths] = record.trim().split('\n');
-    return paths.some(isViewPath) ? parseLog(subject) : [];
+    return paths.some(path => isViewPath(path, prefixes)) ? parseLog(subject) : [];
   }));
 }
 
@@ -139,7 +140,8 @@ export function readVosReleaseInfo({ root = process.cwd(), env = process.env } =
 }
 
 // Use the checkouts actually consumed by this build, including nested apps.
-export function readVosShellReleaseInfo({ root = process.cwd(), apps = [], env = process.env } = {}) {
+// shellPaths: zusätzliche Pfade, die im Shell-Repo selbst als Produktänderung zählen (z. B. src/shell, src/App.jsx).
+export function readVosShellReleaseInfo({ root = process.cwd(), apps = [], shellPaths = [], env = process.env } = {}) {
   const shell = readRepository({ root, env });
   if (!shell) return null;
   const event = readEvent({ env, matchingEvent: shell.matchingEvent });
@@ -147,9 +149,10 @@ export function readVosShellReleaseInfo({ root = process.cwd(), apps = [], env =
   const before = event?.before && !/^0+$/.test(event.before)
     ? event.before
     : git(root, 'rev-parse', `${after}^`);
+  const shellPrefixes = [...VIEW_PATHS, ...shellPaths];
   const shellCommits = Array.isArray(event?.commits)
-    ? commitsFromPush(event)
-    : commitsBetween(root, before, after);
+    ? commitsFromPush(event, shellPrefixes)
+    : commitsBetween(root, before, after, shellPrefixes);
   const sections = shellCommits.length ? [{ ...shell, appName: 'VitalOS', commits: shellCommits }] : [];
   for (const app of apps) {
     const appRoot = resolve(root, app.path);
