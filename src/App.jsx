@@ -140,6 +140,8 @@ function readHashState() {
     return { tab: 'relax', subTab: mainTab, date: date || null }
   }
 
+  if (mainTab === 'game' && second === 'door') return { tab: 'game', subTab: third ? `door/${third}` : 'door/potential', date: null }
+
   const fitnessSessionDate = mainTab === 'fitness' && subTab === 'session' ? (date || localToday()) : date
   if (mainTab === 'hub') return { tab: 'home', subTab: 'hub', date: null }
   if (mainTab === 'dashboard') return { tab: 'home', subTab: null }

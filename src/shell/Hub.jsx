@@ -3,7 +3,7 @@ import { ChevronRight, CheckSquare, Compass, DoorOpen, Settings2, Zap } from 'lu
 import { getSession, getPlan, getRelaxStatsSummary } from '@db'
 import { localToday } from '@utils'
 import { VOS_APPS } from './VitalOSApps.js'
-import { SUB_NAV } from './NavigationItems.js'
+import { SUB_NAV, flattenMenuItems } from './NavigationItems.js'
 import FuelHubStat from './FuelHubStat.jsx'
 import { DashboardSections } from './Dashboard.jsx'
 import ContextMenuButton from '@vos-shell-ui/ContextMenuButton.jsx'
@@ -51,7 +51,7 @@ function TileStat({ appId, fallback = null }) {
   return fallback ? <span>{fallback}</span> : null
 }
 
-const MENU_APPS = { door: 'Door – 4 P', game: 'Game – Maps' }
+const MENU_APPS = { door: 'Door – 4 P', game: 'Game – Maps & Door' }
 
 const SECONDARY_LINKS = [
   { id: 'habits',   label: 'Habits', Icon: CheckSquare, color: '#a3e635' },
@@ -128,7 +128,7 @@ export default function Hub({ navigate, variant = 'page', runtimeDate, openSessi
           {SECONDARY_LINKS.map(({ id, label, Icon, color }, index) => {
             const Row = SUB_NAV[id] && MENU_APPS[id] ? ContextMenuButton : 'button'
             const menuProps = SUB_NAV[id] && MENU_APPS[id]
-              ? { menuLabel: MENU_APPS[id], items: SUB_NAV[id].map((item) => ({ label: item.label, onSelect: () => handleNavigate('door', item.id) })) }
+              ? { menuLabel: MENU_APPS[id], items: flattenMenuItems(SUB_NAV[id]).map((item) => ({ label: item.label, onSelect: () => handleNavigate('door', item.id) })) }
               : {}
             return (
             <Row

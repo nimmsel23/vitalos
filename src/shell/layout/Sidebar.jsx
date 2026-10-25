@@ -1,10 +1,10 @@
 import { ChevronLeft, ChevronRight, Keyboard, Shield, Zap } from "lucide-react";
-import { NAV_ITEMS, SUB_NAV } from '@shell/NavigationItems';
+import { NAV_ITEMS, SUB_NAV, flattenMenuItems } from '@shell/NavigationItems';
 import ContextMenuButton from '@vos-shell-ui/ContextMenuButton.jsx';
 import { isLocalMode } from "@db";
 
 // Apps mit Direktwahl per Rechtsklick/Long-Press (Untereinträge aus SUB_NAV)
-const MENU_APPS = { door: 'Door – 4 P', game: 'Game – Maps' }
+const MENU_APPS = { door: 'Door – 4 P', game: 'Game – Maps & Door' }
 
 export default function Sidebar({ tab, navigate, pinned, setPinned, children, user, subNav, subTab, onSubTab, onKeyboardHelp }) {
   const hasSubNav = Array.isArray(subNav) && subNav.length > 0
@@ -41,7 +41,7 @@ export default function Sidebar({ tab, navigate, pinned, setPinned, children, us
             // Rechtsklick/Long-Press/Menü-Taste auf Door/Game: Direktwahl der Untereinträge
             const ItemButton = MENU_APPS[id] ? ContextMenuButton : 'button'
             const menuProps = MENU_APPS[id]
-              ? { menuLabel: MENU_APPS[id], items: SUB_NAV[id].map((item) => ({ label: item.label, onSelect: () => navigate('door', item.id) })) }
+              ? { menuLabel: MENU_APPS[id], items: flattenMenuItems(SUB_NAV[id]).map((item) => ({ label: item.label, onSelect: () => navigate('door', item.id) })) }
               : {}
             return (
               <ItemButton key={id} {...menuProps} onClick={() => navigate(id)} title={`${label} (Alt+${index + 1})`} aria-label={label} aria-current={isActive ? 'page' : undefined} aria-keyshortcuts={`Alt+${index + 1}`}

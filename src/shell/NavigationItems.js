@@ -56,6 +56,13 @@ export const SUB_NAV = {
     { id: 'freedom', label: 'Freedom', Icon: Landmark },
     { id: 'frame',   label: 'Frame',   Icon: LayoutGrid },
     { id: 'voice',   label: 'Voice',   Icon: Mic },
+    // Door v2 (journal-app/src/views/door/v2/DoorV2View.jsx) als Gruppe unter Game: #game/door/<phase>
+    { id: 'door', label: 'Door', Icon: DoorOpen, noDefaultSub: true, sub: [
+      { id: 'door/potential',  label: 'Potential',  Icon: Flame },
+      { id: 'door/plan',       label: 'Plan',       Icon: LayoutGrid },
+      { id: 'door/production', label: 'Production', Icon: Hammer },
+      { id: 'door/profit',     label: 'Profit',     Icon: Trophy },
+    ] },
   ],
   relax: [
     { id: 'dash',    label: 'Heute',   Icon: Home },
@@ -97,4 +104,11 @@ export function buildFitnessGateItems() {
       items: learn?.sub ?? [],
     },
   ]
+}
+
+// Flache Menüliste für Kontextmenüs: Gruppen mit `sub` werden zu "Gruppe · Eintrag".
+export function flattenMenuItems(items = []) {
+  return items.flatMap((item) => (item.sub?.length
+    ? item.sub.map((child) => ({ id: child.id, label: `${item.label} · ${child.label}` }))
+    : [{ id: item.id, label: item.label }]))
 }

@@ -77,6 +77,7 @@ export default defineConfig(({ mode }) => {
     '@view/journal':    resolve(JOURNAL_DEV,          'src/views/JournalVosView.jsx'), // journal-dev
     '@view/habits':     resolve(HABITS_DEV,           'src/views/Habits'),     // habits-dev
     '@view/game':       resolve(JOURNAL_DEV,          'src/views/game/GameV2View.jsx'), // journal-dev (Game: Fire/Focus/Freedom/Frame/Voice)
+    '@view/door2':      resolve(JOURNAL_DEV,          'src/views/door/v2/DoorV2View.jsx'), // journal-dev (Door v2: Raster, Quellen, Plan-Board)
     '@view/door':       resolve(JOURNAL_DEV,          'src/views/door/DoorView.jsx'), // journal-dev (Door v1)
     '@view/settings':   resolve(VITALOS_SRC,          'shell/Settings'),       // vitalos-spezifisch
     '@view/plan':       resolve(FITNESS_SRC,          'views/Plan'),           // fitness-dev
