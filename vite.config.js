@@ -2,8 +2,8 @@ import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 import { vosChangelog } from './packages/mini-app-shell/vos-changelog-vite.mjs'
 import tailwindcss from 'tailwindcss'
-import { resolve, dirname, relative, isAbsolute } from 'path'
-import { existsSync } from 'fs'
+import { resolve, dirname, relative, isAbsolute, sep } from 'path'
+import { existsSync, statSync } from 'fs'
 import { fileURLToPath } from 'url'
 import { crossAppAliases } from '@vos/cross-app-aliases'
 
@@ -12,21 +12,61 @@ const VITALOS_SRC  = resolve(__dirname, 'src')
 const FITNESS_DEV  = resolve(__dirname, 'fitness-app')
 const FITNESS_SRC  = resolve(FITNESS_DEV, 'src')
 
-// fitness-app kompiliert Plan aus dem Submodul fitness-app/plan (siehe fitness-app/vite.config.js);
-// die Kopie unter src/views/Plan ist nur Fallback. Relative Imports aus der Fitness-DB-Schicht
-// (z. B. planVersions.js) fehlen in der Kopie → auf das Submodul auflösen.
-const PLAN_COPY = resolve(FITNESS_SRC, 'views/Plan')
-const PLAN_SUB  = resolve(FITNESS_DEV, 'plan/src/views/Plan')
-const planSubmoduleFallback = () => ({
-  name: 'vitalos-plan-submodule-fallback',
+// Plan und Skills kommen in der Shell aus den eigenen Submodulen plan-app und skills-app
+// (nicht aus der eingebetteten Kopie unter fitness-app/src/views bzw. dem verschachtelten
+// fitness-app/plan und fitness-app/Skills). Die Views in fitness-app importieren weiterhin
+// ihre alten Pfade; dieser Resolver biegt sie auf die Submodule um (Muster wie
+// miniAppSubmodulePlugin in fitness-app/vite.config.js).
+//
+// plan-app enthält ein eigenes, abweichendes Fitness-Gerüst (contexts, components, lib …).
+// Importe der Plan-Views auf diese Ordner werden auf das Gegenstück in fitness-app
+// zurückgeleitet, sofern es existiert — sonst entstünde z. B. ein zweiter UserContext,
+// zu dem der Provider der Shell nicht passt.
+const PLAN_APP     = resolve(__dirname, 'plan-app')
+const SKILLS_APP   = resolve(__dirname, 'skills-app')
+const PLAN_VIEWS   = resolve(PLAN_APP, 'src/views/Plan')
+const MINIAPP_MAPS = [
+  { local: resolve(FITNESS_SRC, 'views/Plan'),   source: PLAN_VIEWS },
+  { local: resolve(FITNESS_SRC, 'views/Skills'), source: SKILLS_APP },
+]
+const RESOLVE_SUFFIXES = ['', '.js', '.jsx', '.mjs', '.json', '/index.js', '/index.jsx']
+const existingFile = (base) => {
+  for (const suffix of RESOLVE_SUFFIXES) {
+    const candidate = base + suffix
+    if (existsSync(candidate) && statSync(candidate).isFile()) return candidate
+  }
+  return null
+}
+const insideDir = (dir, target) => {
+  const rel = relative(dir, target)
+  return rel !== '..' && !rel.startsWith(`..${sep}`) && !isAbsolute(rel)
+}
+const miniAppSubmodules = () => ({
+  name: 'vitalos-miniapp-submodules',
   enforce: 'pre',
   resolveId(source, importer) {
-    if (!importer || importer.startsWith('\0') || !source.startsWith('.')) return null
-    const target = resolve(dirname(importer.split('?')[0]), source.split('?')[0])
-    const rel = relative(PLAN_COPY, target)
-    if (rel.startsWith('..') || isAbsolute(rel) || existsSync(target)) return null
-    const sub = resolve(PLAN_SUB, rel)
-    return existsSync(sub) ? sub : null
+    if (!importer || importer.startsWith('\0')) return null
+    const request = source.split('?')[0]
+    if (!request.startsWith('.') && !isAbsolute(request)) return null
+    const importerPath = importer.split('?')[0]
+    const target = isAbsolute(request) ? request : resolve(dirname(importerPath), request)
+
+    // 1. fitness-app/src/views/{Plan,Skills}/* → plan-app / skills-app
+    for (const map of MINIAPP_MAPS) {
+      if (!insideDir(map.local, target)) continue
+      const hit = existingFile(resolve(map.source, relative(map.local, target)))
+      if (hit) return hit
+    }
+    // 2. Plan-Views: Importe auf plan-apps Fitness-Gerüst → fitness-app (gemeinsame Instanzen)
+    if (insideDir(PLAN_VIEWS, importerPath) && !insideDir(PLAN_VIEWS, target) && insideDir(resolve(PLAN_APP, 'src'), target)) {
+      const rel = relative(resolve(PLAN_APP, 'src'), target)
+      // Push-Hook: die Shell hat einen eigenen, zum Shell-@cloud/firebase passenden (src/hooks);
+      // der der fitness-app braucht Exporte, die die Shell-Firebase-Init nicht hat.
+      if (/^hooks[\\/]usePushNotifications(\.js)?$/.test(rel)) return resolve(VITALOS_SRC, 'hooks/usePushNotifications.js')
+      const hit = existingFile(resolve(FITNESS_SRC, rel))
+      if (hit) return hit
+    }
+    return null
   },
 })
 const FUEL_ROOT    = resolve(__dirname, 'fuel-app')
@@ -123,7 +163,7 @@ export default defineConfig(({ mode }) => {
     root: __dirname,
     base: '/',
     plugins: [
-      planSubmoduleFallback(),
+      miniAppSubmodules(),
       vosChangelog({
         appId: 'vitalos', appName: 'VitalOS', accent: '#6ee7b7', shell: true,
         shellPaths: ['src/shell', 'src/App.jsx'],
