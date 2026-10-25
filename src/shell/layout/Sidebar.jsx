@@ -1,5 +1,6 @@
 import { ChevronLeft, ChevronRight, Keyboard, Shield, Zap } from "lucide-react";
-import { NAV_ITEMS } from '@shell/NavigationItems';
+import { NAV_ITEMS, SUB_NAV } from '@shell/NavigationItems';
+import ContextMenuButton from '@vos-shell-ui/ContextMenuButton.jsx';
 import { isLocalMode } from "@db";
 
 export default function Sidebar({ tab, navigate, pinned, setPinned, children, user, subNav, subTab, onSubTab, onKeyboardHelp }) {
@@ -35,11 +36,16 @@ export default function Sidebar({ tab, navigate, pinned, setPinned, children, us
         <nav aria-label="Hauptnavigation" data-shell-nav="horizontal" className="mb-3 flex flex-wrap justify-center gap-1 border-b border-fit-line/30 pb-3">
           {visibleNavItems.map(({ id, label, Icon }, index) => {
             const isActive = tab === id
+            // Rechtsklick/Long-Press/Menü-Taste auf Door: Direktwahl der 4 P's
+            const ItemButton = id === 'door' ? ContextMenuButton : 'button'
+            const menuProps = id === 'door'
+              ? { menuLabel: 'Door – 4 P', items: SUB_NAV.door.map((item) => ({ label: item.label, onSelect: () => navigate('door', item.id) })) }
+              : {}
             return (
-              <button key={id} onClick={() => navigate(id)} title={`${label} (Alt+${index + 1})`} aria-label={label} aria-current={isActive ? 'page' : undefined} aria-keyshortcuts={`Alt+${index + 1}`}
+              <ItemButton key={id} {...menuProps} onClick={() => navigate(id)} title={`${label} (Alt+${index + 1})`} aria-label={label} aria-current={isActive ? 'page' : undefined} aria-keyshortcuts={`Alt+${index + 1}`}
                 className={`rounded-xl border p-2.5 transition-all duration-200 ${isActive ? 'border-fit-accent/30 bg-fit-accent/14 text-fit-accent shadow-lg shadow-fit-accent/10 backdrop-blur' : 'border-transparent text-fit-dim hover:border-white/10 hover:bg-white/5 hover:text-fit-ink'}`}>
                 <Icon size={16} className={isActive ? 'stroke-[3]' : ''} />
-              </button>
+              </ItemButton>
             )
           })}
 

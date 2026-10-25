@@ -182,7 +182,7 @@ function buildHashState({ tab, subTab = null, date = null }) {
   return `#${parts.join('/')}`
 }
 
-function Views({ tab, fitnessProps, fuelTab, setFuelTab, relaxTab, setRelaxTab, homeGate, onHomeGateSelect, onHomeGateDismiss, user, settingsProps, openSession, compact, muscleLanguage, taxonomy, runtimeDate, onRuntimeDateChange, navigate }) {
+function Views({ tab, fitnessProps, fuelTab, setFuelTab, relaxTab, setRelaxTab, doorTab, setDoorTab, homeGate, onHomeGateSelect, onHomeGateDismiss, user, settingsProps, openSession, compact, muscleLanguage, taxonomy, runtimeDate, onRuntimeDateChange, navigate }) {
   const p = compact ? 'p-4' : 'p-4 sm:p-8 lg:p-12'
   return (
     <>
@@ -197,7 +197,7 @@ function Views({ tab, fitnessProps, fuelTab, setFuelTab, relaxTab, setRelaxTab, 
     {tab === 'fuel'     && <FuelWrapper user={user} subTab={fuelTab} onSubTab={setFuelTab} onNavigateShell={navigate} embedded />}
     {tab === 'journal'  && <JournalApp onOpenSession={openSession} onNavigateShell={navigate} runtimeDate={runtimeDate} onRuntimeDateChange={onRuntimeDateChange} />}
     {tab === 'habits'   && <HabitsApp runtimeDate={runtimeDate} onRuntimeDateChange={onRuntimeDateChange} />}
-    {tab === 'door'     && <DoorApp />}
+    {tab === 'door'     && <DoorApp subTab={doorTab} onSubTab={setDoorTab} />}
     {tab === 'relax'    && <RelaxApp subTab={relaxTab} onSubTab={setRelaxTab} onOpenSession={openSession} runtimeDate={runtimeDate} onRuntimeDateChange={onRuntimeDateChange} />}
     {tab === 'settings' && <div className={`${p} max-w-[1600px] mx-auto`}><Settings {...settingsProps} /></div>}
     {tab === 'coach'    && <div className={`${p} max-w-[1600px] mx-auto`}><CoachApp /></div>}
@@ -227,6 +227,10 @@ export default function App() {
   const [relaxTab, setRelaxTab] = useState(() => {
     const { tab: hashTab, subTab } = initialHashState
     return hashTab === 'relax' && subTab ? subTab : 'dash'
+  })
+  const [doorTab, setDoorTab] = useState(() => {
+    const { tab: hashTab, subTab } = initialHashState
+    return hashTab === 'door' && subTab ? subTab : 'potential'
   })
   const [sessionDate,   setSessionDate]   = useState(() => (
     initialHashState.tab === 'fitness' && initialHashState.subTab === 'session'
@@ -388,11 +392,13 @@ export default function App() {
         ? buildHashState({ tab, subTab: fuelTab || 'food', date: runtimeDate })
       : tab === 'relax'
         ? buildHashState({ tab, subTab: relaxTab || 'dash', date: runtimeDate })
+      : tab === 'door'
+        ? buildHashState({ tab, subTab: doorTab || 'potential' })
       : tab === 'journal' || tab === 'habits'
         ? buildHashState({ tab, date: runtimeDate })
         : buildHashState({ tab })
     if (window.location.hash !== nextHash) history.pushState(null, '', nextHash)
-  }, [tab, fitnessTab, homeGate, fuelTab, relaxTab, runtimeDate, sessionDate])
+  }, [tab, fitnessTab, homeGate, fuelTab, relaxTab, doorTab, runtimeDate, sessionDate])
 
   useEffect(() => {
     function syncFromLocation() {
@@ -409,6 +415,7 @@ export default function App() {
       if (nextTab === 'fuel' && date) setRuntimeDate(date)
       if ((nextTab === 'journal' || nextTab === 'habits' || nextTab === 'relax') && date) setRuntimeDate(date)
       if (nextTab === 'relax') setRelaxTab(subTab || 'dash')
+      if (nextTab === 'door') setDoorTab(subTab || 'potential')
     }
 
     window.addEventListener('popstate', syncFromLocation)
@@ -490,6 +497,7 @@ export default function App() {
     }
     if (id === 'door') {
       setHomeGate(null)
+      setDoorTab(subTab || doorTab || 'potential')
       setTab('door')
       return
     }
@@ -615,6 +623,8 @@ export default function App() {
           ? fuelTab
           : tab === 'relax'
             ? relaxTab
+            : tab === 'door'
+              ? doorTab
             : tab === 'home'
               ? homeGate
               : null
@@ -634,6 +644,8 @@ export default function App() {
           ? SUB_NAV.fuel
           : tab === 'relax'
             ? SUB_NAV.relax
+            : tab === 'door'
+              ? SUB_NAV.door
             : null
       const shellSubTabSetter = tab === 'fitness'
         ? setFitnessTab
@@ -641,13 +653,15 @@ export default function App() {
           ? setFuelTab
           : tab === 'relax'
             ? setRelaxTab
+            : tab === 'door'
+              ? setDoorTab
             : null
       const shellHeader = <ShellHeader tab={tab} subTab={shellSubTab} runtimeDate={runtimeDate} setRuntimeDate={setRuntimeDate} subNav={shellSubNav} onSubTab={shellSubTabSetter} onNavigateDomain={navigateToDomainDate} />
       const mobileShellHeader = <ShellHeader tab={tab} subTab={shellSubTab} runtimeDate={runtimeDate} setRuntimeDate={setRuntimeDate} compact subNav={shellSubNav} onSubTab={shellSubTabSetter} onNavigateDomain={navigateToDomainDate} />
       const shellViews = <Views tab={tab} fitnessProps={fitnessProps} fuelTab={fuelTab} setFuelTab={setFuelTab} muscleLanguage={muscleLanguage} taxonomy={taxonomy}
-      user={user} settingsProps={settingsProps} openSession={openSession} runtimeDate={runtimeDate} onRuntimeDateChange={setRuntimeDate} navigate={navigate} relaxTab={relaxTab} setRelaxTab={setRelaxTab} homeGate={homeGate} onHomeGateSelect={handleHomeGateSelect} onHomeGateDismiss={() => setHomeGate(null)} />
+      user={user} settingsProps={settingsProps} openSession={openSession} runtimeDate={runtimeDate} onRuntimeDateChange={setRuntimeDate} navigate={navigate} relaxTab={relaxTab} setRelaxTab={setRelaxTab} doorTab={doorTab} setDoorTab={setDoorTab} homeGate={homeGate} onHomeGateSelect={handleHomeGateSelect} onHomeGateDismiss={() => setHomeGate(null)} />
       const compactShellViews = <Views tab={tab} fitnessProps={fitnessProps} fuelTab={fuelTab} setFuelTab={setFuelTab} muscleLanguage={muscleLanguage} taxonomy={taxonomy}
-      user={user} settingsProps={settingsProps} openSession={openSession} compact runtimeDate={runtimeDate} onRuntimeDateChange={setRuntimeDate} navigate={navigate} relaxTab={relaxTab} setRelaxTab={setRelaxTab} homeGate={homeGate} onHomeGateSelect={handleHomeGateSelect} onHomeGateDismiss={() => setHomeGate(null)} />
+      user={user} settingsProps={settingsProps} openSession={openSession} compact runtimeDate={runtimeDate} onRuntimeDateChange={setRuntimeDate} navigate={navigate} relaxTab={relaxTab} setRelaxTab={setRelaxTab} doorTab={doorTab} setDoorTab={setDoorTab} homeGate={homeGate} onHomeGateSelect={handleHomeGateSelect} onHomeGateDismiss={() => setHomeGate(null)} />
       const hubGate = tab === 'home' && homeGate === 'hub'
         ? <HomeHubGate onSelect={navigate} onDismiss={() => setHomeGate(null)} runtimeDate={runtimeDate} openSession={openSession} />
         : null
@@ -662,9 +676,9 @@ export default function App() {
         }}>Zum Inhalt springen</a>
         {showSidebar && (
         <Sidebar tab={tab} navigate={navigate} pinned={sidebarPinned} setPinned={setSidebarPinned} user={user} onKeyboardHelp={() => setKeyboardHelpOpen(true)}
-        subNav={tab === 'fitness' ? SUB_NAV.fitness : tab === 'fuel' ? SUB_NAV.fuel : tab === 'relax' ? SUB_NAV.relax : null}
-        subTab={tab === 'fitness' ? fitnessTab : tab === 'fuel' ? fuelTab : tab === 'relax' ? relaxTab : null}
-        onSubTab={tab === 'fitness' ? setFitnessTab : tab === 'fuel' ? setFuelTab : tab === 'relax' ? setRelaxTab : null}>
+        subNav={tab === 'fitness' ? SUB_NAV.fitness : tab === 'fuel' ? SUB_NAV.fuel : tab === 'relax' ? SUB_NAV.relax : tab === 'door' ? SUB_NAV.door : null}
+        subTab={tab === 'fitness' ? fitnessTab : tab === 'fuel' ? fuelTab : tab === 'relax' ? relaxTab : tab === 'door' ? doorTab : null}
+        onSubTab={tab === 'fitness' ? setFitnessTab : tab === 'fuel' ? setFuelTab : tab === 'relax' ? setRelaxTab : tab === 'door' ? setDoorTab : null}>
         <UserProfile user={user} subtitle={isLocalMode() ? `${user?.email || 'localhost'} · localhost` : (user?.email || '')} onOpenSettings={() => navigate('settings')} />
         {!isLocalMode() && (
           <button onClick={signOut} className="w-full flex items-center justify-center gap-2 py-2 text-[10px] font-black uppercase tracking-widest text-fit-red bg-fit-red/5 border border-fit-red/10 rounded-xl hover:bg-fit-red/10 transition-all">

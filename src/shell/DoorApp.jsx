@@ -7,11 +7,11 @@ const qc = new QueryClient({
   defaultOptions: { queries: { refetchOnWindowFocus: false, retry: 1 } },
 })
 
-export default function DoorApp() {
+export default function DoorApp({ subTab, onSubTab }) {
   return (
     <QueryClientProvider client={qc}>
       <div className="p-4 sm:p-8 lg:p-12 max-w-[1600px] mx-auto">
-        <Door />
+        <Door subTab={subTab} onSubTab={onSubTab} />
       </div>
     </QueryClientProvider>
   )

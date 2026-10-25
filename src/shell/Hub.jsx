@@ -3,6 +3,7 @@ import { ChevronRight, CheckSquare, DoorOpen, Settings2, Zap } from 'lucide-reac
 import { getSession, getPlan, getRelaxStatsSummary } from '@db'
 import { localToday } from '@utils'
 import { VOS_APPS } from './VitalOSApps.js'
+import { SUB_NAV } from './NavigationItems.js'
 import FuelHubStat from './FuelHubStat.jsx'
 import { DashboardSections } from './Dashboard.jsx'
 import ContextMenuButton from '@vos-shell-ui/ContextMenuButton.jsx'
@@ -121,9 +122,15 @@ export default function Hub({ navigate, variant = 'page', runtimeDate, openSessi
         </nav>
 
         <div data-shell-nav="vertical" className="vos-surface mt-3 overflow-hidden rounded-[18px]">
-          {SECONDARY_LINKS.map(({ id, label, Icon, color }, index) => (
-            <button
+          {SECONDARY_LINKS.map(({ id, label, Icon, color }, index) => {
+            const Row = id === 'door' ? ContextMenuButton : 'button'
+            const menuProps = id === 'door'
+              ? { menuLabel: 'Door – 4 P', items: SUB_NAV.door.map((item) => ({ label: item.label, onSelect: () => handleNavigate('door', item.id) })) }
+              : {}
+            return (
+            <Row
               key={id}
+              {...menuProps}
               onClick={() => handleNavigate(id)}
               className="flex w-full items-center gap-3 px-4 py-3 text-left transition-colors active:bg-white/5"
               style={index ? { boxShadow: 'inset 0 0.5px 0 color-mix(in srgb, var(--ink) 10%, transparent)' } : undefined}
@@ -133,8 +140,9 @@ export default function Hub({ navigate, variant = 'page', runtimeDate, openSessi
               </span>
               <span className="flex-1 text-[15px] text-fit-ink">{label}</span>
               <ChevronRight size={16} className="text-fit-dim/60" />
-            </button>
-          ))}
+            </Row>
+            )
+          })}
         </div>
       </div>
 

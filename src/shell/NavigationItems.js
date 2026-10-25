@@ -1,7 +1,7 @@
 import {
   Dumbbell, Flame, CheckSquare, Settings2,
   Home, UtensilsCrossed, Pill, Microscope, NotebookPen, MoonStar, Shield,
-  BarChart3, Zap, DoorOpen,
+  BarChart3, Zap, DoorOpen, Hammer, LayoutGrid, Trophy,
   CalendarDays,
 } from 'lucide-react'
 import { NAV_ITEMS as FITNESS_NAV_ITEMS } from '@constants/NavigationItems.js'
@@ -40,6 +40,13 @@ export const SUB_NAV = {
     { id: 'food',        label: 'Food',      Icon: UtensilsCrossed },
     { id: 'supplements', label: 'Supps',     Icon: Pill },
     { id: 'micros',      label: 'Mikros',    Icon: Microscope },
+  ],
+  // Die 4 P's des Door-Frameworks (Door v1: journal-app/src/views/door/DoorView.jsx)
+  door: [
+    { id: 'potential',  label: 'Potential',  Icon: Flame },
+    { id: 'plan',       label: 'Plan',       Icon: LayoutGrid },
+    { id: 'production', label: 'Production', Icon: Hammer },
+    { id: 'profit',     label: 'Profit',     Icon: Trophy },
   ],
   relax: [
     { id: 'dash',    label: 'Heute',   Icon: Home },
