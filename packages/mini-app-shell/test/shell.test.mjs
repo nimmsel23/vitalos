@@ -129,6 +129,24 @@ test("stampApp: Manifest, Titel, Splash, SW, Icons im Build-Output", () => {
   assert.equal(html2.match(/vos-sw-register:start/g).length, 1);
 });
 
+test("stampApp/stampSplash: register.reloadWindowMs wird bis ins Register-Snippet durchgereicht (0 = nie automatisch neu laden)", () => {
+  const run = (register, fn) => {
+    const dir = mkdtempSync(join(tmpdir(), "vos-shell-"));
+    const out = join(dir, "dist"), icons = join(dir, "icons");
+    mkdirSync(out); mkdirSync(icons);
+    writeFileSync(join(out, "index.html"), HTML);
+    for (const f of ["icon-180.png", "icon-192.png", "icon-512.png", "icon-maskable-512.png", "icon.svg"]) writeFileSync(join(icons, f), "x");
+    const app = { id: "plan", name: "VitalOS Plan", short: "Plan", accent: "#5b8cff", iconDir: "icons", register };
+    fn({ outDir: out, app, root: dir, log: () => {} });
+    return readFileSync(join(out, "index.html"), "utf8");
+  };
+  // Default 10000 ms, ausdrücklich 0 bzw. 4000 landet im Snippet
+  assert.ok(run(true, stampApp).includes("> 10000"));
+  assert.ok(run({ reloadWindowMs: 0 }, stampApp).includes("> 0"));
+  assert.ok(run({ reloadWindowMs: 4000 }, stampApp).includes("> 4000"));
+  assert.ok(run({ reloadWindowMs: 0 }, stampSplash).includes("> 0"));
+});
+
 test("SW: extra workout-notifications eingebunden + lauffähig, Build-Optionen nicht in der Config", async () => {
   const src = buildSw({ appId: "p", version: "1", sw: { extras: ["workout-notifications"], file: "x.js", precacheAssets: true } });
   assert.doesNotThrow(() => new vm.Script(src));
