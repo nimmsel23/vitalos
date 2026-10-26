@@ -41,7 +41,7 @@ Der HTML-Root-Container muss `id="root"` haben (sonst `splash: { "rootId": "app"
 `sync.conflicts` / `sync.conflictMessage` (HTTP 409 in der Queue → als `conflict` markieren, Seiten benachrichtigen),
 `notificationLink`, `workoutLink`, `file` (SW-Dateiname, Default `sw.js`), `precacheAssets` (Default `true`: alle `/assets/*` beim Installieren laden; mit `false` abwählbar),
 `extras` (Bausteine aus `extras/`, z. B. `"workout-notifications"`), `extraFile` (eigener SW-Code, wird angehängt).
-App-Ebene: `html`, `manifest` (Dateiname), `register: true | {expose: true}` (`expose` setzt `window.__swRegistration` + feuert `sw-update-available`).
+App-Ebene: `html`, `manifest` (Dateiname), `register: true | {expose: true, reloadWindowMs: 10000}` (`expose` setzt `window.__swRegistration` + feuert `sw-update-available`; `reloadWindowMs` = Zeitfenster nach App-Start, in dem ein SW-Update die Seite automatisch neu lädt, `0` = nie automatisch).
 
 ## Verhalten
 
