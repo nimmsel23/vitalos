@@ -31,6 +31,7 @@ const planSubmoduleFallback = () => ({
 
 module.exports = defineConfig(async ({ mode }) => {
   const { vosChangelog } = await import('../packages/mini-app-shell/vos-changelog-vite.mjs');
+  const { miniAppSubmodulePlugin } = await import('../fitness-app/vite-miniapp-submodules.mjs');
   const env = loadEnv(mode, process.cwd(), "");
   const appMode = process.env.VITE_APP_MODE || env.VITE_APP_MODE || "client";
   const outDir = appMode === "client" ? "./dist-firebase" : "./dist";
@@ -42,6 +43,7 @@ module.exports = defineConfig(async ({ mode }) => {
     },
     plugins: [
       planSubmoduleFallback(),
+      miniAppSubmodulePlugin(FITNESS),
       vosChangelog({ appId: 'vos-fitness', appName: 'VOS Fitness', accent: '#60a5fa', releaseRoot: FITNESS }),
       react()
     ],

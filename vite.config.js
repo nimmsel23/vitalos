@@ -6,6 +6,7 @@ import { resolve, dirname, relative, isAbsolute, sep } from 'path'
 import { existsSync, statSync } from 'fs'
 import { fileURLToPath } from 'url'
 import { crossAppAliases } from '@vos/cross-app-aliases'
+import { miniAppSubmodulePlugin } from './fitness-app/vite-miniapp-submodules.mjs'
 
 const __dirname    = dirname(fileURLToPath(import.meta.url))  // ~/vitalos/
 const VITALOS_SRC  = resolve(__dirname, 'src')
@@ -164,6 +165,8 @@ export default defineConfig(({ mode }) => {
     base: '/',
     plugins: [
       miniAppSubmodules(),
+      // Rest von fitness-app (SixPack, Plan/Skills-Reste): gemeinsamer Resolver auf die Submodule
+      miniAppSubmodulePlugin(FITNESS_DEV),
       vosChangelog({
         appId: 'vitalos', appName: 'VitalOS', accent: '#6ee7b7', shell: true,
         shellPaths: ['src/shell', 'src/App.jsx'],
