@@ -1,3 +1,14 @@
+## 2026-10-26 — mini-app-shell: reloadWindowMs durchgereicht, Lockfile nach Fuel-Standalone-Umbau
+
+Aus einer fuel-dev-Session: Fuel (Töpfe, Küche, Standalone-Umbau ohne Nachbar-Repo-Imports) ging per `fuel-release` nach vitalos; hier im Meta-Repo sind dabei ein Lockfile-Fix, die Pointer-Bumps von `fuel-app` und eine bis dahin uncommittete Änderung am `mini-app-shell`-Paket gelandet. Fuel-interne Änderungen stehen in der Doku von `fuel-dev`. Nichts davon wurde im Browser angesehen.
+
+- **`packages/mini-app-shell/stamp.mjs`, `test/shell.test.mjs` (`7704bcb`):** `stampApp`/`stampSplash` reichten bei der SW-Registrierung nur `expose` weiter; `register.reloadWindowMs` aus `mini-app.json` kommt jetzt bis ins Register-Snippet (`0` = nie automatisch neu laden, Default 10000). Die Änderung lag uncommittet im Arbeitsverzeichnis und war inhaltlich richtig; ergänzt wurde ein Test für Default, `0` und `4000` in beiden Funktionen (25 Paket-Tests grün).
+- **`packages/mini-app-shell/README.md` (`635ea53`):** `reloadWindowMs` dokumentiert. Beide Commits sind auf `master` gepusht (der Pre-Push-Hook ließ `pnpm install` ohne Änderung laufen). Keine App setzt die Option bisher, das Laufzeitverhalten ändert sich also nicht.
+- **`pnpm-lock.yaml`, `fuel-app` (`502481c`):** Fuel hat `@vos/cross-app-aliases` aus seiner `package.json` entfernt; das Lockfile verlor dafür die vier `optionalDependencies`-Zeilen im `fuel-app`-Block (`pnpm install --no-frozen-lockfile`). Der Lockfile-Check in `vos-release` hatte den `fuel-release` vorher abgebrochen. Der Commit enthält zusätzlich den Pointer-Bump `fuel-app` auf `1c6ff1f`, den der Pre-Commit-Hook mitgestaged hat.
+- **Releases (`3638919`, `502481c`):** `fuel-release --yes` lief zweimal durch („vos release flow complete"); `dev` und `vitalos` in `fuel-app` stehen beide auf `1c6ff1f`. Die CI-Läufe „Deploy Fuel PWA" und „Deploy VitalOS Shell" zu `502481c` waren grün. Der Journal-Tab ist damit aus der Live-Fuel-App verschwunden (im Cloud-Build ohnehin ausgeblendet).
+
+---
+
 ## 2026-10-25 — Door/Game in der Shell, Plan/Skills aus Submodulen, Plan-Release-Pfad
 
 Aus einer Shell-Session: Die VitalOS-Shell hat jetzt Door (v1) und Game (inkl. Door v2) als Tabs mit Rechtsklick-Direktwahl, die Sidebar ist ausgeklappt wieder vertikal beschriftet, und Plan/Skills kommen aus `plan-app` bzw. dem neuen Submodul `skills-app`. Dazu ein Fix für den Plan-Tab in der fitness-app (`Gt() is undefined`) und ein neuer Plan-Pfad in `vos-release`. Alle Release-Deploys liefen grün (Skills PWA erst nach Neustart wegen 403 auf `api.github.com/meta`); keine Änderung wurde im Browser angesehen.

@@ -2,6 +2,12 @@
 
 Aktive Arbeitsliste (max. 5 Punkte) für das vitalos Meta-Repo.
 
+## 2026-10-26 (mini-app-shell, Fuel-Release)
+
+- [ ] `register.reloadWindowMs` setzt noch keine `mini-app.json` — Option ist durchgereicht und getestet, aber ungenutzt; welche App wann `0` oder einen anderen Wert bekommt, ist nicht entschieden. Ob der Push von `635ea53` einen CI-Deploy ausgelöst hat, wurde nicht geprüft.
+- [ ] `fuel-app` per `fuel-release` ausgeliefert (`fuel-vos.web.app`), aber nicht im Browser angesehen (Service-Worker-Cache: ggf. Update-Button nötig).
+- [ ] Entscheidung offen: `fuel-os.web.app` wird bisher aus `~/vitalos/fuel-os/` (Standalone mit Wochen-Planer, 180 Dateien) bedient; ein `master`-Workflow in `fuel-dev` zielt seit dieser Session ebenfalls auf diese Site und würde sie überschreiben. Beide Codebasen teilen kein Fundament — zusammenlegen, getrennt lassen oder dritte Site, ungeklärt.
+
 ## 2026-10-25 (Shell Door/Game, Plan/Skills)
 
 - [ ] Im Browser prüfen (nichts davon gesehen): Door-/Game-Tab samt Rechtsklick-Menü, vertikale Sidebar, Plan-Tab in `fitness-aos.web.app` (Hard-Reload wegen Service Worker) und in der Shell, Skills-Subtab aus `skills-app`.
@@ -73,3 +79,7 @@ Aktive Arbeitsliste (max. 5 Punkte) für das vitalos Meta-Repo.
 *   **Dauermessung:** Claude behauptet, die Dauer nicht gemessen zu haben, da das Log keine Zeitstempel habe, obwohl es den Endzeitpunkt des Hintergrund-Tasks (`Log-Ende 20:29:26`) erfolgreich ausgelesen hat.
 *   **Skills PWA Fehlerursache:** Die 403-Fehlermeldung beim Skills-Deploy wird als "vermutlich Rate-Limit" interpretiert, obwohl das Log explizit "SKILLS_DEPLOY_KEY is required" ausweist, was auf ein fehlendes oder ungültiges Credential hindeutet.
 *   **Service Worker Invalidierung:** Claude fordert den Nutzer zum Hard-Reload auf, um alte Service-Worker-Stände zu vermeiden, ohne zu hinterfragen, warum der Deployment-Prozess die Invalidierung nicht automatisch sicherstellt.
+
+**Gemini-Review (potenzielle blinde Flecken, 2026-10-26):**
+*   **Ungeprüfte Annahme bei Auth-Domains:** Claude behauptet, `fuel-os.web.app` sei als Auth-Domain eingetragen und der Google-Login funktioniere, obwohl die Tool-Ausgabe `fuel-os.firebaseapp.com` als "fehlen" listet. Es wird nicht geprüft, ob beide Domains für die volle Firebase-Auth-Funktionalität notwendig sind oder ob die fehlende Domain Probleme verursachen könnte.
+*   **Unklare Deployment-Quelle:** Claude stellt fest, dass die "Fuel OS"-App auf `fuel-os.web.app` von `vitalos`-`master` deployt wurde, obwohl die `vitalos`-Workflows keine CI/CD-Konfiguration
