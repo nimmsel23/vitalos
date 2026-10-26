@@ -60,5 +60,5 @@
 [submodule "skills-app"]
 	path = skills-app
 	url = git@github.com:nimmsel23/skills-dev.git
-	branch = fitness
+	branch = vitalos
 	ignore = untracked
