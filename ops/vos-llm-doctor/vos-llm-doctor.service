@@ -1,0 +1,13 @@
+[Unit]
+Description=VitalOS LLM-Doctor (roten PR reparieren, rote Deploys diagnostizieren)
+Wants=network-online.target
+After=network-online.target
+
+[Service]
+Type=oneshot
+ExecStart=%h/vitalos/bin/vos-llm-doctor
+Environment=PATH=%h/.local/bin:/usr/local/bin:/usr/bin:/bin
+Nice=15
+IOSchedulingClass=idle
+MemoryMax=3G
+TimeoutStartSec=45min
