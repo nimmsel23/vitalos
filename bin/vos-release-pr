@@ -1,0 +1,73 @@
+#!/usr/bin/env bash
+# vos-release-pr — Release als Pull Request statt direktem Push auf den Deploy-Branch.
+#
+#   vos-release-pr fitness            PR dev -> vitalos öffnen (oder vorhandenen zeigen)
+#   vos-release-pr fitness --status   Stand des offenen Release-PR (Checks, Mergebarkeit)
+#
+# Der PR bekommt Check + Preview aus fitness-dev (check.yml, preview-dev.yml). Nach dem
+# Merge deployt deploy-vitalos.yml live. Der Merge bleibt von Hand: `gh pr merge <n> --merge`
+# (kein Squash/Rebase, sonst läuft dev von vitalos weg). Dieses Skript pusht nichts auf
+# vitalos und ersetzt `vos-release` nur für den Pilot-Modul fitness; Submodul-Pointer im
+# Meta-Repo zieht weiterhin `vos-sync-submodule-pointers` nach.
+set -euo pipefail
+
+# Modul -> Repo | lokaler Klon | Quell-Branch | Ziel-Branch
+declare -A CFG=(
+  [fitness]="nimmsel23/fitness-dev|$HOME/fitness-dev|dev|vitalos"
+)
+
+die() { printf '[vos-release-pr] %s\n' "$*" >&2; exit 1; }
+info() { printf '[vos-release-pr] %s\n' "$*"; }
+
+module="${1:-}"; mode="${2:-open}"
+[[ -n "$module" && -n "${CFG[$module]:-}" ]] || die "Modul angeben (Pilot: ${!CFG[*]})"
+IFS='|' read -r repo dir src dst <<<"${CFG[$module]}"
+[[ "$mode" == open || "$mode" == --status ]] || die "unbekannte Option: $mode"
+[[ -d "$dir/.git" || -f "$dir/.git" ]] || die "Klon fehlt: $dir"
+
+pr_json="$(gh pr list -R "$repo" --base "$dst" --head "$src" --state open \
+  --json number,url,mergeable,statusCheckRollup --jq '.[0] // empty')"
+
+show_pr() {
+  local n; n="$(jq -r .number <<<"$pr_json")"
+  info "PR #$n: $(jq -r .url <<<"$pr_json")"
+  info "mergeable: $(jq -r .mergeable <<<"$pr_json")"
+  gh pr checks "$n" -R "$repo" 2>&1 | sed 's/^/  /' || true
+  info "Merge (mit Merge-Commit): gh pr merge $n -R $repo --merge"
+}
+
+if [[ "$mode" == --status ]]; then
+  [[ -n "$pr_json" ]] || die "kein offener Release-PR ($src -> $dst)"
+  show_pr; exit 0
+fi
+
+git -C "$dir" fetch -q origin "$src" "$dst"
+local_sha="$(git -C "$dir" rev-parse "$src")"
+remote_sha="$(git -C "$dir" rev-parse "origin/$src")"
+[[ "$local_sha" == "$remote_sha" ]] \
+  || die "$src ist nicht gepusht (lokal ${local_sha:0:7}, origin ${remote_sha:0:7}): erst 'git push origin $src'"
+
+ahead="$(git -C "$dir" rev-list --count "origin/$dst..origin/$src")"
+if [[ "$ahead" -eq 0 ]]; then
+  info "nichts zu releasen: origin/$src liegt nicht vor origin/$dst"; exit 0
+fi
+
+if [[ -n "$pr_json" ]]; then
+  info "Release-PR existiert bereits ($ahead Commits vor $dst)"; show_pr; exit 0
+fi
+
+conflicts="$(git -C "$dir" merge-tree --write-tree --name-only --no-messages "origin/$dst" "origin/$src" 2>&1 | tail -n +2 | grep -v '^$' || true)"
+[[ -z "$conflicts" ]] || die "Konflikte $src -> $dst, bitte zuerst lösen:
+$conflicts"
+
+log="$(git -C "$dir" log --no-merges --format='- %s (%h)' "origin/$dst..origin/$src" | head -30)"
+body="Release \`$module\`: $ahead Commits von \`$src\` nach \`$dst\`.
+
+$log
+
+Nach dem Merge deployt \`deploy-vitalos.yml\` live. Merge ohne Squash (\`--merge\`).
+
+🤖 Generated with [Claude Code](https://claude.com/claude-code)"
+url="$(gh pr create -R "$repo" --base "$dst" --head "$src" --title "Release $module $(date +%F)" --body "$body")"
+info "PR geöffnet: $url"
+info "Checks: vos-release-pr $module --status"
