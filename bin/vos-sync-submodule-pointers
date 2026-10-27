@@ -65,7 +65,8 @@ stage_reachable_pointer_updates() {
 
   for submodule_path in "${SUBMODULE_PATHS[@]}"; do
     repo_path="${ROOT_DIR}/${submodule_path}"
-    [ -d "$repo_path" ] || continue
+    # nicht initialisiert (z. B. frischer git-Worktree): `git -C` würde auf das Eltern-Repo zurückfallen
+    [ -e "$repo_path/.git" ] || continue
 
     index_commit="$(gitlink_commit_from_index "$submodule_path")"
     checkout_commit="$("$REAL_GIT" -C "$repo_path" rev-parse HEAD 2>/dev/null || true)"
@@ -120,7 +121,8 @@ check_pushed_pointers_are_reachable() {
 
   for submodule_path in "${SUBMODULE_PATHS[@]}"; do
     repo_path="${ROOT_DIR}/${submodule_path}"
-    [ -d "$repo_path" ] || continue
+    # nicht initialisiert (z. B. frischer git-Worktree): `git -C` würde auf das Eltern-Repo zurückfallen
+    [ -e "$repo_path/.git" ] || continue
 
     head_commit="$(gitlink_commit_from_tree HEAD "$submodule_path")"
     [ -n "$head_commit" ] || continue
