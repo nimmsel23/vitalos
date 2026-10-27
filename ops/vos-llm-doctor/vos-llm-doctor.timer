@@ -1,0 +1,10 @@
+[Unit]
+Description=VitalOS LLM-Doctor täglich (LLM läuft nur, wenn etwas rot ist)
+
+[Timer]
+OnCalendar=*-*-* 07:30
+Persistent=true
+RandomizedDelaySec=20min
+
+[Install]
+WantedBy=timers.target
