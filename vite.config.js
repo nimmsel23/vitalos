@@ -76,7 +76,7 @@ const HABITS_DEV   = resolve(__dirname, 'habit-app')
 const LEARN_DEV    = resolve(__dirname, 'learn-app')
 const RELAX_DEV    = resolve(__dirname, 'relax-app')
 const RELAX_BACKEND = 'http://localhost:9123'
-const BACKEND      = 'http://localhost:9100'
+const BACKEND      = 'http://localhost:9150'
 
 // journalDbPlugin wurde entfernt (2026-07-05): sollte @db für journal-dev/
 // habits-dev-Importer kontextabhängig umleiten, feuerte aber nie — Vites
@@ -201,19 +201,19 @@ export default defineConfig(({ mode }) => {
     server: {
       port: 9190,
       proxy: {
-        '/exercises': BACKEND,
-        '/session':   BACKEND,
-        '/journal':   BACKEND,
-        '/coverage':  BACKEND,
-        '/plan':      BACKEND,
-        '/blocks':    BACKEND,
-        '/theme':     BACKEND,
-        '/health':    BACKEND,
-        '/fitness':   BACKEND,
-        '/firestore': BACKEND,
-        '/habitsync': BACKEND,
+        '^/exercises(/|\\?|$)': BACKEND,
+        '^/session(/|\\?|$)':   BACKEND,
+        '^/journal(/|\\?|$)':   BACKEND,
+        '^/coverage(/|\\?|$)':  BACKEND,
+        '^/plan(/|\\?|$)':      BACKEND,
+        '^/blocks(/|\\?|$)':    BACKEND,
+        '^/theme(/|\\?|$)':     BACKEND,
+        '^/health(/|\\?|$)':    BACKEND,
+        '^/fitness(/|\\?|$)':   BACKEND,
+        '^/firestore(/|\\?|$)': BACKEND,
+        '^/habitsync(/|\\?|$)': BACKEND,
         // relax (:9123) — eigener Prefix, /journal & /session gehören fitness
-        '/relax-api': {
+        '^/relax-api(/|\\?|$)': {
           target: RELAX_BACKEND,
           rewrite: (path) => path.replace(/^\/relax-api/, ''),
         },
