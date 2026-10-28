@@ -223,7 +223,7 @@ async function flushQueue() {
   for (const item of await idb(db, 'queue', 'readonly', (s) => s.getAll())) {
     if (CFG.sync.conflicts && item.conflict) continue // wartet auf manuelle Auflösung (offline-queue.js)
     try {
-      const res = await fetch(item.url, { method: item.method, headers: item.headers || { 'Content-Type': 'application/json' }, body: item.body })
+      const res = await fetchT(item.url, { method: item.method, headers: { ...(item.headers || { 'Content-Type': 'application/json' }), ...(item.key ? { 'X-Idempotency-Key': item.key } : {}) }, body: item.body }, 10000)
       if (CFG.sync.conflicts && res.status === 409) {
         // Konflikt: Offline-Stand nicht verwerfen, als conflict markieren und alle Seiten informieren
         const body = await res.clone().json().catch(() => ({}))
