@@ -161,7 +161,8 @@ test("Register: expose setzt window.__swRegistration, Reload nur im Startfenster
   assert.ok(a.includes("window.__swRegistration") && a.includes("sw-update-available") && a.includes("coach-sw.js"));
   const js = a.match(/<script>([\s\S]*?)<\/script>/)[1];
   assert.doesNotThrow(() => new vm.Script(js));
-  assert.ok(a.includes("> 10000"));
+  assert.ok(a.includes("> 0")); // Standard: nie automatisch neu laden (Offline-first)
+  assert.ok(injectRegister(HTML, { reloadWindowMs: 10000 }).includes("> 10000"));
   assert.ok(!injectRegister(HTML, {}).includes("__swRegistration"));
 });
 

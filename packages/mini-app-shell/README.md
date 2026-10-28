@@ -46,7 +46,7 @@ App-Ebene: `html`, `manifest` (Dateiname), `register: true | {expose: true, relo
 ## Verhalten
 
 - Splash bleibt bis `#root` Inhalt hat (min. 200 ms, Failsafe 12 s); ein Service-Worker-Update ändert den Hinweis, verlängert aber die Anzeige nicht.
-- SW: Navigation Netz-zuerst (4 s Timeout) → Cache-Fallback; `/assets/*` Cache-zuerst; Skip-Waiting + `GET_VERSION`-Message.
+- SW (Offline-first, seit 2026-10-28): Navigation **Cache-zuerst** — die beim Install vorab geladene Shell erscheint sofort, auch im Lie-Fi (WLAN verbunden, kein Internet; Requests hängen). Die Shell wird nur durch einen neuen SW ersetzt (Install lädt Shell + `/assets/*` mit `cache:'reload'` zusammen), die Seite bekommt `sw-update-available` und lädt nie von selbst neu (`reloadWindowMs` Standard `0`). Ohne Cache-Treffer: Netz mit `navTimeoutMs` (Standard 4 s). `"navStrategy": "network"` = altes Verhalten (Netz zuerst). `/assets/*` Cache-zuerst; API-Aufrufe (`swr`/`networkFirst`) laufen mit hartem Timeout (`apiTimeoutMs`, Standard 5000; `assetTimeoutMs`, Standard 15000) statt zu hängen; Skip-Waiting + `GET_VERSION`-Message.
 - Jeder Build bekommt einen Zeitstempel (`<prefix>v<build>`), dadurch erkennt der Browser den neuen SW.
 - Stempeln ist idempotent (Blöcke zwischen `vos-splash`/`vos-sw-register`-Markern werden ersetzt).
 
