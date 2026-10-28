@@ -52,7 +52,7 @@ function TileStat({ appId }) {
   return null
 }
 
-export function FitnessTodayWidget({ runtimeDate, openSession, navigate }) {
+export function FitnessTodayWidget({ runtimeDate, openSession, navigate, stacked = false }) {
   const today = runtimeDate || localToday()
   const [plan, setPlan] = useState(null)
   const [todaySession, setTodaySession] = useState(null)
@@ -94,7 +94,7 @@ export function FitnessTodayWidget({ runtimeDate, openSession, navigate }) {
   }
 
   return (
-    <div className="grid gap-4 xl:grid-cols-[1.15fr_0.85fr]">
+    <div className={`grid gap-4 ${stacked ? '' : 'xl:grid-cols-[1.15fr_0.85fr]'}`}>
       <div className="vos-surface rounded-[22px] p-5 md:p-8">
         <div className="mb-4 flex items-center justify-between gap-4">
           <div>
