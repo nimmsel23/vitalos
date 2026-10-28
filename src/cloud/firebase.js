@@ -9,7 +9,7 @@ import { config } from "@firebase-config";
 // (journal/habits) vor diesem Modul evaluieren — dann existiert die App schon
 // und initializeFirestore() mit eigenen Optionen würde werfen (Tab-Hänger).
 const alreadyInit = getApps().length > 0;
-const app = alreadyInit ? getApp() : initializeApp(config);
+export const app = alreadyInit ? getApp() : initializeApp(config);
 
 // Firestore with IndexedDB-backed persistent cache.
 // Reads served from cache while offline; writes queued locally and
