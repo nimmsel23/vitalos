@@ -26,7 +26,7 @@ import JournalApp from './shell/JournalApp.jsx'
 import RelaxApp from './shell/RelaxApp.jsx'
 import SixPackPromiseCard from '../6pack-app/SixPackPromiseCard.jsx'
 import '../6pack-app/sixpack.css'
-import CoachApp from '@view/coach'
+import CoachApp from './shell/CoachApp.jsx'
 import { localISO } from './shell/runtimeDate.js'
 
 const DAY_START = 8
