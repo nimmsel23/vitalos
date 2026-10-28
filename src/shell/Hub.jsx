@@ -84,9 +84,8 @@ export default function Hub({ navigate, variant = 'page', runtimeDate, openSessi
 
   return (
     <div className={isSheet ? 'flex flex-col text-fit-ink' : 'min-h-[100dvh] bg-fit-bg px-5 py-10 text-fit-ink'}>
-      <div className={isSheet ? 'mx-auto flex w-full flex-col gap-6 lg:grid lg:grid-cols-[minmax(0,1fr)_minmax(0,30rem)] lg:items-start lg:gap-8' : 'mx-auto w-full max-w-xl'}>
-      <div className={isSheet ? 'mx-auto flex w-full max-w-3xl flex-col gap-6 lg:max-w-none' : undefined}>
-      <div>
+      <div className={isSheet ? 'mx-auto flex w-full flex-col gap-6 lg:grid lg:grid-cols-3 lg:items-start lg:gap-8' : 'mx-auto w-full max-w-xl'}>
+      <div className={isSheet ? 'mx-auto w-full max-w-3xl lg:max-w-none' : undefined}>
         <header className="pb-5 pt-2">
           <div className="text-[13px] font-medium text-fit-dim">
             {now.toLocaleDateString('de-DE', { weekday: 'long', day: 'numeric', month: 'long' })}
@@ -94,7 +93,7 @@ export default function Hub({ navigate, variant = 'page', runtimeDate, openSessi
           <h1 className="mt-0.5 text-[32px] font-bold leading-tight tracking-tight text-fit-ink">{greeting(now)}</h1>
         </header>
 
-        <nav aria-label="Apps" data-shell-nav="grid" className="grid grid-cols-2 gap-3 sm:grid-cols-4">
+        <nav aria-label="Apps" data-shell-nav="grid" className={`grid grid-cols-2 gap-3 sm:grid-cols-4 ${isSheet ? 'lg:grid-cols-2' : ''}`}>
           {HUB_TILES.map(({ id, label, Icon, color }) => (
             <ContextMenuButton
               key={id}
@@ -150,13 +149,14 @@ export default function Hub({ navigate, variant = 'page', runtimeDate, openSessi
         </div>
       </div>
       {isSheet ? (
-        <FitnessTodayWidget runtimeDate={runtimeDate} openSession={openSession} navigate={handleNavigate} />
-      ) : null}
-      </div>
-      {isSheet ? (
-        <div className="mx-auto w-full max-w-3xl lg:max-w-none">
-          <FuelTodayCard navigate={handleNavigate} runtimeDate={runtimeDate} />
-        </div>
+        <>
+          <div className="mx-auto w-full max-w-3xl lg:order-3 lg:col-span-3 lg:max-w-none">
+            <FitnessTodayWidget runtimeDate={runtimeDate} openSession={openSession} navigate={handleNavigate} />
+          </div>
+          <div className="mx-auto w-full max-w-3xl lg:order-2 lg:col-span-2 lg:max-w-none">
+            <FuelTodayCard navigate={handleNavigate} runtimeDate={runtimeDate} />
+          </div>
+        </>
       ) : null}
       </div>
     </div>
