@@ -2,6 +2,11 @@
 
 Aktive Arbeitsliste (max. 5 Punkte) für das vitalos Meta-Repo.
 
+## 2026-10-28 (Hub-Sheet Desktop)
+
+- [ ] Hub-Layout ab `lg` (Hauptteil + Fitness links, Fuel rechts über 2 Spalten) im echten Browser prüfen; nur die erste Stufe wurde headless bei 1800 px gesehen. Offen: sehr breite Fenster, `DashboardSections` bei 1400 px, 2×2-Kacheln in der schmalen Spalte, Fitness gestapelt.
+- [ ] Dev-Proxy in `vite.config.js` zeigt jetzt auf `:9150`; mit laufendem `fitness-api` nicht getestet (Session lief nur Frontend).
+
 ## 2026-10-26 (mini-app-shell, Fuel-Release)
 
 - [ ] `register.reloadWindowMs` setzt noch keine `mini-app.json` — Option ist durchgereicht und getestet, aber ungenutzt; welche App wann `0` oder einen anderen Wert bekommt, ist nicht entschieden. Ob der Push von `635ea53` einen CI-Deploy ausgelöst hat, wurde nicht geprüft.
@@ -83,3 +88,7 @@ Aktive Arbeitsliste (max. 5 Punkte) für das vitalos Meta-Repo.
 **Gemini-Review (potenzielle blinde Flecken, 2026-10-26):**
 *   **Ungeprüfte Annahme bei Auth-Domains:** Claude behauptet, `fuel-os.web.app` sei als Auth-Domain eingetragen und der Google-Login funktioniere, obwohl die Tool-Ausgabe `fuel-os.firebaseapp.com` als "fehlen" listet. Es wird nicht geprüft, ob beide Domains für die volle Firebase-Auth-Funktionalität notwendig sind oder ob die fehlende Domain Probleme verursachen könnte.
 *   **Unklare Deployment-Quelle:** Claude stellt fest, dass die "Fuel OS"-App auf `fuel-os.web.app` von `vitalos`-`master` deployt wurde, obwohl die `vitalos`-Workflows keine CI/CD-Konfiguration
+
+**Gemini-Review (potenzielle blinde Flecken, 2026-10-28):**
+*   **Risiko unbemerkter visueller Fehler durch fehlende End-zu-End-Verifikation:** Claude hat die komplexen UI-Änderungen mehrfach umgesetzt und committet, ohne die visuellen Ergebnisse im Browser selbst zu prüfen (weder per Headless-Screenshot für die späteren Stufen noch durch eine explizite Aufforderung an den Nutzer zur visuellen Bestätigung). Dies birgt ein hohes Risiko für unbemerkte Layout- oder Darstellungsfehler, die nur durch eine tatsächliche Betrachtung im Browser sichtbar würden.
+*   **Ungeprüfte Auswirkungen auf responsive Layouts unterhalb des `lg`-Breakpoints:** Obwohl die Änderungen explizit `lg:`-Klassen verwendeten, wurde keine Ver

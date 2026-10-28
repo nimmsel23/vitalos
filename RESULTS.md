@@ -1,3 +1,14 @@
+## 2026-10-28 — Hub-Sheet im Desktop: volle Breite, Fuel zweispaltig, Dev-Proxy-Fix
+
+Aus einer Shell-Session: Das Hub-Sheet (`#hub`) nutzt im Desktop-Modus die Fensterbreite und ist ab `lg` ein Raster aus Hauptteil, Fitness und Fuel. Beim Testen zeigte der Dev-Server einen weißen Bildschirm; Ursache waren Proxy-Regeln in `vite.config.js`, nicht der Hub. Die fünf Commits liegen gepusht auf `master` (`21d490e..8010e9c`), „Deploy VitalOS Shell" ist grün. Das Layout wurde nur per Headless-Screenshot (1800 px) für die erste Stufe geprüft, die späteren Umbauten nicht im Browser angesehen.
+
+- **`vite.config.js` (`0c1d462`):** Dev-Proxy-Keys wie `/fitness`, `/journal`, `/plan` passten per Präfix auch auf `/fitness-app/src/…` und `/journal-app/…` und leiteten Quelldateien ans Backend (`:9100`, dort lauscht nichts) → weißer Bildschirm. Regeln sind jetzt auf exakte Pfade verankert (`^/fitness(/|\?|$)`), Backend zeigt auf `:9150` (dokumentierter Dev-Port von `fitness-api`). Der erste Neustart des Dev-Servers war vorher mit Heap-Überlauf (2 GB) an der Proxy-Fehlerflut gestorben. Betrifft nur den Dev-Server.
+- **`src/shell/Hub.jsx` (`35bcaea`):** Kopf, Kachelraster und Dashboard-Sektionen ab `lg` bis 1400 px statt 768 px; Mobil/Tablet unverändert. Die 5-Spalten-Reihe der Sekundär-Links (Habits, Door, Game, 6Pack, Setup) wurde später wieder zurückgenommen, weil die Hauptspalte schmal ist.
+- **`src/shell/Hub.jsx`, `src/shell/Dashboard.jsx`, `src/App.jsx` (`1f03cad`, `d18b02a`, `8010e9c`):** Hub-Sheet über volle Fensterbreite (neues Prop `fullWidth` an `HomeSheet`, nur vom Hub genutzt; das Fitness-Gate behält sein Maximum von 1600 px). `FuelTodayCard` aus `DashboardSections` herausgezogen, `FitnessTodayWidget` exportiert. Endstand ab `lg`: links eine Spalte mit Hauptteil (Kacheln 2×2) und darunter Fitness gestapelt („Heute im Training" über „Aktivität & Konsistenz"), rechts Fuel über zwei Spalten. Unter `lg` weiter alles untereinander (Hauptteil, Fitness, Fuel). Zwischenstände (Fitness volle Breite darunter bzw. Fuel 30 rem rechts) wurden auf Wunsch des Users verworfen.
+- **Release:** `git push origin master` (fünf eigene Commits, nichts Fremdes); „Deploy VitalOS Shell" (Run 40735321614) erfolgreich, nur Hosting.
+
+---
+
 ## 2026-10-26 — mini-app-shell: reloadWindowMs durchgereicht, Lockfile nach Fuel-Standalone-Umbau
 
 Aus einer fuel-dev-Session: Fuel (Töpfe, Küche, Standalone-Umbau ohne Nachbar-Repo-Imports) ging per `fuel-release` nach vitalos; hier im Meta-Repo sind dabei ein Lockfile-Fix, die Pointer-Bumps von `fuel-app` und eine bis dahin uncommittete Änderung am `mini-app-shell`-Paket gelandet. Fuel-interne Änderungen stehen in der Doku von `fuel-dev`. Nichts davon wurde im Browser angesehen.
