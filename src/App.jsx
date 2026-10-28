@@ -54,7 +54,7 @@ function resolveHashDate(value) {
   return localISO(date) === value ? value : null
 }
 
-function HomeSheet({ label, onDismiss, children }) {
+function HomeSheet({ label, onDismiss, children, fullWidth = false }) {
   const backdropRef = useRef(null)
   const sheetRef = useSwipeToDismiss(onDismiss, { backdropRef })
   useSheetFocus(sheetRef)
@@ -72,7 +72,7 @@ function HomeSheet({ label, onDismiss, children }) {
         aria-label={label}
         data-shell-overlay=""
         onKeyDown={(event) => handleSheetKeys(event, onDismiss)}
-        className="vos-sheet vos-sheet-in relative mx-auto flex w-full max-w-[1600px] flex-col overflow-hidden rounded-t-[28px] shadow-[0_-24px_60px_rgba(0,0,0,0.35)] lg:max-h-[88dvh]"
+        className={`vos-sheet vos-sheet-in relative mx-auto flex w-full flex-col overflow-hidden rounded-t-[28px] shadow-[0_-24px_60px_rgba(0,0,0,0.35)] lg:max-h-[88dvh] ${fullWidth ? '' : 'max-w-[1600px]'}`}
         style={{
           height: 'calc(100dvh - var(--safe-top) - 10px)',
           border: '1px solid color-mix(in srgb, var(--ink) 8%, transparent)',
@@ -111,7 +111,7 @@ function HomeFitnessGate({ onSelect, onDismiss }) {
 
 function HomeHubGate({ onSelect, onDismiss, runtimeDate, openSession }) {
   return (
-    <HomeSheet label="Hub" onDismiss={onDismiss}>
+    <HomeSheet label="Hub" onDismiss={onDismiss} fullWidth>
       <Hub navigate={onSelect} variant="sheet" runtimeDate={runtimeDate} openSession={openSession} />
     </HomeSheet>
   )

@@ -52,7 +52,7 @@ function TileStat({ appId }) {
   return null
 }
 
-function FitnessTodayWidget({ runtimeDate, openSession, navigate }) {
+export function FitnessTodayWidget({ runtimeDate, openSession, navigate }) {
   const today = runtimeDate || localToday()
   const [plan, setPlan] = useState(null)
   const [todaySession, setTodaySession] = useState(null)
@@ -116,6 +116,27 @@ function FitnessTodayWidget({ runtimeDate, openSession, navigate }) {
   )
 }
 
+export function FuelTodayCard({ navigate, runtimeDate }) {
+  return (
+    <div className="vos-surface rounded-[22px] p-5 md:p-8">
+      <div className="mb-4 flex items-center justify-between gap-4">
+        <div>
+          <div className="vos-eyebrow">Fuel</div>
+          <h2 className="mt-1 text-[20px] font-semibold tracking-tight text-fit-ink">Heute im Essen</h2>
+        </div>
+        <button
+          onClick={() => navigate?.('fuel', 'food')}
+          className="vos-press inline-flex h-8 shrink-0 items-center gap-1 rounded-full px-3.5 text-[13px] font-medium text-fit-accent vos-fill"
+        >
+          Öffnen <Flame size={14} />
+        </button>
+      </div>
+      <FuelDashboardWidget runtimeDate={runtimeDate} navigate={() => navigate?.('fuel', 'food')} />
+      <FuelFrontdoors navigate={navigate} />
+    </div>
+  )
+}
+
 export function DashboardSections({ navigate, openSession, runtimeDate, showHero = true, showQuickLinks = true }) {
   return (
     <div className="flex flex-col gap-4">
@@ -156,22 +177,7 @@ export function DashboardSections({ navigate, openSession, runtimeDate, showHero
       <FitnessTodayWidget runtimeDate={runtimeDate} openSession={openSession} navigate={navigate} />
 
       <section className={`grid gap-4 ${showQuickLinks ? 'xl:grid-cols-[1.1fr_0.9fr]' : ''}`}>
-        <div className="vos-surface rounded-[22px] p-5 md:p-8">
-          <div className="mb-4 flex items-center justify-between gap-4">
-            <div>
-              <div className="vos-eyebrow">Fuel</div>
-              <h2 className="mt-1 text-[20px] font-semibold tracking-tight text-fit-ink">Heute im Essen</h2>
-            </div>
-            <button
-              onClick={() => navigate?.('fuel', 'food')}
-              className="vos-press inline-flex h-8 shrink-0 items-center gap-1 rounded-full px-3.5 text-[13px] font-medium text-fit-accent vos-fill"
-            >
-              Öffnen <Flame size={14} />
-            </button>
-          </div>
-          <FuelDashboardWidget runtimeDate={runtimeDate} navigate={() => navigate?.('fuel', 'food')} />
-          <FuelFrontdoors navigate={navigate} />
-        </div>
+        <FuelTodayCard navigate={navigate} runtimeDate={runtimeDate} />
 
         {showQuickLinks ? (
           <div className="vos-surface rounded-[22px] p-5 md:p-8">
