@@ -84,7 +84,7 @@ export default function Hub({ navigate, variant = 'page', runtimeDate, openSessi
 
   return (
     <div className={isSheet ? 'flex flex-col text-fit-ink' : 'min-h-[100dvh] bg-fit-bg px-5 py-10 text-fit-ink'}>
-      <div className={isSheet ? 'mx-auto w-full max-w-3xl' : 'mx-auto w-full max-w-xl'}>
+      <div className={isSheet ? 'mx-auto w-full max-w-3xl lg:max-w-[1400px]' : 'mx-auto w-full max-w-xl'}>
         <header className="pb-5 pt-2">
           <div className="text-[13px] font-medium text-fit-dim">
             {now.toLocaleDateString('de-DE', { weekday: 'long', day: 'numeric', month: 'long' })}
@@ -124,7 +124,7 @@ export default function Hub({ navigate, variant = 'page', runtimeDate, openSessi
           ))}
         </nav>
 
-        <div data-shell-nav="vertical" className="vos-surface mt-3 overflow-hidden rounded-[18px]">
+        <div data-shell-nav="vertical" className="vos-surface mt-3 overflow-hidden rounded-[18px] lg:grid lg:grid-cols-5">
           {SECONDARY_LINKS.map(({ id, label, Icon, color }, index) => {
             const Row = SUB_NAV[id] && MENU_APPS[id] ? ContextMenuButton : 'button'
             const menuProps = SUB_NAV[id] && MENU_APPS[id]
@@ -135,9 +135,8 @@ export default function Hub({ navigate, variant = 'page', runtimeDate, openSessi
               key={id}
               {...menuProps}
               onClick={() => handleNavigate(id)}
-              className="flex w-full items-center gap-3 px-4 py-3 text-left transition-colors active:bg-white/5"
-              style={index ? { boxShadow: 'inset 0 0.5px 0 color-mix(in srgb, var(--ink) 10%, transparent)' } : undefined}
-            >
+              className="flex w-full items-center gap-3 px-4 py-3 text-left transition-colors active:bg-white/5 lg:!shadow-none lg:hover:bg-white/5"
+              style={index ? { boxShadow: 'inset 0 0.5px 0 color-mix(in srgb, var(--ink) 10%, transparent)' } : undefined}            >
               <span className="flex h-7 w-7 items-center justify-center rounded-[8px]" style={{ background: `color-mix(in srgb, ${color} 20%, transparent)`, color }}>
                 <Icon size={15} strokeWidth={2.2} />
               </span>
@@ -150,7 +149,7 @@ export default function Hub({ navigate, variant = 'page', runtimeDate, openSessi
       </div>
 
       {isSheet ? (
-        <div className="mx-auto mt-8 w-full max-w-3xl">
+        <div className="mx-auto mt-8 w-full max-w-3xl lg:max-w-[1400px]">
           <DashboardSections
             navigate={handleNavigate}
             openSession={openSession}
