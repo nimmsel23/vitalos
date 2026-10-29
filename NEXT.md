@@ -2,10 +2,14 @@
 
 Aktive Arbeitsliste (max. 5 Punkte) für das vitalos Meta-Repo.
 
+## 2026-10-29 (Branch-Schutz auf master)
+
+- [ ] Der Satz zum Branch-Schutz steht nur in der `AGENTS.md` von skills; die übrigen acht App-Repos bekommen ihn erst mit dem nächsten Release. Der PR-Weg unter Schutz ist nur mit skills PR #5 durchgespielt, die anderen acht Repos sind ungeprüft (ein Required Check `check`, der nie läuft, würde dort jeden PR blockieren).
+
 ## 2026-10-29 (Release-Weg dev → master → vitalos)
 
 - [ ] Shell-Promotion nachziehen: Nach den Release-PRs aller neun Module steht `vitalos` (Shell) hinter `master`; `vos-release --all` würde die Pointer bumpen und die Shell neu deployen — nicht ausgeführt, Freigabe offen.
-- [ ] Branch-Schutz auf `master` fehlt in allen neun App-Repos; dazu die lokalen Pre-Push-Hooks in `fitness-dev` und `plan-dev` prüfen (deployen bei Push auf `vitalos` evtl. noch lokal live) und die `*-release`-Wrapper in `~/vitalos/bin` (Wirkung nach dem Umbau ungeprüft).
+- [ ] Die lokalen Pre-Push-Hooks in `fitness-dev` und `plan-dev` prüfen (deployen bei Push auf `vitalos` evtl. noch lokal live) und die `*-release`-Wrapper in `~/vitalos/bin` (Wirkung nach dem Umbau ungeprüft).
 - [ ] `CLAUDE.md` in `~/vitalos` beschreibt den Deploy-Weg noch alt („Der EINZIGE aktive Deploy-Pfad ist die CI im Meta-Repo“, `vitalos` als Prod-Branch); `docs/DEPLOYMENT.md` löst das ab, der Verweis in `CLAUDE.md` fehlt. `vos-overview` zeigt die entfernten verschachtelten Klone als „fehlt“ und kennt `skills-app` nicht.
 - [ ] Im Browser/auf dem Gerät prüfen (nichts gesehen): Offline-first-Umbau (Prüfschritte in `~/OFFLINE-FIRST.md`), Notizfeld Door v2 Potential in `journal-vos`, Changelog-Filter gegen echte Commits.
 - [ ] Aufräumen: `~/.local/vos-apps/*-app` (Arbeitskopien für die `master`-Anlage) und `~/.bak-nest-submodules/` können weg; `fuel-os.web.app` (Stand 28. Okt.) hat weiter einen eigenen Standalone-Weg außerhalb von `vos-release`.
@@ -121,3 +125,8 @@ Aktive Arbeitsliste (max. 5 Punkte) für das vitalos Meta-Repo.
 - **Ungeprüfte Annahmen/Behauptungen:** Claude hat Änderungen an der Vite-Konfiguration vorgenommen, um den Speicherverbrauch zu senken, räumt aber ein, dass nicht verifiziert wurde, ob diese Änderungen den Server *dauerhaft* schlanker halten.
 - **Ungeprüfte Komponenten:** Der neu implementierte Changelog-Filter wurde explizit *nicht* gegen echte Commits getestet, was eine potenzielle Fehlerquelle darstellt.
 - **Teilweise Problemlösung:** Obwohl der Vite-Server aufgrund eines *systemweiten* Speichermangels beendet wurde, hat Claude die Ursache des allgemeinen Speicherdrucks nicht proaktiv untersucht, sondern nur die Vite-spezifischen Konfigurationen angepasst und eine weitere Analyse nur auf Nachfrage angeboten.
+
+**Gemini-Review (potenzielle blinde Flecken, 2026-10-29):**
+*   **Ungeprüfte Annahme:** Claude behauptet, dass die `permissions`-Konfiguration von `journal-dev` korrekt sei und der Run grün lief, obwohl der `grep`-Befehl für die `permissions`-Sektion in `journal-dev` keine Ausgabe lieferte. Dies deutet auf eine Annahme über Standardberechtigungen hin, die nicht explizit verifiziert wurde.
+*   **Teilweise Lösung:** Das identifizierte Berechtigungsproblem (`checks: write`) wurde nur für `fitness-dev` behoben. Die Session bestätigt explizit, dass 7 der 9 relevanten Repos nicht auf dasselbe Problem geprüft wurden.
+*   **Unverifizierte Behauptung:** Die Aussage, dass `strict: false` im Branch-Schutz notwendig ist, weil der Auto-Merge sonst wegen einer "Merge-Commit-Lücke von `dev`" scheitern würde, ist eine nicht verifizierte Behauptung. Es wurde kein Testfall mit `strict: true` durchgeführt, der dies belegt.
