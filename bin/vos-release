@@ -13,6 +13,9 @@ NC='\033[0m'
 
 declare -A STANDALONE_DIRS
 declare -A SUBMODULE_DIRS
+# Shell-Promotion: dev -> master (PR, vos-release-pr) -> vitalos (dieses Skript). Quelle ist origin/master der
+# Standalone-Repos (Standalone-Prod); master liegt nur auf GitHub, nie lokal. Ziel ist der Branch vitalos im
+# -app-Checkout, danach der Pointer-Bump im Meta-Repo.
 declare -A SOURCE_BRANCHES
 declare -A TARGET_BRANCHES
 declare -A NOISE_PATTERNS
@@ -41,15 +44,15 @@ SUBMODULE_DIRS[skills]="/home/alpha/vitalos/skills-app"
 # Gitlinks, der Fitness-Build löst sie über die Nachbar-Checkouts auf (plan-app|plan-dev usw.).
 # Ihr Release ist wie bei den anderen dev -> vitalos -> Pointer-Bump im Meta-Repo.
 
-SOURCE_BRANCHES[fitness]="dev"
-SOURCE_BRANCHES[fuel]="dev"
-SOURCE_BRANCHES[habits]="dev"
-SOURCE_BRANCHES[journal]="dev"
-SOURCE_BRANCHES[learn]="dev"
-SOURCE_BRANCHES[relax]="dev"
-SOURCE_BRANCHES[6pack]="dev"
-SOURCE_BRANCHES[plan]="dev"
-SOURCE_BRANCHES[skills]="dev"
+SOURCE_BRANCHES[fitness]="master"
+SOURCE_BRANCHES[fuel]="master"
+SOURCE_BRANCHES[habits]="master"
+SOURCE_BRANCHES[journal]="master"
+SOURCE_BRANCHES[learn]="master"
+SOURCE_BRANCHES[relax]="master"
+SOURCE_BRANCHES[6pack]="master"
+SOURCE_BRANCHES[plan]="master"
+SOURCE_BRANCHES[skills]="master"
 
 # Submodule-Master-Branch je Modul — alle Module heissen "vitalos" (Rename,
 # siehe fitness-dev/CLAUDE.md "Main branch"). journal-app/learn-app standen
@@ -114,7 +117,7 @@ AUTO_YES=0
 
 usage() {
     cat <<'EOF'
-vos-release — push standalone repos, merge into vitalos submodule masters, bump vitalos pointers
+vos-release — Shell-Promotion: origin/master der Standalone-Repos nach vitalos mergen, vitalos-Pointer bumpen
 
 Usage:
   vos-release [module ...]
@@ -129,10 +132,11 @@ Modules:
   der Fitness-Build nimmt die Nachbar-Checkouts). Jedes Modul wird einzeln ausgeliefert.
 
 Behavior:
-  - For every module: push standalone dev -> origin/dev, merge dev into the
-    corresponding vitalos submodule master (or "vitalos" for fitness), push.
+  - Weg: dev -> master (PR, `vos-release-pr <modul>`, deployt Standalone-Prod per CI) -> vitalos (dieses Skript).
+  - For every module: fetch origin/master der Standalone-Repos (master existiert lokal nicht), merge it into the
+    vitalos branch of the -app checkout, push vitalos.
   - At the end: stage changed submodule pointers in /home/alpha/vitalos,
-    create one parent commit, and push vitalos master.
+    create one parent commit, and push vitalos master (deployt die Shell).
 
 Interactive:
   - If no module is given and gum is installed, an interactive multi-select opens.
@@ -348,14 +352,14 @@ resolve_backup_conflicts() {
 # Lesend (git merge-tree). Erlaubte Konflikte: Backup-Dateien, Hooks und Doku (dev gewinnt).
 preflight_merge() {
     local module="$1"
-    local standalone="${STANDALONE_DIRS[$module]}"
+    local checkout="${SUBMODULE_DIRS[$module]}"
     local source_branch="${SOURCE_BRANCHES[$module]}"
     local target_branch="${TARGET_BRANCHES[$module]:-master}"
-    "$REAL_GIT" -C "$standalone" fetch -q origin "$target_branch" 2>/dev/null || warn "[$module] fetch origin/$target_branch fehlgeschlagen — Preflight mit altem Stand"
+    "$REAL_GIT" -C "$checkout" fetch -q origin "$target_branch" "$source_branch" 2>/dev/null || warn "[$module] fetch origin/$source_branch fehlgeschlagen — Preflight mit altem Stand"
     local out conflicts blocking
-    out="$("$REAL_GIT" -C "$standalone" merge-tree --write-tree --name-only --no-messages "origin/$target_branch" "$source_branch" 2>&1 || true)"
+    out="$("$REAL_GIT" -C "$checkout" merge-tree --write-tree --name-only --no-messages "origin/$target_branch" "origin/$source_branch" 2>&1 || true)"
     conflicts="$(printf '%s\n' "$out" | tail -n +2 | grep -v '^$' || true)"
-    [[ -n "$conflicts" ]] || { info "[$module] Preflight: dev -> $target_branch mergt konfliktfrei"; return 0; }
+    [[ -n "$conflicts" ]] || { info "[$module] Preflight: $source_branch -> $target_branch mergt konfliktfrei"; return 0; }
     blocking=""
     local file
     while IFS= read -r file; do
@@ -366,7 +370,7 @@ preflight_merge() {
         blocking+="${file}"$'\n'
     done <<< "$conflicts"
     if [[ -n "$blocking" ]]; then
-        error "[$module] Preflight: dev -> $target_branch hat Konflikte, die vos-release nicht lösen darf:"
+        error "[$module] Preflight: $source_branch -> $target_branch hat Konflikte, die vos-release nicht lösen darf:"
         printf '%s\n' "$blocking" >&2
         return 1
     fi
@@ -382,16 +386,10 @@ merge_module() {
     local submodule_name
     submodule_name="$(basename "$submodule")"
 
-    require_dir "$standalone"
     require_dir "$submodule"
 
-    expect_branch "$standalone" "$source_branch" "$standalone"
     expect_branch "$submodule" "$target_branch" "$submodule"
-    require_clean_repo "$module" "$standalone" "$standalone"
     require_clean_repo "$module" "$submodule" "$submodule"
-
-    info "[$module] Push $source_branch -> origin/$source_branch"
-    run "$REAL_GIT" -C "$standalone" push origin "$source_branch"
 
     info "[$module] Pull submodule $target_branch"
     run "$REAL_GIT" -C "$submodule" pull origin "$target_branch"
