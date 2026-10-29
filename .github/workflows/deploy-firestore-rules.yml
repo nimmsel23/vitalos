@@ -59,8 +59,8 @@ jobs:
           seed_dir="$RUNNER_TEMP/skills-catalog-seed"
           mkdir -p "$seed_dir"
           npm install --prefix "$seed_dir" --ignore-scripts --no-audit --no-fund firebase-admin@14.5.0
-          cp fitness-app/Skills/scripts/seed-skills-catalog.mjs "$seed_dir/seed.mjs"
+          cp skills-app/scripts/seed-skills-catalog.mjs "$seed_dir/seed.mjs"
           printf '%s' "$FIREBASE_SA" > "$seed_dir/credentials.json"
-          SKILLS_CATALOG_FILE="$GITHUB_WORKSPACE/fitness-app/Skills/public/skills-catalog.v1.json" \
+          SKILLS_CATALOG_FILE="$GITHUB_WORKSPACE/skills-app/public/skills-catalog.v1.json" \
             GOOGLE_APPLICATION_CREDENTIALS="$seed_dir/credentials.json" \
             GCLOUD_PROJECT=fitness-aos node "$seed_dir/seed.mjs" --apply

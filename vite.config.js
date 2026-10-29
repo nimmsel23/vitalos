@@ -179,7 +179,7 @@ export default defineConfig(({ mode }) => {
           { path: 'relax-app', name: 'Relax' },
           { path: '6pack-app', name: '6Pack' },
           { path: 'plan-app', name: 'Plan' },
-          { path: 'fitness-app/Skills', name: 'Skills' },
+          { path: 'skills-app', name: 'Skills' },
         ],
       }),
       firebaseRedirect,

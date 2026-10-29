@@ -7,6 +7,8 @@ on:
     paths:
       - 'fitness-app'
       - 'fitness-app/**'
+      - 'skills-app'
+      - 'skills-app/**'
       - '.github/workflows/deploy-skills.yml'
 
 concurrency:
@@ -35,16 +37,16 @@ jobs:
         with:
           node-version: 22
       - name: Install Skills standalone dependencies
-        working-directory: fitness-app/Skills
+        working-directory: skills-app
         run: pnpm install --ignore-workspace --frozen-lockfile --ignore-scripts
       - name: Verify exercise videos
-        working-directory: fitness-app/Skills
+        working-directory: skills-app
         run: node scripts/test-exercise-videos.mjs
       - name: Build Skills
-        working-directory: fitness-app/Skills
+        working-directory: skills-app
         run: pnpm run build
       - name: Deploy Skills to Firebase Hosting
-        working-directory: fitness-app/Skills
+        working-directory: skills-app
         env:
           FIREBASE_SA: ${{ secrets.FIREBASE_SERVICE_ACCOUNT || secrets.FIREBASE_SERVICE_ACCOUNT_FITNESS_AOS }}
         run: |

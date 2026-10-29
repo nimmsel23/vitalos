@@ -11,11 +11,11 @@ const HABITS = path.resolve(VITALOS, "habit-app");
 const LEARN = path.resolve(VITALOS, "learn-app");
 const RELAX = path.resolve(VITALOS, "relax-app");
 
-// Plan kommt aus dem Submodul fitness-app/plan; die Kopie fitness-app/src/views/Plan ist nur Fallback.
+// Plan kommt aus dem Submodul plan-app; die Kopie fitness-app/src/views/Plan ist nur Fallback.
 // Relative Imports der Fitness-DB-Schicht (z. B. planVersions.js) fehlen dort → auf das Submodul auflösen
 // (gleiche Regel wie in ~/vitalos/vite.config.js).
 const PLAN_COPY = path.resolve(FITNESS, "src/views/Plan");
-const PLAN_SUB = path.resolve(FITNESS, "plan/src/views/Plan");
+const PLAN_SUB = path.resolve(VITALOS, "plan-app/src/views/Plan");
 const planSubmoduleFallback = () => ({
   name: "vos-fitness-plan-submodule-fallback",
   enforce: "pre",
