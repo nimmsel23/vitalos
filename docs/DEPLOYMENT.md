@@ -122,9 +122,20 @@ Die Pre-Push-Hooks (journal, fuel, habits, fitness, relax) zeigen beim Push von 
 (dev → master) und `<modul>-release` (master → vitalos). Die `*-release`-Wrapper in `~/vitalos/bin` rufen
 `vos-release <modul>` auf, das ist die Shell-Promotion — nicht der Weg nach `master`.
 
+## Branch-Schutz (seit 2026-10-29)
+
+- **`master` der neun App-Repos:** Required Check `check` (Job-Name aus `check.yml`, Workflow „Check (<App>)"), Force-Push und
+  Löschen gesperrt, keine Pflicht-Reviews, `enforce_admins` aus (Hotfix-Push durch den Owner bleibt möglich), **kein**
+  „Branch muss aktuell sein" (`strict` aus) — `dev` liegt durch Merge-Commits immer etwas hinter `master`, mit `strict`
+  käme der Auto-Merge nie durch. Kein „Linear history", der Auto-Merge nutzt Merge-Commits.
+- **Meta-Repo `vitalos` `master`:** nur Force-Push und Löschen gesperrt (`vos-release` pusht den Pointer-Bump direkt).
+- **Ohne Schutz:** `dev` und die `vitalos`-Branches der App-Repos (`vos-release` pusht dort direkt).
+- Getestet mit skills PR #5: Check grün → Auto-Merge → `Live Deploy (Skills master)` grün.
+- Zurücknehmen: `gh api -X DELETE repos/nimmsel23/<repo>/branches/master/protection`.
+
 ## Noch offen
 
-- Branch-Schutz mit Required Check `Check (<App>)` auf `master` — nirgends gesetzt.
+- ~~Branch-Schutz auf `master`~~ — gesetzt am 2026-10-29, siehe „Branch-Schutz".
 - Weg PR → Auto-Merge → Deploy ist nur mit `skills-dev` durchgespielt (PR #1, 2026-10-29); die anderen Module sind
   gleich aufgebaut, aber ungetestet.
 - `dev` kennt die `master`-Workflows teils noch nicht; sie kommen beim ersten Release-PR über den Merge.
