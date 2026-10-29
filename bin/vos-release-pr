@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 # vos-release-pr — Release als Pull Request statt direktem Push auf den Deploy-Branch.
 #
-#   vos-release-pr fitness            PR dev -> vitalos öffnen (oder vorhandenen zeigen)
+#   vos-release-pr fitness            PR dev -> master öffnen (oder vorhandenen zeigen)
 #   vos-release-pr fitness --status   Stand des offenen Release-PR (Checks, Mergebarkeit)
 #
-# Der PR bekommt Check + Preview aus fitness-dev (check.yml, preview-dev.yml). Nach dem
-# Merge deployt deploy-vitalos.yml live. Der Merge bleibt von Hand: `gh pr merge <n> --merge`
+# Der PR bekommt Check + Preview aus dem Modul-Repo (check.yml, preview-dev.yml). Nach dem
+# Merge deployt deploy-master.yml live (Standalone-Prod; die Shell zieht Pointer separat). Der Merge bleibt von Hand: `gh pr merge <n> --merge`
 # (kein Squash/Rebase, sonst läuft dev von vitalos weg). Dieses Skript pusht nichts auf
 # vitalos und ersetzt `vos-release` nur für den Pilot-Modul fitness; Submodul-Pointer im
 # Meta-Repo zieht weiterhin `vos-sync-submodule-pointers` nach.
@@ -13,7 +13,15 @@ set -euo pipefail
 
 # Modul -> Repo | lokaler Klon | Quell-Branch | Ziel-Branch
 declare -A CFG=(
-  [fitness]="nimmsel23/fitness-dev|$HOME/fitness-dev|dev|vitalos"
+  [fitness]="nimmsel23/fitness-dev|$HOME/fitness-dev|dev|master"
+  [fuel]="nimmsel23/fuel-dev|$HOME/fuel-dev|dev|master"
+  [habits]="nimmsel23/habits-dev|$HOME/habits-dev|dev|master"
+  [journal]="nimmsel23/journal-dev|$HOME/journal-dev|dev|master"
+  [learn]="nimmsel23/learn-dev|$HOME/learn-dev|dev|master"
+  [relax]="nimmsel23/relax-dev|$HOME/relax-dev|dev|master"
+  [plan]="nimmsel23/plan-dev|$HOME/plan-dev|dev|master"
+  [6pack]="nimmsel23/6pack-dev|$HOME/6pack-dev|dev|master"
+  [skills]="nimmsel23/skills-dev|$HOME/skills-dev|dev|master"
 )
 
 die() { printf '[vos-release-pr] %s\n' "$*" >&2; exit 1; }
