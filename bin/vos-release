@@ -440,6 +440,75 @@ parent_status_filtered() {
         | grep -vE "$CACHE_NOISE" | grep -vE "$TOOLING_NOISE" || true
 }
 
+# Alle Submodule des Meta-Repos (Pfad relativ zu $VITALOS_DIR); gleiche Liste wie in parent_status_filtered
+# und bin/vos-sync-submodule-pointers.
+PARENT_SUBMODULES=(fitness-app fuel-app habit-app journal-app learn-app relax-app 6pack-app plan-app skills-app)
+
+# Der pre-commit-Hook (vos-sync-submodule-pointers --stage) stagt beim `commit -- <pathspec>` weitere Pointer.
+# Git übernimmt sie in den Commit, lässt im echten Index aber den alten Stand zurück ("MM <submodul>"), und der
+# nächste Merge bricht mit "local changes would be overwritten" ab. Nach dem Commit den Index dort an den
+# Checkout angleichen, wo der Checkout dem committeten Pointer entspricht (nichts gehört dann mehr zu stagen).
+normalize_parent_index() {
+    local sub staged head checkout
+    for sub in "${PARENT_SUBMODULES[@]}"; do
+        [[ -e "$VITALOS_DIR/$sub/.git" ]] || continue
+        staged="$("$REAL_GIT" -C "$VITALOS_DIR" ls-files -s -- "$sub" | awk '{print $2}')"
+        head="$("$REAL_GIT" -C "$VITALOS_DIR" ls-tree HEAD -- "$sub" | awk '{print $3}')"
+        checkout="$("$REAL_GIT" -C "$VITALOS_DIR/$sub" rev-parse HEAD 2>/dev/null || true)"
+        if [[ -n "$staged" && "$staged" != "$head" && "$checkout" == "$head" ]]; then
+            info "$sub: veraltet gestagten Pointer ${staged:0:7} an Checkout ${head:0:7} angeglichen"
+            "$REAL_GIT" -C "$VITALOS_DIR" add -- "$sub"
+        fi
+    done
+}
+
+# Der Remote bekommt zwischendurch eigene Pointer-Bumps (CI, Claude-Web-PRs, z. B. skills-app); ein Push ohne
+# vorherigen Merge wird dann als non-fast-forward abgelehnt. Deshalb vor dem Push einmergen.
+sync_parent_with_remote() {
+    info "Parent: origin/master holen und bei Bedarf einmergen"
+    run "$REAL_GIT" -C "$VITALOS_DIR" fetch origin master
+    [[ "$DRY_RUN" -eq 1 ]] && { run "$REAL_GIT" -C "$VITALOS_DIR" merge origin/master --no-edit; return 0; }
+
+    local behind
+    behind="$("$REAL_GIT" -C "$VITALOS_DIR" rev-list --count HEAD..origin/master)"
+    [[ "$behind" -gt 0 ]] || return 0
+
+    info "Parent ist $behind Commit(s) hinter origin/master — merge"
+    if ! "$REAL_GIT" -C "$VITALOS_DIR" merge origin/master --no-edit; then
+        "$REAL_GIT" -C "$VITALOS_DIR" merge --abort 2>/dev/null || true
+        error "Merge von origin/master im Parent fehlgeschlagen (abgebrochen) — nichts gepusht."
+        error "Manuell lösen: cd $VITALOS_DIR && git merge origin/master, dann git push origin master."
+        exit 1
+    fi
+}
+
+# Nach einem Pointer-Merge zeigt der Pointer weiter als der Submodul-Checkout (" M <submodul>"). Checkouts stehen
+# auf einem Branch, daher Fast-Forward auf den Pointer statt `submodule update` (würde detachen). Nur bei sauberem
+# Checkout und wenn der Pointer wirklich ein Nachfolger ist — sonst nur Hinweis.
+sync_submodule_checkouts() {
+    local sub ptr cur
+    for sub in "${PARENT_SUBMODULES[@]}"; do
+        [[ -e "$VITALOS_DIR/$sub/.git" ]] || continue
+        ptr="$("$REAL_GIT" -C "$VITALOS_DIR" ls-tree HEAD -- "$sub" | awk '{print $3}')"
+        cur="$("$REAL_GIT" -C "$VITALOS_DIR/$sub" rev-parse HEAD 2>/dev/null || true)"
+        [[ -n "$ptr" && "$ptr" != "$cur" ]] || continue
+
+        if [[ "$DRY_RUN" -eq 1 ]]; then
+            printf '[dry-run] %q -C %q merge --ff-only %q (falls %s hinter dem Pointer)\n' "$REAL_GIT" "$VITALOS_DIR/$sub" "$ptr" "$sub"
+            continue
+        fi
+        "$REAL_GIT" -C "$VITALOS_DIR/$sub" fetch -q origin 2>/dev/null || true
+        if [[ -n "$("$REAL_GIT" -C "$VITALOS_DIR/$sub" status --porcelain)" ]]; then
+            warn "$sub: Checkout hat lokale Änderungen — nicht auf Pointer ${ptr:0:7} gebracht"
+        elif "$REAL_GIT" -C "$VITALOS_DIR/$sub" merge-base --is-ancestor "$cur" "$ptr" 2>/dev/null \
+            && "$REAL_GIT" -C "$VITALOS_DIR/$sub" merge --ff-only "$ptr" >/dev/null 2>&1; then
+            info "$sub: Checkout ${cur:0:7} -> ${ptr:0:7} (fast-forward)"
+        else
+            warn "$sub: Checkout ${cur:0:7} ist kein Vorgänger von Pointer ${ptr:0:7} — manuell prüfen"
+        fi
+    done
+}
+
 commit_parent_bumps() {
     local filtered
     filtered="$(parent_status_filtered)"
@@ -472,8 +541,10 @@ commit_parent_bumps() {
     if [[ "$DRY_RUN" -eq 1 ]]; then
         printf '[dry-run] %q ' "$REAL_GIT" -C "$VITALOS_DIR" commit -m "$message" -- "${unique[@]}"
         printf '\n'
+        sync_parent_with_remote
         printf '[dry-run] %q ' "$REAL_GIT" -C "$VITALOS_DIR" push origin master
         printf '\n'
+        sync_submodule_checkouts
         return 0
     fi
 
@@ -482,9 +553,14 @@ commit_parent_bumps() {
     else
         "$REAL_GIT" -C "$VITALOS_DIR" commit -m "$message" -- "${unique[@]}"
     fi
+    normalize_parent_index
+
+    sync_parent_with_remote
 
     info "Pushing vitalos master -> origin/master"
     run "$REAL_GIT" -C "$VITALOS_DIR" push origin master
+
+    sync_submodule_checkouts
 }
 
 # CI installiert mit --frozen-lockfile: weicht pnpm-lock.yaml von den package.json der (gerade
