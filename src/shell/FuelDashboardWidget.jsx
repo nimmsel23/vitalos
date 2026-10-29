@@ -16,7 +16,7 @@ function FuelAverageCard({ title, days, date, trend, isPending, isError }) {
   return (
     <section className="min-w-0 rounded-3xl border border-white/10 bg-white/5 p-5 backdrop-blur">
       <h3 className="text-lg font-semibold">{title}</h3>
-      <p className="mt-1 text-xs text-fit-dim">{formatDate(shiftISODate(date, 1 - days))} – {formatDate(date)} · {days} Tage</p>
+      <p className="mt-1 text-xs text-fit-dim">{formatDate(shiftISODate(date, 1 - days))} – {formatDate(date)} · {averages.count} von {days} Tagen mit Einträgen</p>
       {isPending || isError ? (
         <p className="mt-4 text-sm text-fit-dim" role="status">{isError ? 'Durchschnitt konnte nicht geladen werden.' : 'Durchschnitt wird geladen …'}</p>
       ) : (
@@ -34,7 +34,7 @@ function FuelAverageCard({ title, days, date, trend, isPending, isError }) {
           ))}
         </dl>
       )}
-      <p className="mt-4 text-xs text-fit-dim">Ø pro Kalendertag · ohne Eintrag = 0</p>
+      <p className="mt-4 text-xs text-fit-dim">Ø pro Tag mit Einträgen · leere Tage zählen nicht</p>
     </section>
   )
 }
