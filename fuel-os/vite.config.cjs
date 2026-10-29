@@ -14,7 +14,8 @@ function resolvePackageEntry(specifier) {
   return require.resolve(specifier, { paths: [FUEL, VITALOS, __dirname] });
 }
 
-module.exports = defineConfig(({ mode }) => {
+module.exports = defineConfig(async ({ mode }) => {
+  const { noDynamicChunks } = await import("./scripts/vite-no-dynamic-chunks.mjs");
   const env = loadEnv(mode, process.cwd(), "");
   const appMode = process.env.VITE_APP_MODE || env.VITE_APP_MODE || "client";
   const outDir = appMode === "client" ? "./dist-firebase" : "./dist";
@@ -73,7 +74,7 @@ module.exports = defineConfig(({ mode }) => {
         "firebase/ai",
       ],
     },
-    plugins: [react()],
+    plugins: [react(), noDynamicChunks()],
     css: {
       postcss: {
         plugins: [tailwindcss({ config: path.resolve(__dirname, "tailwind.config.cjs") })],

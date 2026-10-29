@@ -1,7 +1,9 @@
 import { useState } from "react";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { doc, setDoc, serverTimestamp } from "firebase/firestore";
-import { db } from "../../lib/firebase.js";
+import { db, getMessagingIfSupported } from "../../lib/firebase.js";
+import { getToken } from "firebase/messaging";
+import { saveFcmToken } from "../../lib/db.firestore.js";
 import { getUserSettings, getUid } from "../../lib/db.firestore.js";
 import { withStorageFeedback } from "../../lib/storageFeedback.js";
 import { TIME_LABELS } from "./utils.js";
@@ -33,10 +35,7 @@ function ReminderForm({ initial }) {
       if (!("Notification" in window) || !("serviceWorker" in navigator)) throw new Error("Push wird in diesem Browser nicht unterstützt.");
       const permission = await Notification.requestPermission();
       if (permission !== "granted") throw new Error("Bitte Benachrichtigungen in den Browser-Einstellungen erlauben.");
-      const { getMessagingIfSupported } = await import("../../lib/firebase.js");
       const messaging = await getMessagingIfSupported();
-      const { getToken } = await import("firebase/messaging");
-      const { saveFcmToken } = await import("../../lib/db.firestore.js");
       if (!messaging) throw new Error("Push wird in diesem Browser nicht unterstützt.");
       const registration = await navigator.serviceWorker.ready;
       const token = await getToken(messaging, { vapidKey: import.meta.env.VITE_VAPID_KEY, serviceWorkerRegistration: registration });

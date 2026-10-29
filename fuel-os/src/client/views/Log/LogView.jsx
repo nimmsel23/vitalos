@@ -6,7 +6,7 @@ import { twMerge } from "tailwind-merge";
 import { postJson, patchJson } from "@api";
 import { patchNutritionDay, reloadNutritionDay } from "../../lib/optimisticMeal.js";
 import { vertexAI } from "../../lib/firebase.js";
-import { getGenerativeModel } from "firebase/vertexai";
+import { getGenerativeModel, SchemaType } from "firebase/vertexai";
 import { withAiRetry } from "../../lib/aiRetry.js";
 import { useAiMealLogger } from "../../hooks/useAiMealLogger.js";
 import { useSettings } from "../../store.js";
@@ -29,7 +29,6 @@ const LOG_VIEW_MODES = [
 // Vergleicht Journal-Freitext gegen die bereits geloggten Mahlzeiten des Tages
 // und liefert nur eindeutig erwähnte, aber nicht geloggte Ernährungs-Infos zurück.
 async function checkJournalAgainstLog(journalText, meals) {
-  const { SchemaType } = await import("firebase/vertexai");
   const model = getGenerativeModel(vertexAI, {
     model: "gemini-2.5-flash",
     generationConfig: {

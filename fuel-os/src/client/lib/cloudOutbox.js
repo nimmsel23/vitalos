@@ -1,4 +1,6 @@
 import { getUid } from "./db/firestore/core.js";
+import { saveNotes } from "./db/firestore/notes.js";
+import { getMicrosCatalog, saveMicrosCatalog } from "./db/firestore/nutrition.js";
 import { mutateCloudLog, mutateCloudCatalog } from "./cloudMutations.js";
 import { changeLog } from "./cloudLogState.js";
 import { applyCatalogOp, mergeMicros, isLogKind, streamOf, projectCatalogItems, projectNotesContent } from "./cloudOutboxOps.js";
@@ -30,11 +32,9 @@ async function run(entry) {
   if (isLogKind(entry.kind)) return mutateCloudLog(entry.kind, entry.date, { ...entry.command, operation_id: entry.id });
   if (entry.kind.startsWith("catalog:")) return mutateCloudCatalog(entry.kind.slice("catalog:".length), items => applyCatalogOp(items, entry.command));
   if (entry.kind === "notes") {
-    const { saveNotes } = await import("./db/firestore/notes.js");
     return saveNotes(entry.date, entry.command.content);
   }
   if (entry.kind === "micros") {
-    const { getMicrosCatalog, saveMicrosCatalog } = await import("./db/firestore/nutrition.js");
     return saveMicrosCatalog(mergeMicros(await getMicrosCatalog(), entry.command.items));
   }
   throw new Error(`Unbekannte Outbox-Art: ${entry.kind}`);

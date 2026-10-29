@@ -4,7 +4,7 @@ import { addDays, format, parseISO } from "date-fns";
 import { de } from "date-fns/locale";
 import { ChevronLeft, ChevronRight, RotateCcw } from "lucide-react";
 
-const SupplementsApp = React.lazy(() => import("./SupplementsApp.jsx"));
+import SupplementsApp from "./SupplementsApp.jsx";
 import { TAB_CONFIG } from "./routes.js";
 import TabContent from "./components/TabContent.jsx";
 import { IosInstallHint } from "./components/IosInstallHint.jsx";
@@ -131,7 +131,7 @@ export default function SoloShell() {
                 {authError && <p role="alert" className="mt-3 text-sm text-rose-300">{authError}</p>}
               </div>
             ) : (
-              SOLO === "supplements" ? <React.Suspense fallback={<p role="status">Laden…</p>}><SupplementsApp date={activeDate} onDateChange={setActiveDate} /></React.Suspense> : <FuelSoloContent activeDate={activeDate} setActiveDate={setActiveDate} setActiveTab={setActiveTab} />
+              SOLO === "supplements" ? <SupplementsApp date={activeDate} onDateChange={setActiveDate} /> : <FuelSoloContent activeDate={activeDate} setActiveDate={setActiveDate} setActiveTab={setActiveTab} />
             )}
           </main>
         </div>

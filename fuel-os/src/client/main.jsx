@@ -16,6 +16,8 @@ import NutritionHeatmap from "./components/NutritionHeatmap.jsx";
 import { IosInstallHint } from "./components/IosInstallHint.jsx";
 import { InstallPromptHandler } from "./components/InstallPromptHandler.jsx";
 import { useApp, useSettings } from "./store.js";
+import FrontdoorChooser from "./views/Frontdoor/FrontdoorChooser.jsx";
+import FrontdoorHost from "./views/Frontdoor/FrontdoorHost.jsx";
 import { getFrontdoor } from "./views/Frontdoor/frontdoors.js";
 import { useAppData } from "./hooks/useAppData.js";
 import { sumMetric, formatMetric } from "../shared/utils/utils.js";
@@ -26,8 +28,6 @@ import { captureNotificationIntentFromLocation } from "./lib/notification-intent
 // Frontdoor = wählbarer Schnelleinstieg (Tap Board / Shutter / Tagesfaden /
 // Klassisch), siehe views/Frontdoor/. Lazy, damit der gewählte Einstieg nicht
 // die anderen mitbundelt.
-const FrontdoorChooser = React.lazy(() => import("./views/Frontdoor/FrontdoorChooser.jsx"));
-const FrontdoorHost = React.lazy(() => import("./views/Frontdoor/FrontdoorHost.jsx"));
 
 
 
@@ -200,9 +200,7 @@ function App() {
 
   if (frontdoorReady && !frontdoor) {
     return (
-      <React.Suspense fallback={null}>
-        <FrontdoorChooser />
-      </React.Suspense>
+      <FrontdoorChooser />
     );
   }
 
@@ -210,14 +208,12 @@ function App() {
     return (
       <>
         <InstallPromptHandler />
-        <React.Suspense fallback={null}>
-          <FrontdoorHost
-            frontdoorKey={frontdoor}
-            userName={user?.displayName?.split(" ")[0] || ""}
-            onEnterApp={() => setFrontdoorOpen(false)}
-            onOpenApp={openApp}
-          />
-        </React.Suspense>
+        <FrontdoorHost
+          frontdoorKey={frontdoor}
+          userName={user?.displayName?.split(" ")[0] || ""}
+          onEnterApp={() => setFrontdoorOpen(false)}
+          onOpenApp={openApp}
+        />
       </>
     );
   }

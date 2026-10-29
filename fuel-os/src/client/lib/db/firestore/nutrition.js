@@ -1,4 +1,5 @@
 import { projectCloudLog, outboxEntries, projectCloudCatalog, hasPendingFor } from "../../cloudOutbox.js";
+import { computeFastingWindows } from "../../../../shared/utils/fasting.mjs";
 /**
  * Firestore Nutrition — Katalog, Tages-Logs, History, Wochen-Mikros
  *
@@ -353,7 +354,6 @@ export async function getWeeklyMicros(year, week) {
 }
 
 export async function getFastingWindows(days = 14) {
-  const { computeFastingWindows } = await import("../../../../shared/utils/fasting.mjs");
 
   // Build array of last `days + 1` dates (oldest first)
   const dates = [];
