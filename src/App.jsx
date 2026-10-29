@@ -1,32 +1,19 @@
 import { useState, useEffect, useCallback, useRef } from 'react'
-import { RefreshCw, X, Zap } from 'lucide-react'
+import { RefreshCw, Zap } from 'lucide-react'
 import { useEscapeKey } from './hooks/useEscapeKey.js'
-import { useSwipeToDismiss } from '@fitness/hooks/useSwipeToDismiss.js'
 import { watchAuth, signIn, signInEmail, signUpEmail, signOut, isLocalMode, auth, getUserProfile, registerShellDevice } from '@db'
-import { NAV_ITEMS, VALID_TABS, SUB_NAV, buildFitnessGateItems } from './shell/NavigationItems.js'
-import Settings from '@view/settings/index.jsx'
+import { NAV_ITEMS, VALID_TABS, SUB_NAV } from './shell/NavigationItems.js'
 import Sidebar from './shell/layout/Sidebar.jsx'
 import MobileShell from './shell/layout/MobileShell.jsx'
 import KeyboardHelp from './shell/KeyboardHelp.jsx'
-import { handleNavigationKeys, handleSheetKeys, isEditing } from './shell/keyboard.js'
-import { useSheetFocus } from './shell/useSheetFocus.js'
+import { handleNavigationKeys, isEditing } from './shell/keyboard.js'
 import UserProfile from './components/common/UserProfile.jsx'
 import ErrorBoundary from './components/common/ErrorBoundary.jsx'
-import Hub from './shell/Hub.jsx'
 import { useApp as useFuelAppStore, useSettings as useFuelStore } from '@fuel/store.js'
 import ShellHeader from './shell/ShellHeader.jsx'
 import { useShellSettings } from './shell/store.js'
-import FitnessAppGate from './shell/FitnessAppGate.jsx'
-import FitnessApp from './shell/FitnessApp.jsx'
-import FuelWrapper from './shell/FuelWrapper.jsx'
-import HabitsApp from './shell/HabitsApp.jsx'
-import DoorApp from './shell/DoorApp.jsx'
-import GameApp from './shell/GameApp.jsx'
-import SixPackApp from './shell/SixPackApp.jsx'
-import SkillsApp from './shell/SkillsApp.jsx'
-import JournalApp from './shell/JournalApp.jsx'
-import RelaxApp from './shell/RelaxApp.jsx'
-import CoachApp from './shell/CoachApp.jsx'
+import ShellAppRouter from './shell/ShellAppRouter.jsx'
+import { HomeHubGate } from './shell/HomeGates.jsx'
 import { localISO } from './shell/runtimeDate.js'
 
 const DAY_START = 8
@@ -52,69 +39,6 @@ function resolveHashDate(value) {
   if (!DATE_LIKE.test(value || '')) return null
   const date = new Date(`${value}T12:00:00`)
   return localISO(date) === value ? value : null
-}
-
-function HomeSheet({ label, onDismiss, children, fullWidth = false }) {
-  const backdropRef = useRef(null)
-  const sheetRef = useSwipeToDismiss(onDismiss, { backdropRef })
-  useSheetFocus(sheetRef)
-  return (
-    <div className="fixed inset-0 z-50 flex items-end lg:backdrop-blur-sm">
-      <button
-        ref={backdropRef}
-        aria-label={`${label} schließen`}
-        className="vos-fade-in absolute inset-0 bg-black/45"
-        onClick={onDismiss}
-      />
-      <div
-        ref={sheetRef}
-        role="dialog"
-        aria-label={label}
-        data-shell-overlay=""
-        onKeyDown={(event) => handleSheetKeys(event, onDismiss)}
-        className={`vos-sheet vos-sheet-in relative mx-auto flex w-full flex-col overflow-hidden rounded-t-[28px] shadow-[0_-24px_60px_rgba(0,0,0,0.35)] lg:max-h-[88dvh] ${fullWidth ? '' : 'max-w-[1600px]'}`}
-        style={{
-          height: 'calc(100dvh - var(--safe-top) - 10px)',
-          border: '1px solid color-mix(in srgb, var(--ink) 8%, transparent)',
-          borderBottom: 0,
-        }}
-      >
-        <div className="flex shrink-0 items-center justify-between gap-4 px-5 pb-1 pt-2 sm:px-6 lg:px-8">
-          <div className="w-8" />
-          <div className="h-[5px] w-9 rounded-full" style={{ background: 'color-mix(in srgb, var(--ink) 20%, transparent)' }} />
-          <button
-            onClick={onDismiss}
-            aria-label="Schließen"
-            className="vos-press mt-1 flex h-8 w-8 items-center justify-center rounded-full text-fit-dim vos-fill"
-          >
-            <X size={16} />
-          </button>
-        </div>
-        <div
-          className="min-h-0 flex-1 overflow-y-auto overscroll-contain px-5 sm:px-6 lg:px-8"
-          style={{ paddingBottom: 'calc(var(--mobile-nav-height, calc(var(--tabbar-h) + var(--safe-bottom))) + 24px)' }}
-        >
-          {children}
-        </div>
-      </div>
-    </div>
-  )
-}
-
-function HomeFitnessGate({ onSelect, onDismiss }) {
-  return (
-    <HomeSheet label="Fitness Gate" onDismiss={onDismiss}>
-      <FitnessAppGate navigate={onSelect} items={buildFitnessGateItems()} title="Fitness" variant="sheet" />
-    </HomeSheet>
-  )
-}
-
-function HomeHubGate({ onSelect, onDismiss, runtimeDate, openSession }) {
-  return (
-    <HomeSheet label="Hub" onDismiss={onDismiss} fullWidth>
-      <Hub navigate={onSelect} variant="sheet" runtimeDate={runtimeDate} openSession={openSession} />
-    </HomeSheet>
-  )
 }
 
 function readHashState() {
@@ -183,31 +107,6 @@ function buildHashState({ tab, subTab = null, date = null }) {
   if (subTab) parts.push(subTab)
   if (date) parts.push(date)
   return `#${parts.join('/')}`
-}
-
-function Views({ tab, fitnessProps, fuelTab, setFuelTab, relaxTab, setRelaxTab, doorTab, setDoorTab, gameTab, setGameTab, homeGate, onHomeGateSelect, onHomeGateDismiss, user, settingsProps, openSession, compact, muscleLanguage, taxonomy, runtimeDate, onRuntimeDateChange, navigate }) {
-  const p = compact ? 'p-4' : 'p-4 sm:p-8 lg:p-12'
-  return (
-    <>
-    {tab === 'home'     && (
-      <div className="relative min-h-[100dvh]">
-        <JournalApp onOpenSession={openSession} onNavigateShell={navigate} runtimeDate={runtimeDate} onRuntimeDateChange={onRuntimeDateChange} />
-        {homeGate === 'fitness' ? <HomeFitnessGate onSelect={onHomeGateSelect} onDismiss={onHomeGateDismiss} /> : null}
-      </div>
-    )}
-    {tab === 'fitness'  && <FitnessApp  {...fitnessProps} />}
-    {tab === 'sixpack'  && <SixPackApp user={user} onNavigate={navigate} />}
-    {tab === 'skills'   && <SkillsApp user={user} />}
-    {tab === 'fuel'     && <FuelWrapper user={user} subTab={fuelTab} onSubTab={setFuelTab} onNavigateShell={navigate} embedded />}
-    {tab === 'journal'  && <JournalApp onOpenSession={openSession} onNavigateShell={navigate} runtimeDate={runtimeDate} onRuntimeDateChange={onRuntimeDateChange} />}
-    {tab === 'habits'   && <HabitsApp runtimeDate={runtimeDate} onRuntimeDateChange={onRuntimeDateChange} />}
-    {tab === 'door'     && <DoorApp subTab={doorTab} onSubTab={setDoorTab} />}
-    {tab === 'game'     && <GameApp user={user} subTab={gameTab} onSubTab={setGameTab} />}
-    {tab === 'relax'    && <RelaxApp subTab={relaxTab} onSubTab={setRelaxTab} onOpenSession={openSession} runtimeDate={runtimeDate} onRuntimeDateChange={onRuntimeDateChange} />}
-    {tab === 'settings' && <div className={`${p} max-w-[1600px] mx-auto`}><Settings {...settingsProps} /></div>}
-    {tab === 'coach'    && <div className={`${p} max-w-[1600px] mx-auto`}><CoachApp /></div>}
-    </>
-  )
 }
 
 export default function App() {
@@ -682,9 +581,9 @@ export default function App() {
             : null
       const shellHeader = <ShellHeader tab={tab} subTab={shellSubTab} runtimeDate={runtimeDate} setRuntimeDate={setRuntimeDate} subNav={shellSubNav} onSubTab={shellSubTabSetter} onNavigateDomain={navigateToDomainDate} />
       const mobileShellHeader = <ShellHeader tab={tab} subTab={shellSubTab} runtimeDate={runtimeDate} setRuntimeDate={setRuntimeDate} compact subNav={shellSubNav} onSubTab={shellSubTabSetter} onNavigateDomain={navigateToDomainDate} />
-      const shellViews = <Views tab={tab} fitnessProps={fitnessProps} fuelTab={fuelTab} setFuelTab={setFuelTab} muscleLanguage={muscleLanguage} taxonomy={taxonomy}
+      const shellViews = <ShellAppRouter tab={tab} fitnessProps={fitnessProps} fuelTab={fuelTab} setFuelTab={setFuelTab} muscleLanguage={muscleLanguage} taxonomy={taxonomy}
       user={user} settingsProps={settingsProps} openSession={openSession} runtimeDate={runtimeDate} onRuntimeDateChange={setRuntimeDate} navigate={navigate} relaxTab={relaxTab} setRelaxTab={setRelaxTab} doorTab={doorTab} setDoorTab={setDoorTab} gameTab={gameTab} setGameTab={setGameTab} homeGate={homeGate} onHomeGateSelect={handleHomeGateSelect} onHomeGateDismiss={() => setHomeGate(null)} />
-      const compactShellViews = <Views tab={tab} fitnessProps={fitnessProps} fuelTab={fuelTab} setFuelTab={setFuelTab} muscleLanguage={muscleLanguage} taxonomy={taxonomy}
+      const compactShellViews = <ShellAppRouter tab={tab} fitnessProps={fitnessProps} fuelTab={fuelTab} setFuelTab={setFuelTab} muscleLanguage={muscleLanguage} taxonomy={taxonomy}
       user={user} settingsProps={settingsProps} openSession={openSession} compact runtimeDate={runtimeDate} onRuntimeDateChange={setRuntimeDate} navigate={navigate} relaxTab={relaxTab} setRelaxTab={setRelaxTab} doorTab={doorTab} setDoorTab={setDoorTab} gameTab={gameTab} setGameTab={setGameTab} homeGate={homeGate} onHomeGateSelect={handleHomeGateSelect} onHomeGateDismiss={() => setHomeGate(null)} />
       const hubGate = tab === 'home' && homeGate === 'hub'
         ? <HomeHubGate onSelect={navigate} onDismiss={() => setHomeGate(null)} runtimeDate={runtimeDate} openSession={openSession} />

@@ -301,3 +301,7 @@ Deploy; der lokale VitalOS-Stand enthält außerdem Änderungen im Habit-Submodu
 
 - `src/shell/SixPackApp.jsx` bindet 6Pack mit dem Shell-Login, Firestore-Programm, Push und Session-Logging ein.
 - `src/shell/SkillsApp.jsx` stellt Original, Iron Room, Gravity Map und Riso Climb inklusive gemeinsamem Progress-/Sync-Status in VitalOS bereit. `#skills` und die Shell-Navigation öffnen diesen Wrapper; `#fitness/skills` behält den bisherigen Session-Subtab.
+
+## 2026-10-29 — Shell-App-Auswahl aus App.jsx herausgezogen
+
+- Home-Hub-Menü-Apps werden zentral in `src/shell/ShellAppRouter.jsx` an ihre eigenen Wrapper übergeben. `App.jsx` hält Shell-Zustand und Navigation; Settings und Home-Gates besitzen eigene Shell-Komponenten.
