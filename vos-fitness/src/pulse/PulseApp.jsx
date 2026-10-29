@@ -3,6 +3,7 @@ import { getSession, saveSession, searchExercises, getSessionHistory } from '@db
 import { useUser } from '@fitness/contexts/UserContext'
 import PulseFeed, { PulseHeader } from './PulseFeed.jsx'
 import { MenuPage, SubPage, PAGES } from './Pages.jsx'
+import useSwipe from './useSwipe.js'
 import { parseLogText, slugify } from './parseLog.js'
 import './pulse.css'
 
@@ -122,6 +123,12 @@ export default function PulseApp() {
   function go(id) {
     window.location.hash = id ? `/${id}` : ''
   }
+
+  // Links wischen: Pulse → Mehr. Rechts wischen: eine Ebene zurück (wie der Pfeil).
+  useSwipe({
+    onLeft: () => { if (user && !page) go('menu') },
+    onRight: () => { if (page) go(page === 'menu' ? '' : 'menu') },
+  })
 
   async function handleAuthSubmit(e) {
     e.preventDefault()
