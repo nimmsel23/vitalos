@@ -106,6 +106,22 @@ wie die anderen. Alte verschachtelte Checkouts: `~/.bak-nest-submodules/`.
 - **Logs:** `gh run list -R nimmsel23/<repo>`, `gh run view <id> --log-failed`; Stand der Live-Sites am
   `Last-Modified` von `https://<site>.web.app/sw.js` (Build-Stempel `vos-<app>-v<build>`).
 
+## Changelog / Release-Dialog
+
+Die Release-Notizen („Was ist neu“) kommen aus `vos-release-info.mjs` (SSOT `packages/mini-app-shell`, in den Repos als
+`scripts/vos-changelog/` bzw. `scripts/mini-app-shell/` vendored: `node ~/vitalos/packages/mini-app-shell/cli.mjs
+vendor-changelog <ordner>`, Drift prüfen mit `--check`). Es zählen nur Commits, die Dateien unter `src/views`
+(bzw. `src/client/views`) ändern. **Nicht** in den Changelog gelangen: Merge-Commits, Commits mit den Präfixen
+`docs`, `chore`, `ci`, `build`, `test`, `refactor` sowie `fix|feat|perf|style` mit Scope `deps`, `ci`, `build`,
+`release`, `tooling`, `tests` — und damit alle reinen Doku-/Markdown-Änderungen (Stand 2026-10-29, in allen neun Repos
+neu vendored; vorher hatten die Kopien den Filter nicht).
+
+## Hook-Tipps
+
+Die Pre-Push-Hooks (journal, fuel, habits, fitness, relax) zeigen beim Push von `dev` den Weg: `vos-release-pr <modul>`
+(dev → master) und `<modul>-release` (master → vitalos). Die `*-release`-Wrapper in `~/vitalos/bin` rufen
+`vos-release <modul>` auf, das ist die Shell-Promotion — nicht der Weg nach `master`.
+
 ## Noch offen
 
 - Branch-Schutz mit Required Check `Check (<App>)` auf `master` — nirgends gesetzt.
