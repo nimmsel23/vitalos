@@ -137,6 +137,8 @@ für Build/CI und Pointer-Management, nicht die primären `dev`-Worktrees.
 
 ### Pointer-Bump fuel-app / fitness-app: Schritt für Schritt (Stand 2026-10-17, aus einem Durchlauf mit Stolpersteinen)
 
+> **Überholt seit 2026-10-29:** Der Weg ist jetzt `dev` → `master` (PR, `vos-release-pr`) → `vitalos` (`vos-release`, mergt `origin/master`, nicht mehr `origin/dev`). Schritt 4 unten (`merge origin/dev`) und die Aufzählung der nested Repos stammen aus dem alten Ablauf; maßgeblich ist `docs/DEPLOYMENT.md`. Die Stolpersteine zu detached HEAD und Pointern bleiben als Hintergrund nützlich.
+
 Die Arbeit passiert in `~/fuel-dev` / `~/fitness-dev` (Branch `dev`). Die Submodule
 `fuel-app` / `fitness-app` tracken den Branch **`vitalos`**, der per Merge aus
 `origin/dev` entsteht (Commit-Text `Merge origin/dev into vitalos`). Reihenfolge — von
