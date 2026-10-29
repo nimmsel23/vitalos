@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
-import { getSession, saveSession, searchExercises, getSessionHistory } from '@db'
+import { getSession, saveSession, searchExercises, getSessionHistory, getExercise } from '@db'
 import PulseFeed, { PulseHeader } from './PulseFeed.jsx'
 import { parseLogText, slugify } from './parseLog.js'
 import './pulse.css'
@@ -54,28 +54,47 @@ export default function PulseLog({ user, onOpenMore, onHistory, embedded = false
 
     let id = `manual_${slugify(parsed.name)}`
     let displayName = parsed.name
+    let primaryMuscles = []
+    let secondaryMuscles = []
+    let stabilizers = []
     try {
       const { results } = await searchExercises(parsed.name)
-      if (results?.length) {
-        id = results[0].id
-        displayName = results[0].name || parsed.name
+      const hit = results?.[0]
+      if (hit) {
+        id = hit.id
+        displayName = hit.name || parsed.name
+        primaryMuscles = hit.primaryMuscles || []
+        secondaryMuscles = hit.secondaryMuscles || []
+        stabilizers = hit.stabilizers || []
+        // Wie der Session-Editor: Treffer ohne Muskeln beim Katalogeintrag nachschlagen.
+        if (!primaryMuscles.length && !secondaryMuscles.length) {
+          const kb = await getExercise(hit.id).catch(() => null)
+          primaryMuscles = kb?.primaryMuscles || kb?.primary_muscles || []
+          secondaryMuscles = kb?.secondaryMuscles || kb?.secondary_muscles || []
+          stabilizers = kb?.stabilizers || stabilizers
+        }
       }
     } catch { /* kein Katalog-Treffer — bleibt Freitext, blockt nichts */ }
 
-    const entry = {
-      name: displayName,
-      id,
-      primaryMuscles: [],
-      secondaryMuscles: [],
-      setsArray: parsed.sets,
-      source: 'manual',
-      note: parsed.freeform ? `Pulse-Log: "${parsed.raw}"` : '',
-      inferred: true,
-      review_state: 'unreviewed',
-    }
-
     setPending((p) => p.filter((x) => x._key !== tempKey))
-    const next = [...exercisesRef.current, entry]
+    // Dieselbe Übung nochmal geloggt → Sätze anhängen statt zweiten Eintrag
+    // (gleiches Verhalten wie addEx im Session-Editor).
+    const existing = exercisesRef.current
+    const idx = existing.findIndex((e) => e.id === id)
+    const next = idx === -1
+      ? [...existing, {
+          name: displayName,
+          id,
+          primaryMuscles,
+          secondaryMuscles,
+          stabilizers,
+          setsArray: parsed.sets,
+          source: 'manual',
+          note: parsed.freeform ? `Pulse-Log: "${parsed.raw}"` : '',
+          inferred: true,
+          review_state: 'unreviewed',
+        }]
+      : existing.map((e, i) => (i === idx ? { ...e, setsArray: [...(e.setsArray || []), ...parsed.sets] } : e))
     exercisesRef.current = next
     setExercises(next)
     const current = sessionRef.current || {}
