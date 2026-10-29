@@ -25,7 +25,7 @@ function Beat({ exercise }) {
   )
 }
 
-export default function PulseFeed({ exercises, onLog, pending }) {
+export default function PulseFeed({ exercises, onLog, pending, saveError, onRetrySave }) {
   return (
     <>
       <div className="pulse-feed">
@@ -43,6 +43,15 @@ export default function PulseFeed({ exercises, onLog, pending }) {
               <div className="pulse-beat-meta">speichert …</div>
             </div>
           ))}
+          {saveError && (
+            <div className="pulse-beat" style={{ color: 'var(--red)' }}>
+              <div className="pulse-beat-name">Nicht gespeichert</div>
+              <div className="pulse-beat-meta">Der letzte Eintrag ist nur auf diesem Gerät.</div>
+              <button onClick={onRetrySave} style={{ marginTop: '0.5rem', background: 'transparent', border: '1px solid currentColor', borderRadius: '0.7rem', padding: '0.4rem 0.8rem', color: 'inherit', fontWeight: 800, fontSize: '0.7rem', textTransform: 'uppercase' }}>
+                Nochmal speichern
+              </button>
+            </div>
+          )}
         </div>
       </div>
       <Composer onSubmit={onLog} />

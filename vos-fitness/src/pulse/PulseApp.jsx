@@ -34,13 +34,16 @@ export default function PulseApp() {
   const [pending, setPending] = useState([])
   const [history, setHistory] = useState([])
   const [moreOpen, setMoreOpen] = useState(false)
+  const [saveError, setSaveError] = useState(false)
   const sessionRef = useRef(null)
+  const exercisesRef = useRef([])
 
   useEffect(() => {
     if (!user) return
     getSession(todayISO()).then((s) => {
       sessionRef.current = s && typeof s === 'object' ? s : {}
-      setExercises(Array.isArray(s?.exercises) ? s.exercises : [])
+      exercisesRef.current = Array.isArray(s?.exercises) ? s.exercises : []
+      setExercises(exercisesRef.current)
     }).catch(() => {})
     getSessionHistory(60).then(setHistory).catch(() => {})
   }, [user])
@@ -76,22 +79,32 @@ export default function PulseApp() {
     }
 
     setPending((p) => p.filter((x) => x._key !== tempKey))
-    setExercises((prev) => {
-      const next = [...prev, entry]
-      const current = sessionRef.current || {}
-      const payload = {
-        ...current,
-        date: todayISO(),
-        sessionMode: current.sessionMode || 'strength',
-        exercises: next,
-        block: current.block || '',
-        location: current.location || '',
-        trainingsart: current.trainingsart || 'Kraft',
-      }
-      sessionRef.current = payload
-      saveSession(todayISO(), payload).catch((err) => console.error('[pulse] saveSession fehlgeschlagen', err))
-      return next
-    })
+    const next = [...exercisesRef.current, entry]
+    exercisesRef.current = next
+    setExercises(next)
+    const current = sessionRef.current || {}
+    sessionRef.current = {
+      ...current,
+      date: todayISO(),
+      sessionMode: current.sessionMode || 'strength',
+      exercises: next,
+      block: current.block || '',
+      location: current.location || '',
+      trainingsart: current.trainingsart || 'Kraft',
+    }
+    await persistSession()
+  }
+
+  // Der Eintrag bleibt im Feed sichtbar, auch wenn das Speichern scheitert —
+  // die Meldung bleibt stehen, bis ein erneuter Versuch durchgeht.
+  async function persistSession() {
+    try {
+      await saveSession(todayISO(), sessionRef.current)
+      setSaveError(false)
+    } catch (err) {
+      console.error('[pulse] saveSession fehlgeschlagen', err)
+      setSaveError(true)
+    }
   }
 
   async function handleAuthSubmit(e) {
@@ -150,7 +163,7 @@ export default function PulseApp() {
   return (
     <div className="pulse-root">
       <PulseHeader streak={streak} onOpenMore={() => setMoreOpen(true)} />
-      <PulseFeed exercises={exercises} pending={pending} onLog={handleLog} />
+      <PulseFeed exercises={exercises} pending={pending} onLog={handleLog} saveError={saveError} onRetrySave={persistSession} />
       {moreOpen && (
         <MoreSheet onClose={() => setMoreOpen(false)} sessions={history} signOut={signOut} />
       )}
