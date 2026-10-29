@@ -22,10 +22,10 @@ import FuelWrapper from './shell/FuelWrapper.jsx'
 import HabitsApp from './shell/HabitsApp.jsx'
 import DoorApp from './shell/DoorApp.jsx'
 import GameApp from './shell/GameApp.jsx'
+import SixPackApp from './shell/SixPackApp.jsx'
+import SkillsApp from './shell/SkillsApp.jsx'
 import JournalApp from './shell/JournalApp.jsx'
 import RelaxApp from './shell/RelaxApp.jsx'
-import SixPackPromiseCard from '../6pack-app/SixPackPromiseCard.jsx'
-import '../6pack-app/sixpack.css'
 import CoachApp from './shell/CoachApp.jsx'
 import { localISO } from './shell/runtimeDate.js'
 
@@ -38,7 +38,7 @@ function localToday() {
 
 const DATE_LIKE = /^\d{4}-\d{2}-\d{2}$/
 const FITNESS_DIRECT_ROUTES = new Set([
-  'today', 'session', 'timer', 'skills', 'plan', 'history',
+  'today', 'session', 'timer', 'plan', 'history',
   'review', 'report', 'muscles', 'readiness', 'strength', 'verlauf',
   'learn', 'exercises', 'anatomy', 'quiz',
   'inbox',
@@ -196,7 +196,8 @@ function Views({ tab, fitnessProps, fuelTab, setFuelTab, relaxTab, setRelaxTab, 
       </div>
     )}
     {tab === 'fitness'  && <FitnessApp  {...fitnessProps} />}
-    {tab === 'sixpack'  && <div data-theme="sixpack" className="min-h-[100dvh] overflow-y-auto bg-[var(--bg)] text-[var(--ink)]"><div className="mx-auto max-w-xl px-4 py-4"><SixPackPromiseCard key={user?.uid || 'anonymous'} uid={user?.uid || null} onSubNav={(id) => navigate('fitness', id)} /></div></div>}
+    {tab === 'sixpack'  && <SixPackApp user={user} onNavigate={navigate} />}
+    {tab === 'skills'   && <SkillsApp user={user} />}
     {tab === 'fuel'     && <FuelWrapper user={user} subTab={fuelTab} onSubTab={setFuelTab} onNavigateShell={navigate} embedded />}
     {tab === 'journal'  && <JournalApp onOpenSession={openSession} onNavigateShell={navigate} runtimeDate={runtimeDate} onRuntimeDateChange={onRuntimeDateChange} />}
     {tab === 'habits'   && <HabitsApp runtimeDate={runtimeDate} onRuntimeDateChange={onRuntimeDateChange} />}

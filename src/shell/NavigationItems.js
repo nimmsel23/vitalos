@@ -13,6 +13,7 @@ export const NAV_ITEMS = [
   { id: 'home',     label: 'Journal', Icon: NotebookPen },
   { id: 'fitness',  label: 'Fitness', Icon: Dumbbell, standaloneUrl: 'https://fitness-vos.web.app' },
   { id: 'sixpack',  label: '6Pack',   Icon: Zap },
+  { id: 'skills',   label: 'Skills',  Icon: Trophy, standaloneUrl: 'https://vos-skills.web.app' },
   { id: 'fuel',     label: 'Fuel',    Icon: Flame, standaloneUrl: 'https://fuel-vos.web.app' },
   { id: 'relax',    label: 'Relax',   Icon: MoonStar, standaloneUrl: 'https://relax-vos.web.app' },
   { id: 'habits',   label: 'Habits',  Icon: CheckSquare },

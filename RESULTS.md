@@ -296,3 +296,8 @@ Worker/Scope.
 Statische Syntax-, JSON- und Diff-Prüfungen erfolgreich. Kein Produktions-
 Deploy; der lokale VitalOS-Stand enthält außerdem Änderungen im Habit-Submodul.
 
+
+## 2026-10-29 — Shell-Wrapper für 6Pack und Skills
+
+- `src/shell/SixPackApp.jsx` bindet 6Pack mit dem Shell-Login, Firestore-Programm, Push und Session-Logging ein.
+- `src/shell/SkillsApp.jsx` stellt Original, Iron Room, Gravity Map und Riso Climb inklusive gemeinsamem Progress-/Sync-Status in VitalOS bereit. `#skills` und die Shell-Navigation öffnen diesen Wrapper; `#fitness/skills` behält den bisherigen Session-Subtab.
