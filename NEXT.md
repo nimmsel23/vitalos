@@ -2,6 +2,11 @@
 
 Aktive Arbeitsliste (max. 5 Punkte) für das vitalos Meta-Repo.
 
+## 2026-10-29 (Pulse, Shell-Tabs)
+
+- [ ] Im Browser und auf dem Handy prüfen (nichts gesehen): Pulse-Composer in der Shell über der Bottom-Nav (`.pulse-embedded` in `pulse.css`), Wischgesten (Schwellen `MIN_DX`/`MAX_MS` in `vos-fitness/src/pulse/useSwipe.js`), eigene Seiten mit Zurück-Taste, neue Fuel-Untertabs. Töpfe, Küche und Tagesfaden wurden ohne ausdrücklichen Auftrag aufgenommen — Nutzer soll entscheiden, ob sie bleiben.
+- [ ] Pulse-Verfeinerung (vorgeschlagen, nicht umgesetzt): Parser („3 Sätze à 8 mit 60“, Supersätze, RPE, Pausen, mehrere Übungen pro Zeile, Cardio mit Distanz/Puls), Plan-Bezug (heutigen Plan-Vorschlag und letzte Gewichte vorbelegen), Streak mit Rest-/Deload-Tagen, Offline-Queue und Undo/Edit eines Eintrags, Auth-Maske auslagern, `.bak`-Dateien in `vos-fitness/src` aufräumen.
+
 ## 2026-10-29 (Branch-Schutz auf master)
 
 - [ ] Der Satz zum Branch-Schutz steht nur in der `AGENTS.md` von skills; die übrigen acht App-Repos bekommen ihn erst mit dem nächsten Release. Der PR-Weg unter Schutz ist nur mit skills PR #5 durchgespielt, die anderen acht Repos sind ungeprüft (ein Required Check `check`, der nie läuft, würde dort jeden PR blockieren).
@@ -134,3 +139,7 @@ Aktive Arbeitsliste (max. 5 Punkte) für das vitalos Meta-Repo.
 **Gemini-Review (potenzielle blinde Flecken, 2026-10-29):**
 *   **Ignorierter interner Fehler:** Die Fehlermeldung `sim: keine Berechtigung: /ev.json` bei der Simulation der Changelog-Berechnung wurde im Output angezeigt, aber in der Analyse und den Schlussfolgerungen nicht thematisiert oder behoben. Dies deutet auf eine ungelöste technische Instabilität in der eigenen Ausführung hin.
 *   **Ungeprüfte Vollständigkeit der Filterlogik:** Claude erklärt die Filterung von Commits (`releaseNotes`) und Pfaden (`isViewPath`) korrekt. Es wird jedoch nicht überprüft, ob diese Filter (z.B. die `VIEW_PATHS` oder die Regex für Commit-Nachrichten) tatsächlich alle *gewünschten* produktrelevanten Änderungen
+
+**Gemini-Review (potenzielle blinde Flecken, 2026-10-29):**
+*   **Ungeprüfte Annahme (UI-Effekt):** Die Behauptung, dass "Review und Muskel-Heatmap damit Daten bekommen", ist eine ungeprüfte Annahme. Claude hat explizit angegeben, dass keine Tests im Browser oder auf dem Handy durchgeführt wurden, um die tatsächliche Darstellung und Funktionalität der UI zu verifizieren.
+*   **Edge-Case (API-Fehler):** Die Fehlerbehandlung für `searchExercises` und `getExercise` (mittels `try...catch` oder `.catch(() => null)`) führt dazu, dass bei einem API-Fehler (z.B. Netzwerkprobleme) die Übung ohne Muskeldaten geloggt wird, selbst wenn ein passender Kataloge
