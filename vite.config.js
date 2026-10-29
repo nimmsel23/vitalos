@@ -198,6 +198,11 @@ export default defineConfig(({ mode }) => {
         plugins: [tailwindcss({ config: resolve(__dirname, 'tailwind.config.cjs') })],
       },
     },
+    // Dep-Scan nur ab index.html – sonst crawlt Vite jede .html der Submodule
+    // (plan-app, coach-dev, catalog-ui, relax-app/physio-dev …) als Einstieg.
+    optimizeDeps: {
+      entries: ['index.html'],
+    },
     server: {
       port: 9190,
       // Nur das Frontend beobachten: Build-Ausgaben, Worktrees und die dev/-Symlinks
