@@ -308,3 +308,15 @@
   border: 1px solid var(--line);
   color: var(--ink);
 }
+
+/* Eingebettet in die VitalOS-Shell (FitnessApp-Untertab 'pulse'): die Shell liefert
+   Hintergrund, Scroll-Fläche und Bottom-Nav — Pulse malt kein eigenes Vollbild. */
+.pulse-embedded { min-height: 0; background: transparent; }
+.pulse-embedded::before, .pulse-embedded::after { content: none; }
+.pulse-embedded .pulse-header { padding: 0.5rem 0.25rem 1rem; }
+.pulse-embedded .pulse-feed { padding: 0.25rem 0 1.5rem; }
+.pulse-embedded .pulse-composer-wrap {
+  position: sticky;
+  bottom: var(--mobile-nav-height, 0px);
+  padding: 0 0 max(0.75rem, env(safe-area-inset-bottom));
+}

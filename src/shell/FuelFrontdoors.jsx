@@ -21,6 +21,19 @@ function FuelFrontdoorView({ frontdoorKey, navigate }) {
   )
 }
 
+// Ein einzelner Schnelleinstieg als eigener Fuel-Untertab (#fuel/tapboard|shutter|tagesfaden).
+export function FuelFrontdoorScreen({ frontdoorKey, navigate }) {
+  return (
+    <div className="min-w-0 p-4 sm:p-8">
+      <QueryClientProvider client={fuelHubQueryClient}>
+        <FuelFrontdoorView frontdoorKey={frontdoorKey} navigate={navigate} />
+      </QueryClientProvider>
+    </div>
+  )
+}
+
+export const FUEL_FRONTDOOR_KEYS = new Set(['tapboard', 'shutter', 'tagesfaden'])
+
 export default function FuelFrontdoors({ navigate }) {
   const [selected, setSelected] = useState('tapboard')
 

@@ -2,7 +2,7 @@ import {
   Dumbbell, Flame, CheckSquare, Settings2,
   Home, UtensilsCrossed, Pill, Microscope, NotebookPen, MoonStar, Shield,
   BarChart3, Zap, DoorOpen, Hammer, LayoutGrid, Trophy, Compass, Target, Landmark, Mic,
-  CalendarDays,
+  CalendarDays, Camera, GitCommitVertical, CookingPot, Refrigerator, MessageSquareText, Grid3x3,
 } from 'lucide-react'
 import { NAV_ITEMS as FITNESS_NAV_ITEMS } from '@constants/NavigationItems.js'
 
@@ -39,12 +39,21 @@ const FITNESS_SIDEBAR_NAV = FITNESS_NAV_ITEMS
 // Log zuerst — die tägliche Kernaktion (analog zu Training bei Fitness),
 // Food/Supps/Mikros sind Nachschlagewerke, die man seltener direkt ansteuert.
 export const SUB_NAV = {
-  fitness: FITNESS_SIDEBAR_NAV,
+  fitness: [{ id: 'pulse', label: 'Pulse', Icon: Zap }, ...FITNESS_SIDEBAR_NAV],
   fuel: [
-    { id: 'log',         label: 'Log',       Icon: NotebookPen },
-    { id: 'food',        label: 'Food',      Icon: UtensilsCrossed },
-    { id: 'supplements', label: 'Supps',     Icon: Pill },
-    { id: 'micros',      label: 'Mikros',    Icon: Microscope },
+    { id: 'log',           label: 'Log',           Icon: NotebookPen },
+    // Schnelleinstiege (fuel-app Frontdoors) und Log-Ansichten als eigene Untertabs;
+    // tapboard/shutter/tagesfaden rendert ShellAppRouter über FuelFrontdoors.jsx.
+    { id: 'tapboard',      label: 'Tap Board',     Icon: Grid3x3 },
+    { id: 'shutter',       label: 'Shutter',       Icon: Camera },
+    { id: 'tagesfaden',    label: 'Tagesfaden',    Icon: MessageSquareText },
+    { id: 'log-dashboard', label: 'Log-Dashboard', Icon: LayoutGrid },
+    { id: 'log-timeline',  label: 'Timeline',      Icon: GitCommitVertical },
+    { id: 'food',          label: 'Food',          Icon: UtensilsCrossed },
+    { id: 'pots',          label: 'Töpfe',         Icon: CookingPot },
+    { id: 'kitchen',       label: 'Küche',         Icon: Refrigerator },
+    { id: 'supplements',   label: 'Supps',         Icon: Pill },
+    { id: 'micros',        label: 'Mikros',        Icon: Microscope },
   ],
   // Die 4 P's des Door-Frameworks (Door v1: journal-app/src/views/door/DoorView.jsx)
   door: [
@@ -90,6 +99,10 @@ export function buildFitnessGateItems() {
   const learn   = FITNESS_NAV_ITEMS.find((item) => item.id === 'learn')
 
   return [
+    {
+      group: 'Pulse',
+      items: [{ id: 'pulse', label: 'Pulse', Icon: Zap }],
+    },
     {
       group: 'Training',
       items: (session?.sub ?? []).map((item) => (

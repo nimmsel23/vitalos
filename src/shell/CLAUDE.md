@@ -183,3 +183,8 @@ unter dem Finger oben steht; horizontale Gesten und Inputs
 die Geste z. B. auf Mobile, wenn das Sheet auf Desktop ein Modal/Drawer ist.
 Eingebaut: Hub-/Fitness-Gate-Sheet, Tab-Bar-Sheets, Übungs-Detail,
 Session-Gate, Session-Sidebar, Habit-Sidebar, Fuel-TapBoard, Relax-Substanz-Detail.
+
+## Pulse und neue Fuel-Untertabs (2026-10-29)
+
+- **Pulse** (Ein-Zeilen-Logger aus `vos-fitness`) ist Fitness-Untertab `pulse` (`#fitness/pulse`, erster Eintrag in `SUB_NAV.fitness` und im Fitness-Gate). `FitnessApp.jsx` importiert den Kern `PulseLog` über den Alias `@pulse` (`vos-fitness/src/pulse`); `user` kommt aus `ShellAppRouter`. Eingebettet über `embedded` (CSS `.pulse-embedded`: kein eigenes Vollbild, Composer klebt über der Bottom-Nav).
+- **Fuel-Untertabs** in `SUB_NAV.fuel`: `log-dashboard` und `log-timeline` (Log-Ansichten, Tabs aus `fuel-app/routes.js`), `pots` (Töpfe) und `kitchen` (Küche), außerdem die Schnelleinstiege `tapboard`, `shutter`, `tagesfaden`. Diese drei rendert `ShellAppRouter` über `FuelFrontdoorScreen` (`FuelFrontdoors.jsx`) statt über `FuelWrapper`. Neue Fuel-Tabs in `fuel-app/routes.js` müssen hier ebenfalls in `SUB_NAV.fuel` eingetragen werden, sonst sind sie in der Shell nicht anwählbar.

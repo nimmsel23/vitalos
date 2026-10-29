@@ -12,6 +12,11 @@ durch eigene Seiten ersetzt (`src/pulse/Pages.jsx`, Hash-Routen `#/menu`, `#/rev
 bleibt der eine Screen mit der Ein-Zeilen-Eingabe; Training, Plan, Review, Verlauf, Lernen und
 Einstellungen öffnet man bewusst als eigene Seite.
 
+Pulse-Aufbau: `src/pulse/PulseLog.jsx` ist der Kern (Feed, Ein-Zeilen-Eingabe, Speichern) ohne Login,
+Seiten und Wischen. `PulseApp.jsx` ist die vos-fitness-Hülle darum (Login, Hash-Seiten, Wischen). Die
+VitalOS-Shell bindet denselben Kern über den Alias `@pulse` als Fitness-Untertab `pulse` ein
+(`src/shell/FitnessApp.jsx`, `#fitness/pulse`). Änderungen am Kern wirken damit in beiden.
+
 ## Project Structure & Module Organization
 
 `vos-fitness` (Hosting site `fitness-vos`) is a Vite/React wrapper for the VitalOS fitness Firebase surface.

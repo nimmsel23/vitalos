@@ -97,6 +97,7 @@ export default defineConfig(({ mode }) => {
 
     '@src':        VITALOS_SRC,
     '@shell':      resolve(VITALOS_SRC, 'shell'),
+    '@pulse':      resolve(__dirname, 'vos-fitness/src/pulse'), // Pulse-Kern (vos-fitness), eingebettet als Fitness-Untertab
     '@coach':      resolve(VITALOS_SRC, 'coach'),
     '@cloud':      resolve(VITALOS_SRC, 'cloud'),
     '@components': resolve(FITNESS_SRC, 'components'),

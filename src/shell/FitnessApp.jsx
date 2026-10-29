@@ -9,6 +9,7 @@ import ExerciseInsightModal from '@fitness-components/ExerciseInsightModal.jsx'
 import { buildFitnessGateItems } from '@shell/NavigationItems.js'
 import { getAnatomy, getAllMuscles, getPlan } from '@db'
 import FitnessAppGate from './FitnessAppGate.jsx'
+import PulseLog from '@pulse/PulseLog.jsx'
 
 function resolveFitnessRoute(id) {
   if (!id || id === 'gate') return { tab: 'gate', sessionSubTab: null, reviewSubTab: null, learnSubTab: null }
@@ -22,12 +23,13 @@ function resolveFitnessRoute(id) {
   if (id === 'muscles' || id === 'readiness' || id === 'verlauf') {
     return { tab: 'review', sessionSubTab: null, reviewSubTab: id, learnSubTab: null }
   }
+  if (id === 'pulse') return { tab: 'pulse', sessionSubTab: null, reviewSubTab: null, learnSubTab: null }
   if (id === 'learn') return { tab: 'learn', sessionSubTab: null, reviewSubTab: null, learnSubTab: 'exercises' }
   if (id === 'exercises' || id === 'anatomy' || id === 'quiz' || id === 'strength') return { tab: 'learn', sessionSubTab: null, reviewSubTab: null, learnSubTab: id }
   return { tab: id, sessionSubTab: null, reviewSubTab: null, learnSubTab: null }
 }
 
-export default function FitnessApp({ recentDays, coverageThreshold, gender, muscleLanguage, taxonomy, subTab, onSubTab, sessionDate, sessionDraft, onOpenSession, onRuntimeDateChange, sidebarPinned, showDesktopChrome }) {
+export default function FitnessApp({ user, recentDays, coverageThreshold, gender, muscleLanguage, taxonomy, subTab, onSubTab, sessionDate, sessionDraft, onOpenSession, onRuntimeDateChange, sidebarPinned, showDesktopChrome }) {
   const [inspectorExercise, setInspectorExercise] = useState(null)
   const [reviewSubTab, setReviewSubTab] = useState(null)
   const [learnSubTab, setLearnSubTab] = useState('exercises')
@@ -125,6 +127,7 @@ export default function FitnessApp({ recentDays, coverageThreshold, gender, musc
               {tab === 'session' && <Session key={sessionDate || 'today'} initialDate={sessionDate} initialDraft={sessionDraft} onInspectExercise={inspectExercise} recentDays={recentDays} coverageThreshold={coverageThreshold} subTab={route.sessionSubTab} onDateChange={onRuntimeDateChange} onSubNav={setTab} />}
               {tab === 'review'  && <WeeklyReview onOpenSession={onOpenSession} onInspectExercise={inspectExercise} muscleLanguage={muscleLanguage} taxonomy={taxonomy} gender={gender} recentDays={recentDays} subTab={activeReviewSubTab} onSubNav={setReviewSubTab} />}
               {tab === 'learn'   && <Learn subTab={activeLearnSubTab} onInspectExercise={inspectExercise} muscleLanguage={muscleLanguage} taxonomy={taxonomy} />}
+              {tab === 'pulse'   && <PulseLog embedded user={user} onOpenMore={() => setTab('gate')} />}
               {tab === 'inbox'   && <Inbox />}
               {tab === 'coach'   && <Coach onInspectExercise={inspectExercise} />}
             </div>
