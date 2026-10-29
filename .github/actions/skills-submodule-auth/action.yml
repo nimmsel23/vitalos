@@ -13,8 +13,10 @@ runs:
       run: |
         set -euo pipefail
         if [ -z "$SKILLS_DEPLOY_KEY" ]; then
-          echo '::error::SKILLS_DEPLOY_KEY is required for the private Skills submodule.'
-          exit 1
+          # skills-dev ist öffentlich: ohne Deploy-Key klont der folgende Submodule-Schritt per HTTPS + Token.
+          # Mit Key (Meta-Repo, fitness-dev) bleibt der SSH-Weg für den Fall, dass das Repo wieder privat wird.
+          echo '::notice::SKILLS_DEPLOY_KEY nicht gesetzt — Skills-Submodule wird per HTTPS geklont (Repo ist öffentlich).'
+          exit 0
         fi
         key_path="$RUNNER_TEMP/skills-submodule-key"
         hosts_path="$RUNNER_TEMP/skills-known-hosts"
