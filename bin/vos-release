@@ -587,6 +587,14 @@ check_lockfile() {
         exit 1
     fi
     info "Lockfile-Check: pnpm-lock.yaml ist aktuell"
+    # Der Check läuft gegen den Arbeitsbaum. Hat pnpm das Lockfile dabei (oder zuvor) geändert, ist es
+    # grün, obwohl das gepushte Lockfile veraltet wäre — genau das hat am 2026-10-29 sechs Deploys
+    # (frozen-lockfile, fuel-app pino) rot gemacht. Deshalb die Änderung mitcommitten.
+    if ! "$REAL_GIT" -C "$VITALOS_DIR" diff --quiet -- pnpm-lock.yaml; then
+        info "pnpm-lock.yaml hat uncommittete Änderungen — wird mitcommittet"
+        run "$REAL_GIT" -C "$VITALOS_DIR" add pnpm-lock.yaml
+        run "$REAL_GIT" -C "$VITALOS_DIR" commit -m "fix(lock): pnpm-lock.yaml an die Modul-package.json angepasst (vos-release)" -- pnpm-lock.yaml
+    fi
 }
 
 main() {
