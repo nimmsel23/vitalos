@@ -25,6 +25,7 @@ STANDALONE_DIRS[learn]="/home/alpha/learn-dev"
 STANDALONE_DIRS[relax]="/home/alpha/relax-dev"
 STANDALONE_DIRS[6pack]="/home/alpha/6pack-dev"
 STANDALONE_DIRS[plan]="/home/alpha/plan-dev"
+STANDALONE_DIRS[skills]="/home/alpha/skills-dev"
 
 SUBMODULE_DIRS[fitness]="/home/alpha/vitalos/fitness-app"
 SUBMODULE_DIRS[fuel]="/home/alpha/vitalos/fuel-app"
@@ -34,23 +35,11 @@ SUBMODULE_DIRS[learn]="/home/alpha/vitalos/learn-app"
 SUBMODULE_DIRS[relax]="/home/alpha/vitalos/relax-app"
 SUBMODULE_DIRS[6pack]="/home/alpha/vitalos/6pack-app"
 SUBMODULE_DIRS[plan]="/home/alpha/vitalos/plan-app"
+SUBMODULE_DIRS[skills]="/home/alpha/vitalos/skills-app"
 
-# skills ist KEIN eigenes Release-Modul im Sinne der anderen: skills-dev hat keinen
-# eigenen Submodule-Master unter ~/vitalos. Es wird als Git-Submodule `Skills`
-# (Branch `fitness`) von fitness-dev/fitness-app gepinnt und geht deshalb immer
-# zusammen mit fitness live (deploy-skills.yml + deploy-fitness.yml in ~/vitalos,
-# ausgelöst vom fitness-app-Pointer-Bump). Siehe skills_preflight()/release_skills().
-SKILLS_DIR="/home/alpha/skills-dev"
-SKILLS_SUBMODULE_PATH="Skills"
-SKILLS_INTEGRATION_BRANCH="fitness"
-
-# plan-Einbettung: plan-dev wird zusätzlich als Submodul `plan` (Branch `fitness`)
-# von fitness-dev/fitness-app gepinnt. `vos-release plan` zieht deshalb origin/fitness
-# per Fast-Forward auf dev nach und bumpt den Gitlink (Pseudo-Modul planembed, läuft
-# vor fitness). Siehe embed_preflight()/embed_release().
-PLAN_DIR="/home/alpha/plan-dev"
-PLAN_SUBMODULE_PATH="plan"
-PLAN_INTEGRATION_BRANCH="fitness"
+# skills, plan und 6pack sind seit 2026-10-29 normale Module: fitness-dev trägt sie nicht mehr als
+# Gitlinks, der Fitness-Build löst sie über die Nachbar-Checkouts auf (plan-app|plan-dev usw.).
+# Ihr Release ist wie bei den anderen dev -> vitalos -> Pointer-Bump im Meta-Repo.
 
 SOURCE_BRANCHES[fitness]="dev"
 SOURCE_BRANCHES[fuel]="dev"
@@ -60,6 +49,7 @@ SOURCE_BRANCHES[learn]="dev"
 SOURCE_BRANCHES[relax]="dev"
 SOURCE_BRANCHES[6pack]="dev"
 SOURCE_BRANCHES[plan]="dev"
+SOURCE_BRANCHES[skills]="dev"
 
 # Submodule-Master-Branch je Modul — alle Module heissen "vitalos" (Rename,
 # siehe fitness-dev/CLAUDE.md "Main branch"). journal-app/learn-app standen
@@ -75,6 +65,7 @@ TARGET_BRANCHES[learn]="vitalos"
 TARGET_BRANCHES[relax]="vitalos"
 TARGET_BRANCHES[6pack]="vitalos"
 TARGET_BRANCHES[plan]="vitalos"
+TARGET_BRANCHES[skills]="vitalos"
 
 # vos-release deployt für fitness ausschliesslich npm run build:firebase
 # (liest src/** + die KB-*Daten*-YAMLs zur Build-Zeit für die generierten
@@ -115,14 +106,14 @@ CACHE_NOISE='^\?\? (\.firebase/.*|firebase-debug\.log|ui-debug\.log|\.worktrees/
 TOOLING_NOISE='^.{2} (\.claude/|(.*/)?\.gitignore$|(.*/)?\.gitattributes$|.*\.bak([.-].*)?$|.*\.sw[po]$|(.*/)?\.DS_Store$)'
 
 # Fuel mini-app submodules are stable fallbacks; fuel releases must not bump them.
-MODULE_ORDER=(skills planembed fitness fuel habits journal learn relax 6pack plan)
+MODULE_ORDER=(skills fitness fuel habits journal learn relax 6pack plan)
 SELECTED_MODULES=()
 PARENT_BUMPS=()
 DRY_RUN=0
 AUTO_YES=0
 
 usage() {
-    cat <<EOF
+    cat <<'EOF'
 vos-release — push standalone repos, merge into vitalos submodule masters, bump vitalos pointers
 
 Usage:
@@ -134,14 +125,8 @@ Usage:
 Modules:
   skills fitness fuel habits journal learn relax 6pack plan
 
-  skills wird über Fitness ausgeliefert: skills-dev dev -> origin/dev, origin/fitness
-  per Fast-Forward nachziehen, Skills-Gitlink in fitness-dev bumpen — danach läuft
-  automatisch der komplette fitness-Flow (Merge nach vitalos, Parent-Bump, CI deployt
-  vos-skills + Fitness).
-
-  plan steckt zusätzlich als Submodul `plan` (Branch fitness) in fitness-app: `vos-release plan`
-  zieht plan-dev origin/fitness per Fast-Forward auf dev nach, bumpt den Gitlink in fitness-dev
-  und nimmt fitness mit. `vos-release skills` impliziert daher `fitness`.
+  skills, plan und 6pack sind eigenständige Module (fitness-dev trägt sie nicht mehr als Gitlinks;
+  der Fitness-Build nimmt die Nachbar-Checkouts). Jedes Modul wird einzeln ausgeliefert.
 
 Behavior:
   - For every module: push standalone dev -> origin/dev, merge dev into the
@@ -198,7 +183,7 @@ require_dir() {
 }
 
 module_exists() {
-    [[ "$1" == "skills" || -n "${STANDALONE_DIRS[$1]:-}" ]]
+    [[ -n "${STANDALONE_DIRS[$1]:-}" ]]
 }
 
 is_doc_path() {
@@ -253,7 +238,7 @@ expect_branch() {
 
 select_modules_interactive() {
     if have_gum; then
-        mapfile -t SELECTED_MODULES < <(printf "%s\n" "${MODULE_ORDER[@]}" | grep -vx planembed | gum choose --no-limit --header "Select modules to release")
+        mapfile -t SELECTED_MODULES < <(printf "%s\n" "${MODULE_ORDER[@]}" | gum choose --no-limit --header "Select modules to release")
         return
     fi
     error "No modules given and gum is not available. Pass modules explicitly or use --all."
@@ -296,20 +281,9 @@ resolve_modules() {
     normalize_selection
 }
 
-# skills geht nur über fitness live -> fitness implizit mitnehmen; Reihenfolge
-# nach MODULE_ORDER (skills vor fitness) und ohne Duplikate.
+# Reihenfolge nach MODULE_ORDER, ohne Duplikate.
 normalize_selection() {
     local m wanted=" ${SELECTED_MODULES[*]} "
-    if [[ "$wanted" == *" skills "* && "$wanted" != *" fitness "* ]]; then
-        info "skills wird über Fitness ausgeliefert — fitness wird mit ausgewählt"
-        wanted+="fitness "
-    fi
-    # plan steckt auch in fitness-app/plan -> Einbettung (planembed) + fitness mitnehmen
-    if [[ "$wanted" == *" plan "* ]]; then
-        info "plan ist in Fitness eingebettet — planembed und fitness werden mit ausgewählt"
-        wanted+="planembed "
-        [[ "$wanted" == *" fitness "* ]] || wanted+="fitness "
-    fi
     SELECTED_MODULES=()
     for m in "${MODULE_ORDER[@]}"; do
         if [[ "$wanted" == *" $m "* ]]; then
@@ -321,7 +295,7 @@ normalize_selection() {
 ensure_symlinks_if_available() {
     if [[ -x "$ENSURE_LINKS_SCRIPT" ]]; then
         for module in "${SELECTED_MODULES[@]}"; do
-            if [[ "$module" == "skills" || "$module" == "planembed" ]]; then
+            if [[ "$module" == "skills" ]]; then
                 continue
             fi
             local standalone_name
@@ -399,67 +373,6 @@ preflight_merge() {
     warn "[$module] Preflight: nur Hook-/Doku-/Backup-Konflikte ($(printf '%s' "$conflicts" | tr '\n' ' ')) — automatisch behandelt"
 }
 
-# Lesender Vorab-Check für skills/planembed (vor jedem Push): richtige Branches, sauber,
-# origin/fitness lässt sich per Fast-Forward auf dev ziehen, Submodule in fitness-dev ok.
-embed_preflight() {
-    local label="$1" dir="$2" subpath="$3" branch="$4"
-    local fit="${STANDALONE_DIRS[fitness]}"
-    require_dir "$dir"
-    require_dir "$fit"
-    expect_branch "$dir" "dev" "$dir"
-    expect_branch "$fit" "dev" "$fit"
-    require_clean_repo "$label" "$dir" "$dir"
-    [[ -e "$fit/$subpath/.git" ]] || { error "[$label] $fit/$subpath ist nicht initialisiert (git submodule update --init $subpath)"; return 1; }
-    if [[ -n "$("$REAL_GIT" -C "$fit/$subpath" status --porcelain 2>/dev/null)" ]]; then
-        error "[$label] $fit/$subpath hat lokale Änderungen — nichts wird gepusht."
-        return 1
-    fi
-
-    "$REAL_GIT" -C "$dir" fetch -q origin dev "$branch" || warn "[$label] fetch origin fehlgeschlagen — Preflight mit altem Stand"
-    # dev muss origin/dev enthalten (kein verlorener Remote-Stand) und origin/fitness muss in dev liegen
-    "$REAL_GIT" -C "$dir" merge-base --is-ancestor origin/dev dev \
-        || { error "[$label] lokales dev hat origin/dev nicht als Vorfahren — erst abgleichen."; return 1; }
-    "$REAL_GIT" -C "$dir" merge-base --is-ancestor "origin/$branch" dev \
-        || { error "[$label] origin/$branch enthält Commits, die nicht in dev liegen — Fast-Forward nicht möglich. Manuell: dev nach $branch mergen."; return 1; }
-    info "[$label] Preflight: dev ($("$REAL_GIT" -C "$dir" rev-parse --short dev)) -> $branch per Fast-Forward möglich"
-}
-
-# skills/planembed: dev pushen, fitness-Branch nachziehen, Gitlink in fitness-dev bumpen und committen.
-# Pushen/Mergen von fitness-dev selbst übernimmt anschließend merge_module fitness.
-embed_release() {
-    local label="$1" dir="$2" subpath="$3" branch="$4"
-    local fit="${STANDALONE_DIRS[fitness]}"
-    local sub="$fit/$subpath"
-
-    info "[$label] Push dev -> origin/dev"
-    run "$REAL_GIT" -C "$dir" push origin dev
-
-    info "[$label] Push dev -> origin/$branch (nur Fast-Forward)"
-    run "$REAL_GIT" -C "$dir" push origin "dev:$branch"
-
-    info "[$label] Gitlink in fitness-dev auf origin/$branch setzen"
-    run "$REAL_GIT" -C "$sub" fetch origin "$branch"
-    run "$REAL_GIT" -C "$sub" checkout --detach "origin/$branch"
-
-    if [[ "$DRY_RUN" -eq 1 ]]; then
-        printf '[dry-run] %q ' "$REAL_GIT" -C "$fit" commit -m "chore($label): bump $subpath submodule" -- "$subpath"
-        printf '\n'
-        return 0
-    fi
-    if "$REAL_GIT" -C "$fit" diff --quiet -- "$subpath"; then
-        info "[$label] Gitlink in fitness-dev war schon aktuell"
-    else
-        # Pathspec: fremde Änderungen in fitness-dev bleiben unangetastet
-        "$REAL_GIT" -C "$fit" add -- "$subpath"
-        "$REAL_GIT" -C "$fit" commit -m "chore($label): bump $subpath submodule to $("$REAL_GIT" -C "$sub" rev-parse --short HEAD)" -- "$subpath"
-    fi
-}
-
-skills_preflight() { embed_preflight skills "$SKILLS_DIR" "$SKILLS_SUBMODULE_PATH" "$SKILLS_INTEGRATION_BRANCH"; }
-release_skills() { embed_release skills "$SKILLS_DIR" "$SKILLS_SUBMODULE_PATH" "$SKILLS_INTEGRATION_BRANCH"; }
-plan_embed_preflight() { embed_preflight plan "$PLAN_DIR" "$PLAN_SUBMODULE_PATH" "$PLAN_INTEGRATION_BRANCH"; }
-plan_embed_release() { embed_release plan "$PLAN_DIR" "$PLAN_SUBMODULE_PATH" "$PLAN_INTEGRATION_BRANCH"; }
-
 merge_module() {
     local module="$1"
     local standalone="${STANDALONE_DIRS[$module]}"
@@ -525,7 +438,7 @@ parent_status_filtered() {
     # Reine Doku-Änderungen (Markdown, docs/) und Firebase-Cache blockieren auch das Meta-Repo nie —
     # der Pointer-Commit läuft mit Pathspec (nur die Submodule), Doku bleibt unangetastet.
     "$REAL_GIT" -C "$VITALOS_DIR" status --short --untracked-files=all -- . "${DOC_EXCLUDES[@]}" 2>/dev/null \
-        | grep -vE '^( M|\?\?) (fitness-app|fuel-app|habit-app|journal-app|learn-app|relax-app|6pack-app|plan-app)$' \
+        | grep -vE '^( M|\?\?) (fitness-app|fuel-app|habit-app|journal-app|learn-app|relax-app|6pack-app|plan-app|skills-app)$' \
         | grep -vE "$CACHE_NOISE" | grep -vE "$TOOLING_NOISE" || true
 }
 
@@ -617,24 +530,12 @@ main() {
 
     local module pre_fail=0
     for module in "${SELECTED_MODULES[@]}"; do
-        if [[ "$module" == "skills" ]]; then
-            skills_preflight || pre_fail=1
-        elif [[ "$module" == "planembed" ]]; then
-            plan_embed_preflight || pre_fail=1
-        else
-            preflight_merge "$module" || pre_fail=1
-        fi
+        preflight_merge "$module" || pre_fail=1
     done
     [[ "$pre_fail" -eq 0 ]] || { error "Preflight fehlgeschlagen — nichts wurde gepusht."; exit 1; }
 
     for module in "${SELECTED_MODULES[@]}"; do
-        if [[ "$module" == "skills" ]]; then
-            release_skills
-        elif [[ "$module" == "planembed" ]]; then
-            plan_embed_release
-        else
-            merge_module "$module"
-        fi
+        merge_module "$module"
     done
 
     check_lockfile
