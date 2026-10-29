@@ -1,5 +1,12 @@
 # Repository Guidelines
 
+## Status: Grobe Variante
+
+Dies ist die **grobe Variante**: ein schlanker Wrapper, der bewusst vieles aus `fitness-app`
+importiert und nur das Nötigste lokal hält. Sie wird **im Nachhinein** (nachträglich) verfeinert
+und aufgeräumt — nicht jetzt. Bis dahin gilt: lieber schnell und funktionierend als perfekt,
+keine Polierarbeit und keine größeren Umbauten vorziehen.
+
 ## Project Structure & Module Organization
 
 `vos-fitness` (Hosting site `fitness-vos`) is a Vite/React wrapper for the VitalOS fitness Firebase surface.
