@@ -37,15 +37,15 @@ Endstand erreicht hat: sofort committen, ohne vorher um Erlaubnis zu fragen.
 
 ## Release-Regel
 
-- Standalone-App: Änderungen aus `dev` erst prüfen, dann in den für diese App aktiven Produktionsbranch übernehmen. Der CI-Workflow des App-Repos deployed die Standalone-App. Ein Meta-Repo-Push kann je nach Workflow zusätzlich einen App-Deploy auslösen.
-- VitalOS-Shell: den gewünschten App-Quellstand im jeweiligen `*-app` Submodule pinnen und den Pointer im Meta-Repo auf `master` committen. Ein autorisierter Push auf `master` löst den Shell-CI-Deploy aus.
+- Release-Weg (seit 2026-10-29): **`dev` → `master` → `vitalos`**. Schritt 1 `dev` → `master` ist ein PR (`vos-release-pr <modul>`); nach grünem `Check` mergt der Auto-Merge, der CI-Workflow des App-Repos deployed die Standalone-App. Schritt 2 `master` → `vitalos` macht `vos-release <modul>` (mergt `origin/master` in den `vitalos`-Branch des `*-app`-Checkouts). Ausführlich: `docs/DEPLOYMENT.md`.
+- VitalOS-Shell: den gewünschten App-Quellstand im jeweiligen `*-app` Submodule pinnen und den Pointer im Meta-Repo auf `master` committen (macht `vos-release`). Ein autorisierter Push auf `master` löst den Shell-CI-Deploy aus. `vos-release` mergt vor dem Push `origin/master` ein und gleicht Submodul-Checkouts an die Pointer an.
 - Ein App-Branch-Push aktualisiert den Meta-Repo-Gitlink nicht. Standalone-App-Release und Shell-Release sind getrennte CI-Ziele.
 - `main` ist für diese Branch-Aufteilung nicht erforderlich; keine Branch-Rolle allein aus dem Namen ableiten.
 
 ## Plan-Integration für Fitness
 
 - Plan-Änderungen für Fitness starten in `~/plan-dev` auf `dev`. Der Plan-Pre-Push-Hook synchronisiert `src/views/Plan/` nach `~/fitness-dev/src/views/Plan/` und committet/pusht `fitness-dev/dev`; Fitness-Preview läuft dort per CI.
-- Der integrierte Fitness-Produktionsweg ist `fitness-dev/dev` -> `fitness-app` auf Branch `vitalos` -> `fitness-app`-Gitlink in `~/vitalos` auf `master`. Das Fitness-Repo deployt seine Standalone-Produktion; der VitalOS-Parent deployt die Shell. `fitness-dev/plan` ist nicht mehr der Plan-Quellpfad.
+- Der integrierte Fitness-Produktionsweg ist `fitness-dev/dev` -> `master` (PR) -> `fitness-app` auf Branch `vitalos` -> `fitness-app`-Gitlink in `~/vitalos` auf `master`. Das Fitness-Repo deployt seine Standalone-Produktion; der VitalOS-Parent deployt die Shell. `fitness-dev/plan` ist nicht mehr der Plan-Quellpfad.
 
 **Grund:** Ein Agent hat am 2026-08-06 seinen Context aufgegeben, bevor
 committed wurde — die Arbeit ging verloren, der User musste manuell
