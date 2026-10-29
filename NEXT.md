@@ -2,6 +2,14 @@
 
 Aktive Arbeitsliste (max. 5 Punkte) für das vitalos Meta-Repo.
 
+## 2026-10-29 (Coach-Tab, Fuel-Average, Vite-Dev, Door v1)
+
+- [ ] Im Browser prüfen (nichts davon gesehen): Coach-Tab mit `CoachApp`-Wrapper (Unter-Tabs „Katalog Browser“ und „Klienten“, Mobil, Firebase-Build) und Fuel-Average-Widgets mit leeren Tagen. Offen: soll der Shell-Coach-Tab langfristig auf die eigenständige `~/coach-dev` verweisen (Coach ist bewusst kein Submodul mehr)?
+- [ ] Vite-Dev-Server (:9190) beobachten: nach dem Neustart ~530 MB, ob `watch.ignored`/`optimizeDeps.entries` das Wachstum Richtung 2 GB dauerhaft verhindern, ist ungemessen. Wächst er weiter, Tailwind-`content`-Pfade und Submodul-Aliase prüfen.
+- [ ] Changelog-Lücke: Folge-Deploys ohne Shell-Änderung (reine Pointer-Bumps) überschreiben `release-info.json` mit `null`; Changelog-Quelle müsste über den letzten Deploy mit Änderung statt `before..after` gebaut werden — nicht entschieden.
+- [ ] Fuel-Auswertungen im Fuel-Repo (Report, Micros, `FirstMealTrend`) rechnen leere Tage evtl. weiter mit; nicht geprüft.
+- [ ] Door v1 (Google Tasks) im Shell-Tab braucht die dauerhafte Google-Verbindung: OAuth-Client/Secret `GOOGLE_OAUTH_CLIENT_SECRET` und Deploy von `functions:journal` aus `~/journal-dev` stehen aus (manuelle Schritte des Nutzers); Migration alter Hot-List-Einträge aus Taskwarrior/Firestore nicht gebaut.
+
 ## 2026-10-28 (Hub-Sheet Desktop)
 
 - [ ] Hub-Layout ab `lg` (Hauptteil + Fitness links, Fuel rechts über 2 Spalten) im echten Browser prüfen; nur die erste Stufe wurde headless bei 1800 px gesehen. Offen: sehr breite Fenster, `DashboardSections` bei 1400 px, 2×2-Kacheln in der schmalen Spalte, Fitness gestapelt.
@@ -92,3 +100,7 @@ Aktive Arbeitsliste (max. 5 Punkte) für das vitalos Meta-Repo.
 **Gemini-Review (potenzielle blinde Flecken, 2026-10-28):**
 *   **Risiko unbemerkter visueller Fehler durch fehlende End-zu-End-Verifikation:** Claude hat die komplexen UI-Änderungen mehrfach umgesetzt und committet, ohne die visuellen Ergebnisse im Browser selbst zu prüfen (weder per Headless-Screenshot für die späteren Stufen noch durch eine explizite Aufforderung an den Nutzer zur visuellen Bestätigung). Dies birgt ein hohes Risiko für unbemerkte Layout- oder Darstellungsfehler, die nur durch eine tatsächliche Betrachtung im Browser sichtbar würden.
 *   **Ungeprüfte Auswirkungen auf responsive Layouts unterhalb des `lg`-Breakpoints:** Obwohl die Änderungen explizit `lg:`-Klassen verwendeten, wurde keine Ver
+
+**Gemini-Review (potenzielle blinde Flecken, 2026-10-29):**
+-   **Unvollständige Problembehandlung/Berichterstattung:** Die gesamte iterative Suche nach den korrekten Ablagepfaden für "Voice Sessions" und "Focus Maps" (und weitere wie Fire/Freedom/Frame/Journal) wird in der Zusammenfassung komplett ausgelassen. Es war ein signifikanter Teil der Session, in dem Claude mehrfach falsche Annahmen über Pfade traf (`~/.voice` vs. `~/.aos/Voice`, `~/voice` vs. `~/.aos/voice`) und erst durch Nutzerinput und weitere Versuche die korrekten Orte (`~/.aos/`) identifizierte. Die Selbstzusammenfassung konzentriert sich nur auf die *erfolgreichen* Code-Änderungen.
+-
