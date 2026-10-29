@@ -3,10 +3,10 @@ import { readFile } from 'node:fs/promises';
 import vm from 'node:vm';
 import { transformWithEsbuild } from 'vite';
 
-// Render the actual shell Views, so dropping the user at the wrapper boundary fails.
-const file = new URL('../src/App.jsx', import.meta.url);
+// Render the actual shell router (seit 9de52d8 in ShellAppRouter statt App.jsx), so dropping the user at the wrapper boundary fails.
+const file = new URL('../src/shell/ShellAppRouter.jsx', import.meta.url);
 const source = await readFile(file, 'utf8');
-const { code } = await transformWithEsbuild(`${source}\nexport { Views };`, file.pathname, { loader: 'jsx', format: 'cjs', jsxFactory: 'h', jsxFragment: 'Fragment' });
+const { code } = await transformWithEsbuild(source, file.pathname, { loader: 'jsx', format: 'cjs', jsxFactory: 'h', jsxFragment: 'Fragment' });
 const sixpackApp = function SixPackApp() {};
 const module = { exports: {} };
 vm.runInNewContext(code, {
@@ -25,7 +25,7 @@ function find(node) {
 }
 for (const uid of ['alice', 'bob', null]) {
   const routes = [];
-  const tree = module.exports.Views({ tab: 'sixpack', user: uid ? { uid } : null, navigate: (...args) => routes.push(args) });
+  const tree = module.exports.default({ tab: 'sixpack', user: uid ? { uid } : null, navigate: (...args) => routes.push(args) });
   const view = find(tree);
   assert(view, '6PackApp remains embedded in the shell');
   assert.equal(view.props.user?.uid || null, uid);
