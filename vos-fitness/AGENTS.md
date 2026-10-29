@@ -7,10 +7,10 @@ importiert und nur das Nötigste lokal hält. Sie wird **im Nachhinein** (nachtr
 und aufgeräumt — nicht jetzt. Bis dahin gilt: lieber schnell und funktionierend als perfekt,
 keine Polierarbeit und keine größeren Umbauten vorziehen.
 
-Bekannte Schwachstelle für die Verfeinerung: Das "Mehr"-Sheet (`src/pulse/MoreSheet.jsx`) passt
-nicht zu Pulse. Pulse ist ein Screen mit einer Zeile, das Sheet bringt dahinter wieder die volle
-Tab-Navigation (Training, Plan, Review, Verlauf, Lernen, Einstellungen) aus `fitness-app`. Das
-Sheet wird im Anschluss neu gedacht, nicht jetzt umgebaut.
+Das frühere "Mehr"-Sheet (Overlay mit Tab-Navigation) passte nicht zu Pulse und wurde 2026-10-29
+durch eigene Seiten ersetzt (`src/pulse/Pages.jsx`, Hash-Routen `#/menu`, `#/review`, …). Pulse
+bleibt der eine Screen mit der Ein-Zeilen-Eingabe; Training, Plan, Review, Verlauf, Lernen und
+Einstellungen öffnet man bewusst als eigene Seite.
 
 ## Project Structure & Module Organization
 

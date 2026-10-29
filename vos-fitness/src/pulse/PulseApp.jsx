@@ -2,12 +2,18 @@ import { useEffect, useMemo, useRef, useState } from 'react'
 import { getSession, saveSession, searchExercises, getSessionHistory } from '@db'
 import { useUser } from '@fitness/contexts/UserContext'
 import PulseFeed, { PulseHeader } from './PulseFeed.jsx'
-import MoreSheet from './MoreSheet.jsx'
+import { MenuPage, SubPage, PAGES } from './Pages.jsx'
 import { parseLogText, slugify } from './parseLog.js'
 import './pulse.css'
 
 function todayISO() {
   return new Date().toISOString().slice(0, 10)
+}
+
+// Seite aus dem Hash (#/review) — leer = Pulse selbst, 'menu' = Mehr-Liste.
+function pageFromHash() {
+  const id = window.location.hash.replace(/^#\/?/, '')
+  return id === 'menu' || PAGES.some((p) => p.id === id) ? id : ''
 }
 
 function computeStreak(history) {
@@ -33,10 +39,16 @@ export default function PulseApp() {
   const [exercises, setExercises] = useState([])
   const [pending, setPending] = useState([])
   const [history, setHistory] = useState([])
-  const [moreOpen, setMoreOpen] = useState(false)
+  const [page, setPage] = useState(pageFromHash)
   const [saveError, setSaveError] = useState(false)
   const sessionRef = useRef(null)
   const exercisesRef = useRef([])
+
+  useEffect(() => {
+    const onHash = () => setPage(pageFromHash())
+    window.addEventListener('hashchange', onHash)
+    return () => window.removeEventListener('hashchange', onHash)
+  }, [])
 
   useEffect(() => {
     if (!user) return
@@ -107,6 +119,10 @@ export default function PulseApp() {
     }
   }
 
+  function go(id) {
+    window.location.hash = id ? `/${id}` : ''
+  }
+
   async function handleAuthSubmit(e) {
     e.preventDefault()
     setAuthError('')
@@ -162,10 +178,15 @@ export default function PulseApp() {
 
   return (
     <div className="pulse-root">
-      <PulseHeader streak={streak} onOpenMore={() => setMoreOpen(true)} />
-      <PulseFeed exercises={exercises} pending={pending} onLog={handleLog} saveError={saveError} onRetrySave={persistSession} />
-      {moreOpen && (
-        <MoreSheet onClose={() => setMoreOpen(false)} sessions={history} signOut={signOut} />
+      {page === 'menu' && <MenuPage onOpen={go} onBack={() => go('')} />}
+      {page && page !== 'menu' && (
+        <SubPage id={page} onBack={() => go('menu')} sessions={history} signOut={signOut} />
+      )}
+      {!page && (
+        <>
+          <PulseHeader streak={streak} onOpenMore={() => go('menu')} />
+          <PulseFeed exercises={exercises} pending={pending} onLog={handleLog} saveError={saveError} onRetrySave={persistSession} />
+        </>
       )}
     </div>
   )

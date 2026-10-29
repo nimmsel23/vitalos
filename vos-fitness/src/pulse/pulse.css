@@ -262,70 +262,42 @@
 }
 
 /* "More" — a single full-screen sheet holding everything that isn't logging */
-.pulse-sheet-backdrop {
-  position: fixed; inset: 0; z-index: 40;
-  background: var(--scrim);
-  animation: pulse-fade 0.25s ease both;
-}
-@keyframes pulse-fade { from { opacity: 0 } to { opacity: 1 } }
-
-.pulse-sheet {
-  position: fixed;
-  left: 0; right: 0; bottom: 0; top: 6%;
-  z-index: 41;
-  background: var(--bg2);
-  border-top: 1px solid var(--line);
-  border-radius: 1.75rem 1.75rem 0 0;
+.pulse-page {
+  position: relative;
+  z-index: 1;
+  max-width: 640px;
+  margin: 0 auto;
+  min-height: 100dvh;
+  min-height: 100vh;
   display: flex;
   flex-direction: column;
-  animation: pulse-sheet-in 0.35s cubic-bezier(0.16, 1, 0.3, 1) both;
-  overflow: hidden;
 }
-@keyframes pulse-sheet-in { from { transform: translateY(5%); opacity: 0.4 } to { transform: translateY(0); opacity: 1 } }
-
-.pulse-sheet-head {
+.pulse-page-head {
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  padding: 1.1rem 1.25rem;
+  gap: 0.9rem;
+  padding: max(1.1rem, env(safe-area-inset-top)) 1.25rem 1rem;
   border-bottom: 1px solid var(--line);
   flex-shrink: 0;
 }
-.pulse-sheet-head h2 {
+.pulse-page-head h2 {
   font-family: var(--p-display);
   font-weight: 800;
   font-size: 1.15rem;
 }
-
-.pulse-sheet-nav {
-  display: flex;
-  gap: 0.4rem;
-  padding: 0.9rem 1.25rem;
-  overflow-x: auto;
-  flex-shrink: 0;
-  border-bottom: 1px solid var(--line);
-}
-.pulse-sheet-tab {
-  font-family: var(--p-display);
-  font-size: 0.78rem;
-  font-weight: 700;
-  padding: 0.5rem 0.9rem;
-  border-radius: 0.8rem;
-  background: var(--card);
-  color: var(--muted);
-  border: 1px solid var(--line);
-  white-space: nowrap;
-}
-.pulse-sheet-tab.active {
-  background: var(--accent);
-  color: var(--bg);
-  border-color: var(--accent);
-}
-
-.pulse-sheet-body {
+.pulse-page-body {
   flex: 1;
-  overflow-y: auto;
-  padding: 1.25rem;
+  padding: 1.25rem 1.25rem 3rem;
+}
+.pulse-menu { display: flex; flex-direction: column; gap: 0.6rem; }
+.pulse-menu-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  margin-bottom: 0;
+  text-align: left;
+  color: var(--ink);
 }
 
 .pulse-icon-btn {
