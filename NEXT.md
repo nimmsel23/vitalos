@@ -2,6 +2,14 @@
 
 Aktive Arbeitsliste (max. 5 Punkte) für das vitalos Meta-Repo.
 
+## 2026-10-29 (Release-Weg dev → master → vitalos)
+
+- [ ] Shell-Promotion nachziehen: Nach den Release-PRs aller neun Module steht `vitalos` (Shell) hinter `master`; `vos-release --all` würde die Pointer bumpen und die Shell neu deployen — nicht ausgeführt, Freigabe offen.
+- [ ] Branch-Schutz auf `master` fehlt in allen neun App-Repos; dazu die lokalen Pre-Push-Hooks in `fitness-dev` und `plan-dev` prüfen (deployen bei Push auf `vitalos` evtl. noch lokal live) und die `*-release`-Wrapper in `~/vitalos/bin` (Wirkung nach dem Umbau ungeprüft).
+- [ ] `CLAUDE.md` in `~/vitalos` beschreibt den Deploy-Weg noch alt („Der EINZIGE aktive Deploy-Pfad ist die CI im Meta-Repo“, `vitalos` als Prod-Branch); `docs/DEPLOYMENT.md` löst das ab, der Verweis in `CLAUDE.md` fehlt. `vos-overview` zeigt die entfernten verschachtelten Klone als „fehlt“ und kennt `skills-app` nicht.
+- [ ] Im Browser/auf dem Gerät prüfen (nichts gesehen): Offline-first-Umbau (Prüfschritte in `~/OFFLINE-FIRST.md`), Notizfeld Door v2 Potential in `journal-vos`, Changelog-Filter gegen echte Commits.
+- [ ] Aufräumen: `~/.local/vos-apps/*-app` (Arbeitskopien für die `master`-Anlage) und `~/.bak-nest-submodules/` können weg; `fuel-os.web.app` (Stand 28. Okt.) hat weiter einen eigenen Standalone-Weg außerhalb von `vos-release`.
+
 ## 2026-10-29 (Coach-Tab, Fuel-Average, Vite-Dev, Door v1)
 
 - [ ] Im Browser prüfen (nichts davon gesehen): Coach-Tab mit `CoachApp`-Wrapper (Unter-Tabs „Katalog Browser“ und „Klienten“, Mobil, Firebase-Build) und Fuel-Average-Widgets mit leeren Tagen. Offen: soll der Shell-Coach-Tab langfristig auf die eigenständige `~/coach-dev` verweisen (Coach ist bewusst kein Submodul mehr)?
@@ -104,3 +112,6 @@ Aktive Arbeitsliste (max. 5 Punkte) für das vitalos Meta-Repo.
 **Gemini-Review (potenzielle blinde Flecken, 2026-10-29):**
 -   **Unvollständige Problembehandlung/Berichterstattung:** Die gesamte iterative Suche nach den korrekten Ablagepfaden für "Voice Sessions" und "Focus Maps" (und weitere wie Fire/Freedom/Frame/Journal) wird in der Zusammenfassung komplett ausgelassen. Es war ein signifikanter Teil der Session, in dem Claude mehrfach falsche Annahmen über Pfade traf (`~/.voice` vs. `~/.aos/Voice`, `~/voice` vs. `~/.aos/voice`) und erst durch Nutzerinput und weitere Versuche die korrekten Orte (`~/.aos/`) identifizierte. Die Selbstzusammenfassung konzentriert sich nur auf die *erfolgreichen* Code-Änderungen.
 -
+
+**Gemini-Review (potenzielle blinde Flecken, 2026-10-29):**
+*   **Ungeprüfte Annahme im `fitness-app` Master-Branch:** Die erste Korrektur des `automerge.yml` im `fitness-app` Master-Branch (`cd $HOME/.local/vos-apps/fitness-app`) hat `base=vitalos` zu `base=master` und `--ref vitalos` zu `--ref master` geändert. Die Zeile `gh workflow run deploy-master.yml` wurde dabei nicht explizit auf `deploy-master.yml` überprüft oder geändert, obwohl die Logik nun `if [ "$base" = master ]` ist. Es wird angenommen, dass `deploy-master.yml` in diesem Kontext weiterhin der korrekte Workflow ist, ohne dies expl
