@@ -200,6 +200,18 @@ export default defineConfig(({ mode }) => {
     },
     server: {
       port: 9190,
+      // Nur das Frontend beobachten: Build-Ausgaben, Worktrees und die dev/-Symlinks
+      // (zeigten auf ganze ~/*-dev-Repos) würden sonst vom Watcher mitverfolgt.
+      watch: {
+        ignored: [
+          '**/dev/**',
+          '**/.claude/**',
+          '**/dist*/**',
+          '**/dist-versions/**',
+          '**/.firebase/**',
+          '**/.worktrees/**',
+        ],
+      },
       proxy: {
         '^/exercises(/|\\?|$)': BACKEND,
         '^/session(/|\\?|$)':   BACKEND,
