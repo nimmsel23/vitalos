@@ -61,6 +61,9 @@ jobs:
       - name: Check embedded 6Pack auth
         run: node scripts/test-sixpack-auth.mjs
 
+      - name: Check shared Firebase messaging
+        run: node scripts/test-firebase-messaging.mjs
+
       - name: Build (firebase mode)
         run: pnpm run build:firebase
 

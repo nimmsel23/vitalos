@@ -321,3 +321,11 @@ Deploy; der lokale VitalOS-Stand enthält außerdem Änderungen im Habit-Submodu
 ## 2026-10-29 — Shell-App-Auswahl aus App.jsx herausgezogen
 
 - Home-Hub-Menü-Apps werden zentral in `src/shell/ShellAppRouter.jsx` an ihre eigenen Wrapper übergeben. `App.jsx` hält Shell-Zustand und Navigation; Settings und Home-Gates besitzen eigene Shell-Komponenten.
+
+
+## 2026-10-30 — Fuel-Fotoscanner: Shell-Messaging-Vertrag repariert
+
+- Fuel-Release `746e3ac` mit Pointer-Commit `17db6ae` übernommen. Erster Shell-CI-Lauf `41051151490` scheiterte beim Build: Fuel `DailyChecklist.jsx` importiert `messaging`, der gemeinsame Shell-Firebase-Layer exportierte nur den asynchronen Getter. Es wurde dadurch kein neuer Shell-Stand veröffentlicht.
+- Gemeinsamen Firebase-Layer um den kompatiblen Live-Export `messaging` ergänzt. Die bestehende asynchrone `isSupported()`-Prüfung bleibt vor der FCM-Initialisierung; unterstützte Browser teilen dieselbe Instanz mit dem Getter, fehlende Unterstützung oder fehlschlagende Support-Erkennung werfen nicht beim App-Start. Explizite Getter-Aufrufe können Fehler weiterhin melden.
+- Neuer ausführbarer Regressionstest `scripts/test-firebase-messaging.mjs` prüft unterstützte, nicht unterstützte und fehlschlagende Support-Erkennung am tatsächlichen Firebase-Modul. Test läuft zusätzlich in `deploy-shell.yml`.
+- Validiert: neuer Messaging-Test, bestehender 6Pack-Shell-Auth-Test, `git diff --check` und vollständiger `pnpm run build:firebase` einschließlich generierter KB-Daten, Service Worker und Splash erfolgreich. Build im sichtbaren Kitty-Tab ausgeführt; bekannte Chunk-Größenwarnung.

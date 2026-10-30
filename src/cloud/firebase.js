@@ -43,4 +43,14 @@ export function getVertexAI() {
 // Messaging ist nicht in jedem Kontext verfügbar (z.B. Safari < 16.4, kein
 // installiertes PWA-Icon) — isSupported() vorher prüfen, sonst wirft
 // getMessaging() in nicht unterstützten Browsern.
-export const getMessagingIfSupported = () => isSupported().then((ok) => (ok ? getMessaging(app) : null));
+// Fuel imports the instance as a live binding; shell callers await the getter.
+export let messaging = null;
+export async function getMessagingIfSupported() {
+  if (messaging) return messaging;
+  if (!(await isSupported())) return null;
+  messaging = getMessaging(app);
+  return messaging;
+}
+// Prepare Fuel's compatible export without throwing during app startup on
+// unsupported/private browsers. Explicit callers can still surface failures.
+getMessagingIfSupported().catch(() => {});

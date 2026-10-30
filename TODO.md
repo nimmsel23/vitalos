@@ -14,3 +14,11 @@
 - [x] 2026-10-21: 6Pack-Changelog universalisieren, gemeinsame Quelle für VitalOS/Habits/6Pack und Vendor-CLI bereitstellen.
 
 - [x] 2026-10-21: Im Shell-Betrieb einen gemeinsamen VitalOS-Changelog mit App-Änderungen und zentraler Bestätigung nutzen.
+
+
+## 2026-10-30 — Fuel-Scanner-Release: Firebase-Messaging-Vertrag
+
+- [x] Fehlenden `messaging`-Export im gemeinsamen Shell-Firebase-Layer für eingebettetes Fuel ergänzen, Browserunterstützung vor Initialisierung prüfen und bestehenden asynchronen Getter erhalten.
+- [x] Regressionstest für unterstützten Browser, fehlende Unterstützung und fehlschlagende Support-Prüfung; im Shell-CI-Workflow ausführen.
+- [x] Vollständiger lokaler `pnpm run build:firebase` erfolgreich.
+- [ ] Erneuten Live-Deploy prüfen (erster Lauf 41051151490 scheiterte am fehlenden Export).
