@@ -21,4 +21,4 @@
 - [x] Fehlenden `messaging`-Export im gemeinsamen Shell-Firebase-Layer für eingebettetes Fuel ergänzen, Browserunterstützung vor Initialisierung prüfen und bestehenden asynchronen Getter erhalten.
 - [x] Regressionstest für unterstützten Browser, fehlende Unterstützung und fehlschlagende Support-Prüfung; im Shell-CI-Workflow ausführen.
 - [x] Vollständiger lokaler `pnpm run build:firebase` erfolgreich.
-- [ ] Erneuten Live-Deploy prüfen (erster Lauf 41051151490 scheiterte am fehlenden Export).
+- [x] Shell-CI 41051683942 mit Fix 2e69ba3 erfolgreich; Live-Bundle enthält Foto-Warteliste/Etikett/Katalogübernahme, frischer Browser rendert ohne unbehandelte JS-Fehler.
