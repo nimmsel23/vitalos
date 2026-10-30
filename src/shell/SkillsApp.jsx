@@ -1,4 +1,4 @@
-import { useCallback, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import SkillsCard from '../../skills-app/SkillsCard.jsx'
 import DesignHost from '../../skills-app/designs/DesignHost.jsx'
 import DesignSwitcher from '../../skills-app/designs/DesignSwitcher.jsx'
@@ -7,6 +7,8 @@ import { useProgress } from '../../skills-app/data/useProgress.js'
 import { logWorkoutAsSession } from '../../fitness-app/src/lib/logExternalWorkout.js'
 import '@vos-skills/skills.css'
 
+const SKILLS_WORKOUT_COMPLETE_EVENT = 'skills:workout-completed'
+
 export default function SkillsApp() {
   const [design, setDesign] = useState(readDesign)
   const { status, pending, user, error, storageWarning } = useProgress()
@@ -14,6 +16,15 @@ export default function SkillsApp() {
   const onWorkoutComplete = useCallback((workout) => logWorkoutAsSession(workout).catch((error) => {
     console.error('Skills-Workout konnte nicht ins Fitness-Session-Log geschrieben werden:', error)
   }), [])
+
+  useEffect(() => {
+    const handleWorkoutComplete = (event) => {
+      if (event.detail?.source !== 'skills') return
+      onWorkoutComplete(event.detail)
+    }
+    window.addEventListener(SKILLS_WORKOUT_COMPLETE_EVENT, handleWorkoutComplete)
+    return () => window.removeEventListener(SKILLS_WORKOUT_COMPLETE_EVENT, handleWorkoutComplete)
+  }, [onWorkoutComplete])
 
   function changeDesign(id) {
     saveDesign(id)
