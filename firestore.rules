@@ -64,7 +64,7 @@ service cloud.firestore {
         && request.resource.data.dataUrl.matches('data:image/jpeg;base64,[A-Za-z0-9+/=]+');
     }
 
-    // >>> module: fitness-app/Skills/firestore/skills.rules.part
+    // >>> module: skills-app/firestore/skills.rules.part
 // Skills domain; embedded and deployed only from VitalOS.
     match /skillsCatalogs/{version} {
       allow read: if request.auth != null;
