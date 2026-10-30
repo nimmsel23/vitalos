@@ -21,7 +21,7 @@ export default function SixPackApp({ user, onNavigate }) {
           key={uid || 'anonymous'}
           uid={uid}
           coachingNotes={getAllCoachingNotes()}
-          onSubNav={(id) => id === 'skills' && onNavigate?.('fitness', 'skills')}
+          onSubNav={(id) => id === 'skills' && onNavigate?.('skills')}
           onWorkoutComplete={onWorkoutComplete}
           loadRemoteProgram={loadProgram}
           saveRemoteProgram={saveProgram}

@@ -25,7 +25,7 @@ function localToday() {
 
 const DATE_LIKE = /^\d{4}-\d{2}-\d{2}$/
 const FITNESS_DIRECT_ROUTES = new Set([
-  'today', 'session', 'timer', 'plan', 'history',
+  'today', 'session', 'plan', 'history',
   'review', 'report', 'muscles', 'readiness', 'strength', 'verlauf',
   'learn', 'exercises', 'anatomy', 'quiz',
   'inbox',
@@ -47,6 +47,15 @@ function readHashState() {
   const [mainTab = 'home', second = null, third = null] = raw.split('/')
   const subTab = second && !DATE_LIKE.test(second) && second !== 'today' ? second : null
   const date = resolveHashDate(second) || resolveHashDate(third)
+
+  // Legacy Fitness deep links for the extracted apps now open their own
+  // top-level Shell routes.
+  if (mainTab === 'timer' || (mainTab === 'fitness' && second === 'timer')) {
+    return { tab: 'sixpack', subTab: null, date: null }
+  }
+  if (mainTab === 'fitness' && second === 'skills') {
+    return { tab: 'skills', subTab: null, date: null }
+  }
 
   if (FITNESS_DIRECT_ROUTES.has(mainTab)) {
     return {
@@ -385,6 +394,8 @@ export default function App() {
 
   function handleHomeGateSelect(id) {
     setHomeGate(null)
+    if (id === 'skills') { navigate('skills'); return }
+    if (id === 'timer') { navigate('sixpack'); return }
     setFitnessTab(id)
     setTab('fitness')
   }
@@ -551,7 +562,12 @@ export default function App() {
       const fitnessProps = {
         recentDays, coverageThreshold,
         gender: anatomyModel, muscleLanguage, taxonomy,
-        subTab: fitnessTab, onSubTab: setFitnessTab,
+        subTab: fitnessTab,
+        onSubTab: (id) => {
+          if (id === 'skills') { navigate('skills'); return }
+          if (id === 'timer') { navigate('sixpack'); return }
+          setFitnessTab(id)
+        },
         sessionDate: sessionDate || runtimeDate, sessionDraft, onOpenSession: openSession,
         onRuntimeDateChange: setRuntimeDate,
         onNavigateShell: navigate,
