@@ -1,6 +1,6 @@
 # Deployment — Branch-Modell und Release-Weg
 
-Stand: 2026-10-29. Löst die Beschreibung in `CLAUDE.md` („Deploy-Flow Gesamtbild“, „Der EINZIGE aktive Deploy-Pfad
+Stand: 2026-10-30. Löst die Beschreibung in `CLAUDE.md` („Deploy-Flow Gesamtbild“, „Der EINZIGE aktive Deploy-Pfad
 ist die CI im Meta-Repo“) für die App-Repos ab; die Shell bleibt beim Meta-Repo. Historie und Befund des
 PR-Umbaus: `CI-DEPLOY-PR-FLOW.md`.
 
@@ -99,8 +99,8 @@ wie die anderen. Alte verschachtelte Checkouts: `~/.bak-nest-submodules/`.
   committet das Lockfile jetzt mit; manuell: `pnpm install --no-frozen-lockfile`, committen, pushen. Meta-Workflows
   haben keinen Pfadfilter auf das Lockfile — nach dem Fix den Shell-Push abwarten bzw. betroffene Workflows per
   `gh workflow run` starten.
-- **`Private Skills submodule access` bricht ab:** `SKILLS_DEPLOY_KEY` fehlt. Die Action
-  (`.github/actions/skills-submodule-auth`) überspringt den Key seit 2026-10-29, weil `skills-dev` öffentlich ist.
+- **Fitness-Dependabot scheitert beim Skills-Checkout:** `fitness-dev` braucht `SKILLS_DEPLOY_KEY` als Dependabot-Secret; der passende öffentliche Schlüssel muss in `skills-dev` als read-only Deploy Key hinterlegt sein. `Permission denied (publickey)` bedeutet meist, dass beide Schlüssel nicht zusammenpassen.
+- **Firebase-Preview für Dependabot:** Der Preview-Deploy benötigt einen Firebase-Service-Account. Diesen nicht als Dependabot-Secret freigeben; Fitness-PR [#15](https://github.com/nimmsel23/fitness-dev/pull/15) überspringt den Preview-Deploy für Dependabot, während der separate Check Lint und Build ausführt. Bis PR #15 gemergt ist, ist diese Ausnahme noch nicht aktiv.
 - **Habits-/Learn-Build findet `views/SixPack/workoutDoc.js` nicht:** Der Resolver `miniAppSubmodulePlugin` fehlt oder
   zeigt auf einen Quellbaum ohne Nachbar-Checkout. Habits bindet ihn zusätzlich für `~/vitalos/fitness-app` ein.
 - **Logs:** `gh run list -R nimmsel23/<repo>`, `gh run view <id> --log-failed`; Stand der Live-Sites am
