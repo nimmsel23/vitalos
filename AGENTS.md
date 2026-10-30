@@ -3,6 +3,13 @@
 ## Paketmanager für Apps
 pnpm 
 
+- In `*-dev`-Checkouts kann die Codex-Sandbox den globalen pnpm-Engine-Store
+  (`~/.local/share/pnpm/package-manager-store`) schreibgeschützt einbinden.
+  Dann scheitert die Auflösung der in `package.json` gepinnten pnpm-Version mit
+  `ERR_PNPM_STORE_DIR_OPEN_OPERATION_LOCK`. pnpm-Befehle in diesen Checkouts
+  mit Schreibzugriff außerhalb der Sandbox ausführen; den Package-Manager-Pin
+  beibehalten und den Build nicht durch direkten Aufruf von Vite umgehen.
+
 ## Commit-Regel (verbindlich)
 
 **Immer committen, nie fragen.** Sobald eine Aufgabe — egal ob vom Hauptagenten
