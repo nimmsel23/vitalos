@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+# vos-door.web.app ist ein Hosting-Target von journal-dev: gleicher Code, gleiches Release -> Modul "journal".
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+exec "$SCRIPT_DIR/vos-release" journal "$@"
