@@ -331,3 +331,7 @@ Deploy; der lokale VitalOS-Stand enthält außerdem Änderungen im Habit-Submodu
 - Validiert: neuer Messaging-Test, bestehender 6Pack-Shell-Auth-Test, `git diff --check` und vollständiger `pnpm run build:firebase` einschließlich generierter KB-Daten, Service Worker und Splash erfolgreich. Build im sichtbaren Kitty-Tab ausgeführt; bekannte Chunk-Größenwarnung.
 
 - Veröffentlichung erfolgreich: Fix `2e69ba3` gepusht, Shell-CI `41051683942` grün (`https://github.com/nimmsel23/vitalos/actions/runs/41051683942`). `https://vitalos.web.app` antwortet mit 200; tatsächliches App-Bundle `/assets/index-DKFGd6dq.js` enthält Fuel-Foto-Warteliste, Etikett-Modus und Katalogübernahme. Service Worker zuletzt geändert: 2026-10-30 11:57:46 UTC. Frischer isolierter Browser ohne Login rendert Fuel und Shell ohne unbehandelte JavaScript-Fehler. Kein authentifizierter Kamera-/App-Check-Test und keine Nutzerdaten geändert.
+
+## 2026-10-31 — Dependabot
+
+Enabled Dependabot alerts and security updates. Configured weekly GitHub Actions and npm/pnpm updates; version updates target `master`. Minor/patch updates are grouped; vendored mini-app-shell copies stay maintained at their source. Validated YAML, repository manifest paths and update targets.
