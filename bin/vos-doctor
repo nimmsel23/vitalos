@@ -35,12 +35,12 @@ CROSS_ALIASES_PKG = VITALOS / "packages" / "cross-app-aliases" / "index.mjs"
 
 # module -> (standalone_dir, submodule_dir, github_repo, uses_dot_githooks)
 MODULES: dict[str, tuple[Path, Path, str, bool]] = {
-    "fuel":    (HOME / "fuel-dev",    VITALOS / "fuel-app",    "nimmsel23/fuel-dev",    True),
-    "fitness": (HOME / "fitness-dev", VITALOS / "fitness-app", "nimmsel23/fitness-dev", True),
-    "habits":  (HOME / "habits-dev",  VITALOS / "habit-app",   "nimmsel23/habits-dev",  True),
-    "journal": (HOME / "journal-dev", VITALOS / "journal-app", "nimmsel23/journal-dev", True),
-    "relax":   (HOME / "relax-dev",   VITALOS / "relax-app",   "nimmsel23/relax-dev",   False),
-    "learn":   (HOME / "learn-dev",   VITALOS / "learn-app",   "nimmsel23/learn-dev",   True),
+    "fuel":    (HOME / "dev" / "fuel-dev",    VITALOS / "fuel-app",    "nimmsel23/fuel-dev",    True),
+    "fitness": (HOME / "dev" / "fitness-dev", VITALOS / "fitness-app", "nimmsel23/fitness-dev", True),
+    "habits":  (HOME / "dev" / "habits-dev",  VITALOS / "habit-app",   "nimmsel23/habits-dev",  True),
+    "journal": (HOME / "dev" / "journal-dev", VITALOS / "journal-app", "nimmsel23/journal-dev", True),
+    "relax":   (HOME / "dev" / "relax-dev",   VITALOS / "relax-app",   "nimmsel23/relax-dev",   False),
+    "learn":   (HOME / "dev" / "learn-dev",   VITALOS / "learn-app",   "nimmsel23/learn-dev",   True),
 }
 VITALOS_REPO = "nimmsel23/vitalos"
 

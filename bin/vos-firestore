@@ -46,7 +46,7 @@ SELF = Path(__file__).resolve()
 FITNESS_PY = HOME / ".local/share/uv/tools/fitness-agent/bin/python3"
 KLIENTEN_DIR = HOME / "vital" / "Klienten"
 AOS = HOME / ".aos"
-RELAX_DATA_DIR = Path(os.environ.get("RELAX_DATA_DIR", str(HOME / "relax-dev" / "data"))).expanduser()
+RELAX_DATA_DIR = Path(os.environ.get("RELAX_DATA_DIR", str(HOME / "dev" / "relax-dev" / "data"))).expanduser()
 
 app = typer.Typer(add_completion=False, no_args_is_help=True, help=__doc__)
 
@@ -256,7 +256,7 @@ def _backend(args: list[str]) -> int:
     import subprocess
     argv = [sys.executable, "-I", "-m", "backend", *args]
     logger.info("backend " + " ".join(args))
-    return subprocess.call(argv, cwd=str(HOME / "fitness-dev"))
+    return subprocess.call(argv, cwd=str(HOME / "dev" / "fitness-dev"))
 
 
 def fitness_push(uid: Optional[str], dry_run: bool) -> int:
@@ -425,7 +425,7 @@ def _no_push(domain: str):
 def _relax_operator(uid: Optional[str]) -> str:
     from fitness.firestore._db import UID as operator
     if uid and uid != operator:
-        logger.error("Relax-Daten (~/relax-dev/data) gehören dem Operator — --uid darf nur die Operator-UID sein.")
+        logger.error("Relax-Daten (~/dev/relax-dev/data) gehören dem Operator — --uid darf nur die Operator-UID sein.")
         raise typer.Exit(1)
     return operator
 
@@ -513,7 +513,7 @@ def _run(direction: str, domain: Domain, uid: Optional[str], names: Optional[lis
             if operator not in targets:
                 if domain == Domain.alle:
                     continue  # Relax-Daten gehören dem Operator — bei 'alle' still überspringen
-                logger.error("Relax-Daten (~/relax-dev/data) gehören dem Operator — nur 'ich'/'operator'/Operator-Name erlaubt.")
+                logger.error("Relax-Daten (~/dev/relax-dev/data) gehören dem Operator — nur 'ich'/'operator'/Operator-Name erlaubt.")
                 raise typer.Exit(1)
             run_for = [operator]
         for u in run_for:

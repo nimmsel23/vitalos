@@ -1,4 +1,4 @@
 #!/usr/bin/env bash
 # Compatibility entrypoint; Coach now owns its release.
 set -euo pipefail
-exec /home/alpha/coach-dev/bin/coach-release "$@"
+exec /home/alpha/dev/coach-dev/bin/coach-release "$@"

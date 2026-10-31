@@ -26,7 +26,7 @@ const RELAX   = appDir('relax-app', 'relax-dev')
 // SSOT für alle Cross-App-Aliase (Sub-Repo A importiert Code aus Sub-Repo B).
 // Wird als npm-Workspace-Package in ~/vitalos symlinked — nur erreichbar,
 // wenn der aufrufende vite.config.js unter vitalos genestet ist (Submodule
-// oder Meta-Repo-Checkout in der CI). Standalone-Checkouts (~/fitness-dev
+// oder Meta-Repo-Checkout in der CI). Standalone-Checkouts (~/dev/fitness-dev
 // ohne vitalos-Parent) sehen dieses Package gar nicht und fallen in ihrem
 // eigenen vite.config.js auf die alte siblingDir()/resolveSibling()-Logik
 // zurück.

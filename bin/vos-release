@@ -20,15 +20,15 @@ declare -A SOURCE_BRANCHES
 declare -A TARGET_BRANCHES
 declare -A NOISE_PATTERNS
 
-STANDALONE_DIRS[fitness]="/home/alpha/fitness-dev"
-STANDALONE_DIRS[fuel]="/home/alpha/fuel-dev"
-STANDALONE_DIRS[habits]="/home/alpha/habits-dev"
-STANDALONE_DIRS[journal]="/home/alpha/journal-dev"
-STANDALONE_DIRS[learn]="/home/alpha/learn-dev"
-STANDALONE_DIRS[relax]="/home/alpha/relax-dev"
-STANDALONE_DIRS[6pack]="/home/alpha/6pack-dev"
-STANDALONE_DIRS[plan]="/home/alpha/plan-dev"
-STANDALONE_DIRS[skills]="/home/alpha/skills-dev"
+STANDALONE_DIRS[fitness]="/home/alpha/dev/fitness-dev"
+STANDALONE_DIRS[fuel]="/home/alpha/dev/fuel-dev"
+STANDALONE_DIRS[habits]="/home/alpha/dev/habits-dev"
+STANDALONE_DIRS[journal]="/home/alpha/dev/journal-dev"
+STANDALONE_DIRS[learn]="/home/alpha/dev/learn-dev"
+STANDALONE_DIRS[relax]="/home/alpha/dev/relax-dev"
+STANDALONE_DIRS[6pack]="/home/alpha/dev/6pack-dev"
+STANDALONE_DIRS[plan]="/home/alpha/dev/plan-dev"
+STANDALONE_DIRS[skills]="/home/alpha/dev/skills-dev"
 
 SUBMODULE_DIRS[fitness]="/home/alpha/vitalos/fitness-app"
 SUBMODULE_DIRS[fuel]="/home/alpha/vitalos/fuel-app"

@@ -14,7 +14,7 @@ NC='\033[0m' # No Color
 
 # Base directories
 VITALOS_DIR="/home/alpha/vitalos"
-STANDALONE_BASE="/home/alpha"
+STANDALONE_BASE="/home/alpha/dev"
 
 # VOS modules configuration
 declare -A MODULES

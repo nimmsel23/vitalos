@@ -13,15 +13,15 @@ set -euo pipefail
 
 # Modul -> Repo | lokaler Klon | Quell-Branch | Ziel-Branch
 declare -A CFG=(
-  [fitness]="nimmsel23/fitness-dev|$HOME/fitness-dev|dev|master"
-  [fuel]="nimmsel23/fuel-dev|$HOME/fuel-dev|dev|master"
-  [habits]="nimmsel23/habits-dev|$HOME/habits-dev|dev|master"
-  [journal]="nimmsel23/journal-dev|$HOME/journal-dev|dev|master"
-  [learn]="nimmsel23/learn-dev|$HOME/learn-dev|dev|master"
-  [relax]="nimmsel23/relax-dev|$HOME/relax-dev|dev|master"
-  [plan]="nimmsel23/plan-dev|$HOME/plan-dev|dev|master"
-  [6pack]="nimmsel23/6pack-dev|$HOME/6pack-dev|dev|master"
-  [skills]="nimmsel23/skills-dev|$HOME/skills-dev|dev|master"
+  [fitness]="nimmsel23/fitness-dev|$HOME/dev/fitness-dev|dev|master"
+  [fuel]="nimmsel23/fuel-dev|$HOME/dev/fuel-dev|dev|master"
+  [habits]="nimmsel23/habits-dev|$HOME/dev/habits-dev|dev|master"
+  [journal]="nimmsel23/journal-dev|$HOME/dev/journal-dev|dev|master"
+  [learn]="nimmsel23/learn-dev|$HOME/dev/learn-dev|dev|master"
+  [relax]="nimmsel23/relax-dev|$HOME/dev/relax-dev|dev|master"
+  [plan]="nimmsel23/plan-dev|$HOME/dev/plan-dev|dev|master"
+  [6pack]="nimmsel23/6pack-dev|$HOME/dev/6pack-dev|dev|master"
+  [skills]="nimmsel23/skills-dev|$HOME/dev/skills-dev|dev|master"
 )
 
 die() { printf '[vos-release-pr] %s\n' "$*" >&2; exit 1; }

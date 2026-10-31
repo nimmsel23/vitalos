@@ -2,7 +2,7 @@
 """vlog — Fitness + Relax + Fuel loggen, ohne laufende Server.
 
 Ein Einstieg für das, was sonst drei Tools in drei Repos sind. Alle Pfade
-schreiben direkt in die Dateien unter ~/.aos bzw. ~/relax-dev/data — kein
+schreiben direkt in die Dateien unter ~/.aos bzw. ~/dev/relax-dev/data — kein
 :9150, :9000, :9123 nötig.
 
   vlog fitness "Kreuzheben 60" "Back Squat 3x5@60" "Frontkniebeuge 60" \\

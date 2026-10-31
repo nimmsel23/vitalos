@@ -174,8 +174,8 @@ service cloud.firestore {
     }
 
     // ── Coach-App (coach-dev / vos-coach) + Plan-App (plan-dev / vos-plan) ───
-    // Eigene App-Rules liegen in ~/coach-dev/firestore.rules bzw.
-    // ~/plan-dev/firestore.rules. Deploybar ist nur dieses konsolidierte Set
+    // Eigene App-Rules liegen in ~/dev/coach-dev/firestore.rules bzw.
+    // ~/dev/plan-dev/firestore.rules. Deploybar ist nur dieses konsolidierte Set
     // aus ~/vitalos fuer das gemeinsame fitness-aos. Plan-App nutzt dieselben
     // routines/workouts/wf_workouts/macrocycles-Collections wie Coach-App,
     // keine eigenen Regeln noetig.

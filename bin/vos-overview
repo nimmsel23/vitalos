@@ -4,9 +4,9 @@
 Jede VOS-Mini-App existiert mehrfach:
   standalone  ~/<m>-dev            Arbeitsbranch `dev`, hier arbeitet man und `vos-release` pusht von hier
   vitalos     ~/vitalos/<m>-app    Submodul auf Branch `vitalos` (Build/CI im Meta-Repo)
-  nested      ~/fitness-dev/<m>    6pack/plan zusätzlich als Submodul INNERHALB von fitness-dev
+  nested      ~/dev/fitness-dev/<m>    6pack/plan zusätzlich als Submodul INNERHALB von fitness-dev
 
-Coach ist eigenständig in ~/coach-dev. Dort liegt `vitalos` als Checkout des
+Coach ist eigenständig in ~/dev/coach-dev. Dort liegt `vitalos` als Checkout des
 VitalOS-Branches `coach`; dieser Integrationspfad gehört nicht zu vos-release.
 
 Das Skript zeigt je Klon Branch/Stand/Sync/Dirty, ob Pointer auf lokal-only Commits zeigen (CI-Falle
@@ -52,8 +52,8 @@ logger.add(sys.stderr, level="WARNING", format="<level>{message}</level>")
 HOME = Path.home()
 GIT = "/usr/bin/git"  # am ~/aos/bin/git-Wrapper vorbei (nur lesende Befehle)
 VITALOS = HOME / "vitalos"
-FITNESS_DEV = HOME / "fitness-dev"
-COACH_DEV = HOME / "coach-dev"
+FITNESS_DEV = HOME / "dev" / "fitness-dev"
+COACH_DEV = HOME / "dev" / "coach-dev"
 SHELL_PKG = VITALOS / "packages" / "mini-app-shell"
 DEPLOY_WORKFLOWS = VITALOS / ".github" / "workflows"
 REPORT_TZ = ZoneInfo("Europe/Vienna")
@@ -373,7 +373,7 @@ class BranchRel:
 def branch_relations() -> list[BranchRel]:
     out = []
     for m, (sa, _, _) in MODULES.items():
-        repo = HOME / sa
+        repo = HOME / "dev" / sa
         if not is_repo(repo):
             continue
         out.append(
@@ -415,7 +415,7 @@ def sw_inventory() -> tuple[list[SwFile], list[dict]]:
     seen_stores: set[str] = set()
     roots: list[Path] = []
     for _, (sa, _, nested) in MODULES.items():
-        roots.append(HOME / sa)
+        roots.append(HOME / "dev" / sa)
         if nested:
             roots.append(FITNESS_DEV / nested)
     roots.append(VITALOS)  # Meta-Shell
@@ -496,7 +496,7 @@ def build_plan(clones: dict[tuple[str, str], Clone], pointers: list[Pointer], re
     stale = [p for p in pointers if p.parent == "fitness-dev" and p.state in ("stale", "local-only")]
     if stale:
         names = " ".join(p.child for p in stale)
-        add("~/fitness-dev", f"nested Pointer in fitness-dev ({names}) weichen ab — nur relevant, solange 6pack/plan dort Submodule bleiben",
+        add("~/dev/fitness-dev", f"nested Pointer in fitness-dev ({names}) weichen ab — nur relevant, solange 6pack/plan dort Submodule bleiben",
             "Strukturfrage: sind die nested Submodule neben ~/<m>-dev + vitalos/<m>-app überhaupt noch nötig?",
             "Entscheidung nötig; kein Pointer-Commit auf lokal-only Commits (CI: not our ref)")
     # 4) dev -> vitalos-Branch mergen (macht vos-release)
@@ -659,7 +659,7 @@ def render(clones, pointers, rels, sw_files, shells, plan, coach: CoachOverview 
             t.add_column(col)
         t.add_row(p.parent, p.child, p.recorded or "—", p.checked_out or "—", f"[{color}]{p.state}[/] {p.detail}")
         console.print(t)
-        console.print("[dim]Coach-Releases gehören zu ~/coach-dev/bin/coach-release. Shell-Änderungen in den Branch coach werden bewusst integriert.[/]")
+        console.print("[dim]Coach-Releases gehören zu ~/dev/coach-dev/bin/coach-release. Shell-Änderungen in den Branch coach werden bewusst integriert.[/]")
 
     if "plan" in parts:
         t = Table(title="Push-Reihenfolge (Blätter → Wurzel). Ausführen: vos-release; dieses Skript führt nichts aus.")
@@ -693,7 +693,7 @@ def main(
 
     clones: dict[tuple[str, str], Clone] = {}
     for m, (sa, sub, nested) in MODULES.items():
-        clones[(m, "standalone")] = inspect_clone(m, "standalone", HOME / sa, fetch)
+        clones[(m, "standalone")] = inspect_clone(m, "standalone", HOME / "dev" / sa, fetch)
         clones[(m, "vitalos")] = inspect_clone(m, "vitalos", VITALOS / sub, fetch)
         if nested:
             clones[(m, "nested")] = inspect_clone(m, "nested", FITNESS_DEV / nested, fetch)
