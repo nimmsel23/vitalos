@@ -2,6 +2,12 @@
 
 Aktive Arbeitsliste (max. 5 Punkte) für das vitalos Meta-Repo.
 
+## 2026-10-31 (Shell-Release Door v2)
+
+- [ ] Entscheidung offen: Der Shell-Fix `28cec44` (statische Importe `hotFromJournal`/`profitFromJournal` wegen Build-Guard `vite-no-dynamic-chunks`) liegt nur auf `vitalos` in journal-dev, nicht auf `dev`; jeder Release stolpert deshalb im Import-Block von `journal-app/src/lib/db/journal.js` über denselben Bereich. Nach `dev` zu übernehmen kollidiert mit dem bewusst lazy geladenen Standalone-Build — Architekturentscheidung des Nutzers, nichts getroffen.
+- [ ] Auf dem Handy prüfen (nichts gesehen): Shell nach dem Release `9526677` (Seite online öffnen, zweimal neu laden wegen Service Worker), Door v2 Offline-first/Autosave, Frame-Maps mit Tippen, App-Kill und Flugmodus. Der Shell-Build lief nur in der CI.
+- [ ] Optional: `.github/workflows/deploy-push-functions.yml` deployt nur `scheduledJournalPushReminders`; die Google-Functions und `scheduledDoorReminders` (live, aus journal-dev deployt) kennt er nicht. Harmlos, aber bei einer Absicherung dort wäre ein eigener Eintrag nötig (dann auch `scripts/test-push-function-isolation.mjs` anpassen).
+
 ## 2026-10-29 (Pulse, Shell-Tabs)
 
 - [ ] Im Browser und auf dem Handy prüfen (nichts gesehen): Pulse-Composer in der Shell über der Bottom-Nav (`.pulse-embedded` in `pulse.css`), Wischgesten (Schwellen `MIN_DX`/`MAX_MS` in `vos-fitness/src/pulse/useSwipe.js`), eigene Seiten mit Zurück-Taste, neue Fuel-Untertabs. Töpfe, Küche und Tagesfaden wurden ohne ausdrücklichen Auftrag aufgenommen — Nutzer soll entscheiden, ob sie bleiben.
@@ -143,3 +149,8 @@ Aktive Arbeitsliste (max. 5 Punkte) für das vitalos Meta-Repo.
 **Gemini-Review (potenzielle blinde Flecken, 2026-10-29):**
 *   **Ungeprüfte Annahme (UI-Effekt):** Die Behauptung, dass "Review und Muskel-Heatmap damit Daten bekommen", ist eine ungeprüfte Annahme. Claude hat explizit angegeben, dass keine Tests im Browser oder auf dem Handy durchgeführt wurden, um die tatsächliche Darstellung und Funktionalität der UI zu verifizieren.
 *   **Edge-Case (API-Fehler):** Die Fehlerbehandlung für `searchExercises` und `getExercise` (mittels `try...catch` oder `.catch(() => null)`) führt dazu, dass bei einem API-Fehler (z.B. Netzwerkprobleme) die Übung ohne Muskeldaten geloggt wird, selbst wenn ein passender Kataloge
+
+**Gemini-Review (potenzielle blinde Flecken, 2026-10-31):**
+*   **Widerspruch im Selbstbericht:** Die Zusammenfassung behauptet, der Shell-Build sei "im Browser bzw. auf dem Handy nicht angesehen" worden, obwohl der Transkript zeigt, dass der Nutzer auf Claudes Anweisung hin die App im Browser/am Handy getestet und Erfolg gemeldet hat ("verbunden, tasks laden").
+*   **Unerklärte Log-Details:** Die Firebase-Funktions-Logs (`googleLink`, `googleLinkConfig`) zeigen `"app":"MISSING"` in den Verifikationen. Es wird nicht erklärt, ob dieser Status für den OAuth-Fluss erwartet oder unbedenklich ist.
+*   **Unverifizierte Dauerhaftigkeit:** Die Behauptung, die Verbindung laufe "dauerhaft", wird gemacht, obwohl Claude selbst anmerkt, dass die Token-Erneuerung (`googleAccessToken`) noch nicht getestet wurde und erst nach einer Stunde erwartet wird. Die "Dauerhaftigkeit" ist somit noch nicht vollständig bewiesen.
