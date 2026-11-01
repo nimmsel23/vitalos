@@ -68,7 +68,9 @@ conflicts="$(git -C "$dir" merge-tree --write-tree --name-only --no-messages "or
 [[ -z "$conflicts" ]] || die "Konflikte $src -> $dst, bitte zuerst lösen:
 $conflicts"
 
-log="$(git -C "$dir" log --no-merges --format='- %s (%h)' "origin/$dst..origin/$src" | head -30)"
+# `| head -30` beendet git log per SIGPIPE; mit pipefail (exit 141) brach das Skript bei
+# mehr als 30 Commits ab, bevor der PR entstand. `|| true` faengt genau das ab.
+log="$(git -C "$dir" log --no-merges --format='- %s (%h)' "origin/$dst..origin/$src" | head -30 || true)"
 body="Release \`$module\`: $ahead Commits von \`$src\` nach \`$dst\`.
 
 $log
