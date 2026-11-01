@@ -2,6 +2,7 @@
 # vos-ship — dev -> master (PR) -> vitalos in EINEM Lauf.
 #
 #   vos-ship fitness                interaktiv (fragt vor dem Start und in vos-release nach)
+#   vos-ship coach --yes           Standalone-Coach-CI + Live-SHA prüfen (kein Shell-Build)
 #   vos-ship fitness --yes          ohne Rückfragen (nur nach ausdrücklicher Freigabe!)
 #   vos-ship journal --functions    Zusätzlich die Journal-Push-Function deployen
 #   vos-ship fitness --dry-run      Preflight + Plan, ändert nichts (ruft vos-release --dry-run)
@@ -28,6 +29,7 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
 # Modul -> Repo | lokaler Klon (identisch zu vos-release-pr)
 declare -A CFG=(
+  [coach]="nimmsel23/coach-dev|$HOME/dev/coach-dev"
   [fitness]="nimmsel23/fitness-dev|$HOME/dev/fitness-dev"
   [fuel]="nimmsel23/fuel-dev|$HOME/dev/fuel-dev"
   [habits]="nimmsel23/habits-dev|$HOME/dev/habits-dev"
@@ -65,6 +67,12 @@ if [[ "$FUNCTIONS" -eq 1 && "$module" != "journal" && "$module" != "fitness" ]];
 fi
 IFS='|' read -r repo dir <<<"${CFG[$module]}"
 [[ -d "$dir/.git" || -f "$dir/.git" ]] || die "Klon fehlt: $dir"
+if [[ "$module" == coach ]]; then
+  args=()
+  [[ "$YES" -eq 0 ]] || args+=(--yes)
+  [[ "$DRY" -eq 0 ]] || args+=(--dry-run)
+  exec "$dir/bin/coach-release" "${args[@]}"
+fi
 for tool in gh jq git; do command -v "$tool" >/dev/null || die "$tool fehlt"; done
 
 SRC=dev; DST=master

@@ -61,4 +61,4 @@ nachfassen. Diese Regel überschreibt für dieses Repo das generelle
 
 ## Coach ownership (2026-10-20)
 
-Coach is independent in `~/coach-dev`; it is no longer a VitalOS submodule or release target. `coach-release` belongs to Coach. VitalOS branch `coach` is consumed at `~/coach-dev/vitalos`; merge general Shell changes into that branch deliberately. Do not add Coach back as a submodule.
+Coach is independent in `~/dev/coach-dev`; do not add it as a VitalOS app/submodule. `vos-ship coach` delegates to Coach-owned CI and verifies the live source SHA. Coach does not build the optional historical `vitalos/` checkout. Coach owns `firestore.rules.part`; import a published commit with `node scripts/import-coach-rules.mjs`, then compose with `node scripts/build-rules.mjs`. All app rules deploy together from this repository. No per-app rules deploy or Coach-driven Shell pointer bump.

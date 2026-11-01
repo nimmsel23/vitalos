@@ -207,3 +207,9 @@ Die Pre-Push-Hooks (journal, fuel, habits, fitness, relax) zeigen beim Push von 
   `src/shell/SixPackApp.jsx` aus.
 - **`deploy-vos-fitness.yml`** prüfen und ggf. abschalten (Altlast).
 - `vos-ship` in einem echten Release (nicht nur `--dry-run`) erproben.
+
+## Coach standalone (2026-11-01)
+
+`vos-ship coach --yes` delegates to `~/dev/coach-dev/bin/coach-release`, dispatches the Coach-owned workflow for published `dev`, waits and verifies its live SHA. Coach is not a VitalOS app/submodule and does not require a Shell pointer bump. `--dry-run` is read-only. Source must be published before shipping; local uncommitted changes are excluded.
+
+Rules stay central: Coach owns its `firestore.rules.part`. Run `node scripts/import-coach-rules.mjs [coach-checkout] [published-commit]`, then `node scripts/build-rules.mjs`; commit the imported fragment and composed rules. Plan/Skills/Journal fragments continue to be imported from their pinned sources. Deploy all rules via `deploy-firestore-rules.yml` in this repository. No per-app rules deployment and no Coach application build dependency.
