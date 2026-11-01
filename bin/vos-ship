@@ -3,6 +3,7 @@
 #
 #   vos-ship fitness                interaktiv (fragt vor dem Start und in vos-release nach)
 #   vos-ship fitness --yes          ohne Rückfragen (nur nach ausdrücklicher Freigabe!)
+#   vos-ship journal --functions    Zusätzlich die Journal-Push-Function deployen
 #   vos-ship fitness --dry-run      Preflight + Plan, ändert nichts (ruft vos-release --dry-run)
 #
 # Ablauf (jeder Schritt wartet auf den vorigen):
@@ -14,6 +15,7 @@
 #   6. vitalos     vos-release <modul>: master -> vitalos, Pointer, Meta-Repo-Push
 #   7. Nachlauf    ist Schritt 5 an ERR_PNPM_OUTDATED_LOCKFILE gescheitert, wird der
 #                  Live-Deploy jetzt (Lockfile ist durch Schritt 6 aktuell) neu gestartet
+#   8. --functions optional gezielt die passende Firebase-Push-Function deployen
 #
 # Der Fluss geht nur dev -> master -> vitalos. Das Skript ändert nichts an den Quell-Repos
 # außer über vos-release-pr/vos-release und bricht an jedem Fehler mit der nächsten Handlung ab.
@@ -46,17 +48,21 @@ info() { printf '[vos-ship] %s\n' "$*"; }
 step() { printf '\n[vos-ship] ── %s\n' "$*"; }
 die()  { printf '[vos-ship] FEHLER: %s\n' "$*" >&2; exit 1; }
 
-module=""; YES=0; DRY=0
+module=""; YES=0; DRY=0; FUNCTIONS=0
 for arg in "$@"; do
   case "$arg" in
     --yes) YES=1 ;;
     --dry-run) DRY=1 ;;
+    --functions) FUNCTIONS=1 ;;
     -h|--help) sed -n 2,24p "${BASH_SOURCE[0]}"; exit 0 ;;
     -*) die "unbekannte Option: $arg" ;;
     *) [[ -z "$module" ]] && module="$arg" || die "nur ein Modul pro Lauf" ;;
   esac
 done
 [[ -n "$module" && -n "${CFG[$module]:-}" ]] || die "Modul angeben: ${!CFG[*]}"
+if [[ "$FUNCTIONS" -eq 1 && "$module" != "journal" && "$module" != "fitness" ]]; then
+  die "--functions wird derzeit für journal und fitness unterstützt"
+fi
 IFS='|' read -r repo dir <<<"${CFG[$module]}"
 [[ -d "$dir/.git" || -f "$dir/.git" ]] || die "Klon fehlt: $dir"
 for tool in gh jq git; do command -v "$tool" >/dev/null || die "$tool fehlt"; done
@@ -81,7 +87,9 @@ $conflicts"
 fi
 
 if [[ "$DRY" -eq 1 ]]; then
-  info "dry-run: würde PR $SRC -> $DST öffnen, auf Checks/Merge/Live-Deploy warten und dann vos-release $module ausführen."
+  suffix=""
+  [[ "$FUNCTIONS" -eq 0 ]] || suffix=" und Push-Function deployen"
+  info "dry-run: würde PR $SRC -> $DST öffnen, auf Checks/Merge/Live-Deploy warten und dann vos-release $module ausführen$suffix."
   step "6/7 vos-release --dry-run $module"
   exec "$SCRIPT_DIR/vos-release" --dry-run "$module"
 fi
@@ -154,7 +162,7 @@ if [[ -n "$merged_at" ]]; then
   if [[ -n "$run_id" ]]; then
     LIVE_WORKFLOW="$(gh run view "$run_id" -R "$repo" --json name --jq .name)"
     info "Run $run_id: $LIVE_WORKFLOW"
-    if timeout "$DEPLOY_TIMEOUT" gh run watch "$run_id" -R "$repo" --exit-status >/dev/null 2>&1; then
+    if "$SCRIPT_DIR/gh-run-check" --repo "$repo" --timeout "$DEPLOY_TIMEOUT" "$run_id"; then
       info "Live-Deploy erfolgreich"
     else
       if gh run view "$run_id" -R "$repo" --log-failed 2>/dev/null | grep -q 'ERR_PNPM_OUTDATED_LOCKFILE'; then
@@ -213,7 +221,7 @@ if [[ "$LIVE_FAILED_LOCK" -eq 1 && -n "$LIVE_WORKFLOW" ]]; then
   gh workflow run "$LIVE_WORKFLOW" -R "$repo" --ref "$DST"
   sleep 8
   new_id="$(gh run list -R "$repo" --workflow "$LIVE_WORKFLOW" --limit 1 --json databaseId --jq '.[0].databaseId')"
-  if timeout "$DEPLOY_TIMEOUT" gh run watch "$new_id" -R "$repo" --exit-status >/dev/null 2>&1; then
+  if "$SCRIPT_DIR/gh-run-check" --repo "$repo" --timeout "$DEPLOY_TIMEOUT" "$new_id"; then
     info "Live-Deploy (Neustart) erfolgreich"
   else
     die "Live-Deploy (Neustart) fehlgeschlagen: gh run view $new_id -R $repo --log-failed"
@@ -221,5 +229,16 @@ if [[ "$LIVE_FAILED_LOCK" -eq 1 && -n "$LIVE_WORKFLOW" ]]; then
 else
   info "kein Neustart nötig"
 fi
+
+if [[ "$FUNCTIONS" -eq 1 ]]; then
+  step "8/8 Push-Function deployen ($module)"
+  run_url="$(gh workflow run deploy-push-functions.yml -R nimmsel23/vitalos --ref master -f "app=$module")"
+  run_id="${run_url##*/}"
+  [[ "$run_id" =~ ^[0-9]+$ ]] || die "Workflow-Run-ID nicht erkannt: $run_url"
+  "$SCRIPT_DIR/gh-run-check" --repo nimmsel23/vitalos --timeout "$DEPLOY_TIMEOUT" "$run_id" \
+    || die "Push-Function-Deploy fehlgeschlagen; siehe Run $run_id"
+else
+  info "Functions übersprungen; bei Bedarf mit --functions erneut als gezielten Release starten."
+fi
 info "fertig: $module ist dev -> master -> vitalos ausgeliefert."
-info "Prüfen: gh run list -R $repo --limit 5   und   gh run list -R nimmsel23/vitalos --limit 5"
+info "Run prüfen: gh-run-check --repo nimmsel23/vitalos --latest --workflow deploy-push-functions.yml"

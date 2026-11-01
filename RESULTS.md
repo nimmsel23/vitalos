@@ -356,3 +356,7 @@ Lokale Entwicklungspfade und betroffene Verknüpfungen auf `~/dev/*-dev` umgeste
 ## 2026-11-01 — Push-Functions-Isolationstest
 
 - Der Test-Mock bildet jetzt `runWith()` für die Journal-Callable-Functions ab und erkennt sowohl explizite als auch standardisierte App-Payload-Marker. `node scripts/test-push-function-isolation.mjs` mit den veröffentlichten Fitness-/Journal-Checkouts bestanden; dabei wurden keine Nachrichten gesendet.
+## 2026-11-01 — `gh-run-check` und `vos-ship --functions`
+
+- Ergänzt einen wiederverwendbaren GitHub-Actions-Run-Checker (ID/URL oder letzter Workflow-Run) und integriert ihn in `vos-ship` für Live-Deploys. `vos-ship <modul> --functions` verfolgt zusätzlich den app-spezifischen Push-Functions-Deploy.
+- Verifiziert: Shell-Syntax; `gh-run-check` gibt sowohl für einen erfolgreichen als auch für einen fehlgeschlagenen echten Run den Abschluss korrekt aus. Beim aktuellen Journal-Deploy bestand der Isolationstest; Firebase brach anschließend mangels `secretmanager.secrets.get` für `GOOGLE_OAUTH_CLIENT_SECRET` ab. Die lokale Identität `nimmdaniel@gmail.com` darf die Secret-IAM-Policy nicht lesen; keine IAM-Berechtigung geändert.

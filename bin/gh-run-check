@@ -1,0 +1,78 @@
+#!/usr/bin/env bash
+# Wait for one GitHub Actions run and print a compact final result.
+set -euo pipefail
+
+repo="${GH_RUN_REPO:-}"
+workflow=""
+branch=""
+timeout_s=1200
+latest=0
+
+usage() {
+  cat <<'EOF'
+Usage:
+  gh-run-check [--repo OWNER/REPO] [--timeout SECONDS] RUN_ID_OR_URL
+  gh-run-check [--repo OWNER/REPO] --workflow FILE [--branch BRANCH] [--timeout SECONDS] --latest
+
+Waits for a GitHub Actions run, then prints its conclusion and failed job/step names.
+EOF
+}
+
+while (($#)); do
+  case "$1" in
+    -R|--repo) (($# >= 2)) || { usage >&2; exit 2; }; repo="$2"; shift 2 ;;
+    -w|--workflow) (($# >= 2)) || { usage >&2; exit 2; }; workflow="$2"; shift 2 ;;
+    -b|--branch) (($# >= 2)) || { usage >&2; exit 2; }; branch="$2"; shift 2 ;;
+    -t|--timeout) (($# >= 2)) || { usage >&2; exit 2; }; timeout_s="$2"; shift 2 ;;
+    --latest) latest=1; shift ;;
+    -h|--help) usage; exit 0 ;;
+    -*) usage >&2; exit 2 ;;
+    *) [[ -z "${run_ref:-}" ]] || { usage >&2; exit 2; }; run_ref="$1"; shift ;;
+  esac
+done
+
+command -v gh >/dev/null || { echo "gh is required" >&2; exit 127; }
+command -v jq >/dev/null || { echo "jq is required" >&2; exit 127; }
+[[ "$timeout_s" =~ ^[1-9][0-9]*$ ]] || { echo "timeout must be a positive number of seconds" >&2; exit 2; }
+
+if [[ "$latest" -eq 1 ]]; then
+  [[ -n "$workflow" ]] || { echo "--latest requires --workflow" >&2; exit 2; }
+  args=(run list --workflow "$workflow" --limit 1 --json databaseId --jq '.[0].databaseId // empty')
+  [[ -z "$branch" ]] || args+=(--branch "$branch")
+  [[ -z "$repo" ]] || args+=(-R "$repo")
+  run_id="$(gh "${args[@]}")"
+  [[ -n "$run_id" ]] || { echo "No run found for $workflow" >&2; exit 1; }
+elif [[ -n "${run_ref:-}" ]]; then
+  run_id="${run_ref##*/}"
+else
+  usage >&2
+  exit 2
+fi
+
+view_args=(run view "$run_id" --json name,status,conclusion,url,jobs)
+[[ -z "$repo" ]] || view_args+=(-R "$repo")
+initial="$(gh "${view_args[@]}")"
+status="$(jq -r '.status' <<<"$initial")"
+
+if [[ "$status" != "completed" ]]; then
+  watch_args=(run watch "$run_id")
+  [[ -z "$repo" ]] || watch_args+=(-R "$repo")
+  watch_args+=(--exit-status)
+  set +e
+  timeout "$timeout_s" gh "${watch_args[@]}"
+  watch_rc=$?
+  set -e
+else
+  watch_rc=0
+fi
+
+final="$(gh "${view_args[@]}")"
+jq -r '"\(.name): \(.status) / \(.conclusion // "unknown")", "\(.url)"' <<<"$final"
+conclusion="$(jq -r '.conclusion // ""' <<<"$final")"
+if [[ "$conclusion" != "success" ]]; then
+  jq -r '.jobs[]? | select(.conclusion == "failure" or .conclusion == "cancelled" or .conclusion == "timed_out") | "  failed job: \(.name)" + ([.steps[]? | select(.conclusion == "failure" or .conclusion == "cancelled" or .conclusion == "timed_out") | "; step: \(.name)"] | join(""))' <<<"$final"
+  echo "Logs: gh run view $run_id${repo:+ -R $repo} --log-failed" >&2
+  [[ "$watch_rc" -eq 124 ]] && exit 124
+  exit 1
+fi
+exit 0

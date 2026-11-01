@@ -126,9 +126,14 @@ neu vendored; vorher hatten die Kopien den Filter nicht).
 ## Stand 2026-11-01 — `vos-ship`, Lockfile, Standalone-Zielbild, Shell-Kopplung
 
 **Ein Befehl:** `vos-ship <modul>` (Kurzaufruf `fitness-ship`) macht `dev` → `master` (PR) → `vitalos` in einem
-Lauf: Preflight → PR → CI-Checks → Auto-Merge → Live-Deploy → `vos-release <modul>` → Nachlauf. `--dry-run` ändert nichts,
+Lauf: Preflight → PR → CI-Checks → Auto-Merge → Live-Deploy → `vos-release <modul>` → Nachlauf. `--functions` hängt
+für `journal` oder `fitness` den app-isolierten Push-Functions-Deploy samt Run-Warten an. `bin/gh-run-check` wartet
+auf einen Actions-Run per ID/URL oder sucht den letzten Run eines Workflows und meldet Abschluss sowie fehlgeschlagene
+Schritte kompakt. Beispiel: `vos-ship journal --functions --yes` veröffentlicht zusätzlich die Journal-Push-Function.
+`--dry-run` ändert nichts,
 `--yes` nur nach ausdrücklicher Freigabe. Bisher nur mit `fitness --dry-run` gegen die echte Umgebung gelaufen; die
-Wartepunkte (Schritte 2–5, 7) und die Lockfile-Wiederholung sind gegen Stubs getestet, nicht in einem echten Release.
+Wartepunkte (Schritte 2–5, 7), Lockfile-Wiederholung und Functions-End-to-End-Strecke wurden nicht in einem kompletten
+`vos-ship`-Lauf durchlaufen. `gh-run-check` wurde gegen einen echten fehlgeschlagenen Functions-Run geprüft.
 `vos-release-pr` brach bei mehr als 30 Commits mit Exit 141 ab (SIGPIPE durch `git log | head` unter `pipefail`) — behoben.
 `vos-release` toleriert im `-app`-Worktree eine reine `link:`-Umschreibung in `pnpm-lock.yaml` (pnpm schreibt relative
 `link:`-Pfade je nach Standort um); echte Lockfile-Änderungen blockieren weiter.

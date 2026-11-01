@@ -2,6 +2,10 @@
 
 Aktive Arbeitsliste (max. 5 Punkte) für das vitalos Meta-Repo.
 
+## 2026-11-01 (Tent Push)
+
+- [ ] Functions-Deploy wiederholen, sobald `fitness-pwa-deploy@fitness-aos.iam.gserviceaccount.com` `secretmanager.secrets.get` auf `GOOGLE_OAUTH_CLIENT_SECRET` lesen darf. Workflow-Run `41299433483` stoppt bei dieser fehlenden Metadatenberechtigung; die aktive lokale Identität darf die Secret-IAM-Policy nicht ändern.
+
 ## 2026-10-31 (Shell-Release Door v2)
 
 - [ ] Entscheidung offen: Der Shell-Fix `28cec44` (statische Importe `hotFromJournal`/`profitFromJournal` wegen Build-Guard `vite-no-dynamic-chunks`) liegt nur auf `vitalos` in journal-dev, nicht auf `dev`; jeder Release stolpert deshalb im Import-Block von `journal-app/src/lib/db/journal.js` über denselben Bereich. Nach `dev` zu übernehmen kollidiert mit dem bewusst lazy geladenen Standalone-Build — Architekturentscheidung des Nutzers, nichts getroffen.
