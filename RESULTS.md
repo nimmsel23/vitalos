@@ -352,3 +352,7 @@ Enabled Dependabot alerts and security updates. Configured weekly GitHub Actions
 ## 2026-10-31 — Dev-Projekte unter ~/dev
 
 Lokale Entwicklungspfade und betroffene Verknüpfungen auf `~/dev/*-dev` umgestellt. Runtime-Daten, Branches und Release-Checkouts behalten ihre Zuständigkeit. Keine Pushes oder Releases. Gesamter Umzug und Prüfungen: `~/RESULTS.md`.
+
+## 2026-11-01 — Push-Functions-Isolationstest
+
+- Der Test-Mock bildet jetzt `runWith()` für die Journal-Callable-Functions ab und erkennt sowohl explizite als auch standardisierte App-Payload-Marker. `node scripts/test-push-function-isolation.mjs` mit den veröffentlichten Fitness-/Journal-Checkouts bestanden; dabei wurden keine Nachrichten gesendet.
