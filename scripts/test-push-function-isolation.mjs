@@ -48,6 +48,7 @@ for (const [app, dir] of sources) {
       pubsub: { schedule: (schedule) => ({ timeZone: (timeZone) => ({ onRun: (handler) => ({ region, schedule, timeZone, handler }) }) }) },
       firestore: { document: () => ({ onCreate: () => ({}), onWrite: () => ({}) }) },
       https: { onCall: () => ({}), onRequest: () => ({}) },
+      runWith: () => value,
     }
     return value
   }
@@ -65,7 +66,7 @@ for (const [app, dir] of sources) {
   assert.equal(schedule.schedule, 'every 5 minutes')
   assert.equal(typeof schedule.handler, 'function')
   assert.ok(new RegExp(`apps\\??\\.${app}`).test(code), `${app}: settings lane`)
-  assert.match(code, new RegExp(`app: "${app}"`), `${app}: notification lane`)
+  assert.ok(code.includes(`app = "${app}"`) || code.includes(`app: "${app}"`), `${app}: notification lane`)
   await schedule.handler()
   assert.equal(sends, 0, `${app}: other enabled app lanes cannot trigger a push`)
   assert.deepEqual(errors, [], `${app}: handler reads the real settings shape without errors`)
