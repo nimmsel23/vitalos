@@ -395,6 +395,25 @@ preflight_merge() {
     warn "[$module] Preflight: nur Hook-/Doku-/Backup-Konflikte ($(printf '%s' "$conflicts" | tr '\n' ' ')) — automatisch behandelt"
 }
 
+# Umzug der Checkouts nach ~/dev (2026-10-31): Symlinks in den -app-Worktrees zeigen schon auf die neuen
+# Pfade, eingecheckt sind die alten. Das blockiert den Clean-Check UND den Merge ("lokale Aenderungen
+# wuerden ueberschrieben"). Verlustfrei zuruecksetzen darf man einen Symlink nur, wenn sein Ziel EXAKT dem
+# entspricht, was der Merge ohnehin mitbringt (Blob auf $ref) - dann aendert sich nach dem Merge nichts.
+# Alles andere bleibt unangetastet. REAL_GIT umgeht bewusst den interaktiven Discard-Guard.
+restore_symlinks_matching_incoming() {
+    local repo="$1" branch="$2" f current incoming
+    "$REAL_GIT" -C "$repo" fetch -q origin "$branch" 2>/dev/null || return 0
+    while IFS= read -r f; do
+        [[ -n "$f" && -L "$repo/$f" ]] || continue
+        current="$(readlink "$repo/$f")"
+        incoming="$("$REAL_GIT" -C "$repo" show "origin/$branch:$f" 2>/dev/null || true)"
+        if [[ -n "$incoming" && "$incoming" == "$current" ]]; then
+            info "$(basename "$repo"): Symlink $f entspricht origin/$branch ($current) - wird vor dem Merge zurueckgesetzt"
+            run "$REAL_GIT" -C "$repo" checkout -- "$f"
+        fi
+    done < <("$REAL_GIT" -C "$repo" diff --name-only)
+}
+
 merge_module() {
     local module="$1"
     local standalone="${STANDALONE_DIRS[$module]}"
@@ -407,7 +426,18 @@ merge_module() {
     require_dir "$submodule"
 
     expect_branch "$submodule" "$target_branch" "$submodule"
+    restore_symlinks_matching_incoming "$submodule" "$source_branch"
     require_clean_repo "$module" "$submodule" "$submodule" tolerate-lock-link-rewrite
+
+    # Eine reine link:-Umschreibung ist kein Inhalt, wuerde aber den folgenden Merge von master blockieren
+    # ("lokale Aenderungen wuerden ueberschrieben"), sobald master pnpm-lock.yaml selbst aendert. Deshalb
+    # wird genau diese Datei vor dem Merge auf den eingecheckten Stand zurueckgesetzt - nur wenn
+    # lockfile_link_rewrite_only (alle geaenderten Zeilen enthalten link:) zutrifft. REAL_GIT umgeht
+    # bewusst den interaktiven Discard-Guard; alles andere im Worktree bleibt unangetastet.
+    if lockfile_link_rewrite_only "$submodule"; then
+        info "[$module] pnpm-lock.yaml: reine link:-Umschreibung im Worktree wird vor dem Merge zurueckgesetzt"
+        run "$REAL_GIT" -C "$submodule" checkout -- pnpm-lock.yaml
+    fi
 
     info "[$module] Pull submodule $target_branch"
     run "$REAL_GIT" -C "$submodule" pull origin "$target_branch"
