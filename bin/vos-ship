@@ -9,7 +9,7 @@
 # Ablauf (jeder Schritt wartet auf den vorigen):
 #   1. Preflight   dev gepusht? Konflikte dev -> master?
 #   2. PR          dev -> master öffnen oder vorhandenen weiterverwenden
-#   3. Checks      auf grünen Check warten (gh pr checks --watch)
+#   3. Checks      auf die grünen PFLICHT-Checks warten (gh pr checks --required --watch)
 #   4. Merge       auf den Auto-Merge warten (Merge-Commit, nie Squash)
 #   5. Live-Deploy auf den Standalone-Deploy der CI warten
 #   6. vitalos     vos-release <modul>: master -> vitalos, Pointer, Meta-Repo-Push
@@ -125,8 +125,10 @@ Nach dem Merge deployt der Live-Deploy per CI. Merge ohne Squash (\`--merge\`).
 
   # ── 3. Checks ────────────────────────────────────────────────────────────────
   step "3/7 CI-Checks von PR #$pr_number"
-  if ! timeout "$CHECK_TIMEOUT" gh pr checks "$pr_number" -R "$repo" --watch --interval 20 >/dev/null 2>&1; then
-    gh pr checks "$pr_number" -R "$repo" 2>&1 | sed 's/^/  /' || true
+  # Nur PFLICHT-Checks (Branch-Schutz): sonst bricht z. B. die Dependabot-Statusmeldung
+  # ".github/dependabot.yml" (kein Workflow, kein Pflicht-Check) den Release ab.
+  if ! timeout "$CHECK_TIMEOUT" gh pr checks "$pr_number" -R "$repo" --required --watch --interval 20 >/dev/null 2>&1; then
+    gh pr checks "$pr_number" -R "$repo" --required 2>&1 | sed 's/^/  /' || true
     die "Checks nicht grün (oder Zeitlimit ${CHECK_TIMEOUT}s). Fehler beheben, dev pushen, dann vos-ship erneut."
   fi
   info "alle Checks grün"
