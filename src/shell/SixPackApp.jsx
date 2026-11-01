@@ -1,7 +1,6 @@
 import SixPackPromiseCard from '../../6pack-app/SixPackPromiseCard.jsx'
 import { getUid, getSixpackProgram, saveSixpackProgram } from '@db'
 import { getAllCoachingNotes } from '../../fitness-app/src/lib/coachNotes.js'
-import { enableSixpackPush } from '../../fitness-app/src/lib/sixpackPush.js'
 import { logWorkoutAsSession } from '../../fitness-app/src/lib/logExternalWorkout.js'
 import '../../6pack-app/sixpack.css'
 
@@ -17,6 +16,9 @@ export default function SixPackApp({ user, onNavigate }) {
   return (
     <div data-theme="sixpack" className="min-h-[100dvh] overflow-y-auto bg-[var(--bg)] text-[var(--ink)]">
       <div className="mx-auto max-w-xl px-4 py-4">
+        {/* 6Pack-Push kommt nur von der 6Pack-App (6pack-dev). Fitness hat ihn entfernt; die Standalone-Variante
+            (standaloneSync.js) legt eine eigene Firebase-Instanz an und taugt nicht für die Shell. Bis 6pack ein
+            shell-taugliches Push-Modul anbietet, bleibt enablePush hier aus (die Karte zeigt dann einen Hinweis). */}
         <SixPackPromiseCard
           key={uid || 'anonymous'}
           uid={uid}
@@ -25,7 +27,6 @@ export default function SixPackApp({ user, onNavigate }) {
           onWorkoutComplete={onWorkoutComplete}
           loadRemoteProgram={loadProgram}
           saveRemoteProgram={saveProgram}
-          enablePush={enableSixpackPush}
         />
       </div>
     </div>
