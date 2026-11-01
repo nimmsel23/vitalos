@@ -76,8 +76,15 @@ step "1/7 Preflight ($module: $SRC -> $DST -> vitalos)"
 git -C "$dir" fetch -q origin "$SRC" "$DST"
 branch="$(git -C "$dir" branch --show-current)"
 [[ "$branch" == "$SRC" ]] || die "$dir steht auf '$branch', erwartet '$SRC'"
-[[ "$(git -C "$dir" rev-parse "$SRC")" == "$(git -C "$dir" rev-parse "origin/$SRC")" ]] \
-  || die "$SRC ist nicht mit origin/$SRC gleich (ungepusht oder hinterher): erst 'git push origin $SRC' bzw. 'git pull'"
+# Ausgeliefert wird immer origin/$SRC. Lokal vorauslaufende Commits (z. B. eine parallele Session mit
+# ungepushter Arbeit) gehören NICHT zum Release und sind deshalb nur eine Warnung; ein lokal
+# HINTERHER liegender $SRC ist dagegen verdächtig (jemand hat auf origin weitergearbeitet).
+local_only="$(git -C "$dir" rev-list --count "origin/$SRC..$SRC")"
+origin_only="$(git -C "$dir" rev-list --count "$SRC..origin/$SRC")"
+if [[ "$local_only" -gt 0 ]]; then
+  info "WARNUNG: lokal liegen $local_only ungepushte Commit(s) auf $SRC — sie sind NICHT Teil dieses Releases (es gilt origin/$SRC)."
+fi
+[[ "$origin_only" -eq 0 || "$local_only" -gt 0 ]] || info "Hinweis: lokal fehlen $origin_only Commit(s) von origin/$SRC (git pull); ausgeliefert wird origin/$SRC."
 ahead="$(git -C "$dir" rev-list --count "origin/$DST..origin/$SRC")"
 info "origin/$SRC liegt $ahead Commit(s) vor origin/$DST"
 if [[ "$ahead" -gt 0 ]]; then
