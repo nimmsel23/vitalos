@@ -22,3 +22,7 @@
 - [x] Regressionstest für unterstützten Browser, fehlende Unterstützung und fehlschlagende Support-Prüfung; im Shell-CI-Workflow ausführen.
 - [x] Vollständiger lokaler `pnpm run build:firebase` erfolgreich.
 - [x] Shell-CI 41051683942 mit Fix 2e69ba3 erfolgreich; Live-Bundle enthält Foto-Warteliste/Etikett/Katalogübernahme, frischer Browser rendert ohne unbehandelte JS-Fehler.
+
+## 2026-11-01 — Coach ship
+
+- [x] vos-ship coach ergänzen, standalone Coach mit veröffentlichtem Plan-Pin ausliefern, gemeinsame App-Rules aus VitalOS deployen und Live-SHA prüfen.

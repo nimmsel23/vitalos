@@ -378,3 +378,11 @@ Lokale Entwicklungspfade und betroffene Verknüpfungen auf `~/dev/*-dev` umgeste
 
 - Ergänzt einen wiederverwendbaren GitHub-Actions-Run-Checker (ID/URL oder letzter Workflow-Run) und integriert ihn in `vos-ship` für Live-Deploys. `vos-ship <modul> --functions` verfolgt zusätzlich den app-spezifischen Push-Functions-Deploy.
 - Verifiziert: Shell-Syntax; `gh-run-check` gibt sowohl für einen erfolgreichen als auch für einen fehlgeschlagenen echten Run den Abschluss korrekt aus. Beim aktuellen Journal-Deploy bestand der Isolationstest; Firebase brach anschließend mangels `secretmanager.secrets.get` für `GOOGLE_OAUTH_CLIENT_SECRET` ab. Die lokale Identität `nimmdaniel@gmail.com` darf die Secret-IAM-Policy nicht lesen; keine IAM-Berechtigung geändert.
+
+## 2026-11-01 — Coach standalone ausgeliefert
+
+`vos-ship coach --yes` ergänzt und erfolgreich ausgeführt. Coach source `7f53c4392ef0ef6e5e189d2f3a1fc8e036ab63e2` liegt auf origin/dev; veröffentlichter Plan-Pin `9bb748408ee69ab9d9a8d667c444d04255e749ac`. Standalone-Installation mit frozen lockfile und Build ohne initialisiertes VitalOS-Submodule erfolgreich. VitalOS-Workspace-Aliases und fremde Tailwind-Scans entfernt; lokaler veränderter VitalOS-Kontext blieb erhalten.
+
+Coach owns firestore.rules.part; zentral importiert mit Quellcommit-Provenienz. Zusammengesetztes Ruleset in VitalOS `83452cc3fcb6d01e53c1136fce920d07801bcdb9` enthält Coach-Kommunikation und Plan-Feedback. Gemeinsamer Rules-/Indexes-Deploy erfolgreich: https://github.com/nimmsel23/vitalos/actions/runs/41319760105 .
+
+Coach Preview erfolgreich: https://github.com/nimmsel23/coach-dev/actions/runs/41319665695 . Coach Live erfolgreich: https://github.com/nimmsel23/coach-dev/actions/runs/41319851129 . Live https://vos-coach.web.app/release.json meldet exakt den ausgelieferten Coach-SHA. Der durch den VitalOS-Push ausgelöste Shell-Deploy war ebenfalls erfolgreich: https://github.com/nimmsel23/vitalos/actions/runs/41319727104 . Keine echten Klientennachrichten als Test versendet; Geräte-/Account-Abnahme bleibt getrennt vom verifizierten Deployment.
