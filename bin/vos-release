@@ -215,12 +215,30 @@ status_filtered() {
     fi
 }
 
+# pnpm schreibt relative link:-Pfade in pnpm-lock.yaml je nach Standort um: dasselbe Paket
+# heisst im Standalone-Klon (~/dev/<x>-dev) ../../vitalos/packages/..., im -app-Worktree
+# (~/vitalos/<x>-app) ../packages/.... Jeder pnpm install im Workspace kippt die Datei, ohne
+# dass sich Inhalt aendert; sie wird nie committet (CI nutzt den Root-Lockfile). True nur,
+# wenn die Aenderung AUSSCHLIESSLICH aus link:-Zeilen besteht - echte Lockfile-Aenderungen
+# blockieren weiterhin.
+lockfile_link_rewrite_only() {
+    local repo="$1"
+    "$REAL_GIT" -C "$repo" diff --quiet -- pnpm-lock.yaml 2>/dev/null && return 1
+    ! "$REAL_GIT" -C "$repo" diff -U0 -- pnpm-lock.yaml 2>/dev/null \
+        | grep -E '^[+-]' | grep -vE '^(\+\+\+|---)' | grep -vq 'link:'
+}
+
+# 4. Argument "tolerate-lock-link-rewrite": nur fuer die -app-Worktrees in ~/vitalos.
 require_clean_repo() {
     local module="$1"
     local repo="$2"
     local label="$3"
+    local tolerate="${4:-}"
     local filtered
     filtered="$(status_filtered "$module" "$repo")"
+    if [[ "$tolerate" == "tolerate-lock-link-rewrite" && -n "$filtered" ]] && lockfile_link_rewrite_only "$repo"; then
+        filtered="$(printf '%s\n' "$filtered" | grep -vE '^ M pnpm-lock\.yaml$' || true)"
+    fi
     if [[ -n "$filtered" ]]; then
         error "$label has unexpected changes:"
         printf '%s\n' "$filtered" >&2
@@ -389,7 +407,7 @@ merge_module() {
     require_dir "$submodule"
 
     expect_branch "$submodule" "$target_branch" "$submodule"
-    require_clean_repo "$module" "$submodule" "$submodule"
+    require_clean_repo "$module" "$submodule" "$submodule" tolerate-lock-link-rewrite
 
     info "[$module] Pull submodule $target_branch"
     run "$REAL_GIT" -C "$submodule" pull origin "$target_branch"
