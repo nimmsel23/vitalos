@@ -99,6 +99,13 @@ wie die anderen. Alte verschachtelte Checkouts: `~/.bak-nest-submodules/`.
   committet das Lockfile jetzt mit; manuell: `pnpm install --no-frozen-lockfile`, committen, pushen. Meta-Workflows
   haben keinen Pfadfilter auf das Lockfile — nach dem Fix den Shell-Push abwarten bzw. betroffene Workflows per
   `gh workflow run` starten.
+- **Standalone-Live-Deploy rot, `ERR_PNPM_OUTDATED_LOCKFILE`, direkt nach einem Release mit Dependency-Änderungen:** erwartet
+  (Reihenfolge, siehe „Stand 2026-11-01"). `vos-ship` zieht den Root-Lockfile nach und startet den Run neu; manuell:
+  `pnpm install --lockfile-only --no-frozen-lockfile` in `~/vitalos`, nur `pnpm-lock.yaml` committen, `vos-release`
+  wiederholen, dann `gh workflow run "Live Deploy (<App> master)" -R nimmsel23/<repo> --ref master`.
+- **`Deploy VitalOS Shell` rot mit `Could not resolve "../../<app>/…" from "src/shell/…"`:** Ein Modul hat eine von der Shell
+  importierte Datei entfernt oder verschoben. Shell-Import anpassen (Beispiel 2026-11-01 oben). Prüfen, bevor man pusht:
+  alle `../../<x>-app/…`-Importe unter `src/` und `vos-fitness/` müssen am neuen Pointer existieren.
 - **Fitness-Dependabot scheitert beim Skills-Checkout:** `fitness-dev` braucht `SKILLS_DEPLOY_KEY` als Dependabot-Secret; der passende öffentliche Schlüssel muss in `skills-dev` als read-only Deploy Key hinterlegt sein. `Permission denied (publickey)` bedeutet meist, dass beide Schlüssel nicht zusammenpassen.
 - **Firebase-Preview für Dependabot:** Der Preview-Deploy benötigt einen Firebase-Service-Account. Diesen nicht als Dependabot-Secret freigeben; Fitness-PR [#15](https://github.com/nimmsel23/fitness-dev/pull/15) überspringt den Preview-Deploy für Dependabot, während der separate Check Lint und Build ausführt. Bis PR #15 gemergt ist, ist diese Ausnahme noch nicht aktiv.
 - **Habits-/Learn-Build findet `views/SixPack/workoutDoc.js` nicht:** Der Resolver `miniAppSubmodulePlugin` fehlt oder
@@ -115,6 +122,50 @@ vendor-changelog <ordner>`, Drift prüfen mit `--check`). Es zählen nur Commits
 `docs`, `chore`, `ci`, `build`, `test`, `refactor` sowie `fix|feat|perf|style` mit Scope `deps`, `ci`, `build`,
 `release`, `tooling`, `tests` — und damit alle reinen Doku-/Markdown-Änderungen (Stand 2026-10-29, in allen neun Repos
 neu vendored; vorher hatten die Kopien den Filter nicht).
+
+## Stand 2026-11-01 — `vos-ship`, Lockfile, Standalone-Zielbild, Shell-Kopplung
+
+**Ein Befehl:** `vos-ship <modul>` (Kurzaufruf `fitness-ship`) macht `dev` → `master` (PR) → `vitalos` in einem
+Lauf: Preflight → PR → CI-Checks → Auto-Merge → Live-Deploy → `vos-release <modul>` → Nachlauf. `--dry-run` ändert nichts,
+`--yes` nur nach ausdrücklicher Freigabe. Bisher nur mit `fitness --dry-run` gegen die echte Umgebung gelaufen; die
+Wartepunkte (Schritte 2–5, 7) und die Lockfile-Wiederholung sind gegen Stubs getestet, nicht in einem echten Release.
+`vos-release-pr` brach bei mehr als 30 Commits mit Exit 141 ab (SIGPIPE durch `git log | head` unter `pipefail`) — behoben.
+`vos-release` toleriert im `-app`-Worktree eine reine `link:`-Umschreibung in `pnpm-lock.yaml` (pnpm schreibt relative
+`link:`-Pfade je nach Standort um); echte Lockfile-Änderungen blockieren weiter.
+
+**Wann laufen die Meta-Workflows?**
+
+- `deploy-shell.yml`: bei **jedem** Push auf `master`, ausgenommen reine Doku (`*.md`, `*.mdx`, `*.txt`, `**/AGENTS.md`,
+  `**/docs/**`). Installiert mit `--frozen-lockfile` gegen die **gepinnten** Submodule. Ein Lockfile-Push mit neuen
+  Dependencies, solange der Pointer noch auf das alte Modul zeigt, macht ihn rot → **Lockfile und Pointer gehören in einen
+  Push** (so arbeitet `vos-release`).
+- `deploy-vos-fitness.yml`: laut Daniel Altlast aus der Zeit vor den Master-Checkouts der Standalone-Apps. Läuft nur bei
+  `vos-fitness/**`, dem `fitness-app`-Pointer, `firebase.config.js` oder der Workflow-Datei. Noch nicht abgeschaltet.
+- Die Standalone-Live-Deploys (`Live Deploy (<App> master)`) checken **heute noch dieses Meta-Repo** aus und installieren
+  gegen den Root-Lockfile — der PR-Merge löst sie vor dem Lockfile-Sync aus. Folge: bei geänderten Dependencies ist der
+  erste Run einmal rot (`vos-ship` startet ihn nach dem Sync neu).
+
+**Zielbild (Entscheidung Daniel, 2026-11-01): Alle Standalone-Deploys laufen aus den `master`-Checkouts der eigenen Repos,
+nicht mehr aus dem Meta-Repo.** Das Meta-Repo gehört der Shell. Umsetzung für Fitness: `fitness-dev/.github/workflows/
+deploy-standalone.yml` (siehe `fitness-dev/docs/DEPLOY.md`, Abschnitt 4); Build-Test auf `dev` grün, **Umschaltung der
+Live-Pipeline steht aus**. Voraussetzung für jedes Modul: Es muss auf `master` mit `pnpm install --frozen-lockfile`
+standalone installierbar sein. Geprüft (frische Klone): `6pack-dev`, `skills-dev`, `learn-dev`, `relax-dev` ok;
+`plan-dev` war defekt und ist auf `dev` behoben; `coach-dev` (Paket nicht im Lockfile, 19 Dateien mit Aliasen) und
+`habits-dev` (14 Dateien) nutzen `@vos/cross-app-aliases` wirklich und brauchen eine eigene Entscheidung.
+
+**`@vos/cross-app-aliases` in Standalone-Repos nicht (wieder) einführen:** ein relatives `link:`/`workspace:*` macht den
+Lockfile abhängig vom Installationsort und lässt sich außerhalb dieses Workspaces nicht installieren. Entfernt aus
+`fitness-dev` (nur `@relax`/`@learn` gebraucht) und `plan-dev` (nur `@learn`); beide lösen über `siblingDir()` in
+`vite.config.js` auf.
+
+**Shell-Kopplung:** Die Shell importiert alle Apps als Submodule auf ihrem `vitalos`-Branch (stabiler Stand nach `master`).
+Shell-Code im Meta-Repo verweist mit Pfaden wie `../../fitness-app/src/lib/…` in die Apps. Entfernt ein Modul eine dort
+importierte Datei, bricht der Shell-Build erst nach dem Push — obwohl das Modul-Release grün ist. Vorfall 2026-11-01:
+`fitness-dev` entfernte `src/lib/sixpackPush.js` (6Pack-Push gehört nur der 6Pack-App), `src/shell/SixPackApp.jsx`
+importierte sie weiter → `Could not resolve …`, `Deploy VitalOS Shell` rot (Live-Shell blieb auf dem letzten grünen
+Stand). Fix: Import und `enablePush` aus der Shell entfernt (die 6Pack-Karte zeigt einen Hinweis).
+`6pack-dev/standaloneSync.js::enableSixpackPush` ist **nicht** für die Shell geeignet (eigene Firebase-Instanz, doppelt das
+Bundle); die saubere Lösung ist ein shell-taugliches Push-Modul aus `6pack-dev` (Release dort vor dem Shell-Import).
 
 ## Hook-Tipps
 
@@ -141,3 +192,13 @@ Die Pre-Push-Hooks (journal, fuel, habits, fitness, relax) zeigen beim Push von 
 - `dev` kennt die `master`-Workflows teils noch nicht; sie kommen beim ersten Release-PR über den Merge.
 - Lokale Pre-Push-Hooks einzelner Repos (z. B. `plan-dev`) können beim Push auf `vitalos` lokal deployen — prüfen.
 - Stand der Offline-first-Umbauten: nicht im Browser getestet (siehe `~/OFFLINE-FIRST.md`).
+- **Standalone-Deploys auf die eigenen Repos umstellen** (Zielbild oben): Fitness-Workflow ist vorbereitet, Umschaltung von
+  `deploy-master.yml` auf `deploy-standalone.yml` steht aus; danach dieselbe Umstellung für die übrigen Module.
+- **`coach-dev`, `habits-dev`:** `@vos/cross-app-aliases` wird wirklich genutzt (19 bzw. 14 Dateien) — Standalone-Install auf
+  `master` klären (Paket im Lockfile / Aliase über `siblingDir()`).
+- **`plan-dev`-Release:** Fix liegt auf `dev` (`8097ef5`), `master` fehlt noch; auf `dev` warten 13 Feature-Commits mit.
+- **Option C:** vor dem Push von `vitalos master` prüfen, dass alle App-Importe der Shell am neuen Pointer existieren.
+- **6Pack-Push in der Shell:** shell-taugliches Push-Modul aus `6pack-dev` bereitstellen; bis dahin ist `enablePush` in
+  `src/shell/SixPackApp.jsx` aus.
+- **`deploy-vos-fitness.yml`** prüfen und ggf. abschalten (Altlast).
+- `vos-ship` in einem echten Release (nicht nur `--dry-run`) erproben.
