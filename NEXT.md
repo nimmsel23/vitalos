@@ -6,7 +6,8 @@ Aktive Arbeitsliste (max. 5 Punkte) für das vitalos Meta-Repo.
 
 - [ ] Prüfen, ob der Shell-Deploy zu `8c511df` grün wurde (`gh run list -R nimmsel23/vitalos --limit 2`); beim Sessionende lief er noch. Die zwei roten `npm_and_yarn`-Einträge bei `bc92f31` sind Dependabot, schon vorher da.
 - [ ] 6Pack-Push in der Shell ist aus (`SixPackApp.jsx`, Notlösung). Richtig: `6pack-dev` bietet ein Push-Modul ohne eigene Firebase-Instanz (App/Firestore als Parameter) über `dev` → `master` → `vitalos` an, danach importiert die Shell es.
-- [ ] `habits-dev` (`a6f8e1a`, nur `dev`) und `plan-dev` (zweites verschachteltes Submodul `6pack-dev` noch vorhanden) sind nicht bzw. noch nicht vollständig released; `coach-dev` auf `master` ist ein Altstand (dort arbeitet eine andere Session). Weitere Repos mit `@vos/cross-app-aliases` nach dem Muster prüfen.
+- [ ] `habits-dev` (`a6f8e1a`, nur `dev`) ist nicht released; `coach-dev` auf `master` ist ein Altstand (dort arbeitet eine andere Session). Weitere Repos mit `@vos/cross-app-aliases` nach dem Muster prüfen.
+- [ ] `plan-dev`: Entfernung des verschachtelten `6pack-dev` (`b208e32`, plus `docs/DEPLOY.md`-Hinweis) liegt nur auf `dev`, nicht auf `master`/`vitalos`. `vos-ship plan` erst starten, wenn die andere Plan-Session fertig ist: `dev` enthält deren Commit `58ee478` (Klienten-Feedback, `firestore.rules.part`, Rules noch nicht freigegeben) und uncommittete Änderungen im Arbeitsordner; Nutzer hat nicht entschieden, ob trotzdem released wird.
 - [ ] Mögliche Umzugs-Folgefehler nach `~/dev` (Symlinks, Lockfile-`link:`-Pfade) in weiteren Repos/Worktrees; `vos-release` fängt nur die bekannten Fälle ab. Ein Umzug der `-app`-Checkouts (z. B. `~/.local/vitalos/`) wurde bewusst nicht gebaut, vorher wäre ein lesendes Inventar der Pfad-Abhängigkeiten (`/opt`-Ketten, systemd-Units, Release-Skripte) nötig.
 - [ ] Dependabot-Fehlermeldung `.github/dependabot.yml` in `plan-dev` (Ursache nur auf der GitHub-Seite sichtbar) nicht verfolgt.
 
@@ -171,3 +172,7 @@ Aktive Arbeitsliste (max. 5 Punkte) für das vitalos Meta-Repo.
 *   **Unerwähnte Sicherheitslücken:** Die GitHub-Logs zeigen kritische und hohe Sicherheitslücken in `fitness-dev` (132) und `vitalos` (147), die in der Zusammenfassung nicht als offene Punkte oder Risiken aufgeführt werden.
 *   **Ungeklärter Dirty State des Meta-Repos:** Das `vitalos` Meta-Repo wird nach den Releases mit uncommitted lokalen Änderungen (`MM fitness-app`, `m plan-app`, `?? bin/learn-release`) zurückgelassen, was in der Zusammenfassung nicht als potenzielles Problem oder notwendige Nacharbeit thematisiert wird.
 *   **Ignorierte Build-Optimierungshinweise:** Die Vite-Build-Logs enthalten Warnungen zu dynamischen Imports und großen Chunks (>500kB), die auf ungenutztes Optimierungspotenzial hindeuten, aber in der Zusammenfassung unerwähnt bleiben.
+
+**Gemini-Review (potenzielle blinde Flecken, 2026-11-01):**
+*   **Unbeachtete Sicherheitslücken:** Die Dependabot-Warnung über 122 Schwachstellen (4 kritisch) im `plan-dev`-Repo wurde in der Shell-Ausgabe angezeigt, aber weder im `RESULTS.md` erwähnt noch direkt adressiert.
+*   **Ungeprüfte Laufzeitannahmen für `6pack/`:** Obwohl das `6pack-dev`-Submodul entfernt wurde und der Build erfolgreich war, deutet `6pack/README.md` auf eine Laufzeitabhängigkeit des verbleibenden `6pack/`-Ordners vom *Nachbar-Checkout* `~/6pack-dev` hin. Diese Interaktion wurde nicht explizit über den Build-Erfolg hinaus verifiziert.
