@@ -386,3 +386,10 @@ Lokale Entwicklungspfade und betroffene Verknüpfungen auf `~/dev/*-dev` umgeste
 Coach owns firestore.rules.part; zentral importiert mit Quellcommit-Provenienz. Zusammengesetztes Ruleset in VitalOS `83452cc3fcb6d01e53c1136fce920d07801bcdb9` enthält Coach-Kommunikation und Plan-Feedback. Gemeinsamer Rules-/Indexes-Deploy erfolgreich: https://github.com/nimmsel23/vitalos/actions/runs/41319760105 .
 
 Coach Preview erfolgreich: https://github.com/nimmsel23/coach-dev/actions/runs/41319665695 . Coach Live erfolgreich: https://github.com/nimmsel23/coach-dev/actions/runs/41319851129 . Live https://vos-coach.web.app/release.json meldet exakt den ausgelieferten Coach-SHA. Der durch den VitalOS-Push ausgelöste Shell-Deploy war ebenfalls erfolgreich: https://github.com/nimmsel23/vitalos/actions/runs/41319727104 . Keine echten Klientennachrichten als Test versendet; Geräte-/Account-Abnahme bleibt getrennt vom verifizierten Deployment.
+
+## 2026-11-01 — Coach-Ungelesen-Index
+
+Zentralen Collection-Index für `messages` (`senderRole ASC`, `createdAt DESC`)
+für die Ungelesen-Abfragen beider Apps ergänzt. Vor Live-Übernahme der
+Coach-Erweiterungen deployen und Index-Bereitschaft prüfen. Keine Änderung
+an Zugriffsregeln, Submodule-Pointern oder App-Code.
