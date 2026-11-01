@@ -2,6 +2,14 @@
 
 Aktive Arbeitsliste (max. 5 Punkte) für das vitalos Meta-Repo.
 
+## 2026-11-01 (Standalone-Deploy, vos-ship)
+
+- [ ] Prüfen, ob der Shell-Deploy zu `8c511df` grün wurde (`gh run list -R nimmsel23/vitalos --limit 2`); beim Sessionende lief er noch. Die zwei roten `npm_and_yarn`-Einträge bei `bc92f31` sind Dependabot, schon vorher da.
+- [ ] 6Pack-Push in der Shell ist aus (`SixPackApp.jsx`, Notlösung). Richtig: `6pack-dev` bietet ein Push-Modul ohne eigene Firebase-Instanz (App/Firestore als Parameter) über `dev` → `master` → `vitalos` an, danach importiert die Shell es.
+- [ ] `habits-dev` (`a6f8e1a`, nur `dev`) und `plan-dev` (zweites verschachteltes Submodul `6pack-dev` noch vorhanden) sind nicht bzw. noch nicht vollständig released; `coach-dev` auf `master` ist ein Altstand (dort arbeitet eine andere Session). Weitere Repos mit `@vos/cross-app-aliases` nach dem Muster prüfen.
+- [ ] Mögliche Umzugs-Folgefehler nach `~/dev` (Symlinks, Lockfile-`link:`-Pfade) in weiteren Repos/Worktrees; `vos-release` fängt nur die bekannten Fälle ab. Ein Umzug der `-app`-Checkouts (z. B. `~/.local/vitalos/`) wurde bewusst nicht gebaut, vorher wäre ein lesendes Inventar der Pfad-Abhängigkeiten (`/opt`-Ketten, systemd-Units, Release-Skripte) nötig.
+- [ ] Dependabot-Fehlermeldung `.github/dependabot.yml` in `plan-dev` (Ursache nur auf der GitHub-Seite sichtbar) nicht verfolgt.
+
 ## 2026-11-01 (Tent Push)
 
 - [ ] Functions-Deploy wiederholen, sobald `fitness-pwa-deploy@fitness-aos.iam.gserviceaccount.com` `secretmanager.secrets.get` auf `GOOGLE_OAUTH_CLIENT_SECRET` lesen darf. Workflow-Run `41299433483` stoppt bei dieser fehlenden Metadatenberechtigung; die aktive lokale Identität darf die Secret-IAM-Policy nicht ändern.
@@ -158,3 +166,8 @@ Aktive Arbeitsliste (max. 5 Punkte) für das vitalos Meta-Repo.
 *   **Widerspruch im Selbstbericht:** Die Zusammenfassung behauptet, der Shell-Build sei "im Browser bzw. auf dem Handy nicht angesehen" worden, obwohl der Transkript zeigt, dass der Nutzer auf Claudes Anweisung hin die App im Browser/am Handy getestet und Erfolg gemeldet hat ("verbunden, tasks laden").
 *   **Unerklärte Log-Details:** Die Firebase-Funktions-Logs (`googleLink`, `googleLinkConfig`) zeigen `"app":"MISSING"` in den Verifikationen. Es wird nicht erklärt, ob dieser Status für den OAuth-Fluss erwartet oder unbedenklich ist.
 *   **Unverifizierte Dauerhaftigkeit:** Die Behauptung, die Verbindung laufe "dauerhaft", wird gemacht, obwohl Claude selbst anmerkt, dass die Token-Erneuerung (`googleAccessToken`) noch nicht getestet wurde und erst nach einer Stunde erwartet wird. Die "Dauerhaftigkeit" ist somit noch nicht vollständig bewiesen.
+
+**Gemini-Review (potenzielle blinde Flecken, 2026-11-01):**
+*   **Unerwähnte Sicherheitslücken:** Die GitHub-Logs zeigen kritische und hohe Sicherheitslücken in `fitness-dev` (132) und `vitalos` (147), die in der Zusammenfassung nicht als offene Punkte oder Risiken aufgeführt werden.
+*   **Ungeklärter Dirty State des Meta-Repos:** Das `vitalos` Meta-Repo wird nach den Releases mit uncommitted lokalen Änderungen (`MM fitness-app`, `m plan-app`, `?? bin/learn-release`) zurückgelassen, was in der Zusammenfassung nicht als potenzielles Problem oder notwendige Nacharbeit thematisiert wird.
+*   **Ignorierte Build-Optimierungshinweise:** Die Vite-Build-Logs enthalten Warnungen zu dynamischen Imports und großen Chunks (>500kB), die auf ungenutztes Optimierungspotenzial hindeuten, aber in der Zusammenfassung unerwähnt bleiben.
