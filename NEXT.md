@@ -176,3 +176,9 @@ Aktive Arbeitsliste (max. 5 Punkte) für das vitalos Meta-Repo.
 **Gemini-Review (potenzielle blinde Flecken, 2026-11-01):**
 *   **Unbeachtete Sicherheitslücken:** Die Dependabot-Warnung über 122 Schwachstellen (4 kritisch) im `plan-dev`-Repo wurde in der Shell-Ausgabe angezeigt, aber weder im `RESULTS.md` erwähnt noch direkt adressiert.
 *   **Ungeprüfte Laufzeitannahmen für `6pack/`:** Obwohl das `6pack-dev`-Submodul entfernt wurde und der Build erfolgreich war, deutet `6pack/README.md` auf eine Laufzeitabhängigkeit des verbleibenden `6pack/`-Ordners vom *Nachbar-Checkout* `~/6pack-dev` hin. Diese Interaktion wurde nicht explizit über den Build-Erfolg hinaus verifiziert.
+
+- [ ] `bin/learn-release` ist eine fremde, ungetrackte Datei in `~/vitalos` und wird bei `vos-ship` nicht mitcommittet; prüfen, ob sie entfernt oder getrackt werden soll.
+
+**Gemini-Review (potenzielle blinde Flecken, 2026-11-01):**
+*   **Widersprüchliche Check-Status-Interpretation:** Claude behauptet "check ist grün", obwohl der `vos-release-pr --status`-Output einen `dependabot.yml`-Check als "fail" ausweist. Obwohl der PR später gemergt wurde (was impliziert, dass dieser Check nicht "required" war), wird die Diskrepanz nicht explizit aufgelöst.
+*   **Fokus der Selbstzusammenfassung vs. Session-Kontext:** Die bereitgestellte "Selbstzusammenfassung" beschreibt primär Releases für `fitness` und `plan` (PR #19, #3) und die Nutzung von `vos-ship --yes`. Die vorliegende Transkript-Session konzent
