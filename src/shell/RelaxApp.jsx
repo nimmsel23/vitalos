@@ -62,7 +62,7 @@ export default function RelaxApp({ subTab = 'dash', onSubTab, onOpenSession, run
   return (
     <div className="relax-scope flex flex-col h-full">
       <main className="flex-1 overflow-y-auto overflow-x-hidden" style={{ WebkitOverflowScrolling: 'touch' }}>
-        <div className={fullBleed ? 'h-full flex flex-col' : 'max-w-2xl mx-auto px-4 py-4 pb-8'}>
+        <div className={fullBleed ? 'h-full flex flex-col' : tab === 'session' ? 'w-full max-w-screen-2xl mx-auto px-4 sm:px-6 xl:px-10 py-5 pb-8' : 'max-w-2xl mx-auto px-4 py-4 pb-8'}>
           {tab === 'journal' ? (
             <Journal embedded onOpenSession={onOpenSession} date={runtimeDate} onDateChange={onRuntimeDateChange} />
           ) : (
