@@ -1,6 +1,8 @@
 import { useEffect, useState } from 'react'
 import { useUser } from '@fitness/contexts/UserContext'
+import { getAllMuscles } from '@db'
 import PulseLog from './PulseLog.jsx'
+import PageBoundary from './PageBoundary.jsx'
 import { MenuPage, SubPage, PAGES } from './Pages.jsx'
 import useSwipe from './useSwipe.js'
 import './pulse.css'
@@ -24,6 +26,7 @@ export default function PulseApp() {
   const [authRegistering, setAuthRegistering] = useState(false)
   const [history, setHistory] = useState([])
   const [page, setPage] = useState(pageFromHash)
+  const [sessionDate, setSessionDate] = useState(null)
 
   useEffect(() => {
     const onHash = () => setPage(pageFromHash())
@@ -34,6 +37,18 @@ export default function PulseApp() {
   function go(id) {
     window.location.hash = id ? `/${id}` : ''
   }
+
+  // Review/Verlauf öffnen einen Tag im Training-Editor (wie openSession in der Haupt-App).
+  function openSession(date) {
+    setSessionDate(date || null)
+    go('training')
+  }
+
+  // Die Haupt-App füllt beim Start den In-Memory-KB-Cache der Muskeln; ohne ihn
+  // zeigen Review/Muskeln ungruppierte IDs.
+  useEffect(() => {
+    if (user) getAllMuscles().catch(() => {})
+  }, [user])
 
   // Links wischen: Pulse → Mehr. Rechts wischen: eine Ebene zurück (wie der Pfeil).
   useSwipe({
@@ -96,13 +111,16 @@ export default function PulseApp() {
 
   return (
     <div className="pulse-root">
-      {page === 'menu' && <MenuPage onOpen={go} onBack={() => go('')} />}
-      {page && page !== 'menu' && (
-        <SubPage id={page} onBack={() => go('menu')} sessions={history} signOut={signOut} />
-      )}
-      <div hidden={!!page}>
-        <PulseLog user={user} onOpenMore={() => go('menu')} onHistory={setHistory} />
-      </div>
+      <PageBoundary key={page} onBack={() => go('')}>
+        {page === 'menu' && <MenuPage onOpen={go} onBack={() => go('')} />}
+        {page && page !== 'menu' && (
+          <SubPage id={page} onBack={() => go('menu')} onOpen={go} sessions={history} signOut={signOut}
+            sessionDate={sessionDate} onOpenSession={openSession} />
+        )}
+        <div hidden={!!page}>
+          <PulseLog user={user} onOpenMore={() => go('menu')} onHistory={setHistory} />
+        </div>
+      </PageBoundary>
     </div>
   )
 }

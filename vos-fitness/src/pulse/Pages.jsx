@@ -1,4 +1,11 @@
+import { Suspense, useState } from 'react'
 import { ChevronLeft, ChevronRight } from 'lucide-react'
+import { useSettings } from '@fitness/contexts/SettingsContext.jsx'
+import { useUser } from '@fitness/contexts/UserContext'
+import ExerciseInsightModal from '@fitness/components/ExerciseInsightModal.jsx'
+import { getStaticMuscleTaxonomy } from '@fitness/lib/kb/muscles.js'
+import { getAnatomy } from '@db'
+import PageBoundary from './PageBoundary.jsx'
 import Session from '@view/session'
 import WeeklyReview from '@view/review'
 import Learn from '@view/learn'
@@ -61,30 +68,65 @@ export function MenuPage({ onOpen, onBack }) {
   )
 }
 
-export function SubPage({ id, onBack, sessions, signOut }) {
+// Session-Unterseiten (SessionModeTabs/SessionHeader rufen onSubNav('today'|'plan'|'history'|…))
+// auf die Pulse-Seiten abbilden. Skills/6Pack sind eigene Apps, dafür gibt es hier kein Ziel.
+const SUBNAV_TARGET = { today: 'training', session: 'training', plan: 'plan', history: 'verlauf', logbuch: 'verlauf' }
+
+export function SubPage({ id, onBack, onOpen, sessions, signOut, sessionDate, onOpenSession }) {
+  const { muscleLanguage, recentDays } = useSettings()
+  const { gender } = useUser()
+  const [taxonomy] = useState(() => getStaticMuscleTaxonomy())
+  const [inspected, setInspected] = useState(null)
+
+  // wie App.jsx/FitnessApp.jsx: Insight-Modal öffnen, Lektion nachladen
+  async function inspectExercise(exercise) {
+    if (!exercise) return
+    setInspected(exercise)
+    const exId = exercise.exercise_id || exercise.id
+    if (!exId || exercise.lesson) return
+    try {
+      const lesson = await getAnatomy(exId)
+      if (lesson) setInspected((prev) => (prev ? { ...prev, lesson } : prev))
+    } catch { /* Modal bleibt ohne Lektion nutzbar */ }
+  }
+
+  const onSubNav = (sub) => { const t = SUBNAV_TARGET[sub]; if (t && onOpen) onOpen(t) }
+
   const page = PAGES.find((p) => p.id === id)
   if (!page) return null
   return (
     <PageShell title={page.label} onBack={onBack}>
-      {id === 'training' && <Session key="today" subTab="today" />}
-      {id === 'plan' && <Session key="plan" subTab="plan" />}
-      {id === 'review' && <WeeklyReview recentDays={14} />}
-      {id === 'verlauf' && <Verlauf sessions={sessions} />}
-      {id === 'learn' && <Learn />}
-      {id === 'settings' && (
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
-          <Settings />
-          {signOut && (
-            <button
-              onClick={signOut}
-              className="pulse-beat"
-              style={{ color: 'var(--red)', fontWeight: 800, textTransform: 'uppercase', fontSize: '0.8rem', letterSpacing: '0.05em' }}
-            >
-              Logout
-            </button>
+      <PageBoundary key={id} onBack={onBack}>
+        <Suspense fallback={<div className="pulse-empty">…</div>}>
+          {id === 'training' && (
+            <Session key={`today-${sessionDate || ''}`} subTab="today" initialDate={sessionDate || undefined}
+              recentDays={recentDays} onInspectExercise={inspectExercise} onSubNav={onSubNav} />
           )}
-        </div>
-      )}
+          {id === 'plan' && <Session key="plan" subTab="plan" recentDays={recentDays} onInspectExercise={inspectExercise} onSubNav={onSubNav} />}
+          {id === 'review' && (
+            <WeeklyReview recentDays={14} gender={gender} muscleLanguage={muscleLanguage} taxonomy={taxonomy}
+              onOpenSession={onOpenSession} onInspectExercise={inspectExercise} />
+          )}
+          {id === 'verlauf' && <Verlauf sessions={sessions} />}
+          {id === 'learn' && <Learn onInspectExercise={inspectExercise} muscleLanguage={muscleLanguage} taxonomy={taxonomy} />}
+          {id === 'settings' && (
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+              <Settings />
+              {signOut && (
+                <button
+                  onClick={signOut}
+                  className="pulse-beat"
+                  style={{ color: 'var(--red)', fontWeight: 800, textTransform: 'uppercase', fontSize: '0.8rem', letterSpacing: '0.05em' }}
+                >
+                  Logout
+                </button>
+              )}
+            </div>
+          )}
+        </Suspense>
+      </PageBoundary>
+      <ExerciseInsightModal exercise={inspected} onClose={() => setInspected(null)} onExerciseChange={setInspected}
+        muscleLanguage={muscleLanguage} taxonomy={taxonomy} />
     </PageShell>
   )
 }
