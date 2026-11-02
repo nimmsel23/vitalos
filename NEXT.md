@@ -4,7 +4,8 @@ Aktive Arbeitsliste (max. 5 Punkte) für das vitalos Meta-Repo.
 
 ## 2026-11-02 (Pulse, schwarze Bildschirme)
 
-- [ ] `372336e` ist lokal committet, **nicht gepusht**. Push nach `master` löst über den Hook den Prod-Deploy `fitness-vos.web.app` aus — erst auf Nutzer-Kommando; danach Pointer-Bump im Meta-Repo nach dem üblichen Release-Weg.
+- [x] `372336e` ist gepusht und über die CI live (`fitness-vos.web.app`, `sw.js` = `fitness-vos-v4`). Offen nur: Pointer-Bump im Meta-Repo nach dem üblichen Release-Weg, falls für `vos-fitness` nötig (es ist ein Ordner im Meta-Repo, vermutlich nichts zu tun).
+- [ ] `CLAUDE.md` (Abschnitt „vos-fitness Auto-Deploy“) beschreibt noch den Deploy per `.githooks/pre-push`; tatsächlich prüft der Hook nur das Lockfile, deployt wird per CI `deploy-vos-fitness.yml`. Doku bei Gelegenheit angleichen.
 - [ ] Auf dem iPhone prüfen (nichts gesehen): Web-App einmal komplett schließen und neu öffnen (neuer Service Worker `fitness-vos-v4`), dann Tab-Wechsel in Review/Lernen/Einstellungen und Layout unten (`100dvh`, Safe-Area). Tritt noch ein Fehler auf, steht jetzt die Meldung der `PageBoundary` auf dem Bildschirm — Text an Claude geben; die eigentliche Absturzursache ist nicht bewiesen.
 - [ ] Alte Bug-Liste `fitness-app/BUGLIST.md` (22.07., Session-Workout-Details überlappen, Journal-Modal an falscher Position, Composer-Prompt fehlt im Journal) wurde nicht angegangen und betrifft die alte Tab-Oberfläche, nicht Pulse; Katalog-Punkte sind Datenfehler.
 - [ ] `.bak`-Dateien aus dieser Session in `vos-fitness/` (`public/sw.js.bak`, `src/pulse/*.bak*`) aufräumen.
@@ -189,3 +190,7 @@ Aktive Arbeitsliste (max. 5 Punkte) für das vitalos Meta-Repo.
 **Gemini-Review (potenzielle blinde Flecken, 2026-11-01):**
 *   **Widersprüchliche Check-Status-Interpretation:** Claude behauptet "check ist grün", obwohl der `vos-release-pr --status`-Output einen `dependabot.yml`-Check als "fail" ausweist. Obwohl der PR später gemergt wurde (was impliziert, dass dieser Check nicht "required" war), wird die Diskrepanz nicht explizit aufgelöst.
 *   **Fokus der Selbstzusammenfassung vs. Session-Kontext:** Die bereitgestellte "Selbstzusammenfassung" beschreibt primär Releases für `fitness` und `plan` (PR #19, #3) und die Nutzung von `vos-ship --yes`. Die vorliegende Transkript-Session konzent
+
+**Gemini-Review (potenzielle blinde Flecken, 2026-11-02):**
+- **Ungeprüfte Annahme:** Obwohl Claude die Ursachen im Code gefunden hat, wurde nicht bewiesen, welche der Änderungen die konkreten Abstürze auf dem Handy beheben. Insbesondere die Wirksamkeit der CSS-Anpassungen (`100vh`/`100dvh`-Reihenfolge, `mix-blend-mode`) als direkte Lösung für die gemeldeten Layout-Probleme und schwarzen Bildschirme auf iOS-Geräten bleibt eine Annahme, da kein Test auf einem echten iPhone erfolgte.
+- **Übersehener Edge-Case:** Die CI-Ausgabe enthielt Deprecation-Warnungen für Node.js 20 und einen bevorstehenden Ubuntu-Migrationshinweis. Obwohl der Deploy
