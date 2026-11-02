@@ -31,7 +31,7 @@ const FITNESS_DIRECT_ROUTES = new Set([
   'inbox',
 ])
 const FUEL_DIRECT_ROUTES = new Set(['log', 'food', 'supplements', 'micros'])
-const RELAX_DIRECT_ROUTES = new Set(['dash', 'stats', 'physio', 'catalog'])
+const RELAX_DIRECT_ROUTES = new Set(['dash', 'ausbildung', 'atem', 'stats', 'physio', 'catalog'])
 const FITNESS_DATE_ROUTES = new Set(['session'])
 
 function resolveHashDate(value) {

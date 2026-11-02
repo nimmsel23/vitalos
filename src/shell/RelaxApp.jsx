@@ -7,10 +7,12 @@
  */
 
 import { useEffect, useRef, useState } from 'react'
-import { Activity, MoonStar, BookOpen, BarChart3, Zap, Beaker } from 'lucide-react'
+import { Activity, MoonStar, BookOpen, BarChart3, Zap, Beaker, Wind, GraduationCap } from 'lucide-react'
 import Journal from '@view/journal'
 import DashboardView from '@relax/views/Dashboard.jsx'
 import SessionView from '@relax/views/Session.jsx'
+import BreathView from '@relax/views/Breath.jsx'
+import AusbildungView from '@relax/views/Ausbildung.jsx'
 import StatsView from '@relax/views/Stats.jsx'
 import PhysioTimelineView from '@relax/views/PhysioTimeline.jsx'
 import SubstanceCatalogView from '@relax/views/SubstanceCatalog.jsx'
@@ -29,8 +31,10 @@ if (typeof window !== 'undefined') {
 }
 
 const TABS = [
-  { id: 'dash',    label: 'Heute',   Icon: Activity,  View: DashboardView },
-  { id: 'session', label: 'Session', Icon: MoonStar,  View: SessionView },
+  { id: 'dash',       label: 'Heute',   Icon: Activity,      View: DashboardView },
+  { id: 'ausbildung', label: 'Modul',   Icon: GraduationCap, View: AusbildungView },
+  { id: 'session',    label: 'Praxis',  Icon: MoonStar,      View: SessionView },
+  { id: 'atem',       label: 'Atem',    Icon: Wind,          View: BreathView },
   { id: 'stats',   label: 'Stats',   Icon: BarChart3, View: StatsView },
   { id: 'physio',  label: 'Physio',  Icon: Zap,       View: PhysioTimelineView },
   { id: 'catalog', label: 'Catalog', Icon: Beaker,    View: SubstanceCatalogView },
@@ -66,7 +70,7 @@ export default function RelaxApp({ subTab = 'dash', onSubTab, onOpenSession, run
           {tab === 'journal' ? (
             <Journal embedded onOpenSession={onOpenSession} date={runtimeDate} onDateChange={onRuntimeDateChange} />
           ) : (
-            <View />
+            <View onNavigate={setTab} />
           )}
         </div>
       </main>

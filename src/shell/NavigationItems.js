@@ -3,6 +3,7 @@ import {
   Home, UtensilsCrossed, Pill, Microscope, NotebookPen, MoonStar, Shield,
   BarChart3, Zap, DoorOpen, Hammer, LayoutGrid, Trophy, Compass, Target, Landmark, Mic,
   CalendarDays, Camera, GitCommitVertical, CookingPot, Refrigerator, MessageSquareText, Grid3x3,
+  Wind, GraduationCap,
 } from 'lucide-react'
 import { NAV_ITEMS as FITNESS_NAV_ITEMS } from '@constants/NavigationItems.js'
 
@@ -78,8 +79,10 @@ export const SUB_NAV = {
     ] },
   ],
   relax: [
-    { id: 'dash',    label: 'Heute',   Icon: Home },
-    { id: 'session', label: 'Session', Icon: MoonStar },
+    { id: 'dash',       label: 'Heute',   Icon: Home },
+    { id: 'ausbildung', label: 'Modul',   Icon: GraduationCap },
+    { id: 'session',    label: 'Praxis',  Icon: MoonStar },
+    { id: 'atem',       label: 'Atem',    Icon: Wind },
     { id: 'journal', label: 'Journal', Icon: NotebookPen },
     { id: 'stats',   label: 'Stats',   Icon: BarChart3 },
     { id: 'physio',  label: 'Physio',  Icon: Zap },
