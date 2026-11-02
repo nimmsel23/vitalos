@@ -1,3 +1,15 @@
+## 2026-11-02 — Pulse (vos-fitness): schwarze Bildschirme und mobiles Layout beim Tab-Wechsel
+
+Aus einer Session, in der der Nutzer von Frontend-Bugs in der neuen Pulse-Oberfläche (`~/vitalos/vos-fitness`, Site `fitness-vos`) berichtete: schwarze Bildschirme und Layout-Probleme auf dem Handy beim Wechsel zu anderen Tabs, nur der Session-Tab laufe. Pulse ließ sich ohne Login nicht im Browser nachstellen, die Ursachen wurden im Code gefunden; welche davon die konkreten Abstürze auslöst, ist nicht bewiesen. Auf dem iPhone nicht getestet, nicht gepusht (ein Push nach `master` löst über den Hook den Prod-Deploy auf `fitness-vos.web.app` aus). Commit `372336e`.
+
+- **`vos-fitness/src/pulse/PageBoundary.jsx` (neu):** Fehlergrenze um jede Pulse-Seite und um die Hülle; zeigt statt schwarzem Bildschirm eine Fehlermeldung mit „Erneut versuchen“, „Zurück“ und „Neu laden“; bei Chunk-Ladefehlern lädt die Seite einmal selbst neu.
+- **`vos-fitness/src/pulse/Pages.jsx` / `PulseApp.jsx`:** Seiten bekommen jetzt wie in der Haupt-App `taxonomy`, `muscleLanguage`, `gender`, `onInspectExercise` (samt `ExerciseInsightModal`), `onOpenSession` und `onSubNav`, dazu `Suspense`; `getAllMuscles()` wird beim Start geladen; Datums-Sprung aus Review/Verlauf verdrahtet; `PageBoundary` mit `key={page}`.
+- **`vos-fitness/public/sw.js` (Cache `fitness-vos-v3` → `v4`):** `index.html`/Navigation jetzt network-first statt cache-first (eine installierte iOS-Web-App behielt eine alte `index.html`, die nach einem Deploy auf fehlende Chunks verwies); HTML-Antworten auf JS-Pfade werden nicht mehr gecacht; `manifest.json` bleibt unter eigenem Schlüssel.
+- **`vos-fitness/src/pulse/pulse.css`:** `100vh` steht vor `100dvh` (die Reihenfolge hatte `dvh` aufgehoben); `mix-blend-mode` auf der fixierten Vollbild-Ebene entfernt (iOS-Safari rendert das teils schwarz); `overflow-x`-Clipping und Safe-Area unten im Seitenkörper.
+- **Verifikation:** Test-Build (`vite build`) ins Scratch-Verzeichnis grün, `dist-firebase` unberührt. Backups der geänderten Dateien als `*.bak`/`*.bak2` in `vos-fitness/` (untracked bzw. nicht mitcommittet).
+
+---
+
 ## 2026-11-01 — Fitness/Plan-Release auf Standalone-Deploy umgestellt: `vos-ship`, Lockfile-/Umzugs-Fixes in `vos-release`, Shell-Fix 6Pack-Push
 
 Aus einer Session in `~/dev/fitness-dev` (Muskel-Coverage-Upgrades, Katalog, dann Release). Hier dokumentiert ist nur, was das Meta-Repo betrifft: Ein Fitness-Release (`master` → `vitalos`) machte die Shell-CI rot und scheiterte mehrfach an Lockfile-Drift und an Symlink-Artefakten nach dem Umzug der Checkouts nach `~/dev`. Daraus entstanden ein durchgehender Release-Befehl, Reparaturen in `vos-release` und der Umbau des Fitness-Live-Deploys auf einen Standalone-Weg ohne Meta-Repo. Fitness (PR #19) und Plan (PR #3) sind damit ausgeliefert, `vitalos master` steht auf `8c511df`.

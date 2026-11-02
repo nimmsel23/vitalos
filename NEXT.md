@@ -2,6 +2,13 @@
 
 Aktive Arbeitsliste (max. 5 Punkte) für das vitalos Meta-Repo.
 
+## 2026-11-02 (Pulse, schwarze Bildschirme)
+
+- [ ] `372336e` ist lokal committet, **nicht gepusht**. Push nach `master` löst über den Hook den Prod-Deploy `fitness-vos.web.app` aus — erst auf Nutzer-Kommando; danach Pointer-Bump im Meta-Repo nach dem üblichen Release-Weg.
+- [ ] Auf dem iPhone prüfen (nichts gesehen): Web-App einmal komplett schließen und neu öffnen (neuer Service Worker `fitness-vos-v4`), dann Tab-Wechsel in Review/Lernen/Einstellungen und Layout unten (`100dvh`, Safe-Area). Tritt noch ein Fehler auf, steht jetzt die Meldung der `PageBoundary` auf dem Bildschirm — Text an Claude geben; die eigentliche Absturzursache ist nicht bewiesen.
+- [ ] Alte Bug-Liste `fitness-app/BUGLIST.md` (22.07., Session-Workout-Details überlappen, Journal-Modal an falscher Position, Composer-Prompt fehlt im Journal) wurde nicht angegangen und betrifft die alte Tab-Oberfläche, nicht Pulse; Katalog-Punkte sind Datenfehler.
+- [ ] `.bak`-Dateien aus dieser Session in `vos-fitness/` (`public/sw.js.bak`, `src/pulse/*.bak*`) aufräumen.
+
 ## 2026-11-01 (Standalone-Deploy, vos-ship)
 
 - [ ] Prüfen, ob der Shell-Deploy zu `8c511df` grün wurde (`gh run list -R nimmsel23/vitalos --limit 2`); beim Sessionende lief er noch. Die zwei roten `npm_and_yarn`-Einträge bei `bc92f31` sind Dependabot, schon vorher da.
