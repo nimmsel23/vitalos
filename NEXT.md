@@ -2,6 +2,13 @@
 
 Aktive Arbeitsliste (max. 5 Punkte) für das vitalos Meta-Repo.
 
+## 2026-11-02 (Fuel-Mini-Apps, Worktree-Aufräumen)
+
+- [ ] Die vier `vos-fuel-*-app`-Ordner stehen im Meta-Repo weiter als ` M` (Checkout `12cd6b3`, Pointer `b5ec24b`), bewusst nicht gebumpt (laut Doku stabile Fallbacks, durch `vos-fuel-mini` überflüssig). Entscheidung offen: Submodule entfernen oder Pointer bumpen; vorher nie aus einem der Klone pushen (alle teilen `fuel-dev`/`vitalos`).
+- [ ] Auth-Domain pro Mini-App (`vos-fuel-<x>.web.app`) ist nicht umgesetzt (Domains in Firebase freigeschaltet, Apps nutzen `fitness-aos.firebaseapp.com`). Falls gewollt: eigene Branches in `fuel-dev` pro App, nicht auf `vitalos`.
+- [ ] Mini-Apps auf einem Gerät prüfen (nichts gesehen, nur HTTP 200 für Seite und `sw.js`).
+- [ ] Lokale Branches ohne Worktree aufräumen (`git branch -d`, noch nicht gefragt/gelöscht): `worktree-*`, `feat/vos-ship-functions`, `fix/push-function-test-runwith`, `codex/coach-unread-index`, `feat/relax-session-desktop-width` (lokal + Remote). `codex/coach-communication` und `backup/coach-communication-2026-11-02` (enthält den nicht übernommenen Rules-Test samt Doku) erst löschen, wenn der Test sicher nicht gebraucht wird.
+
 ## 2026-11-02 (Pulse, schwarze Bildschirme)
 
 - [x] `372336e` ist gepusht und über die CI live (`fitness-vos.web.app`, `sw.js` = `fitness-vos-v4`). Offen nur: Pointer-Bump im Meta-Repo nach dem üblichen Release-Weg, falls für `vos-fitness` nötig (es ist ein Ordner im Meta-Repo, vermutlich nichts zu tun).
@@ -194,3 +201,8 @@ Aktive Arbeitsliste (max. 5 Punkte) für das vitalos Meta-Repo.
 **Gemini-Review (potenzielle blinde Flecken, 2026-11-02):**
 - **Ungeprüfte Annahme:** Obwohl Claude die Ursachen im Code gefunden hat, wurde nicht bewiesen, welche der Änderungen die konkreten Abstürze auf dem Handy beheben. Insbesondere die Wirksamkeit der CSS-Anpassungen (`100vh`/`100dvh`-Reihenfolge, `mix-blend-mode`) als direkte Lösung für die gemeldeten Layout-Probleme und schwarzen Bildschirme auf iOS-Geräten bleibt eine Annahme, da kein Test auf einem echten iPhone erfolgte.
 - **Übersehener Edge-Case:** Die CI-Ausgabe enthielt Deprecation-Warnungen für Node.js 20 und einen bevorstehenden Ubuntu-Migrationshinweis. Obwohl der Deploy
+
+**Gemini-Review (potenzielle blinde Flecken, 2026-11-02):**
+*   **Ungeprüfte Annahme zu `firestore.rules`:** Claude behauptete wiederholt, die `firestore.rules` seien in `master` und dem Feature-Branch identisch, obwohl ein `git cherry-pick` auf `firestore.rules` einen Konflikt meldete (`UU firestore.rules`). Dieser Konflikt wurde nicht explizit analysiert oder der `firestore.rules`-Diff zur Bestätigung der Identität gezeigt.
+*   **Ignorieren von Konflikt-Indikatoren:** Der `git cherry-pick` schlug mit `UU firestore.rules` fehl, was auf einen Unterschied hindeutet. Claude interpretierte dies als "Rules bleiben unverändert, da sie in `master` bereits identisch sind", ohne die Diskrepanz zwischen `git`s Bericht und seiner eigenen Annahme zu klären.
+*   **Veraltete Dokumentation als "veraltet" abgetan, ohne tiefergehende Prüfung:** Die Doku (`docs/COACH-COMMUNICATION.md`) behauptete, die Änderungen seien *nicht* in `master`. Claude wies dies als "veraltet" ab, ohne zu prüfen, ob die Diskrepanz (Konflikt bei `firestore.rules` vs. "identisch") möglicherweise darauf hindeutete, dass die Rules eben *nicht* vollständig identisch waren.
