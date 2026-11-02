@@ -38,7 +38,7 @@ Endstand erreicht hat: sofort committen, ohne vorher um Erlaubnis zu fragen.
 
 - `~/vitalos` ist die VitalOS-Shell. `master` ist ihr Produktionsbranch; `deploy-shell.yml` deployed die Shell. Das Meta-Repo hat keinen `dev`-Branch.
 - Die `*-dev` Repos sind die Entwicklungsquellen. Qualifizierende Änderungen auf ihren `dev`-Branches starten die Preview-Workflows.
-- Die `*-app` Submodule in diesem Meta-Repo sind Staging-/Integrations-Checkouts und liefern Quellcode für die VitalOS-Subapps. Der Parent speichert pro Submodule einen Gitlink auf einen konkreten Commit.
+- Die `*-app` Submodule in diesem Meta-Repo sind lokale Staging-/Integrations-Checkouts für Git-Merges und liefern Quellcode für die VitalOS-Subapps. Sie sind nicht zum direkten Editieren da: Änderungen werden im jeweiligen `*-dev`-Quellrepo vorgenommen und über den vorgesehenen Merge-/Release-Weg in den App-Checkout übernommen. Der Parent speichert pro Submodule einen Gitlink auf einen konkreten Commit.
 - `branch = vitalos` in `.gitmodules` bestimmt, welchem Remote-Branch `git submodule update --remote` folgt. Der gespeicherte Gitlink wird dadurch nicht automatisch verschoben.
 - Die eigenständigen App-Produktions-Branches unterscheiden sich: Fitness nutzt derzeit `vitalos`; Fuel nutzt derzeit `master`. Vor einem Release den aktiven Workflow im jeweiligen App-Repo prüfen.
 
