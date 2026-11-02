@@ -228,6 +228,11 @@ service cloud.firestore {
     match /{path=**}/sessions/{sessionId} {
       allow read: if isCoach() || (authed() && resource.data.userId == request.auth.uid);
     }
+    // Live-Traction (Coach-Konsole/Fitness-Coach-Tab): collectionGroup-Lesen nur für den Coach.
+    // Schreiben deckt die per-User-Regel fitness/{uid}/{document=**} ab.
+    match /{path=**}/tractionDaily/{dayId} {
+      allow read: if isCoach();
+    }
     match /{path=**}/profile/{doc} {
       // Own profile accessible via /fitness/{uid}/... (per-user rule above).
       // CollectionGroup: coach-only — prevents cross-user profile leaks.
