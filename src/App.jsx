@@ -120,6 +120,7 @@ function buildHashState({ tab, subTab = null, date = null }) {
 
 export default function App() {
   const initialHashState = readHashState()
+  const deepLinkDatePending = useRef(Boolean(initialHashState.date))
   const [isDesktopViewport, setIsDesktopViewport] = useState(() => {
     if (typeof window === 'undefined') return true
     return window.matchMedia('(min-width: 1024px)').matches
@@ -300,7 +301,12 @@ export default function App() {
 
   useEffect(() => {
     // Apply a deep-link date before replacing it with the persisted shell date.
-    if (initialHashState.date && initialHashState.date !== runtimeDate) return
+    // Nur beim ersten Durchlauf: initialHashState liest bei jedem Render den *aktuellen* Hash,
+    // sonst blockierte der alte Hash-Datumswert jede spätere Datumsänderung (Heute, ‹ ›, Datepicker).
+    if (deepLinkDatePending.current) {
+      deepLinkDatePending.current = false
+      if (initialHashState.date && initialHashState.date !== runtimeDate) return
+    }
     const nextHash = tab === 'fitness'
       ? buildHashState({ tab, subTab: fitnessTab, date: fitnessTab === 'session' ? (sessionDate || runtimeDate) : null })
       : tab === 'home'
@@ -398,6 +404,13 @@ export default function App() {
     if (id === 'timer') { navigate('sixpack'); return }
     setFitnessTab(id)
     setTab('fitness')
+  }
+
+  // Datum aus dem Header (Heute, ‹ ›, Datepicker): ein fest gesetztes Session-Datum würde
+  // sonst Hash und Ansicht auf dem alten Tag halten.
+  function changeHeaderDate(date) {
+    setRuntimeDate(date)
+    setSessionDate(null)
   }
 
   function navigateToDomainDate(id, date) {
@@ -595,8 +608,8 @@ export default function App() {
             : tab === 'game'
               ? setGameTab
             : null
-      const shellHeader = <ShellHeader tab={tab} subTab={shellSubTab} runtimeDate={runtimeDate} setRuntimeDate={setRuntimeDate} subNav={shellSubNav} onSubTab={shellSubTabSetter} onNavigateDomain={navigateToDomainDate} />
-      const mobileShellHeader = <ShellHeader tab={tab} subTab={shellSubTab} runtimeDate={runtimeDate} setRuntimeDate={setRuntimeDate} compact subNav={shellSubNav} onSubTab={shellSubTabSetter} onNavigateDomain={navigateToDomainDate} />
+      const shellHeader = <ShellHeader tab={tab} subTab={shellSubTab} runtimeDate={runtimeDate} setRuntimeDate={changeHeaderDate} subNav={shellSubNav} onSubTab={shellSubTabSetter} onNavigateDomain={navigateToDomainDate} />
+      const mobileShellHeader = <ShellHeader tab={tab} subTab={shellSubTab} runtimeDate={runtimeDate} setRuntimeDate={changeHeaderDate} compact subNav={shellSubNav} onSubTab={shellSubTabSetter} onNavigateDomain={navigateToDomainDate} />
       const shellViews = <ShellAppRouter tab={tab} fitnessProps={fitnessProps} fuelTab={fuelTab} setFuelTab={setFuelTab} muscleLanguage={muscleLanguage} taxonomy={taxonomy}
       user={user} settingsProps={settingsProps} openSession={openSession} runtimeDate={runtimeDate} onRuntimeDateChange={setRuntimeDate} navigate={navigate} relaxTab={relaxTab} setRelaxTab={setRelaxTab} doorTab={doorTab} setDoorTab={setDoorTab} gameTab={gameTab} setGameTab={setGameTab} homeGate={homeGate} onHomeGateSelect={handleHomeGateSelect} onHomeGateDismiss={() => setHomeGate(null)} />
       const compactShellViews = <ShellAppRouter tab={tab} fitnessProps={fitnessProps} fuelTab={fuelTab} setFuelTab={setFuelTab} muscleLanguage={muscleLanguage} taxonomy={taxonomy}
