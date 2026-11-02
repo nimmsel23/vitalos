@@ -41,7 +41,7 @@ export default function Sidebar({ tab, navigate, pinned, setPinned, children, us
             // Rechtsklick/Long-Press/Menü-Taste auf Door/Game: Direktwahl der Untereinträge
             const ItemButton = MENU_APPS[id] ? ContextMenuButton : 'button'
             const menuProps = MENU_APPS[id]
-              ? { menuLabel: MENU_APPS[id], items: flattenMenuItems(SUB_NAV[id]).map((item) => ({ label: item.label, onSelect: () => navigate('door', item.id) })) }
+              ? { menuLabel: MENU_APPS[id], items: flattenMenuItems(SUB_NAV[id]).map((item) => ({ label: item.label, onSelect: () => navigate(id, item.id) })) }
               : {}
             return (
               <ItemButton key={id} {...menuProps} onClick={() => navigate(id)} title={`${label} (Alt+${index + 1})`} aria-label={label} aria-current={isActive ? 'page' : undefined} aria-keyshortcuts={`Alt+${index + 1}`}

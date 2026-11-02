@@ -51,6 +51,16 @@ function TileStat({ appId, fallback = null }) {
   return fallback ? <span>{fallback}</span> : null
 }
 
+// Rechtsklick/Long-Press auf eine App-Kachel: Untertabs kommen aus SUB_NAV (SSOT der Shell),
+// damit das Menü nie von den echten Tabs abweicht. Journal hat keine Shell-Untertabs, sondern
+// externe Ziele (appDestinations.js, href).
+function tileMenuItems(id, handleNavigate) {
+  if (SUB_NAV[id]) {
+    return flattenMenuItems(SUB_NAV[id]).map((item) => ({ label: item.label, onSelect: () => handleNavigate(id, item.id) }))
+  }
+  return getAppDestinations(id).map((item) => (item.href ? item : { label: item.label, onSelect: () => handleNavigate(id, item.subTab) }))
+}
+
 const MENU_APPS = { door: 'Door – 4 P', game: 'Game – Maps & Door' }
 
 const SECONDARY_LINKS = [
@@ -99,10 +109,7 @@ export default function Hub({ navigate, variant = 'page', runtimeDate, openSessi
             <ContextMenuButton
               key={id}
               menuLabel={`${label} – Unterbereiche`}
-              items={getAppDestinations(id).map((item) => id === 'journal' && item.href ? item : {
-                label: item.label,
-                onSelect: () => handleNavigate(id, item.subTab),
-              })}
+              items={tileMenuItems(id, handleNavigate)}
               onClick={() => handleNavigate(id)}
               className="vos-press relative flex min-h-[128px] flex-col justify-between overflow-hidden rounded-[22px] p-4 text-left"
               style={{
@@ -130,7 +137,7 @@ export default function Hub({ navigate, variant = 'page', runtimeDate, openSessi
           {SECONDARY_LINKS.map(({ id, label, Icon, color }, index) => {
             const Row = SUB_NAV[id] && MENU_APPS[id] ? ContextMenuButton : 'button'
             const menuProps = SUB_NAV[id] && MENU_APPS[id]
-              ? { menuLabel: MENU_APPS[id], items: flattenMenuItems(SUB_NAV[id]).map((item) => ({ label: item.label, onSelect: () => handleNavigate('door', item.id) })) }
+              ? { menuLabel: MENU_APPS[id], items: flattenMenuItems(SUB_NAV[id]).map((item) => ({ label: item.label, onSelect: () => handleNavigate(id, item.id) })) }
               : {}
             return (
             <Row
