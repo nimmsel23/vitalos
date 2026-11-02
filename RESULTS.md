@@ -1,3 +1,12 @@
+## 2026-11-02 — `.npmrc`: npm-Warnungen im Dev-Start entfernt
+
+Aus einer kurzen Session in `~/vitalos`: Beim `npm run dev` erschienen zwei Warnungen („Unknown project config“ für `strict-peer-dependencies` und `shamefully-hoist`), und Vite meldete „Re-optimizing dependencies because lockfile has changed“. Der Nutzer hat bestätigt, dass die Warnungen danach weg sind.
+
+- **`.npmrc`:** Die Zeilen `strict-peer-dependencies=false` und `shamefully-hoist=true` (samt Kommentar) entfernt, Backup `.npmrc.bak`. Commit `1a7aded`, nicht gepusht. Hoisting bleibt über `shamefullyHoist: true` in `pnpm-workspace.yaml` aktiv (`pnpm config get shamefully-hoist` liefert weiter `true`), `strict-peer-dependencies` ist in pnpm 11 ohnehin standardmäßig `false`.
+- **Lockfile-Neuoptimierung (nur Befund, keine Änderung):** Sie kommt daher, dass `vos-ship`/`vos-release` `pnpm-lock.yaml` automatisch an die Modul-`package.json`s anpassen; kein Fehler, `git status` war sauber.
+
+---
+
 ## 2026-11-02 — Fuel-Mini-Apps über `vos-fuel-mini` deployt, Worktrees und Feature-Branch im Meta-Repo aufgeräumt
 
 Aus einer Session in `~/vitalos`, in der der Nutzer die vier Fuel-Mini-Apps (`vos-fuel-log/supplements/mikros/protokoll`) nach `master` bringen und deployen wollte und danach den Zustand von Feature-Branch und Worktrees geklärt hat. Im Meta-Repo selbst wurde nichts committet und nichts nach `master` gepusht (es gab keinen Pointer und keine Datei zu ändern); geändert wurden Remote-Stände in `fuel-dev`, Live-Hosting und lokale Worktrees/Branches. Auf einem Gerät wurde nichts getestet.
