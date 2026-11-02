@@ -34,6 +34,10 @@ Endstand erreicht hat: sofort committen, ohne vorher um Erlaubnis zu fragen.
 - **Push des Meta-Repos bleibt separat** — nur committen, NICHT pushen, außer
   der User fordert es explizit an.
 
+## Edit-Orte und Branch-Regel
+
+Quellcode wird ausschließlich in `~/vitalos/src` oder im jeweiligen `~/dev/*-dev/src` bearbeitet, ausschließlich auf einem `dev`-Branch und immer mit anschließendem Commit. Auf anderen Branches, insbesondere dem Produktionsbranch `master`, wird kein Quellcode direkt editiert. `*-app`-Submodule bleiben lokale Merge-/Integrations-Checkouts und werden nicht direkt editiert.
+
 ## Repo- und Deploy-Rollen
 
 - `~/vitalos` ist die VitalOS-Shell. `master` ist ihr Produktionsbranch; `deploy-shell.yml` deployed die Shell. Das Meta-Repo hat keinen `dev`-Branch.
