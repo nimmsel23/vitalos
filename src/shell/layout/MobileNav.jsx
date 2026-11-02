@@ -1,6 +1,7 @@
 import { useId, useMemo, useRef, useState } from 'react'
 import { Check, ChevronRight, ExternalLink, Home, Keyboard, LayoutGrid, MoreHorizontal, NotebookPen, X } from 'lucide-react'
-import { NAV_ITEMS, SUB_NAV, buildFitnessGateItems } from '@shell/NavigationItems'
+import { NAV_ITEMS, SUB_NAV, buildFitnessGateItems, flattenMenuItems } from '@shell/NavigationItems'
+import ContextMenuButton from '@vos-shell-ui/ContextMenuButton.jsx'
 import { useSwipeToDismiss } from '@fitness/hooks/useSwipeToDismiss.js'
 import { handleSheetKeys } from '../keyboard.js'
 import { useSheetFocus } from '../useSheetFocus.js'
@@ -149,6 +150,34 @@ export default function MobileNav({ tab, navigate, subTab = null, homeGate = nul
     { id: 'more', label: 'Mehr', Icon: MoreHorizontal },
   ]
 
+  // Rechtsklick/Long-Press/Menü-Taste auf einen Slot: Direktwahl ohne das Sheet.
+  function slotMenu(id) {
+    if (id === 'home') {
+      return {
+        menuLabel: 'Home',
+        items: [
+          { label: 'Journal', onSelect: () => { close(); navigate('home') } },
+          { label: 'Übersicht', onSelect: () => { close(); navigate('hub') } },
+        ],
+      }
+    }
+    if (id === 'more') {
+      return {
+        menuLabel: 'Mehr',
+        items: [
+          { label: 'Übersicht', onSelect: () => { close(); navigate('hub') } },
+          ...MORE_IDS.map((moreId) => findApp(moreId)).filter(Boolean).map(({ id: appId, label }) => ({
+            label, onSelect: () => { close(); navigate(appId) },
+          })),
+        ],
+      }
+    }
+    return {
+      menuLabel: `${findApp(id)?.label || id} – Unterbereiche`,
+      items: flattenMenuItems(SUB_NAV[id]).map((item) => ({ label: item.label, onSelect: () => { close(); navigate(id, item.id) } })),
+    }
+  }
+
   const panelApp = findApp(panelId)
   const panelTitle = panelId === 'overflow' ? 'Mehr' : (panelApp?.label || '')
 
@@ -277,8 +306,9 @@ export default function MobileNav({ tab, navigate, subTab = null, homeGate = nul
           {slots.map(({ id, label, Icon }) => {
             const active = id === 'more' ? (activeSlot === 'more' || panelId === 'overflow') : activeSlot === id
             return (
-              <button
+              <ContextMenuButton
                 key={id}
+                {...slotMenu(id)}
                 onClick={() => handleSlot(id)}
                 aria-haspopup={id === 'home' ? undefined : 'dialog'}
                 aria-expanded={id === 'home' ? undefined : (panelId === (id === 'more' ? 'overflow' : id))}
@@ -297,7 +327,7 @@ export default function MobileNav({ tab, navigate, subTab = null, homeGate = nul
                 >
                   {label}
                 </span>
-              </button>
+              </ContextMenuButton>
             )
           })}
         </div>
