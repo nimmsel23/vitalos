@@ -55,8 +55,12 @@ for (const [app, dir] of sources) {
   const helpers = new Proxy({}, { get: (_, key) => key === 'REGION' ? 'europe-west1' : () => {} })
   vm.runInNewContext(code, {
     exports, console: { log() {}, error: (...args) => errors.push(args) }, process: { env: {} }, __dirname: resolve(dir, 'functions'),
-    require: (name) => name === 'firebase-functions' ? { region: chain, logger: { info() {} } }
-      : name === 'firebase-admin' ? { initializeApp() {}, firestore: () => firestore, messaging: () => ({ sendEachForMulticast() { sends++; return {} } }) } : helpers,
+    require: (name) => (name === 'firebase-functions' || name === 'firebase-functions/v1') ? { region: chain, logger: { info() {} } }
+      : name === 'firebase-admin' ? { initializeApp() {}, firestore: () => firestore, messaging: () => ({ sendEachForMulticast() { sends++; return {} } }) }
+      : name === 'firebase-admin/app' ? { initializeApp() {} }
+      : name === 'firebase-admin/firestore' ? { getFirestore: () => firestore, FieldValue: { serverTimestamp: () => 'ts', delete: () => 'del', arrayUnion: (...a) => a, arrayRemove: (...a) => a, increment: (n) => n } }
+      : name === 'firebase-admin/messaging' ? { getMessaging: () => ({ sendEachForMulticast() { sends++; return {} } }) }
+      : helpers,
   }, { filename: `${app}/functions/index.js` })
   assert.equal(exports.scheduledPushReminders, undefined, `${app}: no shared legacy export`)
   const matches = Object.entries(exports).filter(([name]) => name.toLowerCase().includes(`${app}pushreminders`))
