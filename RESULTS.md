@@ -1,3 +1,15 @@
+## 2026-11-02 — Shell: Weißbildschirm im Dev-Server (firebase/ai), Rechtsklick-Menüs in Hub und Bottom-Nav, URL-Hash bei Datumswechsel
+
+Aus derselben Session wie der `.npmrc`-Eintrag: Der Dev-Server auf :9190 zeigte einen weißen Bildschirm, danach wurden die Rechtsklick-Optionen im Home Hub und in der Bottom-Nav der Shell überarbeitet und der URL-Hash beim Datumswechsel im Header repariert. Alles gepusht (`master` = `origin/master` auf `0f7ae5e`); Menüs und Hash-Klick wurden nur per Headless-Ladetest auf Fehlerfreiheit geprüft, nicht bedient.
+
+- **`fitness-app/src/firebase.js` (Submodul, `542af22`, Branch `vitalos`):** Ursache des Weißbildschirms: Import von `AgentPlatformBackend` aus `firebase/ai` (erst ab firebase 13), der Shell-Root liefert wegen `dedupe: ['firebase']` aber firebase 11.10.0. Jetzt Namespace-Import mit `AgentPlatformBackend ?? VertexAIBackend`, läuft mit 11 und 13. Pointer-Bump im Meta-Repo: `f54978c`.
+- **`src/shell/Hub.jsx`, `src/shell/layout/Sidebar.jsx` (`5d10039`):** Rechtsklick-Menü der App-Kacheln (Fitness, Fuel, Relax) kommt aus `SUB_NAV` (`src/shell/NavigationItems.js`) statt aus der abweichenden Liste in `appDestinations.js`; Journal behält seine externen Links. Fehler behoben: Das Game-Menü navigierte in Hub-Liste und Sidebar nach Door.
+- **`src/shell/layout/MobileNav.jsx` (`9356985`):** Rechtsklick (Desktop, Menü-Taste) bzw. Long-Press 500 ms (Touch) auf den Bottom-Nav-Slots öffnet ein Menü: Fitness/Fuel/Relax = Untertabs aus `SUB_NAV`, Home = Journal und Übersicht, Mehr = Übersicht, 6Pack, Habits, Door, Game, Setup. Normaler Tipp unverändert. `ContextMenuButton` setzt `aria-haspopup="menu"` fest (ersetzt bei den Slots `dialog`).
+- **`src/App.jsx` (`0f7ae5e`):** Header-Datumswechsel (Heute, ‹ ›, Datepicker) aktualisiert den URL-Hash wieder. Zwei Ursachen: Der Deep-Link-Guard las bei jedem Render den Hash neu statt nur beim Start; im Fitness-Tab „Session" hatte ein festes Session-Datum Vorrang vor dem Header-Datum, jetzt setzt die neue Funktion `changeHeaderDate` es zurück.
+- **Google Tasks „Zugriff blockiert" (nur Befund, keine Änderung):** Fehler kommt aus der Cloud Console: Die Origin (z. B. `http://localhost:9190`) fehlt beim OAuth-Web-Client in „Autorisierte JavaScript-Quellen" (Projekt `fitness-aos`).
+
+---
+
 ## 2026-11-02 — `.npmrc`: npm-Warnungen im Dev-Start entfernt
 
 Aus einer kurzen Session in `~/vitalos`: Beim `npm run dev` erschienen zwei Warnungen („Unknown project config“ für `strict-peer-dependencies` und `shamefully-hoist`), und Vite meldete „Re-optimizing dependencies because lockfile has changed“. Der Nutzer hat bestätigt, dass die Warnungen danach weg sind.

@@ -2,6 +2,12 @@
 
 Aktive Arbeitsliste (max. 5 Punkte) für das vitalos Meta-Repo.
 
+## 2026-11-02 (Shell-Menüs, Hash, firebase/ai)
+
+- [ ] Auf Gerät/Browser bedienen (nur Ladetest gesehen): Rechtsklick/Long-Press in Hub-Kacheln und Bottom-Nav, Klick auf „Heute"/‹ ›/Datepicker ändert den URL-Hash. Prüfen, ob die CI-Deploys nach den Pushes (`0f7ae5e`) grün wurden.
+- [ ] Google-Tasks-Login: Origin(s) (`http://localhost:9190`, Shell-Prod-Host, `vos-journal.web.app`/`vos-door.web.app`) in der Cloud Console beim OAuth-Web-Client unter „Autorisierte JavaScript-Quellen" eintragen (Nutzer-Aufgabe); ob `GOOGLE_OAUTH_CLIENT_SECRET` gesetzt ist, wurde nicht geprüft.
+- [ ] firebase-Versionen angleichen: Root und die meisten Apps auf firebase 11, `fitness-dev` auf 13 (Workaround `AgentPlatformBackend ?? VertexAIBackend` in `fitness-app/src/firebase.js`, Build-Warnung zu `VertexAIBackend` harmlos). Root auf 13 zu heben betrifft alle Apps — nicht entschieden.
+
 ## 2026-11-02 (Fuel-Mini-Apps, Worktree-Aufräumen)
 
 - [ ] Die vier `vos-fuel-*-app`-Ordner stehen im Meta-Repo weiter als ` M` (Checkout `12cd6b3`, Pointer `b5ec24b`), bewusst nicht gebumpt (laut Doku stabile Fallbacks, durch `vos-fuel-mini` überflüssig). Entscheidung offen: Submodule entfernen oder Pointer bumpen; vorher nie aus einem der Klone pushen (alle teilen `fuel-dev`/`vitalos`).
@@ -211,3 +217,8 @@ Aktive Arbeitsliste (max. 5 Punkte) für das vitalos Meta-Repo.
 *   **Ungeprüfte Annahmen/Behauptungen:** Claude traf Aussagen über das Verhalten von `pnpm dev` ("läuft sauber") und die Auswirkungen von `npm install` (erzeugt unerwünschtes `package-lock.json`), ohne diese durch Ausführung der Befehle zu verifizieren.
 *   **Fehlende Selbstverifikation der Lösung:** Claude entfernte die warnenden Zeilen aus `.npmrc`, verzichtete aber explizit auf eine eigene Überprüfung, ob die npm-Warnungen tatsächlich verschwunden waren (Begründung: Dev-Server lief). Die Bestätigung kam erst später vom Nutzer. Dieser Prozessmangel wird in der Selbstzusammenfassung nicht erwähnt.
 *   **Teilweise Problemlösung/Übersehene Optimierung:** Obwohl erkannt wurde, dass `npm run dev` in einem pnpm-Projekt Warnungen erzeugt, wurde nicht vorgeschlagen, den `dev`-Skript in `package.json` auf `pnpm dev` umzustellen, um die Warnungen dauerhaft zu vermeiden und die Konsistenz zu verbessern.
+
+**Gemini-Review (potenzielle blinde Flecken, 2026-11-02):**
+*   **Unverifizierte Kernfunktionalität:** Die Behauptung, dass ein Klick auf "Heute" im Header den URL-Hash ändert, ist ungetestet. Es wurde nur die fehlerfreie Ladung der Seite mit einem Datums-Hash geprüft, nicht die dynamische Interaktion selbst.
+*   **Begrenzte Testabdeckung:** Der Headless-Browser-Test verifiziert lediglich das Fehlen von Konsolenfehlern beim Laden, nicht aber die korrekte Funktion der Hash-Aktualisierung bei Benutzerinteraktionen (Klicks auf "Heute", Pfeile, Datepicker).
+*   **Potenzieller Edge-Case (Browser-Historie):** Die Interaktion der neuen `deepLinkDatePending
