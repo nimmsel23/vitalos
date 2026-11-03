@@ -65,6 +65,22 @@ regionalen Ausnahmen. Ein Coaching-Angebot ist ein eigener Service; der
 Store-Eintrag darf nicht unbesehen auf Patreon als alternativen Kaufweg für
 App-Funktionen verweisen.
 
+Vor Einreichung sind außerdem Googles Data-Safety-Formular und Health-Apps-
+Erklärung sowie Apples App-Privacy-Angaben anhand des tatsächlichen Datenflusses
+und aller eingebundenen SDKs auszufüllen. Apple prüft auch Mindestfunktionalität;
+ein nativer Web-Container allein ist kein Abnahmenachweis.
+
+Offizielle Quellen, geprüft am 3. November 2026:
+
+- [Google Play: Target-API-Anforderungen](https://support.google.com/googleplay/android-developer/answer/11926878)
+- [Google Play: Testanforderungen für neue persönliche Konten](https://support.google.com/googleplay/android-developer/answer/14151465)
+- [Google Play: Zahlungen und digitale In-App-Funktionen](https://support.google.com/googleplay/android-developer/answer/10281818)
+- [Google Play: Data Safety](https://support.google.com/googleplay/android-developer/answer/10787469)
+- [Google Play: Health-Apps-Erklärung](https://support.google.com/googleplay/android-developer/answer/14738291)
+- [Apple: App Review Guidelines, insbesondere 3.1.1, 4.2 und 4.8](https://developer.apple.com/app-store/review/guidelines/)
+- [Apple: Kontolöschung in der App](https://developer.apple.com/support/offering-account-deletion-in-app/)
+- [Apple: App-Privacy-Angaben](https://developer.apple.com/help/app-store-connect/manage-app-information/manage-app-privacy)
+
 ## Listing-Entwurf
 
 **Name:** VitalOS
