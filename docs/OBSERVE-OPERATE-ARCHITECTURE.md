@@ -6,11 +6,11 @@ Stand: 2026-11-03. Dieses Dokument beschreibt den lokal geprüften Stand, nicht 
 
 | Bereich | Tatsächlicher Stand | Lücke zum Ziel |
 |---|---|---|
-| Quellcode | `journal-dev` unter `/home/alpha/dev/journal-dev` ist die Journal-Quelle auf `dev`. `vitalos/journal-app` ist ein Integrations-Submodul auf `vitalos`; sein Gitlink (`adc22d9`) weicht vom lokalen Journal-Commit (`f65c06b`) ab. | Änderungen müssen im Journal-Quellrepo landen und später über den vorgesehenen Release-Weg integriert werden. |
+| Quellcode | `journal-dev` unter `/home/alpha/dev/journal-dev` ist die Journal-Quelle auf `dev`; der aktuelle lokale Stand ist `9e83f4a`. `vitalos/journal-app` ist ein Integrations-Submodul auf `vitalos` und steht weiterhin auf einem älteren Gitlink. | Änderungen müssen im Journal-Quellrepo landen und später über den vorgesehenen Release-Weg integriert werden. |
 | Produktvarianten | `vitalos/vos-observe` ist ein eigenständiger PWA-Prototyp mit eigenem UI/Hosting-Konfig. `vos-operate` ist im aktuellen Checkout weder Verzeichnis noch Git-Tree-Pfad. | Observe ist noch nicht die gemeinsame Journal-/Skill-Anwendung; Operate fehlt. Kein nativer Store-Build oder veröffentlichtes Hosting ist nachgewiesen. |
 | Daten und Auth | Journal speichert in `fitness/{uid}/journal`; Habit-Records und Nutrition-Logs liegen in `fitness/{uid}/habitRecords` und `nutrition/{uid}/logs`. Firebase Auth ist die Nutzergrenze. Relax besitzt `relax/{uid}/sessions`. Fitness und Plan haben eigene Session-/Plan-CRUDs. | Ein gemeinsamer, expliziter Skill-Datenvertrag und Provenienzfelder fehlen. |
 | Manueller Produktkern | Journal v2 bietet Tages-/Wochen-/Monats-/Jahresansicht, Tags, Habits und Skill-Einstiege. Einträge können manuell geschrieben werden. | Der Observe-Prototyp stellt diese bestehenden Ansichten/Skills derzeit nicht bereit. |
-| Smart-Log-Eingabe | `JournalV2View` und `AiLogVosView` rufen beide `analyzeSmartJournal` und `applySmartAnalysis` aus `journal-dev` auf. Smart-Modus ist derzeit eine lokale `localStorage`-Einstellung. | Keine Kontingent- oder Produktvariante; keine serverseitige Feature-Konfiguration. |
+| Smart-Log-Eingabe | `JournalV2View` und `AiLogVosView` rufen `analyzeSmartJournal` und `applySmartAnalysis` aus `journal-dev` auf. Analyse startet nur durch ausdrückliche Aktion; die UI-Einstellung zum Vorwählen des Modus liegt lokal. | Eine integrierte Observe-/Operate-Oberfläche fehlt noch; die Berechtigung wird serverseitig aus dem Account-Entitlement bestimmt. |
 | KI | `analyzeSmartLog` ist jetzt eine Firebase Callable Function in der Journal-Codebase (Node 22, `europe-west1`) und ruft Gemini 2.5 Flash serverseitig auf. Der Client sendet nur nach explizitem Smart-Log-Aufruf. |
 | KI-Berechtigung | Firestore-Entitlement und Wochenkontingent werden ausschließlich mit Admin SDK gelesen/geschrieben. Observe hat standardmäßig 1 erfolgreichen Lauf pro ISO-Woche in `Europe/Vienna`; `operate` braucht ein aktives Server-Entitlement und ein explizites `weeklyLimit`. |
 | Analyse-Schema | Server validiert Felder, Typen, Größen, Mahlzeitenzeiten und Habit-Namen strikt; Originaltext, Tags und Request-ID werden serverseitig aus der Eingabe ergänzt. Geschätzte Makros bleiben markiert, unbekannte Werte `null`. |
@@ -66,12 +66,22 @@ Lokal in `journal-dev/dev` umgesetzt, noch nicht in den VitalOS-Gitlink integrie
 
 Offen: Google-Reautorisierung für den Schreib-Scope und Live-Test mit echtem Kalender. Bestehende Google-Verbindungen haben den neu hinzugefügten Schreib-Scope noch nicht autorisiert.
 
+## Meilenstein 4 — Wiederaufnahme nach Teilfehlern
+
+Lokal in `journal-dev/dev` umgesetzt, Commit `9e83f4a`:
+
+- Beim Start der Übernahme wird ein versioniertes, validiertes Retry-Payload am Journal-Quellrecord abgelegt. Der Originaltext bleibt nur im normalen Journalfeld; Tags werden aus dem Quellrecord rekonstruiert.
+- Bei `applying` nach Reload oder bei `partial` nach Teilfehler erscheint am Eintrag eine Aktion zum erneuten Übernehmen. Sie verwendet dieselbe Request-ID und damit dieselben deterministischen IDs in Nutrition, Habits, Fitness und Relax; Kalender-Events werden über denselben Schlüssel idempotent bestätigt.
+- Nach vollständiger Übernahme wird das Retry-Payload wieder entfernt. Es wird nur während eines offenen/unterbrochenen Ablaufs gespeichert.
+- Unbekannte Retry-Schema-Versionen werden nicht ausgeführt.
+- Verifiziert: 20/20 Testdateien, `git diff --check` und `pnpm run build:firebase` erfolgreich. Kein Push oder Deploy.
+
 ## Priorisierter Plan
 
-1. **Gemeinsamer Apply-Kern:** umgesetzt für Journal, Nutrition und Habits; wiederaufnehmbare UI nach Offline-/Teilfehlern bleibt offen.
+1. **Gemeinsamer Apply-Kern:** Journal, Nutrition, Habits, Fitness, Relax und Planner sind angebunden; Retry-Payload und Resume-Aktion für offene oder teilweise übernommene Einträge sind umgesetzt.
 2. **Skill-Adapter vervollständigen:** Fitness und Relax sind angebunden. Planner-Ziel ist Google Kalender; OAuth-Reautorisierung und Live-Test stehen aus.
 3. **Server-KI und Berechtigungen:** Callable, Observe-Kontingent und Operate-Entitlement umgesetzt; offen bleiben Secret-/Live-Einrichtung, Retention und Umgang mit hängenden Requests. Keine automatische Verarbeitung; manuelle Journal-/Skill-Schreibvorgänge bleiben unabhängig vom KI-Kontingent.
-4. **Observe/Operate-Hüllen:** `journal-dev` bleibt gemeinsame Produkt-/Skill-Basis; Feature-Konfiguration, Branding und serverseitig geprüfte entitlement unterscheiden die Einstiege. Observe bekommt manuelles Journal + Skills + Free-KI-Kontingent. Operate bekommt denselben Kern + konfigurierbare Premium-KI-Berechtigung. Kein künstliches Sperren von Planner/Habits.
+4. **Observe/Operate-Hüllen:** Noch offen. Der vorhandene `vos-observe`-Prototyp hat eine eigenständige Check-in-Oberfläche und schreibt ins bestehende Journal; er stellt aber nicht den vollständigen Skill Stack dar. `vos-operate` existiert nicht. Ziel bleibt eine gemeinsame Plattformbasis mit verschiedenen Oberflächen und serverseitig geprüfter KI-Berechtigung, ohne zwei dauerhaft auseinanderlaufende Kopien.
 5. **Release-/Betriebsnachweis:** Tests und Builds, Firebase Hosting-Sites/Auth-Domains, Store-Datenschutzangaben und optional native Verpackung getrennt verifizieren. Kein Deploy oder Store-Publish ohne passenden Release-Auftrag.
 
 ## Offene technische Abhängigkeiten
