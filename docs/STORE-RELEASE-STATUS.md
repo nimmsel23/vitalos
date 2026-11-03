@@ -3,6 +3,14 @@
 Stand: 3. November 2026. Keine native Store-Version gebaut, signiert, verteilt,
 eingereicht oder veröffentlicht.
 
+**Nachtrag:** Der inzwischen saubere Edition-Worktree enthält auf `73f1384`
+einen gemeinsamen Store-Modus. Sein neuerer Projekt-Audit unterscheidet das
+bisherige private Firebase-Projekt `fitness-aos` vom Zielkonto
+`nimmdaniel@gmail.com`, für das dort noch kein VitalOS-Projekt sichtbar war.
+Die unten erwähnte Abfrage von `fitness-aos` bestätigt daher kein geeignetes
+Store-Backend. Ein neues Projekt darf nicht ohne den Kontoinhaber angelegt oder
+mit privaten Bestandsdaten befüllt werden.
+
 ## Produkt- und Quellstand
 
 - Ziel ist **ein** Store-Eintrag „VitalOS“. Observe und Operate sind Free- und
