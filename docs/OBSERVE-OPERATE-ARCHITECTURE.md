@@ -11,13 +11,14 @@ Stand: 2026-11-03. Dieses Dokument beschreibt den lokal geprüften Stand, nicht 
 | Daten und Auth | Journal speichert in `fitness/{uid}/journal`; Habit-Records und Nutrition-Logs liegen in `fitness/{uid}/habitRecords` und `nutrition/{uid}/logs`. Firebase Auth ist die Nutzergrenze. Relax besitzt `relax/{uid}/sessions`. Fitness und Plan haben eigene Session-/Plan-CRUDs. | Ein gemeinsamer, expliziter Skill-Datenvertrag und Provenienzfelder fehlen. |
 | Manueller Produktkern | Journal v2 bietet Tages-/Wochen-/Monats-/Jahresansicht, Tags, Habits und Skill-Einstiege. Einträge können manuell geschrieben werden. | Der Observe-Prototyp stellt diese bestehenden Ansichten/Skills derzeit nicht bereit. |
 | Smart-Log-Eingabe | `JournalV2View` und `AiLogVosView` rufen beide `analyzeSmartJournal` und `applySmartAnalysis` aus `journal-dev` auf. Smart-Modus ist derzeit eine lokale `localStorage`-Einstellung. | Keine Kontingent- oder Produktvariante; keine serverseitige Feature-Konfiguration. |
-| KI | `smartJournalLogger.js` nutzt Firebase AI Logic / Vertex AI (`gemini-2.5-flash`) direkt im Browser und wiederholt fehlgeschlagene Generierungen bis zu zwei Mal. | Keine serverseitige Berechtigungsprüfung oder verbindliche Quoten. Schlüssel-/Providergrenze ist nicht austauschbar konfiguriert. |
-| Analyse-Schema | Firebase-Antwortschema verlangt Journaltext, Mahlzeiten und Habits; Wasser ist nicht verpflichtend. Der Parser wandelt fehlerhafte Zahlen teils still in `0` um und korrigiert unbekannte Meal-Typen zu `snack`. | Validierung ist nicht als eigenständiger, getesteter Vertrag umgesetzt; unbekannte/falsche Felder können unbemerkt verfälscht werden. |
-| Vorschau | Vorschau zeigt KI-Journalzusammenfassung, Mahlzeiten, Wasser und Habits vor „Übernehmen“. | Felder lassen sich nicht korrigieren. Die Zusammenfassung ersetzt aktuell den ursprünglichen Freitext. |
-| Apply / Wiederholung | Apply schreibt Journal, Nutrition-Log und Habit-Records nacheinander. Habit-Record-IDs sind bereits deterministisch (`habitId_date`). | Journal verwendet Auto-IDs; Mahlzeiten verwenden `Date.now()`. Wiederholung kann Duplikate erzeugen. Es gibt keine durchgängige Apply-ID, keine Status-/Rückverfolgung und keine Wiederaufnahme nach Teilfehler. |
+| KI | `analyzeSmartLog` ist jetzt eine Firebase Callable Function in der Journal-Codebase (Node 22, `europe-west1`) und ruft Gemini 2.5 Flash serverseitig auf. Der Client sendet nur nach explizitem Smart-Log-Aufruf. |
+| KI-Berechtigung | Firestore-Entitlement und Wochenkontingent werden ausschließlich mit Admin SDK gelesen/geschrieben. Observe hat standardmäßig 1 erfolgreichen Lauf pro ISO-Woche in `Europe/Vienna`; `operate` braucht ein aktives Server-Entitlement und ein explizites `weeklyLimit`. |
+| Analyse-Schema | Server validiert Felder, Typen, Größen, Mahlzeitenzeiten und Habit-Namen strikt; Originaltext, Tags und Request-ID werden serverseitig aus der Eingabe ergänzt. Geschätzte Makros bleiben markiert, unbekannte Werte `null`. |
+| Vorschau | Journal-v2 zeigt Originaltext und bearbeitbare Vorschläge; der AI-Fehler kann manuell umgangen werden. |
+| Apply / Wiederholung | Der Journal-Apply-Kern nutzt stabile IDs/Quellverknüpfungen, Status und wiederholbare Nutrition-Transaktionen. Smart-KI-Requests werden serverseitig pro Request-ID gecacht; parallele Duplikate starten keine zweite Analyse. |
 | Skill-Abdeckung | Implementiert: Journal, Nutrition (Meal/Wasser) und bekannte Habit-Records. | Keine Smart-Log-Übernahme in Fitness-Sessions, Relax-Sessions oder Planner. |
-| Server | Journal Functions enthalten Google-Verbindung und Reminder-Funktionen, aber keinen Smart-Log-Endpunkt. | Serverseitiger KI-Adapter, Kontingentdaten und atomare Zugriffskontrolle fehlen. |
-| Tests | Journal nutzt `node --test tests/*.test.mjs`; bestehende Tests decken Router, Offline-Logik, Google- und Hilfsfunktionen ab. | Kein gezielter Test für Smart-Schema, Apply, Provenienz, Wiederholung oder Kontingente. |
+| Server | Callable und Smart-Log-Adapter liegen in `journal-dev/functions`; Provider-Key ist als Secret `GEMINI_API_KEY` vorgesehen. Live-Secret, Live-Funktion und Firebase-Auth blieben ungeprüft. |
+| Tests | 19/19 Tests bestanden; neue Tests decken Server-Wochenschlüssel, erfolgreiche Idempotenz und Freigabe der Reservierung bei Providerfehler ab. Build `pnpm run build:firebase` erfolgreich. |
 
 ## Gemeinsame Produktbasis
 
@@ -38,17 +39,30 @@ Umgesetzt in `journal-dev/dev` (lokal, noch nicht in den VitalOS-Submodul-Gitlin
 
 Noch offen in diesem Meilenstein: Fitness-, Relax- und Planner-Adapter; wiederaufnehmbare UI nach Reload; serverseitige Analyse/Berechtigung; Observe/Operate als gemeinsame Produkt-Einstiege. Ein Apply kann nach lokal/offline gespeichertem Original bei einem abgeleiteten Ziel fehlschlagen; `partial` bewahrt die Quelle, aber ein sichtbarer gezielter Resume-Button steht noch aus.
 
+## Meilenstein 2 — serverseitige KI und Kontingent
+
+Umgesetzt lokal in `journal-dev/dev` (noch nicht gepusht oder integriert):
+
+- `analyzeSmartLog` prüft Auth, Request-ID und Eingabe und ruft Gemini ausschließlich im Server auf. Die bestehende Client-Vorlage enthält keinen Provider-Aufruf oder Schlüssel mehr.
+- Pro Nutzer und ISO-Woche wird eine Firestore-Transaktion für Kontingent und Request-Lock verwendet. Erfolgreiche, validierte Antworten zählen einmal; Wiederholung derselben ID liefert den gespeicherten Erfolg zurück. Gleichzeitige Wiederholung während Verarbeitung wird abgewiesen, statt eine zweite Gemini-Anfrage auszulösen.
+- Provider-/Validierungsfehler geben die Reservierung frei und zählen nicht. Es gibt keine automatischen Provider-Retries. Ein neuer bewusster Analyseversuch bekommt eine neue Request-ID.
+- Observe-Standard ist 1 erfolgreiche Analyse pro Woche. Operate wird nur bei aktivem Admin-Entitlement und gesetztem `weeklyLimit` zugelassen; es wurde keine Premiumzahl festgelegt.
+- `GEMINI_API_KEY` muss vor Deployment als Firebase Secret eingerichtet werden. Kein Client-Fallback ist vorgesehen.
+- Verifiziert: 19/19 Tests, Syntaxprüfung der Functions und Firebase-Build. Kein Push, Deploy, Live-Funktionscheck oder echter Kontingenttest gegen Firebase.
+
+Offen: abgebrochene `processing`-Requests bleiben bis zur manuellen/administrativen Behandlung gesperrt; dies verhindert doppelte kostenpflichtige Analyse nach unklarem Provider-Ausgang. Retention der gecachten Analyseergebnisse muss vor Produktivbetrieb festgelegt werden.
+
 ## Priorisierter Plan
 
 1. **Gemeinsamer Apply-Kern:** Rohtext und Nutzertags erhalten; KI-Ausgabe gegen ein explizites Schema validieren; Analyse-ID/Journal-ID stabil halten; abgeleitete Records mit `sourceJournalId` verknüpfen; Apply-Status und Teilergebnisse sichtbar machen; bestehende Nutrition-/Habit-Apply idempotent machen. Tests für Schema, Wiederholung und Teilfehler. Keine Datenmigration.
 2. **Skill-Adapter vervollständigen:** Fitness, Nutrition, Relax und Planner über vorhandene Owner-CRUDs anbinden. Unsichere/mehrdeutige Vorschläge bleiben unbearbeitet; jede Änderung wird vor Apply geprüft/korrigiert. Tests gegen die echten Zielschemas.
-3. **Server-KI und Berechtigungen:** genau einen Provider zunächst über Firebase Callable Function anbinden; automatische Verarbeitung standardmäßig aus und nur auf ausdrückliche Aktion/Einstellung. Free: ein erfolgreicher KI-Lauf pro ISO-Woche; manuelle Journal-/Skill-Schreibvorgänge bleiben unbegrenzt. Operate: konfigurierbares Kontingent ohne vorweggenommene Preis-/Limitentscheidung. Atomare Transaktion/Lock gegen parallele Überschreitung; Fehlversuche und technische Retries verbrauchen kein Kontingent, erfolgreiche Analyse genau eines. Schlüssel verbleibt serverseitig.
+3. **Server-KI und Berechtigungen:** Callable, Observe-Kontingent und Operate-Entitlement umgesetzt; offen bleiben Secret-/Live-Einrichtung, Retention und Umgang mit hängenden Requests. Keine automatische Verarbeitung; manuelle Journal-/Skill-Schreibvorgänge bleiben unabhängig vom KI-Kontingent.
 4. **Observe/Operate-Hüllen:** `journal-dev` bleibt gemeinsame Produkt-/Skill-Basis; Feature-Konfiguration, Branding und serverseitig geprüfte entitlement unterscheiden die Einstiege. Observe bekommt manuelles Journal + Skills + Free-KI-Kontingent. Operate bekommt denselben Kern + konfigurierbare Premium-KI-Berechtigung. Kein künstliches Sperren von Planner/Habits.
 5. **Release-/Betriebsnachweis:** Tests und Builds, Firebase Hosting-Sites/Auth-Domains, Store-Datenschutzangaben und optional native Verpackung getrennt verifizieren. Kein Deploy oder Store-Publish ohne passenden Release-Auftrag.
 
 ## Offene technische Abhängigkeiten
 
-- Verifizieren, welcher Firebase Functions-Codebestand für Journal-Smart-Logging künftig zuständig sein soll: `journal-dev/functions` (Codebase `journal`) oder die VitalOS-Functions. Keine doppelte Callable-Definition veröffentlichen.
-- Provider-Secret und Service-Account-IAM für serverseitiges Gemini/Vertex existieren nicht als verifizierte Einrichtung. Der Code darf bis zur Einrichtung keine Client-Key-Ausweichroute aktivieren.
+- `journal-dev/functions` (Codebase `journal`) ist als einzige Quelle der Smart-Log-Callable gewählt. Vor Release weiterhin den Live-Funktionsbestand prüfen, damit kein zweiter Callable-Owner entsteht.
+- Provider-Secret und Service-Account-IAM für serverseitiges Gemini existieren nicht als verifizierte Einrichtung. Der Code hat keine Client-Key-Ausweichroute.
 - `observe-vos` ist bisher nur in `vos-observe/firebase.json` als Ziel eingetragen; die tatsächliche Firebase Hosting-Site und der Firebase-Auth-Authorized-Domain-Eintrag sind nicht verifiziert.
 - Das vorhandene Journal-Submodul muss zum Release-Zeitpunkt nach dem aktuellen PR-/Merge-Weg aus `journal-dev/dev` integriert werden; der aktuelle lokale Gitlink ist älter als der Journal-Quellcheckout.
