@@ -30,7 +30,6 @@ updates:
   - /functions
   - /packages/mini-app-shell
   - /vos-fitness
-  - /vos-fuel-mini
   cooldown:
     default-days: 7
   groups:

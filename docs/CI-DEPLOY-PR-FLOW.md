@@ -37,7 +37,7 @@ für PRs (siehe Lücken).
 - Das Skills-Submodul braucht beim Checkout über das Meta-Repo `SKILLS_DEPLOY_KEY`
   (`.github/actions/skills-submodule-auth` im Meta-Repo).
 - Firestore-Rules deployt **kein** Modul-Workflow, nur `~/vitalos` (`deploy-firestore-rules.yml`, manuell).
-- Die vier Fuel-Mini-Apps (`vos-fuel-log|supplements|mikros|protokoll`) laufen **nie** per CI.
+- Die vier Fuel-Mini-Apps (`vos-fuel-log|supplements|mikros|protokoll`) liefen bis 2026-11-04 **nie** per CI; seit dann deployt `fuel-dev/.github/workflows/deploy-miniapps.yml` sie tabellengesteuert (nicht aus dem Meta-Repo).
 
 ---
 

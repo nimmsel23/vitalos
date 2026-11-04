@@ -310,6 +310,11 @@ baut + stempelt (mini-app-shell) wie `fuel-app/scripts/stamp-solo.mjs`. Eigene `
 Stand der Mini-Apps = Submodule-Pointer von `fuel-app`. Die vier Submodule `vos-fuel-*-app` (Klone von fuel-dev) sind damit
 überflüssig, aber noch nicht entfernt.
 
+**Stand 2026-11-04 (ersetzt die Aussagen zu den vier Fuel-Mini-Apps oben):** Die Submodule `vos-fuel-*-app` und der Wrapper `vos-fuel-mini/` sind entfernt.
+Die vier Mini-Apps (`vos-fuel-log|supplements|mikros|protokoll`) deployt jetzt die CI von fuel-dev tabellengesteuert (`scripts/miniapps.json`,
+`.github/workflows/deploy-miniapps.yml`, Push auf master per Diff, `automerge.yml` dispatcht nach dem Release-Merge) — wie die Fitness-Mini-Apps.
+Die frühere Regel „bewusst keine CI“ gilt nicht mehr. Geplant: `vos-fuel/` als Wrapper (Site `fuel-vos`) analog `vos-fitness`, `fuel-os` bleibt der alte fuelctx-Stand.
+
 **Fitness-Rollen sind absichtlich getrennt:** `~/fitness-dev` ist der OG-Source-Code
 und primäre Dev-Worktree; `~/vitalos/fitness-app` ist der in VitalOS integrierte
 Shell-Teil/Submodule-Checkout und deployed nach `fitness-aos.web.app`;
