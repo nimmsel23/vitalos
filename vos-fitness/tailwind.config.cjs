@@ -19,6 +19,7 @@ module.exports = {
     siblingGlob("journal-dev", "journal-app"),
     siblingGlob("habits-dev", "habit-app"),
     siblingGlob("learn-dev", "learn-app"),
+    siblingGlob("plan-dev", "plan-app"),
     "../src/**/*.{js,jsx,ts,tsx}",
   ],
   safelist: [

@@ -20,7 +20,7 @@ export default function Composer({ onSubmit }) {
           ref={inputRef}
           value={value}
           onChange={(e) => setValue(e.target.value)}
-          onKeyDown={(e) => { if (e.key === 'Enter') fire() }}
+          onKeyDown={(e) => { if (e.key === 'Enter' && !e.nativeEvent?.isComposing) fire() }}
           placeholder="z.B. Bankdrücken 3x8x60kg …"
           enterKeyHint="done"
           autoComplete="off"

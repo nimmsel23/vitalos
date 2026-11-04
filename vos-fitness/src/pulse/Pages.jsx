@@ -10,6 +10,7 @@ import Session from '@view/session'
 import WeeklyReview from '@view/review'
 import Learn from '@view/learn'
 import Settings from '@view/settings'
+import Verlauf from './Verlauf.jsx'
 
 // Eigene Seiten statt Overlay-Sheet (2026-10-29): Pulse bleibt der eine Screen,
 // alles andere wird bewusst geöffnet (Hash-Route #/<id>, Zurück-Taste geht).
@@ -24,22 +25,6 @@ export const PAGES = [
   { id: 'learn', label: 'Lernen' },
   { id: 'settings', label: 'Einstellungen' },
 ]
-
-function Verlauf({ sessions }) {
-  if (!sessions.length) {
-    return <div className="pulse-empty"><strong>Noch keine History</strong>Sobald mehr geloggt ist, taucht sie hier auf.</div>
-  }
-  return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: '0.6rem' }}>
-      {sessions.map((s) => (
-        <div key={s.date} className="pulse-beat" style={{ marginBottom: 0 }}>
-          <div className="pulse-beat-name">{s.date}</div>
-          <div className="pulse-beat-meta">{(s.exercises || []).length} Übung(en){s.block ? ` · ${s.block}` : ''}</div>
-        </div>
-      ))}
-    </div>
-  )
-}
 
 function PageShell({ title, onBack, children }) {
   return (
@@ -72,7 +57,8 @@ export function MenuPage({ onOpen, onBack }) {
 // auf die Pulse-Seiten abbilden. Skills/6Pack sind eigene Apps, dafür gibt es hier kein Ziel.
 const SUBNAV_TARGET = { today: 'training', session: 'training', plan: 'plan', history: 'verlauf', logbuch: 'verlauf' }
 
-export function SubPage({ id, onBack, onOpen, sessions, signOut, sessionDate, onOpenSession }) {
+export function SubPage({ id, onBack, onOpen, sessions, signOut, sessionDate, onDateChange, onOpenSession }) {
+  const [reviewTab, setReviewTab] = useState(null) // null = Bericht
   const { muscleLanguage, recentDays } = useSettings()
   const { gender } = useUser()
   const [taxonomy] = useState(() => getStaticMuscleTaxonomy())
@@ -99,15 +85,16 @@ export function SubPage({ id, onBack, onOpen, sessions, signOut, sessionDate, on
       <PageBoundary key={id} onBack={onBack}>
         <Suspense fallback={<div className="pulse-empty">…</div>}>
           {id === 'training' && (
-            <Session key={`today-${sessionDate || ''}`} subTab="today" initialDate={sessionDate || undefined}
+            <Session key="today" subTab="today" initialDate={sessionDate || undefined} onDateChange={onDateChange}
               recentDays={recentDays} onInspectExercise={inspectExercise} onSubNav={onSubNav} />
           )}
           {id === 'plan' && <Session key="plan" subTab="plan" recentDays={recentDays} onInspectExercise={inspectExercise} onSubNav={onSubNav} />}
           {id === 'review' && (
             <WeeklyReview recentDays={14} gender={gender} muscleLanguage={muscleLanguage} taxonomy={taxonomy}
+              subTab={reviewTab} onSubNav={(t) => setReviewTab(t === 'report' ? null : t)}
               onOpenSession={onOpenSession} onInspectExercise={inspectExercise} />
           )}
-          {id === 'verlauf' && <Verlauf sessions={sessions} />}
+          {id === 'verlauf' && <Verlauf sessions={sessions} onOpenSession={onOpenSession} />}
           {id === 'learn' && <Learn onInspectExercise={inspectExercise} muscleLanguage={muscleLanguage} taxonomy={taxonomy} />}
           {id === 'settings' && (
             <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
