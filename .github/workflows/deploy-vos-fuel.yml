@@ -1,0 +1,72 @@
+name: Deploy VOS Fuel PWA
+
+# Ordner vos-fuel/ -> Hosting-Site `fuel-vos` (fuel-vos.web.app). Wrapper um fuel-app (Alias @fuel), wie vos-fitness
+# um fitness-app. NUR MANUELL (workflow_dispatch), bis fuel-vos live umgeschaltet ist: fuel-dev/deploy-master.yml
+# deployt bisher die volle App auf dieselbe Site. Nach dem Umschalten den push-Trigger unten aktivieren und in
+# fuel-dev den hosting:client-Schritt entfernen.
+
+on:
+  workflow_dispatch:
+  # push:
+  #   branches: [master]
+  #   paths:
+  #     - 'vos-fuel/**'
+  #     - 'fuel-app'
+  #     - '.github/workflows/deploy-vos-fuel.yml'
+
+concurrency:
+  group: live-vos-fuel
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Private Skills submodule access
+        uses: ./.github/actions/skills-submodule-auth
+        with:
+          deploy-key: ${{ secrets.SKILLS_DEPLOY_KEY }}
+
+      - name: Submodules via HTTPS + Token
+        run: |
+          git config --global url."https://x-access-token:${{ secrets.GH_SUBMODULE_TOKEN || secrets.GITHUB_TOKEN }}@github.com/".insteadOf "git@github.com:"
+          git submodule sync
+          git submodule update --init --recursive
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 11.3.0
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - name: Install (Workspaces)
+        run: pnpm install --no-frozen-lockfile
+
+      - name: Firebase config schreiben (Secret)
+        env:
+          FIREBASE_CONFIG: ${{ secrets.FIREBASE_CONFIG }}
+        run: |
+          test -n "$FIREBASE_CONFIG" || { echo "::error::Secret FIREBASE_CONFIG fehlt"; exit 1; }
+          printf '%s\n' "$FIREBASE_CONFIG" > fuel-app/src/client/lib/firebase.config.js
+
+      - name: Build VOS Fuel
+        working-directory: vos-fuel
+        env:
+          VITE_APP_MODE: client
+          VITE_RECAPTCHA_SITE_KEY: ${{ vars.VITE_RECAPTCHA_SITE_KEY || secrets.VITE_RECAPTCHA_SITE_KEY }}
+        run: |
+          ../node_modules/.bin/vite build --config vite.config.cjs
+          node scripts/stamp.mjs
+
+      - name: Deploy VOS Fuel to Firebase Hosting
+        working-directory: vos-fuel
+        run: |
+          echo '${{ secrets.FIREBASE_SERVICE_ACCOUNT || secrets.FIREBASE_SERVICE_ACCOUNT_FITNESS_AOS }}' > /tmp/sa.json
+          GOOGLE_APPLICATION_CREDENTIALS=/tmp/sa.json \
+            npx firebase-tools@latest deploy --only hosting \
+            --project fitness-aos --non-interactive
