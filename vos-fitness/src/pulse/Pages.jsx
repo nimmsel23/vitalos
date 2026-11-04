@@ -10,7 +10,6 @@ import Session from '@view/session'
 import WeeklyReview from '@view/review'
 import Learn from '@view/learn'
 import Settings from '@view/settings'
-import Verlauf from './Verlauf.jsx'
 
 // Eigene Seiten statt Overlay-Sheet (2026-10-29): Pulse bleibt der eine Screen,
 // alles andere wird bewusst geöffnet (Hash-Route #/<id>, Zurück-Taste geht).
@@ -21,7 +20,7 @@ export const PAGES = [
   { id: 'training', label: 'Training' },
   { id: 'plan', label: 'Plan' },
   { id: 'review', label: 'Review' },
-  { id: 'verlauf', label: 'Verlauf' },
+  { id: 'logbuch', label: 'Logbuch' },
   { id: 'learn', label: 'Lernen' },
   { id: 'settings', label: 'Einstellungen' },
 ]
@@ -55,7 +54,7 @@ export function MenuPage({ onOpen, onBack }) {
 
 // Session-Unterseiten (SessionModeTabs/SessionHeader rufen onSubNav('today'|'plan'|'history'|…))
 // auf die Pulse-Seiten abbilden. Skills/6Pack sind eigene Apps, dafür gibt es hier kein Ziel.
-const SUBNAV_TARGET = { today: 'training', session: 'training', plan: 'plan', history: 'verlauf', logbuch: 'verlauf' }
+const SUBNAV_TARGET = { today: 'training', session: 'training', plan: 'plan', history: 'logbuch', logbuch: 'logbuch' }
 
 export function SubPage({ id, onBack, onOpen, sessions, signOut, sessionDate, onDateChange, onOpenSession }) {
   const [reviewTab, setReviewTab] = useState(null) // null = Bericht
@@ -91,10 +90,10 @@ export function SubPage({ id, onBack, onOpen, sessions, signOut, sessionDate, on
           {id === 'plan' && <Session key="plan" subTab="plan" recentDays={recentDays} onInspectExercise={inspectExercise} onSubNav={onSubNav} />}
           {id === 'review' && (
             <WeeklyReview recentDays={14} gender={gender} muscleLanguage={muscleLanguage} taxonomy={taxonomy}
-              subTab={reviewTab} onSubNav={(t) => setReviewTab(t === 'report' ? null : t)}
+              subTab={reviewTab} onSubNav={(t) => (t === 'verlauf' ? onOpen('logbuch') : setReviewTab(t === 'report' ? null : t))}
               onOpenSession={onOpenSession} onInspectExercise={inspectExercise} />
           )}
-          {id === 'verlauf' && <Verlauf sessions={sessions} onOpenSession={onOpenSession} />}
+          {id === 'logbuch' && <Session key="logbuch" subTab="logbuch" recentDays={recentDays} onOpenSession={onOpenSession} onInspectExercise={inspectExercise} onSubNav={onSubNav} />}
           {id === 'learn' && <Learn onInspectExercise={inspectExercise} muscleLanguage={muscleLanguage} taxonomy={taxonomy} />}
           {id === 'settings' && (
             <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
