@@ -3,6 +3,17 @@
 Stand: 3. November 2026. Keine native Store-Version gebaut, signiert, verteilt,
 eingereicht oder veröffentlicht.
 
+**Aktualisierung 4. November:** Der separate Produkt-Checkout liegt unter
+`/home/alpha/vitalos-prod` und enthält inzwischen Capacitor-Projekte für Android
+und iOS mit der konfigurierten Kennung `com.vitalos.app`. Im Firebase-Projekt
+`vitalos-prod` sind die Apps „VitalOS Android“ und „VitalOS iOS“ mit dieser
+Kennung registriert; die Registrierung wurde per Firebase CLI bestätigt. Store-
+Registrierung, OAuth-Rückkehr, Signing und Gerätetest sind damit nicht belegt.
+Waydroid 1.6.3 ist mit x86_64-GApps-Image initialisiert; der Container war bei
+der Prüfung inaktiv und die Sitzung gestoppt. Android Studio wird derzeit vom
+Nutzer interaktiv installiert. Die Abschnitte unten dokumentieren den früheren
+Auditstand und sind nicht als aktueller Produkt-Checkout-Status zu lesen.
+
 **Nachtrag:** Der inzwischen saubere Edition-Worktree enthält auf `73f1384`
 einen gemeinsamen Store-Modus. Sein neuerer Projekt-Audit unterscheidet das
 bisherige private Firebase-Projekt `fitness-aos` vom Zielkonto
