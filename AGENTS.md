@@ -1,5 +1,11 @@
 # AGENTS.md — VitalOS
 
+## Produktstrategie und Android-Roadmap
+
+- Produktstrategie: `/home/alpha/vitalos/VitalOS-Produktstrategie-V1.2.0.md`; die lesbare HTML-Fassung liegt daneben als `VitalOS-Produktstrategie-V1.2.0.html`.
+- Interaktive Android-Roadmap: `/home/alpha/Vitaltraining/daniel-vitaltrainer-firebase/src/vitalos-android-roadmap.html` (Homepage-Quelle). Sie ist ein Plan; tatsächlichen Repo-, Build- und Release-Stand vor Umsetzung prüfen.
+- Gemeinsamer Produkt-Checkout: `/home/alpha/vitalos-prod`; Firebase-Projekt `vitalos-prod`. Observe und Operate sind Varianten desselben Store-Produkts.
+
 ## Paketmanager für Apps
 pnpm 
 
