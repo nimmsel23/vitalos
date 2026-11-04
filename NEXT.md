@@ -2,6 +2,13 @@
 
 Aktive Arbeitsliste (max. 5 Punkte) für das vitalos Meta-Repo.
 
+## 2026-11-04 (vos-fitness Stabilitätsrunde)
+
+- [ ] `15daf57` und `fcf2717` (vos-fitness) sind nur lokal committet: Push und damit CI-Deploy nach `fitness-vos.web.app` erst auf Zeichen des Nutzers. Danach auf dem iPhone prüfen (Layout, Wischen, Logbuch) – bisher nichts gesehen.
+- [ ] Offene Entscheidungen in `fitness-app` (fremdes Repo, deployt auch nach `fitness-aos`): (1) Learn-Detail-Overlay `z-[100]` liegt vermutlich über dem `ExerciseInsightModal` `z-50` (Mobile, nur aus Code abgeleitet); (2) `settingsStore.js` greift ohne `try/catch` auf `localStorage` zu (weißer Bildschirm bei gesperrtem Storage); (3) `saveSession` überschreibt den ganzen Tag, gleichzeitiges Schreiben von Pulse und Training: letzter gewinnt.
+- [ ] Pulse-Parser ausbauen (Reihenfolge vorgeschlagen): mehrere Übungen pro Zeile, RPE/Pausen, Vorbelegung aus dem heutigen Plan (`useTodayPlan()`). Cardio steckt weiter als Text im `reps`-Feld (Schema kennt nur `reps`/`weight`). Zusammenhang Journal ↔ Pulse-Parser ungeklärt (`journal-app` nutzt weder `parseLogText` noch `@pulse`).
+- [ ] Ungeklärt/ungeprüft: Update-Knopf in den Einstellungen (braucht `window.__swRegistration` und `sw-update-available`), Manifest-Icons `"any maskable"` getrennt eintragen, Logout ohne Bestätigung, stille Leerzustände im Lernen-Tab, ob `fitness/kb/*` ohne Login lesbar ist.
+
 ## 2026-11-02 (Shell-Menüs, Hash, firebase/ai)
 
 - [ ] Auf Gerät/Browser bedienen (nur Ladetest gesehen): Rechtsklick/Long-Press in Hub-Kacheln und Bottom-Nav, Klick auf „Heute"/‹ ›/Datepicker ändert den URL-Hash. Prüfen, ob die CI-Deploys nach den Pushes (`0f7ae5e`) grün wurden.
@@ -222,3 +229,8 @@ Aktive Arbeitsliste (max. 5 Punkte) für das vitalos Meta-Repo.
 *   **Unverifizierte Kernfunktionalität:** Die Behauptung, dass ein Klick auf "Heute" im Header den URL-Hash ändert, ist ungetestet. Es wurde nur die fehlerfreie Ladung der Seite mit einem Datums-Hash geprüft, nicht die dynamische Interaktion selbst.
 *   **Begrenzte Testabdeckung:** Der Headless-Browser-Test verifiziert lediglich das Fehlen von Konsolenfehlern beim Laden, nicht aber die korrekte Funktion der Hash-Aktualisierung bei Benutzerinteraktionen (Klicks auf "Heute", Pfeile, Datepicker).
 *   **Potenzieller Edge-Case (Browser-Historie):** Die Interaktion der neuen `deepLinkDatePending
+
+**Gemini-Review (potenzielle blinde Flecken, 2026-11-04):**
+*   **Selbstzusammenfassung widerspricht dem Session-Ende:** Die Zusammenfassung behauptet, nichts sei deployt, obwohl die Session mit einem erfolgreichen Live-Deploy der Standalone-App endete.
+*   **CI-Cache ungetestet:** Die Wirksamkeit und korrekte Version (`actions/cache@v4`) des neu eingefügten KB-Daten-Caches in `check.yml` ist unbestätigt ("ungetestet, bis ein PR läuft", "nicht sicher, dass sie die richtige ist").
+*   **Feature-Branch ohne Build-Verifikation:** Der `agent/muscle-set-volume`-Branch wurde zwar getestet, aber der Build-Prozess für diese Änderungen wurde nicht ausgeführt, was potenzielle Integrationsprobleme unentdeckt lässt.

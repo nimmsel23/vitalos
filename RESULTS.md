@@ -1,3 +1,17 @@
+## 2026-11-04 — vos-fitness: Stabilitätsrunde aller Tabs nach Audit, Logbuch statt Verlauf
+
+Auftrag: `vos-fitness` (Ordner früher `fitness-vos`, Site-ID bleibt `fitness-vos`) zu einer vollwertigen App voranbringen. Sieben Tab-Subagenten haben die Tabs geprüft (Pulse, Verlauf, Einstellungen mit Änderungen; Training, Plan, Review, Lernen als Audit), die Fixes wurden gesammelt gebaut (`npm run build` grün) und committet. Nicht gepusht, nicht deployt, nichts im Browser oder auf dem iPhone gesehen; der Parser lief nur per `node` mit 12 Beispielzeilen.
+
+- **Build-Voraussetzung:** `CI=true pnpm install --frozen-lockfile` in `~/vitalos` repariert den ins Leere zeigenden `zustand`-Symlink in `fitness-app/node_modules` (Lockfile war neuer als die Installation). 12 `.bak`-Dateien aus `vos-fitness/` liegen jetzt in `.archiv/vos-fitness-bak-2026-11-04/` (nichts gelöscht).
+- **`vos-fitness/src/pulse/PulseLog.jsx`, `Composer.jsx`, `parseLog.js` (`15daf57`):** Lokales Datum statt UTC (Tag und Streak), Speichern erst nach geladenem Tag, bei Ladefehler Text merken und „Nochmal speichern“, serielles Speichern, Mitternachtswechsel, kein Loggen bei Enter während IME-Eingabe. Parser kennt `×`, `3x8x60`, `3x8 @60`, Dezimalkomma, prüft Cardio vor Einzelsatz, Satzlimit 30. Cardio-Tage werden im Kraft-Modus gespeichert, sonst wären sie im Training unsichtbar.
+- **`vos-fitness/src/pulse/AuthScreen.jsx` (neu), `PulseApp.jsx`:** Login-Maske ausgelagert mit gezielten Fehlermeldungen (falsches/schwaches Passwort, offline, E-Mail vorhanden, zu viele Versuche, Google inkl. iOS-Standalone).
+- **`vos-fitness/src/pulse/Pages.jsx`, `PulseApp.jsx`:** Review-Unter-Tabs (Muskeln, Readiness, Verlauf, Protokoll) verdrahtet (`subTab`/`onSubNav`, `SUBNAV_TARGET`); Training-Datumsauswahl nicht mehr gesperrt (`onDateChange`), `sessionDate` wird zurückgesetzt.
+- **`vos-fitness/tailwind.config.cjs`:** `plan-app` im Content-Scan; der frische Build enthält die vorher fehlenden Plan-Klassen (`grid-cols-10`, `h-40`, …).
+- **`vos-fitness/src/pulse/Verlauf.jsx`, `verlauf.css` (neu in `15daf57`, entfernt in `fcf2717`):** Verlauf-Seite nach Wochen gruppiert mit klickbaren Tagen; kurz darauf ersetzt, weil das Logbuch (aus `fitness-dev`) die Verlauf-Seite abdeckt. `Pages.jsx` zeigt jetzt das Logbuch statt Verlauf.
+- **Memory:** Das `vos-fitness`-Design bleibt unangetastet; Pulse-Parser hat Vorrang vor Feinschliff an den klassischen Tabs.
+
+---
+
 ## 2026-11-02 — Shell: Weißbildschirm im Dev-Server (firebase/ai), Rechtsklick-Menüs in Hub und Bottom-Nav, URL-Hash bei Datumswechsel
 
 Aus derselben Session wie der `.npmrc`-Eintrag: Der Dev-Server auf :9190 zeigte einen weißen Bildschirm, danach wurden die Rechtsklick-Optionen im Home Hub und in der Bottom-Nav der Shell überarbeitet und der URL-Hash beim Datumswechsel im Header repariert. Alles gepusht (`master` = `origin/master` auf `0f7ae5e`); Menüs und Hash-Klick wurden nur per Headless-Ladetest auf Fehlerfreiheit geprüft, nicht bedient.
