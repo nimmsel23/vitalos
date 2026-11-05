@@ -2,6 +2,13 @@
 
 Aktive Arbeitsliste (max. 5 Punkte) für das vitalos Meta-Repo.
 
+## 2026-11-05 (Backend-Auslagerung, Dependabot)
+
+- [ ] Dependabot-Rest (130 Alerts, überwiegend Frontend-Pakete) nach Rescan neu bewerten; Dependabot-Update-Läufe waren gestartet, PRs standen noch aus.
+- [ ] relax-dev: prüfen, ob `server.py`, `server/` und der `server.mjs`-Stub archiviert werden können (angeboten, nicht bestätigt). Pre-push-Hook von relax-app/plan-app scheitert am lokalen `firebase deploy` (Permission): Firebase-Login/Rechte prüfen.
+- [ ] Docs mit alten Pfaden (`src/server`, `node-backend`) in `fuel-dev` (`CLAUDE.md`, `ARCHITECTURE.md`) nachziehen. Die neuen Backend-Repos haben kein `node_modules`, ihre Tests wurden nicht ausgeführt.
+- [ ] Plan live (`vos-plan.web.app`) im Browser ansehen (Routinen, Makrozyklen, Fortschritt): bisher nur HTTP 200 und Build.
+
 ## 2026-11-04 (vos-fitness Stabilitätsrunde)
 
 - [ ] `15daf57` und `fcf2717` (vos-fitness) sind nur lokal committet: Push und damit CI-Deploy nach `fitness-vos.web.app` erst auf Zeichen des Nutzers. Danach auf dem iPhone prüfen (Layout, Wischen, Logbuch) – bisher nichts gesehen.
@@ -234,3 +241,8 @@ Aktive Arbeitsliste (max. 5 Punkte) für das vitalos Meta-Repo.
 *   **Selbstzusammenfassung widerspricht dem Session-Ende:** Die Zusammenfassung behauptet, nichts sei deployt, obwohl die Session mit einem erfolgreichen Live-Deploy der Standalone-App endete.
 *   **CI-Cache ungetestet:** Die Wirksamkeit und korrekte Version (`actions/cache@v4`) des neu eingefügten KB-Daten-Caches in `check.yml` ist unbestätigt ("ungetestet, bis ein PR läuft", "nicht sicher, dass sie die richtige ist").
 *   **Feature-Branch ohne Build-Verifikation:** Der `agent/muscle-set-volume`-Branch wurde zwar getestet, aber der Build-Prozess für diese Änderungen wurde nicht ausgeführt, was potenzielle Integrationsprobleme unentdeckt lässt.
+
+**Gemini-Review (potenzielle blinde Flecken, 2026-11-05):**
+*   **Ungeprüfte Annahme zum Workflow:** Claude behauptet, ein neuer Workflow-Schritt sei in `6pack-dev` gepusht worden, um das Release zu automatisieren, aber der Transkript zeigt keine Verifikation dieses Pushs oder des Workflow-Inhalts.
+*   **Ineffizienz im Git-Skript:** Das `drop-apk2.sh`-Skript hat den ursprünglichen APK-Commit nicht korrekt als "nur APK" erkannt und übersprungen, was zu einem zwischenzeitlichen leeren Commit führte, der in einem separaten Schritt bereinigt werden musste.
+*   **Unerledigte Aufräumarbeit:** Die `fitness-app-debug.apk` bleibt im Arbeitsbaum von `coach-dev` untracked. Obwohl Claude die Notwendigkeit der Bearbeitung in `fitness-dev` erwähnt, wird die Frage, ob diese
