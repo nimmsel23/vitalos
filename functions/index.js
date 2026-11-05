@@ -1,6 +1,8 @@
 const { onSchedule } = require("firebase-functions/v2/scheduler");
 const { logger } = require("firebase-functions/v2");
-const admin = require("firebase-admin");
+const admin = require("firebase-admin/app");
+const { getMessaging } = require("firebase-admin/messaging");
+const { getFirestore, FieldValue } = require("firebase-admin/firestore");
 
 admin.initializeApp();
 
@@ -179,7 +181,7 @@ async function sendReminder(pushRef, tokens, payload) {
     },
   };
 
-  const response = await admin.messaging().sendEachForMulticast(message);
+  const response = await getMessaging().sendEachForMulticast(message);
   const invalidTokens = response.responses
     .map((item, index) => ({ item, token: tokens[index] }))
     .filter(({ item }) => !item.success)
@@ -205,8 +207,7 @@ exports.scheduledVitalosPushReminders = onSchedule(
     const now = getLocalDateParts();
     logger.info("Push check started", { date: now.date, time: now.time });
 
-    const pushDocs = await admin
-      .firestore()
+    const pushDocs = await getFirestore()
       .collectionGroup("settings")
       .where("apps.vitalos.enabled", "==", true)
       .get();
@@ -250,7 +251,7 @@ exports.scheduledVitalosPushReminders = onSchedule(
       const response = await sendReminder(pushDoc.ref, tokens, reminder);
       await pushDoc.ref.set({
         apps: { vitalos: {
-          last_sent_at: admin.firestore.FieldValue.serverTimestamp(),
+          last_sent_at: FieldValue.serverTimestamp(),
           last_sent_date: now.date,
           last_sent_kind: reminder.kind,
           token: tokens[0] || null,
