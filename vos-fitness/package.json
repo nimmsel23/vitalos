@@ -10,6 +10,8 @@
     "build:cloud": "npm run build",
     "firebase": "npm run build && npm run deploy",
     "deploy": "firebase deploy --only hosting --project fitness-aos",
-    "deploy:cloud": "npm run deploy"
+    "deploy:cloud": "npm run deploy",
+    "sync:sw": "node -e \"require('fs').copyFileSync('../fitness-app/public/fitness-messaging-sw.js','public/fitness-messaging-sw.js')\"",
+    "prebuild": "npm run sync:sw"
   }
 }
