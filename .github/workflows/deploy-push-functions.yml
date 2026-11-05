@@ -12,6 +12,10 @@ on:
         description: 'Nur das Deploy-Konto anzeigen, nichts veröffentlichen'
         type: boolean
         default: false
+      replace_gen1:
+        description: 'Gen1-Funktion(en) des gewählten App vor dem Deploy löschen (Gen1→Gen2-Wechsel; kurze Scheduler-Lücke!)'
+        type: boolean
+        default: false
 
 concurrency:
   group: production-push-functions
@@ -67,6 +71,10 @@ jobs:
               journal) source=journal-app/functions; function=scheduledJournalPushReminders ;;
             esac
             npm ci --prefix "$source" --no-audit --no-fund
+            if [ "${{ inputs.replace_gen1 }}" = "true" ]; then
+              npx --yes firebase-tools@15.34.0 functions:delete "$function" \
+                --config firebase.push.json --project fitness-aos --non-interactive --force
+            fi
             npx --yes firebase-tools@15.34.0 deploy \
               --config firebase.push.json --only "functions:$app:$function" \
               --project fitness-aos --non-interactive --force
