@@ -59,6 +59,28 @@ jobs:
           VITE_APP_MODE: client
         run: ../node_modules/.bin/vite build --config vite.config.cjs
 
+      # Mini-Apps (training, logbuch, review, atlas, touren, setup, anamnese, fokus) als Unterpfade DERSELBEN Origin
+      # (fitness-vos.web.app/<id>/): gleicher Login, gleiche IndexedDB/Cache wie Pulse, keine neue Site/Auth-Domain.
+      # Gebaut aus fitness-app (scripts/build-miniapps-origin.mjs, Tabelle scripts/miniapps.json). Ein Hosting-Deploy
+      # ersetzt die ganze Site, deshalb gehört das in DIESEN Workflow und nicht in deploy-miniapps.yml (eigene Sites).
+      - name: Mini-Apps als Unterpfade bauen
+        working-directory: fitness-app
+        run: node scripts/build-miniapps-origin.mjs
+
+      - name: Mini-Apps in die Site übernehmen (+ Rewrites, sw.js no-cache)
+        run: |
+          set -euo pipefail
+          src=fitness-app/dist-origin
+          dst=vos-fitness/dist-firebase
+          for d in "$src"/*/; do cp -r "$d" "$dst/$(basename "$d")"; done
+          # Rewrites VOR den "**"-Catch-all, sw.js je Unterpfad nie cachen
+          jq --slurpfile r "$src/_hosting-rewrites.json" \
+            '.hosting.rewrites = ($r[0] + [.hosting.rewrites[] | select(.source == "**")])
+             | .hosting.headers = ((.hosting.headers // []) + [{"source": "**/sw.js", "headers": [{"key": "Cache-Control", "value": "no-cache"}]}])' \
+            vos-fitness/firebase.json > /tmp/firebase.merged.json
+          mv /tmp/firebase.merged.json vos-fitness/firebase.json
+          jq -c '.hosting' vos-fitness/firebase.json
+
       # Nur Hosting. Firestore-Rules-SSOT liegt im Root (deploy-shell.yml).
       - name: Deploy VOS Fitness to Firebase Hosting
         working-directory: vos-fitness
