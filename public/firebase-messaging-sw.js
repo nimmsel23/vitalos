@@ -1,48 +1,12 @@
-// Eigener SW nur für FCM — bewusst getrennt vom VitePWA-generierten sw.js
-// (generateSW-Modus erlaubt keinen eigenen Code). Wird auf einem eigenen
-// Scope ('/firebase-push/') registriert, siehe src/hooks/usePushNotifications.js.
-// Push-Events landen trotzdem hier, weil sie an die PushSubscription hängen,
-// nicht am URL-Scope — Scope-Trennung dient nur dazu, den Haupt-SW nicht zu stören.
-importScripts('https://www.gstatic.com/firebasejs/11.10.0/firebase-app-compat.js');
-importScripts('https://www.gstatic.com/firebasejs/11.10.0/firebase-messaging-compat.js');
-
-// Firebase Web-Config ist per Design öffentlich (kein Secret, siehe
-// firebase.config.js im Repo-Root) — hier dupliziert, weil ein SW aus
-// public/ kein ES-Modul ist und @firebase-config nicht importieren kann.
-firebase.initializeApp({
-  apiKey:            "AIzaSyD1hvp2UYrvizLOzoSqOX-bwRWcCpJVAlg",
-  authDomain:        "fitness-aos.firebaseapp.com",
-  projectId:         "fitness-aos",
-  storageBucket:     "fitness-aos.firebasestorage.app",
-  messagingSenderId: "842575255284",
-  appId:             "1:842575255284:web:65c4831683a893c110f0a1",
-});
-const messaging = firebase.messaging();
-
-messaging.onBackgroundMessage((payload) => {
-  const title = payload.data?.title || payload.notification?.title || 'VitalOS';
-  const body = payload.data?.body || payload.notification?.body || '';
-  const icon = payload.data?.icon || payload.notification?.icon || '/icon-192.png';
-  const tab = payload.data?.tab || '';
-
-  self.registration.showNotification(title, {
-    body: body,
-    icon: icon,
-    badge: '/icon-192.png',
-    data: { tab },
-  });
-});
-
-self.addEventListener('notificationclick', (event) => {
-  event.notification.close();
-  const tab = event.notification.data?.tab || ''
-  event.waitUntil(
-    self.clients.matchAll({ type: 'window', includeUncontrolled: true }).then((clients) => {
-      const url = tab ? `/#${tab}` : '/'
-      for (const client of clients) {
-        if ('focus' in client) { client.navigate?.(url); return client.focus() }
-      }
-      return self.clients.openWindow(url)
-    })
-  );
+/* Veralteter Root-Service-Worker (Scope "/"). Keine App registriert ihn mehr: Push läuft über
+ *   Fitness: /fitness-messaging-sw.js (Scope /fitness-push/)   VitalOS: /vitalos-messaging-sw.js
+ *   6Pack:   /sixpack-messaging-sw.js (Scope /sixpack-push/)
+ * Auf Geräten mit alter Registrierung zeigte dieser SW JEDE Push-Nachricht ohne app-Filter an
+ * (auch 6Pack-/andere Apps) und doppelte damit die Meldungen des dedizierten SW.
+ * Er behandelt deshalb kein Push-Ereignis mehr und meldet sich beim Aktivieren selbst ab. */
+self.addEventListener("install", () => self.skipWaiting());
+self.addEventListener("activate", (event) => {
+  event.waitUntil((async () => {
+    try { await self.registration.unregister(); } catch (_) { /* nichts zu tun */ }
+  })());
 });
