@@ -69,7 +69,7 @@ jobs:
             npm ci --prefix "$source" --no-audit --no-fund
             npx --yes firebase-tools@15.34.0 deploy \
               --config firebase.push.json --only "functions:$app:$function" \
-              --project fitness-aos --non-interactive
+              --project fitness-aos --non-interactive --force
           done
       - name: Remove temporary deploy credentials
         if: always()

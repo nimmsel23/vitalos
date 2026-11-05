@@ -58,6 +58,7 @@ for (const [app, dir] of sources) {
     require: (name) => (name === 'firebase-functions' || name === 'firebase-functions/v1') ? { region: chain, logger: { info() {} } }
       : name === 'firebase-functions/v2' ? { logger: { info() {}, warn() {}, error() {} } }
       : name === 'firebase-functions/v2/scheduler' ? { onSchedule: (options, handler) => ({ region: options.region, schedule: options.schedule, timeZone: options.timeZone, handler }) }
+      : name === 'firebase-functions/logger' ? { log() {}, info() {}, warn() {}, error() {} }
       : name === 'firebase-admin' ? { initializeApp() {}, firestore: () => firestore, messaging: () => ({ sendEachForMulticast() { sends++; return {} } }) }
       : name === 'firebase-admin/app' ? { initializeApp() {} }
       : name === 'firebase-admin/firestore' ? { getFirestore: () => firestore, FieldValue: { serverTimestamp: () => 'ts', delete: () => 'del', arrayUnion: (...a) => a, arrayRemove: (...a) => a, increment: (n) => n } }

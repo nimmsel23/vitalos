@@ -1,4 +1,5 @@
-const functions = require("firebase-functions/v1");
+const { onSchedule } = require("firebase-functions/v2/scheduler");
+const logger = require("firebase-functions/logger");
 const admin = require("firebase-admin/app");
 const { getMessaging } = require("firebase-admin/messaging");
 const { getFirestore, FieldValue } = require("firebase-admin/firestore");
@@ -200,13 +201,11 @@ async function sendReminder(pushRef, tokens, payload) {
   return response;
 }
 
-exports.scheduledVitalosPushReminders = functions
-  .region("europe-west1")
-  .pubsub.schedule("every 5 minutes")
-  .timeZone(TIME_ZONE)
-  .onRun(async () => {
+exports.scheduledVitalosPushReminders = onSchedule(
+  { schedule: "every 5 minutes", timeZone: TIME_ZONE, region: "europe-west1" },
+  async () => {
     const now = getLocalDateParts();
-    functions.logger.info("Push check started", { date: now.date, time: now.time });
+    logger.info("Push check started", { date: now.date, time: now.time });
 
     const pushDocs = await getFirestore()
       .collectionGroup("settings")
@@ -214,7 +213,7 @@ exports.scheduledVitalosPushReminders = functions
       .get();
 
     if (pushDocs.empty) {
-      functions.logger.info("No enabled push settings found");
+      logger.info("No enabled push settings found");
       return null;
     }
 
@@ -260,7 +259,7 @@ exports.scheduledVitalosPushReminders = functions
         } },
       }, { merge: true });
 
-      functions.logger.info("Push reminder sent", {
+      logger.info("Push reminder sent", {
         uid: userRef.id,
         kind: reminder.kind,
         successCount: response.successCount,
@@ -269,4 +268,5 @@ exports.scheduledVitalosPushReminders = functions
     }
 
     return null;
-  });
+  }
+);
