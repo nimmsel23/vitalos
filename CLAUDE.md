@@ -431,6 +431,14 @@ ohne `.githooks/`-Verzeichnis ist **relax-app** — offener Punkt.
 `git checkout --` (Datenverlust-Schutz), Override via `AOS_GIT_ALLOW_DISCARD=1`.
 Er ruft KEINE Hooks auf.
 
+### Release-Stolpersteine (2026-11-04)
+
+- Nach Änderungen an Modul-`package.json` scheitert `vos-release` am Lockfile: `pnpm install --no-frozen-lockfile --lockfile-only` im Root, `pnpm-lock.yaml` committen. `pnpm update <pkg>` bläht das Lockfile auf, ohne zu fixen.
+- `relax-app`/`plan-app`: Der pre-push-Hook versucht ein lokales `firebase deploy` und scheitert mit Permission-Fehler. Dort `git push --no-verify` (Deploy läuft über die CI) — nur wenn der User es weiß.
+- Automerge der Release-PRs schlägt manchmal fehl: manuell `gh pr merge <nr> --merge -R nimmsel23/<repo>`.
+- Shell-CI prüfen: `gh run list --workflow "Deploy VitalOS Shell" --limit 3`.
+- `functions/package-lock.json` (npm) ist ein eigenes Lockfile neben `pnpm-lock.yaml`; Dependabot-Zahlen sinken erst nach dem Rescan.
+
 ### Branch-Konventionen
 
 - **Korrigiert 2026-10-13** (vorherige Version dieses Abschnitts war veraltet/
