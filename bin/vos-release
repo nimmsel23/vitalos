@@ -632,6 +632,17 @@ check_lockfile() {
     fi
 }
 
+# Portal-Registry (docs/apps.*, portal/) darf nicht vom Ist-Stand abweichen; nur Warnung, kein Abbruch.
+check_portal() {
+    [[ "$DRY_RUN" -eq 1 ]] && return 0
+    [[ -x "$VITALOS_DIR/bin/vos-portal" ]] || return 0
+    if "$VITALOS_DIR/bin/vos-portal" --check >/dev/null 2>&1; then
+        info "Portal-Check: Registry ist aktuell"
+    else
+        warn "Portal-Check: Registry weicht ab — 'vos-portal' ausführen und committen"
+    fi
+}
+
 main() {
     resolve_modules "$@"
     require_dir "$VITALOS_DIR"
@@ -661,6 +672,7 @@ main() {
     done
 
     check_lockfile
+    check_portal
     commit_parent_bumps
     success "vos release flow complete"
 }
