@@ -53,6 +53,10 @@ jobs:
           pnpm run build:6pack-data
 
       # vos-fitness ist kein Workspace-Mitglied -> vite aus dem Root-node_modules.
+      - name: Push-SW aus fitness-app übernehmen (kein Drift der Kopie)
+        working-directory: vos-fitness
+        run: npm run sync:sw
+
       - name: Build VOS Fitness
         working-directory: vos-fitness
         env:

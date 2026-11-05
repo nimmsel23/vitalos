@@ -1,11 +1,15 @@
+// v5: Unterpfad-Mini-Apps (fitness-vos.web.app/<id>/) werden nicht angefasst: sonst landet ihr HTML als Pulse-index.html im Cache.
 // v4: index.html war cache-first und blieb in installierten iOS-Web-Apps auf altem Stand;
 // nach einem Deploy fehlten dann die alten Chunk-Hashes (schwarzer Bildschirm beim ersten
 // Tab-Wechsel). Neuer Name löscht den alten Cache beim Activate.
-const CACHE = "fitness-vos-v4";
+const CACHE = "fitness-vos-v5";
 const BASE_PATH = new URL(self.registration.scope).pathname.replace(/\/$/, "");
 const withBase = (path) => `${BASE_PATH}${path}`;
 const STATIC_ASSETS = [withBase("/"), withBase("/index.html"), withBase("/manifest.json")];
 const API_PATHS = ['/session', '/coverage', '/fitness/weekly', '/fitness/body', '/plan/today', '/blocks', '/health'];
+
+// Mini-Apps als Unterpfade derselben Origin haben einen eigenen SW (Scope /<id>/); hier komplett raus.
+const SUBAPPS = /^\/(training|logbuch|review|atlas|touren|setup|anamnese|fokus)(\/|$)/;
 
 const stripBase = (pathname) => {
   if (pathname.startsWith(BASE_PATH + "/")) return pathname.slice(BASE_PATH.length);
@@ -33,6 +37,7 @@ self.addEventListener("fetch", (event) => {
   const url = new URL(event.request.url);
   if (url.origin !== self.location.origin) return;
   const cleanPath = stripBase(url.pathname);
+  if (SUBAPPS.test(cleanPath)) return;
   const isApi = API_PATHS.some((p) => cleanPath.startsWith(p));
 
   if (isApi) {
