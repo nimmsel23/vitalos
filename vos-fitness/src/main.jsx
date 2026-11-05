@@ -1,6 +1,6 @@
 import { createRoot } from 'react-dom/client'
 import AppWrapper from './AppWrapper.jsx'
-import '@fitness/src/styles.css'
+import './pulse-tailwind.css'
 import { UserProvider } from '@fitness/contexts/UserContext.jsx'
 import { SettingsProvider } from '@fitness/contexts/SettingsContext.jsx'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'

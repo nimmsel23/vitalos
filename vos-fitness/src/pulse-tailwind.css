@@ -1,0 +1,6 @@
+/* Tailwind-Einstieg für Pulse: die Fitness-Styles (Tailwind 4 + @config der fitness-app) plus die Quellen,
+   die nur Pulse braucht. Tailwind 4 scannt automatisch vos-fitness/ (Arbeitsverzeichnis); @config der
+   fitness-app deckt Fitness/Plan/6Pack/Skills/Journal/Habits/Learn ab. Es fehlt die VitalOS-Shell. */
+@import "../../fitness-app/src/styles.css";
+@source "../../src";
+@source "../src";
