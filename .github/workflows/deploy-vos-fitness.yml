@@ -69,7 +69,7 @@ jobs:
       # ersetzt die ganze Site, deshalb gehört das in DIESEN Workflow und nicht in deploy-miniapps.yml (eigene Sites).
       - name: Mini-Apps als Unterpfade bauen
         working-directory: fitness-app
-        run: node scripts/build-miniapps-origin.mjs
+        run: pnpm run build:origin
 
       - name: Mini-Apps in die Site übernehmen (+ Rewrites, sw.js no-cache)
         run: |
