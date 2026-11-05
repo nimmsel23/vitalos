@@ -135,57 +135,9 @@ für Build/CI und Pointer-Management, nicht die primären `dev`-Worktrees.
 * `.githooks/pre-push` ruft `bin/vos-sync-submodule-pointers --check-push` auf und blockt nur noch lokal-only Pointer in `HEAD`.
 * **Seit 2026-08-25:** `vos-sync-submodule-pointers --stage` prüft beim Staging jedes Pointer-Bumps zusätzlich, ob sich `package.json` im betroffenen Submodul geändert hat (`git diff <alter> <neuer Commit> -- package.json`). Falls ja, läuft automatisch `npm install --package-lock-only` im Root und `package-lock.json` wird mitgestaged — behebt strukturell das Lockfile-Drift-Problem unten (war zuvor reine Merkregel, jetzt Automatismus). Bricht `npm install` dabei, stoppt der Commit mit Fehlermeldung statt eines halb-synchronisierten Lockfiles.
 
-### Pointer-Bump fuel-app / fitness-app: Schritt für Schritt (Stand 2026-10-17, aus einem Durchlauf mit Stolpersteinen)
+### Pointer-Bump fuel-app / fitness-app
 
-> **Überholt seit 2026-10-29:** Der Weg ist jetzt `dev` → `master` (PR, `vos-release-pr`) → `vitalos` (`vos-release`, mergt `origin/master`, nicht mehr `origin/dev`). Schritt 4 unten (`merge origin/dev`) und die Aufzählung der nested Repos stammen aus dem alten Ablauf; maßgeblich ist `docs/DEPLOYMENT.md`. Die Stolpersteine zu detached HEAD und Pointern bleiben als Hintergrund nützlich.
-
-Die Arbeit passiert in `~/fuel-dev` / `~/fitness-dev` (Branch `dev`). Die Submodule
-`fuel-app` / `fitness-app` tracken den Branch **`vitalos`**, der per Merge aus
-`origin/dev` entsteht (Commit-Text `Merge origin/dev into vitalos`). Reihenfolge — von
-innen nach außen, jede Stufe erst pushen, wenn die darunter auf `origin` liegt:
-
-1. **Geschachtelte Teil-Repos zuerst** (nur fitness-dev): `coach/` (→ `coach-dev`, Branch `master`),
-   `plan/` (→ `plan-dev`, Branch `master`), `plan/coach-dev/` (→ `coach-dev`, Branch `dev`).
-   Dort committen, **auf einen echten Branch**, pushen.
-   - `plan/coach-dev` steht oft im **Detached HEAD**. Ein Commit dort hängt dann in der Luft
-     und `origin/dev` ist meist weit voraus (Non-Fast-Forward). Richtig:
-     `git checkout -b <name> origin/dev && git cherry-pick <commit> && git push origin <name>:dev`.
-   - Danach in `plan/`: `git add coach-dev && git commit` → `git push origin master`;
-     `coach/`: `git push origin master`.
-2. **fitness-dev**: Pointer `plan`/`coach` committen (`git add plan coach`), `git push origin dev`.
-   Der Pre-Commit-Hook baut (`dist/`, `dist-versions/`), der Push deployt Staging
-   (`fitness-preview.service` :8100) — das ist erwartet, kein Prod.
-3. **fuel-dev**: `git push origin dev` (Staging nach `~/.local/fuel`, kein laufender Service).
-4. **Submodul-Branches `vitalos`**:
-   - `cd ~/vitalos/fitness-app && git fetch origin && git merge --no-edit origin/dev`
-     (analog `fuel-app`). Ohne vorheriges Push von `dev` gibt es nichts zu mergen —
-     vorher nur lokal testen: `git fetch ~/fitness-dev dev && git merge FETCH_HEAD`.
-   - **Nur fitness-app:** danach stehen `coach`, `plan` und `plan/coach-dev` als
-     „modified“, weil die Arbeitskopien noch auf dem alten Commit sind. Je Teil-Repo:
-     `want=$(git ls-tree HEAD <sub> | awk '{print $3}'); git -C <sub> fetch origin; git -C <sub> checkout $want`
-     (für `plan/coach-dev` mit `git -C plan ls-tree HEAD coach-dev`).
-   - `git push origin vitalos` (in jedem Submodul).
-5. **Meta-Repo** `~/vitalos`: `git add fitness-app fuel-app && git commit` →
-   `git push origin master`. Der Push löst `Deploy Fitness PWA` / `Deploy Fuel PWA` /
-   `Deploy VitalOS Shell` aus (nur Hosting; Status: `gh run list --limit 5`).
-   `push.recurseSubmodules=on-demand` pusht referenzierte Submodule-Commits zwar mit,
-   fängt aber **nicht** die Teil-Repos aus Schritt 1 ab — die vorab selbst pushen.
-
-Stolpersteine:
-- Die vier Mini-App-Submodule `vos-fuel-{log,supplements,mikros,protokoll}-app` zeigen auf
-  denselben Fuel-Commit, werden aber **bewusst nicht** mitgebumpt (stabile Fallbacks, nur
-  manuell deployen).
-- `git push origin dev` in fuel-dev/fitness-dev veröffentlicht **alle** dort noch ungepushten
-  Commits, nicht nur die eigenen — vorher `git log origin/dev..dev` ansehen.
-- Vor dem Pointer-Commit beide vitalos-Builds probieren, ohne `dist/` zu überschreiben:
-  `npx vite build --mode firebase --outDir <scratch> --emptyOutDir` und ohne `--mode`.
-- Firestore-Rules brauchen für neue Unterpfade unter `users/{uid}/**` keinen Deploy
-  (`match /users/{uid}/{document=**}` deckt sie ab); Rules weiterhin nur aus `~/vitalos`.
-- Gemeinsame Namen in den `export *`-Barrels (`shell/db/index.js` zieht fuel + fitness mit):
-  neue Exporte in `shell/db/settings.js` eindeutig benennen (`registerShellDevice` statt
-  `registerDevice`), sonst werden sie als mehrdeutig verworfen. Neue `@db`-Funktionen, die
-  Views aus `fitness-app` importieren, brauchen auch einen Stub in `src/coach/db.js`
-  (lokaler Build).
+Maßgeblicher Ablauf: `dev` → `master` (PR, `vos-release-pr <modul>`) → `vos-release` → Push `~/vitalos` (`docs/DEPLOYMENT.md`). Der alte Schritt-für-Schritt-Ablauf inkl. Stolpersteinen (detached HEAD in `plan/coach-dev`, Mini-Apps nicht mitbumpen, Pre-Build-Test) steht in `docs/POINTER-BUMP-LEGACY.md`.
 
 ### Gemeinsamer User-Kontext in Firestore (seit 2026-10-17)
 
@@ -459,104 +411,14 @@ Er ruft KEINE Hooks auf.
   Workflow: auf `dev` arbeiten, per `vos-release` nach `vitalos` mergen,
   pushen, Pointer in `~/vitalos` bumpen.
 
-### Bekannte Baustellen (Stand 2026-08-16)
+### Bekannte Baustellen
 
-- fuel-app/learn-dev: `.firebase/hosting.*.cache` ändert sich bei jedem
-  lokalen Deploy → Dauer-Dirty der Submodules im Meta-Repo (` m`-Marker).
-- `.bak`-Workflows (`workflows.disabled/`) in allen 5 Sub-Repos sind
-  deaktivierte Historie (per-Repo-CI konnte wegen Cross-Repo-Aliases nie
-  bauen, deshalb zentralisiert 2026-07-03). GitHub ignoriert sie, aber
-  Aufräumen steht noch aus.
-- relax-app hat weder `core.hooksPath` noch ein `.githooks/`-Verzeichnis
-  (siehe Git-Hooks-Tabelle oben) — einziges Sub-Repo ohne Hook-Absicherung.
-- Hub.jsx zeigt für Journal/Habits/Learn bewusst keine Live-Stats, weil
-  `@habits-db` hart `@fitness-db/index.firestore.js` importiert (auch im
-  Coach/Local-Build) — 3 von 6 Tempeln ohne sauberen eigenen Datenpfad zum
-  Hub (siehe `src/shell/CLAUDE.md`).
-- Behoben seit 2026-07-16 (aus dieser Liste entfernt): learn-dev hatte
-  `dist-firebase/`/`node_modules/` eingecheckt (jetzt 0 getrackte Dateien).
-- Meta-Repo-Branch-Leichen `merge` (0 commits ahead, voll gemerged),
-  `mobile/mobile-optimizations-safe-area` (uralter Snapshot vor der
-  Fitness-Pfadtrennung) und `rename/local-app-dirs` (identisch zu master) —
-  Löschung ausstehend, User-Bestätigung angefragt (2026-08-16).
+Liste (Stand 2026-08-16, teils überholt) in `docs/BEKANNTE-BAUSTELLEN.md`.
 
----
+## `bin/vlog` / `bin/vos-firestore` (seit 2026-10-16)
 
-## `bin/vlog` — Fitness + Relax + Fuel loggen ohne Server (seit 2026-10-16)
-
-Ein typer-Skript (`~/vitalos/bin` ist im PATH), das Tages-Logs schreibt, ohne dass
-`fitness-api` (:9150), Fuel-Node (:9000) oder Relax-API (:9123) laufen müssen.
-
-```bash
-vlog fitness "Kreuzheben 60" "Back Squat 3x5@60" --block Legs --art Kraft --ort "Fitness First, 1030 Wien" --zeit 13-14
-vlog relax Sauna 20 --note "nach Workout"
-vlog fuel "360g Käseleberkäse, 3 Semmeln" --zeit 14:30
-vlog day "<Freitext>"      # Gemini zerlegt → Vorschau als vlog-Kommandos → Rückfrage → schreibt
-```
-
-- **fitness:** re-exec't in die uv-venv `~/.local/share/uv/tools/fitness-agent` und ruft dieselben
-  Funktionen wie `POST /session` (`_freeze_snapshot`, `_write_json`, `_sync_session_to_db`,
-  `mirror_session`, `_queue_unreviewed_enrichment`) im eigenen Prozess auf. Identische
-  Übung+Sätze werden übersprungen (`--nochmal` hängt an). Firestore-Mirror braucht Netz, keinen
-  Server (`--offline` überspringt ihn). `import http.client` + `firebase_admin` MÜSSEN vor
-  `fitness.*` importiert werden, sonst überschattet `fitness/http.py` das stdlib-`http`.
-- **relax / fuel:** dünne Wrapper um `relax-add` bzw. `fuel-meal log`. `relax-add` setzt Stimmung
-  3→4 als Default, wenn `--vorher/--nachher` fehlen.
-- **day:** schreibt nie bei offenen Rückfragen (Exit 2); Gemini darf nichts erfinden, Unklares
-  (z.B. „360dag") kommt als Rückfrage. Key aus `~/.env/gemini.env`.
-- Test ohne echte Daten: `HOME=<scratch> VLOG_FITNESS_ENV=1 <fitness-venv-python> -I vlog fitness … --uid x --offline --no-enrich`
-  (Pfade folgen `$HOME`; SQLite-History liegt dann ebenfalls im Scratch).
-
----
-
-## `bin/vos-firestore` — lokale VOS-Daten ↔ Firestore ohne Server (seit 2026-10-16)
-
-```bash
-vos-firestore status
-vos-firestore push fuel|fitness|relax|alle [--uid U] [--dry-run]
-vos-firestore pull fuel|fitness|relax|alle [--uid U] [--dry-run]
-```
-
-- Läuft in der fitness-agent-uv-venv, nutzt `fitness.firestore.*` aus fitness-dev (kein Fork).
-- **pull** (Fitness/Fuel) spielt die Handler des `fitness-firestore-daemon` einmalig als
-  ADDED-Replay ab (`mirror.on_session/on_journal/on_habits/on_habit_records/on_habit_journals/
-  on_nutrition/on_supplements/on_supplements_catalog`) — gleiche rev-Konfliktprüfung,
-  `owner_uid`-Schutz und SQLite-Gateway wie der Daemon beim Start. Der Daemon selbst
-  (Echtzeit) startet/stoppt mit `fitness-log console` (`console/daemon.py`).
-  Nicht enthalten: Katalog-Listener (`inbox`, `kb/exercises` — gehören zum :9150-Prozess).
-- **push** nutzt `fitness.firestore.sync.push` / `fuel.push_fuel` / eigenen Relax-Push.
-- **UID-Schutz:** nur Operator + `~/vital/Klienten/*/client.json`-UIDs; andere Ordner
-  (z.B. `~/.aos/fitness/users/matthias`) und Test-UIDs in Firestore werden gemeldet, übersprungen.
-- **Relax:** schreibt im PWA-Format nach `relax/{operator-uid}/sessions/{date}` im Projekt
-  `fitness-aos`. Das alte `relax-firestore.py` schrieb nach `relax/default/...` mit einem
-  Service-Account des Projekts `relax-aos` und erreichte die PWA nie.
-- Bekannt: `sync.push` schreibt bei fehlendem Firestore-Vorsprung immer alles neu (kein
-  Skip bei Gleichstand); `remote_wins` bricht bei Simon mit `str > dict` ab (`saved_at` als
-  Dict) — pro UID abgefangen. Für einen Stunden-Timer beides vorher beheben.
-
-**Update 2026-10-16 (Daemon-Ablösung):** Fitness-**Sessions** gehen jetzt über das neue Backend
-(`python -m backend sync pull|push sessions`, fitness-dev) — `vos-firestore push fitness` ruft
-`sync push sessions --uid U` (ohne `--dry-run` mit `--apply`), `pull fitness` ruft
-`sync pull sessions --uid …` (Lock + `decide()`). Journal, Habits, Habit-Records und Habit-Journals
-zieht `pull fitness` weiter über die Handler des alten Daemons (das neue Backend kennt nur Sessions);
-Fuel-Pull nutzt die Daemon-Handler für den Operator und `pull_fuel` für Klienten. Live-Sync während
-der Console: `fitness-sync.service` (siehe `fitness-dev/fitness/log/console/CLAUDE.md`).
-
-**Klienten-Namen statt UIDs (2026-10-16):** `vos-firestore pull|push fuel|fitness [KLIENT…]` — Name,
-Slug oder Vorname aus `~/vital/Klienten/*/client.json` (z.B. `vos-firestore pull fitness jakob matthias`);
-`ich`/`operator`/`coach` = Operator. Trefferreihenfolge exakt → Präfix → Teilstring; mehrdeutig oder
-unbekannt bricht mit Liste der bekannten Klienten ab. Relax akzeptiert nur den Operator. `--uid` bleibt
-als exakte Alternative.
-
-**Journal & Habits als eigene Pull-Bereiche (2026-10-16):** `vos-firestore pull journal|habits [KLIENT…] [--dry-run]`;
-`pull fitness` = Sessions + Journal + Habits. Handler des alten Mirrors schreiben (Format-SOT), aber die
-„bereits gesehen"-Listen werden geleert (später in Firestore geänderte Einträge kommen an), eine leere/kaputte
-`habits/definitions.json` wird als `.bak-<zeit>` beiseitegelegt (lag als 0-Byte-Datei vor), der Dry-Run läuft auf
-einer Kopie und listet exakt neue (+) und geänderte (~) Dateien. Es wird nie lokal gelöscht. **Kein Push:**
-Firestore ist die Quelle; ein Push lokaler Reste (z.B. die beiden gelöschten Test-Einträge vom 2026-05-20) würde
-in Firestore gelöschte Einträge wiederbeleben.
-
----
+- `vlog fitness|relax|fuel|day …` loggt ohne laufende Server; `vos-firestore status|push|pull fuel|fitness|relax|alle [KLIENT…] [--dry-run]` gleicht lokale Daten mit Firestore ab (Pull-Quelle Firestore, **kein Push** für Journal/Habits; nur Operator + Klienten-UIDs).
+- Details, Fallen (Import-Reihenfolge, UID-Schutz, Daemon-Ablösung): `docs/CLI-VLOG-VOS-FIRESTORE.md`.
 
 ## Repo-Landschaft & Mini-Apps (seit 2026-10-16)
 
@@ -580,9 +442,4 @@ in Firestore gelöschte Einträge wiederbeleben.
 
 ### Shell-Service-Worker + Splash (seit 2026-10-16)
 
-- `public/sw.js` gibt es nicht mehr (archiviert: `docs/archive/sw.vitalos-main-v1.js`). Der SW wird beim Build aus **`mini-app.json`** (App `vitalos`) und `packages/mini-app-shell` erzeugt (`pnpm run build:firebase` / `build` → `stamp:sw`: `cli.mjs sw` + `cli.mjs splash`); dabei kommt auch die SW-Registrierung samt `window.__swRegistration` und `sw-update-available` (Settings-Update-Banner) in die `index.html` — die Inline-Registrierung im Quell-HTML ist entfernt.
-- Gefundene Fehler des alten Shell-SW (Kopie des Fitness-SW): (1) `STATIC` enthielt `/offline-queue.js`, das in der Shell nicht existiert → `cache.addAll` schlug immer fehl, die Shell wurde nie vorab gecacht; (2) `activate` löschte bei jedem Update den Übungsbilder-Cache `fitness-exercise-images` (Atlas-Spiegel, ~100 MB) und der SW lieferte ihn nie aus; (3) Workout-Benachrichtigungen (`SHOW_WORKOUT_TIMER_NOTIFICATION` aus den eingebetteten Fitness-Views) und `notificationclick` fehlten; (4) `window.__swRegistration`/`sw-update-available` wurden nie gesetzt → Update-Banner und „App aktualisieren" ohne Wirkung; (5) kein `no-cache`-Header für `/sw.js` und `manifest.json` in `firebase.json`.
-- Paritätstest alt↔neu: `node packages/mini-app-shell/cli.mjs parity --app vitalos --old docs/archive/sw.vitalos-main-v1.js --ignore activate,install-Precache,Listener,offline-queue.js,"Bild cdn.jsdelivr.net","Workout-Notification (alt)"` → 0 ungewollte Abweichungen (die ignorierten sind genau die behobenen Fehler). Nicht auf einem Gerät getestet.
-- Splash: Icon `/icon-192.png`, Akzent `#6ee7b7`, Hintergrund `#0b0e14`.
-- `bin/vos-authdomains`: gleicht die Firebase-Auth-Domains mit allen Hosting-Sites/aktiven Preview-Channels ab (`--apply` fügt nur hinzu; Wildcards gibt es nicht). Nach jedem neuen Preview-Channel-Namen laufen lassen.
-
+`public/sw.js` existiert nicht mehr: SW und Splash werden beim Build aus `mini-app.json` + `packages/mini-app-shell` erzeugt (`stamp:sw`). `bin/vos-authdomains` gleicht Auth-Domains ab (`--apply`). Fehlerhistorie des alten SW, Paritätstest und Splash-Werte: `docs/SHELL-SERVICE-WORKER.md`.
