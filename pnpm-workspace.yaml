@@ -16,4 +16,9 @@ allowBuilds:
   protobufjs: true
 overrides:
   '@firebase/util': 1.12.1
+  'workbox-build>glob': ^14.0.2
+  'rimraf@6>glob': ^14.0.2
+  'nodemon>minimatch': ^11.0.4
+  'brace-expansion@1': ^1.1.21
+  'pino-pretty>fast-copy': ^4.1.0
 shamefullyHoist: true
