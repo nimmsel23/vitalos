@@ -273,6 +273,12 @@ Einige Hauptmodule werden durch eigenständige Knowledge Base (KB) Repositories 
 
 Die Tempel (fitness-app, fuel-app, relax-app) haben eigene Backends und sind eigenständig deployed. VitalOS embeddet sie via Aliases, ohne Code zu duplizieren.
 
+**Node-Backends sind ausgelagert (Stand 2026-11-04):** Sie liegen nicht mehr in den Modul-Repos und damit nicht mehr im vitalos-Dependency-Baum (fastify, hono, better-sqlite3, firebase-admin, pino, web-push). Neue Repos, privat, Branch `main`, lokal unter `~/dev/`:
+`~/dev/fuel-backend` (aus `fuel-dev/src/server`), `~/dev/fitness-backend`, `~/dev/plan-backend`, `~/dev/fuel-frontend` (aus `fuel-dev/frontend`).
+Sie finden ihr Modul über Geschwisterordner (`../fuel-dev`) oder per `FUEL_ROOT`/`FITNESS_ROOT`/`PLAN_ROOT`/`FUEL_BACKEND_DIR`/`FUEL_FRONTEND_DIR`.
+`fuel-dev/deploy.sh` rsynct das Backend aus `../fuel-backend` ins Staging. Der Python-Teil (`coach-api` :9150, `fitness-api`) macht alles außer Firestore/Firebase.
+Neue Backend-Dependencies gehören in diese Repos, nicht in `~/vitalos/package.json`/Modul-`package.json`. Details: `fuel-dev/AGENTS.md` → „Ausgelagerte Teile“.
+
 ---
 
 ## Wichtige Regeln
