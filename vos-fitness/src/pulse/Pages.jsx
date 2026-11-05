@@ -97,7 +97,7 @@ export function SubPage({ id, onBack, onOpen, sessions, signOut, sessionDate, on
           {id === 'learn' && <Learn onInspectExercise={inspectExercise} muscleLanguage={muscleLanguage} taxonomy={taxonomy} />}
           {id === 'settings' && (
             <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
-              <Settings />
+              <Settings hideAppearance />
               {signOut && (
                 <button
                   onClick={signOut}
