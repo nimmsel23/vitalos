@@ -16,6 +16,7 @@ allowBuilds:
   protobufjs: true
 overrides:
   '@firebase/util': 1.12.1
+  '@grpc/grpc-js': 1.14.7
   'workbox-build>glob': ^14.0.2
   'rimraf@6>glob': ^14.0.2
   'nodemon>minimatch': ^11.0.4
