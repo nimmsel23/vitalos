@@ -1,0 +1,52 @@
+#!/usr/bin/env bash
+# vos-tmp-clean — /tmp-Hygiene fuer vos-*-Session-Relikte.
+#
+# Agent-Sessions und Release-/Build-Tools legen Backups und Relikte mit dem
+# Namenspraefix "vos-" in /tmp ab, raeumen sie aber nie ab. Dieses Skript
+# findet Eintraege unter /tmp, die seit N Tagen nicht mehr angefasst
+# wurden, und entfernt sie auf Wunsch.
+#
+# Nur der Namenspraefix und das Alter zaehlen: aktuelle Arbeit (heute
+# geaendert) bleibt immer liegen, gleich ob sie zu dieser oder einer
+# parallelen Session gehoert.
+#
+# Usage:
+#   vos-tmp-clean               Dry-Run: listet Kandidaten mit Groesse
+#   vos-tmp-clean --apply       entfernt Kandidaten
+#   vos-tmp-clean --days N      Altersgrenze in Tagen (Default 3); auch als --days=N
+set -euo pipefail
+
+DAYS=3
+APPLY=0
+while [ $# -gt 0 ]; do
+  case "$1" in
+    --apply)  APPLY=1; shift ;;
+    --days)   DAYS="$2"; shift 2 ;;
+    --days=*) DAYS="${1#--days=}"; shift ;;
+    *) echo "unbekannte Option: $1 (erlaubt: --apply, --days N)" >&2; exit 2 ;;
+  esac
+done
+[[ "$DAYS" =~ ^[0-9]+$ ]] || { echo "--days: Zahl erwartet" >&2; exit 2; }
+
+LOG_DIR="$HOME/.local/state"
+LOG_FILE="$LOG_DIR/vos-tmp-clean.log"
+mkdir -p "$LOG_DIR"
+
+removed=0
+while IFS= read -r -d '' entry; do
+  size=$(du -sh "$entry" 2>/dev/null | cut -f1)
+  if [ "$APPLY" = 1 ]; then
+    rm -rf "$entry"
+    echo "$(date '+%F %T')  ENTFERNT  $entry  ($size)" >> "$LOG_FILE"
+    echo "  ENTFERNT  ${entry#/tmp/}  ($size)"
+  else
+    echo "  WÜRDE ENTFERNEN  $entry  ($size)"
+  fi
+  removed=$((removed+1))
+done < <(find /tmp -maxdepth 1 -name 'vos-*' -mtime +"$DAYS" -print0 2>/dev/null)
+
+if [ "$APPLY" = 1 ]; then
+  echo "Fertig: $removed Eintraege (aelter als $DAYS Tage) entfernt. Log: $LOG_FILE"
+else
+  echo "Dry-Run: $removed Kandidaten (aelter als $DAYS Tage). Mit --apply entfernen."
+fi
