@@ -1,0 +1,135 @@
+#!/usr/bin/env bash
+# vos-wt-clean — Worktree-Hygiene fuer die VitalOS-Repos.
+#
+#Agent-Sessions (Preview-, Release-, Feature-Arbeit) legen git worktrees an und
+#raeumen sie haeufig nicht ab. Dieses Skript findet Worktrees, die mit hoher
+#Wahrscheinlichkeit ueberfluessig sind, und entfernt sie auf Wunsch:
+#
+#   - Worktree ist sauber (keine uncommitteten Aenderungen, keine ungetrackten
+#     Dateien ausser node_modules/dist-Muell — siehe NOISE_RE)
+#   - UND ist entweder ein detached-Relikt unter /tmp ODER sein Branch ist
+#     vollstaendig in origin/dev bzw. origin/master/main enthalten
+#
+# Branches werden NIE geloescht — nur die Worktree-Registrierungen und
+# Verzeichnisse. Lokale Commits bleiben damit immer ueber den Branch erreichbar.
+#
+# Haeufige Ursache fuer "fehlgeschlagene" Entfernung: Worktrees mit Submodulen
+# verweigert git auch mit --force ("cannot be moved or removed"). Das Skript
+# loescht solche Verzeichnisse direkt und laeuft danach `git worktree prune`.
+#
+# Usage:
+#   vos-wt-clean              Dry-Run: listet nur, was entfernt werden wuerde
+#   vos-wt-clean --apply      entfernt gefundene Stale-Worktrees
+#   vos-wt-clean --pull       fetcht vorher origin (stand der Remote-Refs)
+set -euo pipefail
+
+APPLY=0
+PULL=0
+for arg in "$@"; do
+  case "$arg" in
+    --apply) APPLY=1 ;;
+    --pull)  PULL=1 ;;
+    *) echo "unbekannte Option: $arg (erlaubt: --apply, --pull)" >&2; exit 2 ;;
+  esac
+done
+
+# Nur Build-/Abhaengigkeitsmuell gilt nicht als "dirty" — echte Quellreste
+# blockieren die Entfernung bewusst.
+NOISE_RE='^\?\? (node_modules/.*|node_modules|dist/.*|\.firebase/.*|.*\.log)$'
+
+# Repos mit Worktree-Flut potential. Neu angelegte Repos landen automatisch mit.
+REPOS=(
+  "$HOME/vitalos"
+  "$HOME/vitalos-prod"
+  "$HOME/dev"/*-dev
+)
+
+removed=0
+kept_dirty=0
+kept_unmerged=0
+
+is_clean() {
+  local dirty
+  dirty=$(git -C "$1" status --porcelain | grep -Ev "$NOISE_RE" || true)
+  [ -z "$dirty" ]
+}
+
+branch_is_merged() {
+  local repo=$1 branch=$2 base
+  [ -n "$branch" ] || return 1
+  for base in origin/dev origin/master origin/main origin/vitalos; do
+    if git -C "$repo" rev-parse --verify -q "$base" >/dev/null; then
+      if [ "$(git -C "$repo" rev-list --count "$base..$branch")" = "0" ]; then
+        return 0
+      fi
+    fi
+  done
+  return 1
+}
+
+for repo in "${REPOS[@]}"; do
+  [ -e "$repo/.git" ] || continue
+  [ "$PULL" = 1 ] && git -C "$repo" fetch --quiet origin 2>/dev/null || true
+
+  # Worktree-Eintraege: Pfad + Branch (detached HEAD → leer)
+  while IFS=$'\t' read -r wt branch; do
+    [ -z "$wt" ] && continue
+    # Haupt-Worktree ueberspringen.
+    case "$wt" in "$repo") continue ;; esac
+    [ -d "$wt" ] || continue
+
+    if [ ! -e "$wt/.git" ]; then
+      # Verzeichnis ohne .git (z.B. deinit-Ed) — nur melden.
+      continue
+    fi
+
+    detached=0
+    [ -z "$branch" ] && detached=1
+
+    reason=""
+    if [ "$detached" = 1 ]; then
+      case "$wt" in
+        /tmp/*) reason="detached-Relikt unter /tmp" ;;
+        *)      echo "  BEHALTE  $wt (detached, nicht /tmp: vermutlich Teil-Checkout)"; continue ;;
+      esac
+    elif ! is_clean "$wt"; then
+      kept_dirty=$((kept_dirty+1))
+      echo "  BEHALTE  $wt (uncommittete Aenderungen)"
+      continue
+    elif ! branch_is_merged "$repo" "$branch"; then
+      kept_unmerged=$((kept_unmerged+1))
+      echo "  BEHALTE  $wt (Branch $branch nicht im origin-Stand enthalten)"
+      continue
+    else
+      reason="Branch $branch gemerged + sauber"
+    fi
+
+    if [ "$APPLY" = 1 ]; then
+      if git -C "$repo" worktree remove --force "$wt" 2>/dev/null; then
+        :
+      else
+        # Worktree mit Submodulen: git verweigert auch mit --force
+        rm -rf "$wt"
+      fi
+      git -C "$repo" worktree prune
+      echo "  ENTFERNT  $wt ($reason)"
+      removed=$((removed+1))
+    else
+      echo "  WÜRDE ENTFERNEN  $wt ($reason)"
+      removed=$((removed+1))
+    fi
+  done < <(
+    git -C "$repo" worktree list --porcelain | awk '
+      /^worktree / { wt = substr($0, 10) }
+      /^branch /  { br = substr($0, 8) }
+      /^$/        { if (wt != "") { printf "%s\t%s\n", wt, br; wt = ""; br = "" } }
+      END         { if (wt != "") printf "%s\t%s\n", wt, br }
+    '
+  )
+done
+
+if [ "$APPLY" = 1 ]; then
+  echo "Fertig: $removed entfernt, $kept_dirty mit lokalen Aenderungen behalten, $kept_unmerged mit ungemergtem Branch behalten."
+else
+  echo "Dry-Run: $removed Kandidaten. Mit --apply entfernen."
+fi
