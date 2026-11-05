@@ -246,3 +246,10 @@ Aktive Arbeitsliste (max. 5 Punkte) für das vitalos Meta-Repo.
 *   **Ungeprüfte Annahme zum Workflow:** Claude behauptet, ein neuer Workflow-Schritt sei in `6pack-dev` gepusht worden, um das Release zu automatisieren, aber der Transkript zeigt keine Verifikation dieses Pushs oder des Workflow-Inhalts.
 *   **Ineffizienz im Git-Skript:** Das `drop-apk2.sh`-Skript hat den ursprünglichen APK-Commit nicht korrekt als "nur APK" erkannt und übersprungen, was zu einem zwischenzeitlichen leeren Commit führte, der in einem separaten Schritt bereinigt werden musste.
 *   **Unerledigte Aufräumarbeit:** Die `fitness-app-debug.apk` bleibt im Arbeitsbaum von `coach-dev` untracked. Obwohl Claude die Notwendigkeit der Bearbeitung in `fitness-dev` erwähnt, wird die Frage, ob diese
+
+- [ ] **Coach-Deploy-CI-Fix:** Der Preview-Deploy für `coach-dev` ist fehlgeschlagen, da das Submodul `daniel-vitaltrainer-firebase` (privates Repo) nicht ausgecheckt werden konnte. Entscheidung offen: (1) Read-only Deploy-Key in `daniel-vitaltrainer-firebase` und Secret `WEBSITE_DEPLOY_KEY` in `coach-dev` anlegen (Claude-Vorschlag), (2) Personal Access Token als `GH_SUBMODULE_TOKEN` in `coach-dev` eintragen (Nutzer-Aufgabe), oder (3) `
+
+**Gemini-Review (potenzielle blinde Flecken, 2026-11-05):**
+*   Die Selbstzusammenfassung übergeht vollständig den CI/CD-Deployment-Fehler für `coach-dev` (Exit 128 wegen privatem Submodul-Zugriff), der das direkte Ergebnis des `git push` war und das letzte ungelöste Problem der Session darstellt.
+*   Die 64 Dependabot-Schwachstellen (darunter 1 kritische), die beim `git push` explizit für `nimmsel23/coach-dev` gemeldet wurden, sind in der Selbstzusammenfassung nicht spezifisch aufgeführt.
+*   Es wird nicht explizit erwähnt, dass der Firebase-Rewrite für `/portal` nur syntaktisch geprüft und nicht gegen ein echtes Hosting verifiziert wurde.
