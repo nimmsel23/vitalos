@@ -1,0 +1,279 @@
+{
+  "repos": [
+    {
+      "repo": "fitness-dev",
+      "apps": [
+        {
+          "id": "client",
+          "kind": "main",
+          "name": "Fitness Centre",
+          "short": "Fitness",
+          "description": "",
+          "accent": "#e8a020",
+          "site": "fitness-aos",
+          "url": "https://fitness-aos.web.app",
+          "tab": null,
+          "repo": "fitness-dev"
+        },
+        {
+          "id": "training",
+          "kind": "solo",
+          "name": "VitalOS Training",
+          "short": "Training",
+          "description": "Krafttraining loggen — Session-Tab als eigene App",
+          "accent": "#e8a020",
+          "site": "vos-training",
+          "url": "https://vos-training.web.app",
+          "tab": "session",
+          "repo": "fitness-dev"
+        },
+        {
+          "id": "logbuch",
+          "kind": "solo",
+          "name": "VitalOS Logbuch",
+          "short": "Logbuch",
+          "description": "Logbuch und Chronik der Trainingswochen — als eigene App",
+          "accent": "#c084fc",
+          "site": "vos-logbuch",
+          "url": "https://vos-logbuch.web.app",
+          "tab": "session",
+          "repo": "fitness-dev"
+        },
+        {
+          "id": "review",
+          "kind": "solo",
+          "name": "VitalOS Review",
+          "short": "Review",
+          "description": "Wochenreview, Muskeln, Readiness — Review-Tab als eigene App",
+          "accent": "#f472b6",
+          "site": "vos-review",
+          "url": "https://vos-review.web.app",
+          "tab": "review",
+          "repo": "fitness-dev"
+        },
+        {
+          "id": "atlas",
+          "kind": "solo",
+          "name": "VitalOS Atlas",
+          "short": "Atlas",
+          "description": "Übungsdatenbank durchsuchen — Atlas als eigene App",
+          "accent": "#35c2c8",
+          "site": "vos-atlas",
+          "url": "https://vos-atlas.web.app",
+          "tab": "atlas",
+          "repo": "fitness-dev"
+        },
+        {
+          "id": "touren",
+          "kind": "solo",
+          "name": "VitalOS Radtouren",
+          "short": "Radtouren",
+          "description": "Radtouren planen und loggen — als eigene App",
+          "accent": "#34d399",
+          "site": "vos-touren",
+          "url": "https://vos-touren.web.app",
+          "tab": "touren",
+          "repo": "fitness-dev"
+        },
+        {
+          "id": "setup",
+          "kind": "solo",
+          "name": "VitalOS Setup",
+          "short": "Setup",
+          "description": "Einstellungen — Setup-Tab als eigene App",
+          "accent": "#94a3b8",
+          "site": "vos-setup",
+          "url": "https://vos-setup.web.app",
+          "tab": "settings",
+          "repo": "fitness-dev"
+        },
+        {
+          "id": "anamnese",
+          "kind": "solo",
+          "name": "VitalOS Anamnese",
+          "short": "Anamnese",
+          "description": "Anamnese erfassen — als eigene App",
+          "accent": "#fb923c",
+          "site": "vos-anamnese",
+          "url": "https://vos-anamnese.web.app",
+          "tab": "anamnese",
+          "repo": "fitness-dev"
+        },
+        {
+          "id": "fokus",
+          "kind": "solo",
+          "name": "VitalOS Fokus",
+          "short": "Fokus",
+          "description": "Fokus-Ebenen — als eigene App",
+          "accent": "#facc15",
+          "site": "vos-fokus",
+          "url": "https://vos-fokus.web.app",
+          "tab": "focus",
+          "repo": "fitness-dev"
+        }
+      ]
+    },
+    {
+      "repo": "fuel-dev",
+      "apps": [
+        {
+          "id": "fuelos",
+          "kind": "main",
+          "name": "VitalOS Fuel",
+          "short": "Fuel",
+          "description": "",
+          "accent": "#fb923c",
+          "site": "fuel-os",
+          "url": "https://fuel-os.web.app",
+          "tab": null,
+          "repo": "fuel-dev"
+        },
+        {
+          "id": "client",
+          "kind": "main",
+          "name": "VitalOS Fuel",
+          "short": "Fuel",
+          "description": "",
+          "accent": "#fb923c",
+          "site": "fuel-vos",
+          "url": "https://fuel-vos.web.app",
+          "tab": null,
+          "repo": "fuel-dev"
+        },
+        {
+          "id": "log",
+          "kind": "solo",
+          "name": "VitalOS Fuel Log",
+          "short": "Fuel Log",
+          "description": "Mahlzeiten loggen, Tagessumme und Makros — der Log-Tab von Fuel als eigene App",
+          "accent": "#fb923c",
+          "site": "vos-fuel-log",
+          "url": "https://vos-fuel-log.web.app",
+          "tab": null,
+          "repo": "fuel-dev"
+        },
+        {
+          "id": "supplements",
+          "kind": "solo",
+          "name": "VitalOS Supplements",
+          "short": "Supplements",
+          "description": "Deine Supplement-Routine: Einnahmen, Wochenplan und persönlicher Katalog",
+          "accent": "#a3e635",
+          "site": "vos-fuel-supplements",
+          "url": "https://vos-fuel-supplements.web.app",
+          "tab": null,
+          "repo": "fuel-dev"
+        },
+        {
+          "id": "micros",
+          "kind": "solo",
+          "name": "VitalOS Fuel Mikros",
+          "short": "Mikros",
+          "description": "Mikronährstoffe als Wochenheatmap gegen die DACH-Referenzwerte — der Mikros-Tab von Fuel als eigene App",
+          "accent": "#f472b6",
+          "site": "vos-fuel-mikros",
+          "url": "https://vos-fuel-mikros.web.app",
+          "tab": null,
+          "repo": "fuel-dev"
+        },
+        {
+          "id": "report",
+          "kind": "solo",
+          "name": "VitalOS Fuel Protokoll",
+          "short": "Protokoll",
+          "description": "Abgabefertiges 7-/14-Tage-Ernährungsprotokoll mit Druck/PDF — der Protokoll-Tab von Fuel als eigene App",
+          "accent": "#38bdf8",
+          "site": "vos-fuel-protokoll",
+          "url": "https://vos-fuel-protokoll.web.app",
+          "tab": null,
+          "repo": "fuel-dev"
+        }
+      ]
+    },
+    {
+      "repo": "plan-dev",
+      "apps": [
+        {
+          "id": "plan",
+          "kind": "main",
+          "name": "VitalOS Plan",
+          "short": "Plan",
+          "description": "Trainingspläne bauen und verwalten",
+          "accent": "#5b8cff",
+          "site": "vos-plan",
+          "url": "https://vos-plan.web.app",
+          "tab": null,
+          "repo": "plan-dev"
+        }
+      ]
+    },
+    {
+      "repo": "6pack-dev",
+      "apps": [
+        {
+          "id": "sixpack",
+          "kind": "main",
+          "name": "6Pack",
+          "short": "6Pack",
+          "description": "6-Pack-Programm mit Workout-Runner",
+          "accent": "#e5192b",
+          "site": "vos-6pack",
+          "url": "https://vos-6pack.web.app",
+          "tab": null,
+          "repo": "6pack-dev"
+        }
+      ]
+    },
+    {
+      "repo": "skills-dev",
+      "apps": [
+        {
+          "id": "skills",
+          "kind": "main",
+          "name": "Skills",
+          "short": "Skills",
+          "description": "Calisthenics-Skills mit Progression und Workout-Runner",
+          "accent": "#c8ff00",
+          "site": "vos-skills",
+          "url": "https://vos-skills.web.app",
+          "tab": null,
+          "repo": "skills-dev"
+        }
+      ]
+    },
+    {
+      "repo": "learn-dev",
+      "apps": [
+        {
+          "id": "learn-vos",
+          "kind": "main",
+          "name": "learn-vos",
+          "short": "learn-vos",
+          "description": "",
+          "accent": "#888",
+          "site": "learn-vos",
+          "url": "https://learn-vos.web.app",
+          "tab": null,
+          "repo": "learn-dev"
+        }
+      ]
+    },
+    {
+      "repo": "relax-dev",
+      "apps": [
+        {
+          "id": "relax-vos",
+          "kind": "main",
+          "name": "relax-vos",
+          "short": "relax-vos",
+          "description": "",
+          "accent": "#888",
+          "site": "relax-vos",
+          "url": "https://relax-vos.web.app",
+          "tab": null,
+          "repo": "relax-dev"
+        }
+      ]
+    }
+  ]
+}

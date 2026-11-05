@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+# vos-portal — Registry + Portal neu erzeugen: docs/apps.{json,html} je Repo, portal/{registry.json,index.html} hier.
+# Verteilt zuerst die Skript-Kopie (scripts/portal.mjs) in alle Repos aus portal/repos.json. --check: nur prüfen.
+set -euo pipefail
+meta="$(cd "$(dirname "$0")/.." && pwd)"; root="${VOS_DEV_ROOT:-$HOME/dev}"
+for r in $(jq -r '.[]' "$meta/portal/repos.json"); do
+  [ -d "$root/$r" ] && mkdir -p "$root/$r/scripts" && cp "$meta/scripts/vos-portal.mjs" "$root/$r/scripts/portal.mjs"
+done
+exec node "$meta/scripts/vos-portal.mjs" --all "$root" "$@"
