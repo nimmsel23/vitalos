@@ -213,3 +213,22 @@ Die Pre-Push-Hooks (journal, fuel, habits, fitness, relax) zeigen beim Push von 
 `vos-ship coach --yes` delegates to `~/dev/coach-dev/bin/coach-release`, dispatches the Coach-owned workflow for published `dev`, waits and verifies its live SHA. Coach is not a VitalOS app/submodule and does not require a Shell pointer bump. `--dry-run` is read-only. Source must be published before shipping; local uncommitted changes are excluded.
 
 Rules stay central: Coach owns its `firestore.rules.part`. Run `node scripts/import-coach-rules.mjs [coach-checkout] [published-commit]`, then `node scripts/build-rules.mjs`; commit the imported fragment and composed rules. Plan/Skills/Journal fragments continue to be imported from their pinned sources. Deploy all rules via `deploy-firestore-rules.yml` in this repository. No per-app rules deployment and no Coach application build dependency.
+
+## Update 2026-11-05 — Standalone-Live-Deploys laufen aus den eigenen master-Checkouts
+
+Relax, Plan, Habits, Journal, Fuel und Skills deployen wie Fitness: `deploy-master.yml` checkt **nur das eigene
+Repo** (`fetch-depth: 0`, damit der Changelog bei `workflow_dispatch` `git log <parent>..HEAD` lesen kann) und die
+benötigten Nachbarn als `master`-Klone daneben, jeweils mit eigenem Lockfile (`--frozen-lockfile --ignore-scripts`),
+baut und deployt im eigenen Ordner. Das Meta-Repo `vitalos` wird für Standalone-Deploys nicht mehr ausgecheckt;
+Branch `vitalos` und die Submodul-Pfade (`fitness-app`, `plan-app`, …) bleiben unverändert der Shell-Weg.
+
+| App | Nachbarn (master) | Besonderheit |
+|---|---|---|
+| Relax, Skills | – | Skills: `--ignore-workspace` |
+| Plan | relax, learn, fitness | `publicHoistPattern: ['*']` in `pnpm-workspace.yaml` (preserveSymlinks) |
+| Habits | fitness, fuel, relax, 6pack, plan, skills | eigenes Submodul `journal/` extra installieren; `build:kb-data` in fitness-dev |
+| Journal | fitness, fuel, relax, habits, 6pack, plan | `build:kb-data` in fitness-dev |
+| Fuel | fitness, habits, journal, relax, 6pack, plan | `build:kb-data`, Firebase-Config aus Secret |
+
+Build-Test vor dem Merge: `git push origin dev:ci-test/<name>` (Nachbarn von `dev`, kein Deploy). Der frühere
+Meta-Repo-Workflow liegt je Repo als `deploy-master.yml.bak-meta` daneben.
