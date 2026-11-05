@@ -72,3 +72,26 @@ nachfassen. Diese Regel überschreibt für dieses Repo das generelle
 ## Coach ownership (2026-10-20)
 
 Coach is independent in `~/dev/coach-dev`; do not add it as a VitalOS app/submodule. `vos-ship coach` delegates to Coach-owned CI and verifies the live source SHA. Coach does not build the optional historical `vitalos/` checkout. Coach owns `firestore.rules.part`; import a published commit with `node scripts/import-coach-rules.mjs`, then compose with `node scripts/build-rules.mjs`. All app rules deploy together from this repository. No per-app rules deploy or Coach-driven Shell pointer bump.
+
+## Lokale Infrastruktur: Funnel, Coach-API, TaskChampion-Sync (Stand 2026-11-05)
+
+Die Familie deployt direkt aus den Dev-Repos über PR auf `master`. Abseits davon
+laufen auf dem Laptop Dienste, die im Internet über den Tailscale-Funnel
+`https://ideapad.tail7a15d6.ts.net` erreichbar sind. Übersicht, wer was besitzt:
+
+| Funnel-Pfad | Lokaler Dienst | Owner-Repo |
+| --- | --- | --- |
+| `/` (Root) | tc-cors-proxy :53590 → taskchampion-sync-server :53589 | `~/dev/journal-dev` (Proxy + Browser-Clients) |
+| `/fitness`, `/6pack`, `/6pack-apk` | coach-api.service :9150 (nur 127.0.0.1) | `~/dev/coach-dev` |
+
+- **Taskwarrior-Due-Tasks sind die Fire Map** (Hit- & To-Do-Liste: bigrocks,
+  littlerocks, sand). Sync-Kette und Regeln: `~/dev/journal-dev/AGENTS.md`
+  (Abschnitt TaskChampion-Sync-Infrastruktur), Details `JOURNAL-V2.md`.
+- **Coach-API** (`:9150`, Gateway für Fitness/Fuel/Relax-Frontends lokal):
+  Standort, Dists und Rollout-Stand in `~/COACH.md` (Abschnitt
+  „Coach-API-Dienst: Standort, Ports und Erreichbarkeit").
+- Funnel-Routing selbst ist keine Repo-Konfiguration, sondern
+  `tailscale serve` auf dem Laptop (`tailscale serve status` prüfen; Config
+  wirkungslos, bis der Pfad gesetzt und ggf. Funnel freigegeben ist).
+- Netzkenntnis nie aus Dokumentation ableiten, wenn Zweifel besteht:
+  `ss -tlnp` und die Unit-Dateien prüfen.
