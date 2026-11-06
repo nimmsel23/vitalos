@@ -97,6 +97,15 @@ class UsageStatsPlugin : Plugin() {
      * Bildschirmzeit des heutigen Kalendertags (lokal), aggregiert je App.
      * Liefert: { totalMinutes: number, apps: [{ packageName, minutes }] } — Top 5 je
      * Vordergrundzeit, absteigend; die eigene App wird ausgeschlossen.
+     *
+     * Messweg: UsageEvents-Stitching (Vor-/Zurueck-Events je Paket zusammensetzen),
+     * weil UsageStats.totalTimeInForeground System-UI-Zeiten und gesperrte
+     * Bildschirmaus-Zeitraeume mitschleicht und erfahrungsgemaess gegenueber
+     * Digital Wellbeing ueberzeichnet. Offene/abgebrochene Intervalle werden am
+     * Tagesrand [start, now] geklemmt; Events liefert das System chronologisch.
+     * Fallback, falls heute gar keine Events vorliegen (selten, z. B. gerade
+     * gebootet): queryAndAggregateUsageStats als Naeherung mit Kennzeichnung
+     * `approximate: true`.
      */
     @PluginMethod
     fun getTodayUsage(call: PluginCall) {
@@ -109,24 +118,68 @@ class UsageStatsPlugin : Plugin() {
             set(Calendar.HOUR_OF_DAY, 0); set(Calendar.MINUTE, 0)
             set(Calendar.SECOND, 0); set(Calendar.MILLISECOND, 0)
         }.timeInMillis
-        val end = System.currentTimeMillis()
+        val end = System.currentTimeMillis().coerceAtLeast(start)
+        val ownPackage = context.packageName
 
-        val aggregate = usm.queryAndAggregateUsageStats(start, end)
-        val apps = aggregate.values
-            .filter { it.packageName != context.packageName && it.totalTimeInForeground > 0 }
-            .sortedByDescending { it.totalTimeInForeground }
-            .take(5)
-            .map {
-                JSObject().put("packageName", it.packageName)
-                    .put("minutes", Math.round(it.totalTimeInForeground / 60000.0))
+        // 1) Ereignis-Stitching: RESUME/FOREGROUND oeffnet ein Intervall,
+        //    PAUSE/STOP/BACKGROUND schliesst es. ACTIVITY_RESUMED/PAUSED/STOPPED sind
+        //    nur neuere Alias-Namen derselben Konstanten wie MOVE_TO_*.
+        val moveToBack = setOf(
+            UsageEvents.Event.MOVE_TO_BACKGROUND,
+            UsageEvents.Event.ACTIVITY_STOPPED,
+        )
+        val open = mutableMapOf<String, Long>() // packageName -> Resume-Zeitpunkt
+        val totals = HashMap<String, Long>()
+
+        var events = usm.queryEvents(start, end)
+        var event = UsageEvents.Event()
+        var sawEvents = false
+        while (events.hasNextEvent()) {
+            events.getNextEvent(event)
+            if (event.packageName == ownPackage) continue
+            when (event.eventType) {
+                UsageEvents.Event.MOVE_TO_FOREGROUND -> {
+                    // Bereits offenes Intervall desselben Pakets ersetzen: ohne
+                    // zugehoeriges Ende-Event wuerde die Zeit ab Resume doppelt zaehlen.
+                    open[event.packageName] = event.timeStamp
+                }
+                in moveToBack -> {
+                    val from = open.remove(event.packageName) ?: continue
+                    val until = event.timeStamp.coerceAtMost(end).coerceAtLeast(from)
+                    totals.merge(event.packageName, until - from, Long::plus)
+                }
+                else -> {
+                    // CONFIGURATION_CHANGE, USER_PRESENT etc.: kein Vordergrund-Nachweis;
+                    // bewusst ignorieren statt mitzaehlen.
+                }
             }
+            sawEvents = true
+        }
+        // Noch offene Intervalle (App im Vordergrund WAEHREND des Aufrufs) bis `end` zaehlen.
+        for ((pkg, from) in open) {
+            totals.merge(pkg, end - from.coerceAtMost(end), Long::plus)
+        }
 
-        val totalMinutes = aggregate.values
-            .filter { it.packageName != context.packageName }
-            .sumOf { it.totalTimeInForeground } / 60000.0
+        // 2) Fallback, falls das System heute noch keine Events geliefert hat.
+        var approximate = false
+        if (!sawEvents) {
+            approximate = true
+            for (stat in usm.queryAndAggregateUsageStats(start, end).values) {
+                if (stat.packageName != ownPackage && stat.totalTimeInForeground > 0) {
+                    totals[stat.packageName] = stat.totalTimeInForeground
+                }
+            }
+        }
+
+        val apps = totals.entries
+            .filter { it.value > 0 }
+            .sortedByDescending { it.value }
+            .take(5)
+            .map { JSObject().put("packageName", it.key).put("minutes", Math.round(it.value / 60000.0)) }
 
         val ret = JSObject()
-        ret.put("totalMinutes", Math.round(totalMinutes))
+        ret.put("totalMinutes", Math.round(totals.values.sum() / 60000.0))
+        ret.put("approximate", approximate)
         ret.put("apps", JSArray(apps))
         call.resolve(ret)
         // Vergleich mit Digital Wellbeing (Prüfkriterium) nur auf echtem Gerät möglich — offen.
