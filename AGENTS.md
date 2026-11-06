@@ -1,12 +1,17 @@
 # AGENTS.md — VitalOS
 
-## Vorbereitete gemeinsame Produktstruktur
+## Gemeinsame Produktstruktur (integriert 2026-11-06)
 
-Dieser isolierte Entwurf wird auf `dev` vorbereitet. `prod/` ist ein getrackter
-Ordner dieses Meta-Repos und nutzt die vorhandenen App-Submodule im Root.
-Produkt-Shell-Edits in `prod/` auf `dev` sind erlaubt. Der aktive private
-Checkout und sein bisheriger Releaseweg werden durch den Entwurf nicht geändert.
-Siehe `docs/UNIFIED-PRODUCT.md`; ältere Fork-Pfadangaben unten sind überholt.
+Der gemeinsame Produktumbau ist im aktiven Checkout umgesetzt: Branch
+`dev-product` (Merge-Commit `2fe70f3`, Lockfile-Importer `e9ec5e9`, Basis
+master `240a66a`). `prod/` ist ein normal getrackter Ordner dieses
+Meta-Repos und nutzt die vorhandenen App-Submodule im Root — kein eigenes
+Git, keine Gitlinks, kein zweites Lockfile. Produkt-Shell-Edits in `prod/`
+erfolgen auf `dev`-Strängen. Master bleibt Produktionsbranch der privaten
+Shell; der bisherige private Releaseweg ändert sich nicht. Der alte
+Produkt-Fork `/home/alpha/vitalos-prod` bleibt unberührt bis zur
+finalen Freigabe. Siehe `docs/UNIFIED-PRODUCT.md`; ältere Fork-Pfadangaben
+unten sind überholt.
 
 ## Produktstrategie und Android-Roadmap
 

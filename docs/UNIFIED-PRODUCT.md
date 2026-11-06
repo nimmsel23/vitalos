@@ -20,6 +20,8 @@ neuen Branch dieses Repositories veröffentlichen. Die bestehende Produkt-
 Historie darf dabei nicht ohne Abgleich überschrieben werden. Nur `prod/`
 zu exportieren wäre unvollständig, weil Apps und Lockfile im Root liegen.
 
-Dieser Entwurf ist isoliert vorbereitet und noch nicht im aktiven Checkout
-integriert. Produktänderungen an Fuel/Journal und native Regenerierung sowie
-der vollständige Produkt-Build sind eigene Prüfpunkte.
+Integriert am 2026-11-06 auf Branch `dev-product` im aktiven Checkout
+(`/home/alpha/vitalos/prod`); ein Meta-Commit pinnt Root, `prod/` und alle
+App-Gitlinks gemeinsam. Offen bleiben: Abgleich mit dem älteren lokalen
+`dev`-Strang (Observe/Operate-Linie), native Regenerierung, der vollständige
+Produkt-Build und die abschließende Ablösung des alten Produkt-Checkouts.

@@ -35,14 +35,18 @@ gibt einen Nachweis mit Commit, Tag, Paketmanager, Lockfile-Hash und App-Pins
 aus. Ohne Tag ist der Nachweis ausdrücklich nur ein Release-Kandidat.
 Es wird kein Tag, Remote-Branch oder Deployment automatisch angelegt.
 
-## Noch vor Integration zu klären
+## Nach der Integration offene Punkte
 
-Vorbereitungsstatus: Die Struktur und vorhandenen Produktdateien sind übernommen.
-Der gemeinsame Lockfile-Lauf wurde nach wiederholten Registry-Fehlern (23) und
-Timeouts beendet; der neue `prod`-Importer fehlt noch. Der Layout-/Release-Guard
-verweigert deshalb den vollständigen Freigabenachweis. Es wurde kein fertiger
-Produkt-Build und kein neues APK erzeugt. Auf Nutzerwunsch finden keine weiteren
-Tests statt. Die aktiven Checkouts bleiben bestehen.
+Integrationsstatus 2026-11-06: Struktur und Produktdateien sind im aktiven
+Checkout `/home/alpha/vitalos` auf Branch `dev-product` übernommen
+(Merge `2fe70f3`); der `prod`-Importer wurde mit
+`pnpm install --lockfile-only --ignore-scripts` in das gemeinsame Lockfile
+aufgenommen und committet (`e9ec5e9`). Ein Frozen-Install wurde auf
+Nutzerwunsch nicht geprüft; auch `product:check`/`product:manifest` wurden
+nach der Übernahme noch nicht ausgeführt. Die lokale Produktkonfiguration
+liegt unverändert zusätzlich im ignorierten `prod/.product-config/`
+(Kopie vom 2026-11-05/06-Stand; Original im alten Checkout bleibt erhalten).
+Es wurde kein neuer Produkt-Build und kein APK erzeugt.
 
 1. Patch-Äquivalenz ist geprüft: Fuel `e351845` ist als `84f8cfd`, Journal
    `3db5810` als `2d5cdf0` bereits im gemeinsamen Release-Stand enthalten.
@@ -52,19 +56,24 @@ Tests statt. Die aktiven Checkouts bleiben bestehen.
    nicht zur erneuten Anwendung. Die alten zusätzlichen Auto-Doc-Commits bleiben
    im bisherigen Checkout erhalten. Authentifizierte Produktnutzung ist damit
    noch nicht nachgewiesen.
-2. Das gemeinsame Lockfile muss nach Aufnahme des Produkt-Pakets synchronisiert
-   und mit einem Frozen-Install geprüft werden.
+2. Das gemeinsame Lockfile enthält den `prod`-Importer; synchron gehalten
+   wird es über die bestehende Root-Regel (`pnpm install` im Root, Lockfile im
+   selben Commit wie Pointer-Bumps). Ein Frozen-Install-Check steht aus.
 3. Native Plugin-Pfade müssen nach Workspace-Installation mit Capacitor neu
    generiert und Android erneut gebaut werden; iOS benötigt weiterhin Xcode.
-4. Produkt-CI wird als manuell startbarer Check vorbereitet. Keine privaten
+4. Produkt-CI ist als manuell startbarer Check vorbereitet. Keine privaten
    Deploy-Workflows aus dem alten Fork aktivieren. Produkt-Hosting, Functions,
    Rules und Store-Upload benötigen ihre jeweiligen Freigaben.
 5. Kein bestehender Produkt-Branch wird überschrieben. Ein Release-Mirror
    verwendet zunächst einen neuen Branch; Quell-/Release-Historie, Sichtbarkeit,
    CI-Variablen und Buildpfade werden vor Veröffentlichung geprüft.
-6. Erst nach Übernahme in `~/vitalos` werden Rechnerpfade, bestehende Worktrees,
-   Dokumentation und gegebenenfalls `boot-notify-enhanced` angepasst. Bis dahin
-   bleiben beide aktiven Checkouts bestehen.
+6. Der lokale Rechner bezieht sich weiter auf den alten Checkout: der
+   systemd-Dienst `vitalos-thin-results` und etwaige Runbooks zeigen auf
+   `/home/alpha/vitalos-prod`, das bis zur finalen Freigabe bestehen bleibt.
+   Eine Umschaltung (inkl. `boot-notify-enhanced`, der keine vitalos-Bezüge
+   hat) ist Teil der finalen Ablösung, nicht dieses Integrationsschritts.
+   Der ältere lokale `dev`-Strang (Observe/Operate-Arbeit, Spitze f6243f6)
+   ist vom Abgleich mit `dev-product` noch ausgenommen.
 
 ## Secrets
 
