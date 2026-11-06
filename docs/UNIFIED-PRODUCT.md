@@ -1,27 +1,74 @@
-# Gemeinsames Meta-Repo, getracktes Produktverzeichnis
+# Gemeinsame Quellen für private PWA und Store-Produkt
 
-Vorbereiteter Aufbau: private Shell im Root, Store-Shell in `prod/`, genau ein
-gemeinsamer Satz App-Submodule im Root. `prod/` ist kein separates Repository
-und besitzt weder App-Kopien noch eigene Gitlinks oder ein eigenes Lockfile.
+## Besitz und Arbeitsorte
 
-Root-Befehle: `pnpm run product:check`, `product:build`,
-`product:build:observe`, `product:build:operate`, `product:build:native` und
-`product:manifest`. Der bestehende private Buildweg bleibt im Root.
-Details und Grenzen: [Produkt-Migration](../prod/docs/UNIFIED-PRODUCT.md).
+| Ort | Inhalt / Rolle |
+| --- | --- |
+| `~/vitalos/src` | private Shell |
+| `~/vitalos/prod` | getrackte Produkt-Shell, native Projekte, Produkt-Runbooks |
+| `~/vitalos/*-app` | einmalige, gepinnte App-Integration für beide Shells |
+| `~/dev/*-dev` | eigentliche App-Entwicklung; teilweise Worktrees der App-Repos |
+| Root `pnpm-workspace.yaml`, `pnpm-lock.yaml` | gemeinsamer Workspace und Abhängigkeitsstand |
+| `~/vitalos-prod` | erhaltener Alt-Checkout; keine Quelle der neuen Produkt-Builds |
 
-Ein `product-*`-Tag pinnt den vollständigen Meta-Repo-Commit mit den
-App-Gitlinks und dem gemeinsamen Lockfile. CI verwendet `submodule update
---init --recursive`, niemals `--remote` für Release-Builds.
+Der Haupt-Checkout enthält den Umbau auf `dev-product`. Die bestehende private
+`master`-Linie, ältere Dev-Arbeit und andere Worktrees bleiben erhalten.
+`prod/` wird weder ignoriert noch als eigenes Repository geführt. Eine Änderung
+am gemeinsamen App-Pin gilt für beide Varianten; Unterschiede im Verhalten
+werden ausdrücklich in Shell, Adaptern oder Produkt-Buildmodus umgesetzt.
 
-Der Remote-Name `product` bezeichnet `nimmsel23/vitalos-prod`. Das bloße
-Eintragen synchronisiert nichts und berechtigt nicht zum Push. Ein späterer
-Release-Mirror kann den vollständigen getaggten Meta-Repo-Stand auf einen
-neuen Branch dieses Repositories veröffentlichen. Die bestehende Produkt-
-Historie darf dabei nicht ohne Abgleich überschrieben werden. Nur `prod/`
-zu exportieren wäre unvollständig, weil Apps und Lockfile im Root liegen.
+## Befehle im Meta-Repo-Root
 
-Integriert am 2026-11-06 auf Branch `dev-product` im aktiven Checkout
-(`/home/alpha/vitalos/prod`); ein Meta-Commit pinnt Root, `prod/` und alle
-App-Gitlinks gemeinsam. Offen bleiben: Abgleich mit dem älteren lokalen
-`dev`-Strang (Observe/Operate-Linie), native Regenerierung, der vollständige
-Produkt-Build und die abschließende Ablösung des alten Produkt-Checkouts.
+Ausführen unter `/home/alpha/vitalos`. Produkt-Buildwerte vorher aus der
+freigegebenen lokalen Umgebung laden; Inhalte nicht ausgeben oder committen.
+Paketmanager: `pnpm@11.3.0`.
+
+| Befehl | Ergebnis |
+| --- | --- |
+| `pnpm run build:firebase` | private Shell; kein Produkt-Build |
+| `pnpm run product:check` | prüft Besitzgrenzen und saubere, gepinnte gemeinsame Apps |
+| `pnpm run product:build` | Store-Web-Ausgabe in `prod/dist-store` |
+| `pnpm run product:build:observe` | Observe-Web-Ausgabe in `prod/dist-observe` |
+| `pnpm run product:build:operate` | Operate-Web-Ausgabe in `prod/dist-operate` |
+| `pnpm run product:build:native` | native Web-Ausgabe in `prod/dist-native`; noch keine APK |
+| `pnpm run product:native:sync` | baut native Web-Ausgabe und synchronisiert Capacitor-Projekte |
+| `pnpm run product:build:twa` | Fitness-TWA-Webvorbereitung; benötigt Paket/Fingerprint-Werte |
+| `pnpm run product:manifest` | JSON-Quellnachweis für sauberen Gesamtstand; ohne Tag nur Kandidat |
+
+`product:native:sync` enthält einen erneuten Web-Build. Bereits vorhandene
+Web-Assets können bei Bedarf gezielt aus `prod/` mit `pnpm exec cap sync android`
+oder `ios` synchronisiert werden. Synchronisierung ist kein nativer Build.
+Details: [Firebase](../prod/docs/FIREBASE.md) und [Store](../prod/docs/STORE-PUBLISHING-PLAN.md).
+
+## Pinning und Veröffentlichung
+
+Ein Meta-Commit pinnt Root-Dateien, `prod/`, Lockfile und sämtliche App-Gitlinks.
+Ein später autorisierter `product-*`-Tag bezeichnet genau diesen Gesamtstand.
+CI verwendet `git submodule update --init --recursive`, ohne `--remote`.
+Die Layout-Prüfung schützt vor abweichenden ausgecheckten App-Ständen; ein
+Quellmanifest ist noch kein Funktions-, Geräte- oder Signing-Nachweis.
+
+`origin` zeigt auf `nimmsel23/vitalos`, `product` auf `nimmsel23/vitalos-prod`.
+Die Remote-Namen synchronisieren nichts. Ein Release-Mirror muss den gesamten
+Meta-Repo-Stand einschließlich App-Pins und Root-Lockfile erhalten. Nur `prod/`
+zu exportieren reicht nicht. Die alte Produkt-Historie wird nicht überschrieben.
+Das VitalOS-Quellrepo ist öffentlich; dort gepushter Produktcode wäre ebenfalls
+öffentlich. Konfiguration und Credentials gehören weiterhin nicht ins Git.
+
+## Nachweisstand und nächste Arbeiten
+
+Die Struktur wurde mit `2fe70f3`, der Produkt-Lockfile-Importer mit `e9ec5e9`
+integriert. Vibes Abschlussbericht zu `164e6a3` meldet erfolgreiche Layout- und
+Manifest-Guards. Das war keine neue APK, Geräteanmeldung oder Veröffentlichung.
+Der anschließende Dev-Abgleich ist in `6b088d9` dokumentiert: Die ältere
+Observe/Operate-Linie `f6243f6` ist Vorfahr des importierten Produktquellstands;
+ihre betroffenen Pfade wurden den Produktquellen, historischen Dokumenten oder
+bewusst getrennten Root-Konfigurationen zugeordnet. Ein pauschaler zusätzlicher
+Merge dieser alten Linie ist dafür nicht erforderlich. Die weitere Arbeit
+betrifft Abhängigkeiten, native Synchronisierung und Produktartefakte.
+Noch nicht dokumentierte Ergebnisse dürfen nicht als bereits erledigt gelten.
+
+Der Alt-Checkout und dortige Artefakte bleiben bis zur vollständigen Ablösung
+erhalten. `vitalos-thin-results` verweist nach dem Integrationsbericht weiterhin
+auf den alten Ort; das ist separat umzustellen. Keine Dienste als Nebenwirkung
+von Quell- oder Doku-Arbeiten neu starten.

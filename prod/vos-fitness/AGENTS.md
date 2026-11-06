@@ -1,71 +1,27 @@
-# Repository Guidelines
+# AGENTS.md — Fitness-Produktwrapper
 
-## Status: Grobe Variante
+Dieser Ordner gehört zu `~/vitalos/prod`, nicht zu einem eigenen Repository.
+Es gelten `../../AGENTS.md` und `../AGENTS.md`. Fitness-, Plan-, 6Pack- und
+weitere App-Quellen kommen aus den gemeinsamen Submodulen im Meta-Repo-Root;
+keine zusätzlichen App-Kopien hier anlegen.
 
-Dies ist die **grobe Variante**: ein schlanker Wrapper, der bewusst vieles aus `fitness-app`
-importiert und nur das Nötigste lokal hält. Sie wird **im Nachhinein** (nachträglich) verfeinert
-und aufgeräumt — nicht jetzt. Bis dahin gilt: lieber schnell und funktionierend als perfekt,
-keine Polierarbeit und keine größeren Umbauten vorziehen.
+Der Wrapper besitzt Pulse-Oberfläche und Produktanbindung. `src/pulse/PulseLog.jsx`
+ist der wiederverwendete Kern; `PulseApp.jsx` stellt Login, Seiten und Navigation.
+Die Produkt-Shell kann denselben Pulse-Kern einbetten. Fachliche App-Änderungen
+gehören ins zuständige Dev-Repo. Keine unabhängige zweite Fitness-Implementierung.
 
-Das frühere "Mehr"-Sheet (Overlay mit Tab-Navigation) passte nicht zu Pulse und wurde 2026-10-29
-durch eigene Seiten ersetzt (`src/pulse/Pages.jsx`, Hash-Routen `#/menu`, `#/review`, …). Pulse
-bleibt der eine Screen mit der Ein-Zeilen-Eingabe; Training, Plan, Review, Verlauf, Lernen und
-Einstellungen öffnet man bewusst als eigene Seite.
+Den Produkt-Build vom Meta-Root mit `pnpm --filter @vitalos/product run
+build:fitness:product` ausführen. Die TWA-Webvorbereitung heißt im Root
+`pnpm run product:build:twa`; Paket-/Fingerprint-Werte werden dafür zusätzlich
+benötigt. Wrapper-Webausgabe: `prod/vos-fitness/dist-firebase`.
+Die native TWA-Quelle liegt in `../platforms/fitness-twa`.
 
-Pulse-Aufbau: `src/pulse/PulseLog.jsx` ist der Kern (Feed, Ein-Zeilen-Eingabe, Speichern) ohne Login,
-Seiten und Wischen. `PulseApp.jsx` ist die vos-fitness-Hülle darum (Login, Hash-Seiten, Wischen). Die
-VitalOS-Shell bindet denselben Kern über den Alias `@pulse` als Fitness-Untertab `pulse` ein
-(`src/shell/FitnessApp.jsx`, `#fitness/pulse`). Änderungen am Kern wirken damit in beiden.
+Produkt-Firebase ist ausschließlich `vitalos-prod`. Das geerbte lokale
+`firebase.json` des Wrappers nennt den privaten Legacy-Weg und darf nicht für
+das Produktdeploy verwendet werden. Zuständig ist `../firebase.product-fitness.json`.
+Ein Build beauftragt keinen Deploy und keinen Testlauf.
 
-## Project Structure & Module Organization
-
-`vos-fitness` (Hosting site `fitness-vos`) is a Vite/React wrapper for the VitalOS fitness Firebase surface.
-Local source lives in `src/`: `main.jsx` wires React providers, `AppWrapper.jsx`
-renders the "Pulse" UI (`src/pulse/`, look in `src/styles/vos-pulse.css`), and
-`styles.css` contains VOS-local CSS. The old tab shell (`App.jsx`) and the
-`NavigationItems.js` override were removed; navigation constants come straight
-from `fitness-app`. Most runtime UI is imported from sibling
-VitalOS modules through aliases in `vite.config.cjs`, especially
-`../fitness-app/src`. Static assets and PWA files live in `public/`; production
-Firebase output is `dist-firebase/`. Do not edit generated `dist*` files by
-hand.
-
-## Build, Test, and Development Commands
-
-- `npm run dev` starts the Vite dev server (`vite.config.cjs`, port 9140).
-- `npm run build` creates the cloud/Firebase build in `dist-firebase`.
-- `npm run build:cloud` is a compatibility alias for `npm run build`.
-- `npm run deploy` deploys the existing `dist-firebase` build only.
-- `npm run deploy:cloud` is a compatibility alias for `npm run deploy`.
-- `npm run firebase` runs build plus deploy.
-
-This repository is cloud-only; keep `build` as the primary production build
-command. The Firebase site is configured in `firebase.json` as `fitness-vos`
-under project `fitness-aos`.
-
-## Coding Style & Naming Conventions
-
-Use React function components, ES modules, two-space indentation, and concise
-JSX. Prefer existing Tailwind utility patterns and theme variables such as
-`fit-bg`, `fit-card`, `fit-line`, and `fit-accent`. Keep aliases in
-`vite.config.cjs` and Tailwind content paths aligned whenever importing from
-sibling modules, otherwise responsive classes can be purged from the build.
-
-## Testing Guidelines
-
-There is no dedicated test runner in this package. Validate changes with
-`npm run build`; for deployment-script changes, also run `npm run deploy` after
-a successful build. When touching layout, verify mobile behavior because the app
-depends on responsive classes generated from sibling source files.
-
-## Commit & Pull Request Guidelines
-
-History uses short imperative messages, for example `Fix fitness VOS mobile
-build styles` and `Normalize fitness VOS Firebase scripts`. Keep commits scoped
-to the changed surface. PRs should describe the user-visible effect, list the
-commands run, and include screenshots for UI/layout changes.
-
-## Agent-Specific Instructions
-
-Follow the parent VitalOS rule: commit every working intermediate or final state
-without asking. Do not push the VitalOS meta-repo unless explicitly requested.
+Bei UI-/Importänderungen Vite-Aliase, Tailwind-Quellpfade und zuständige Doku
+zusammen pflegen; nur eigene Dateien committen. Produktstatus und Release-Weg:
+`../docs/PRODUCT-CHECKOUT.md`, `../docs/FIREBASE.md`,
+`../docs/STORE-PUBLISHING-PLAN.md`.

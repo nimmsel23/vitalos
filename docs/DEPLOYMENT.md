@@ -1,3 +1,35 @@
+# Deployment — private PWA und gemeinsamer Produktquellstand
+
+Stand der gemeinsamen Struktur: 2026-11-06. Die private Shell im Root und das
+Store-Produkt unter `prod/` verwenden dieselben App-Gitlinks. Die Root-App-
+Releases `dev -> master -> vitalos` bleiben ein eigener Weg. Store-Paketierung
+und Produkt-Firebase sind damit nicht veröffentlicht.
+
+| Aufgabe | Zuständigkeit |
+| --- | --- |
+| App-Quelländerung | zuständiges `~/dev/*-dev`, dann App-Release/Integration |
+| gemeinsamen App-Stand übernehmen | Parent-Gitlink und Root-Lockfile zusammen committen |
+| private Shell veröffentlichen | autorisierter privater Release-Weg / Root-CI |
+| Produkt-Web/Native bauen | Root `product:*`; [Befehle](UNIFIED-PRODUCT.md) |
+| Produkt-Firebase veröffentlichen | [Produkt-Runbook](../prod/docs/FIREBASE.md) |
+| APK/AAB, Signing, Store | [Store-Plan](../prod/docs/STORE-PUBLISHING-PLAN.md) |
+
+Aktueller Umbau-Strang ist `dev-product`; `master` bleibt private Produktion.
+Ein älterer lokaler `dev`-Strang und weitere Worktrees sind gesondert zu
+erhalten. Keine pauschalen Branch-Wechsel oder Resets aus alten Anleitungen.
+Die Release-Helfer werden parallel weiterentwickelt; ihr tatsächlich
+ausgecheckter Code und der konkrete Auftrag bestimmen ihr Verhalten.
+
+## Historische private Release-Dokumentation
+
+Der folgende Bestand ist datierte private Betriebs-/Fehlerhistorie. Aussagen
+zu `~/*-dev`, festen lokalen Branches, früherer CI, Tests oder Werkzeugständen
+nicht ungeprüft auf den aktuellen Produktauftrag übertragen. Dev-Quellen liegen
+heute unter `~/dev/*-dev`. App-Workflows können unterschiedliche Buildlayouts
+haben; insbesondere der Fitness-Standalone-Deploy nutzt Nachbar-Checkouts.
+
+---
+
 # Deployment — Branch-Modell und Release-Weg
 
 Stand: 2026-10-30. Löst die Beschreibung in `CLAUDE.md` („Deploy-Flow Gesamtbild“, „Der EINZIGE aktive Deploy-Pfad
