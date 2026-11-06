@@ -14,6 +14,22 @@
       },
       "oauth_client": [
         {
+          "client_id": "149035799731-7pu3h5bgtnlkb9r9t0l4rht2j75gasib.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.vitalos.app",
+            "certificate_hash": "8a07ccfaf63ec1094827522df02bde286f0d9e9d"
+          }
+        },
+        {
+          "client_id": "149035799731-8lov6cmm94cd28kntvjm4bh6lig2b3l0.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.vitalos.app",
+            "certificate_hash": "b26128daf89594a1eceab35a989c5d3118cea3ef"
+          }
+        },
+        {
           "client_id": "149035799731-gjjmtqrisfhblsa4pl33es930sn5et3o.apps.googleusercontent.com",
           "client_type": 3
         }
