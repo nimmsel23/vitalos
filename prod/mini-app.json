@@ -1,0 +1,83 @@
+{
+  "apps": {
+    "vitalos": {
+      "name": "VitalOS",
+      "short": "VitalOS",
+      "accent": "#6ee7b7",
+      "bg": "#0b0e14",
+      "splash": {
+        "icon": "/icon-192.png"
+      },
+      "register": {
+        "expose": true
+      },
+      "sw": {
+        "prefix": "vitalos-",
+        "shell": [
+          "./",
+          "./index.html",
+          "./manifest.json"
+        ],
+        "cacheAllSameOrigin": true,
+        "navTimeoutMs": null,
+        "api": {
+          "swr": [
+            "/session",
+            "/coverage",
+            "/fitness/weekly",
+            "/fitness/body",
+            "/fitness/plan",
+            "/fitness/inbox",
+            "/fitness/clients",
+            "/fitness/config",
+            "/fitness/muscles",
+            "/fitness/search",
+            "/fitness/exercises",
+            "/exercises/search",
+            "/exercises/by-group",
+            "/exercise",
+            "/journal",
+            "/habitsync",
+            "/plan/today",
+            "/blocks",
+            "/theme",
+            "/health"
+          ]
+        },
+        "imageCaches": [
+          {
+            "cache": "fitness-exercise-images",
+            "hosts": [
+              "cdn.jsdelivr.net"
+            ]
+          }
+        ],
+        "extras": [
+          "workout-notifications"
+        ],
+        "workoutLink": "./#session/today",
+        "notificationLink": "./#session/today"
+      }
+    },
+    "observe": {
+      "name": "VitalOS Observe",
+      "short": "Observe",
+      "accent": "#416b51",
+      "bg": "#eff2ed",
+      "iconDir": "branding/observe/icons",
+      "splash": { "icon": "./icon-192.png" },
+      "register": { "expose": true },
+      "sw": { "prefix": "observe-", "shell": ["./", "./index.html", "./manifest.json", "./icon-192.png", "./icon-512.png"], "api": {} }
+    },
+    "operate": {
+      "name": "VitalOS Operate",
+      "short": "Operate",
+      "accent": "#d3a2ff",
+      "bg": "#17151b",
+      "iconDir": "branding/operate/icons",
+      "splash": { "icon": "./icon-192.png" },
+      "register": { "expose": true },
+      "sw": { "prefix": "operate-", "shell": ["./", "./index.html", "./manifest.json", "./icon-192.png", "./icon-512.png"], "api": {} }
+    }
+  }
+}

@@ -15,7 +15,15 @@
     "build:firebase": "vite build --mode firebase && pnpm run stamp:sw",
     "stamp:sw": "node packages/mini-app-shell/cli.mjs sw dist-firebase --app vitalos && node packages/mini-app-shell/cli.mjs splash dist-firebase --app vitalos",
     "deploy:preview": "pnpm run build:firebase && pnpm dlx firebase-tools@latest hosting:channel:deploy agent-preview --expires 3d --project fitness-aos",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "product:check": "pnpm --filter @vitalos/product run check:layout",
+    "product:build": "pnpm --filter @vitalos/product run build:cloud",
+    "product:build:observe": "pnpm --filter @vitalos/product run build:product:observe",
+    "product:build:operate": "pnpm --filter @vitalos/product run build:product:operate",
+    "product:build:native": "pnpm --filter @vitalos/product run build:native",
+    "product:manifest": "pnpm --filter @vitalos/product run release:manifest",
+    "product:native:sync": "pnpm --filter @vitalos/product run native:sync",
+    "product:build:twa": "pnpm --filter @vitalos/product run build:fitness:twa:web"
   },
   "dependencies": {
     "@dnd-kit/accessibility": "^3.1.1",

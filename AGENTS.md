@@ -1,74 +1,103 @@
-# AGENTS.md — VitalOS
+# AGENTS.md — gemeinsames VitalOS-Meta-Repo
 
-## Produktstrategie und Android-Roadmap
+## Architektur und Zuständigkeit
 
-- Produktstrategie: `/home/alpha/vitalos/VitalOS-Produktstrategie-V1.2.0.md`; die lesbare HTML-Fassung liegt daneben als `VitalOS-Produktstrategie-V1.2.0.html`.
-- Interaktive Android-Roadmap: `/home/alpha/Vitaltraining/daniel-vitaltrainer-firebase/src/vitalos-android-roadmap.html` (Homepage-Quelle). Sie ist ein Plan; tatsächlichen Repo-, Build- und Release-Stand vor Umsetzung prüfen.
-- Gemeinsamer Produkt-Checkout: `/home/alpha/vitalos-prod`; Firebase-Projekt `vitalos-prod`. Observe und Operate sind Varianten desselben Store-Produkts.
+`~/vitalos` enthält private PWA und Store-Produkt. Die private Shell liegt in
+`src/`, die Produkt-Shell in `prod/src/`. `prod/` ist normal getrackt, besitzt
+kein eigenes Git-Repo und keine App-Submodule. Beide Shells verwenden die neun
+App-Submodule im Root und das gemeinsame `pnpm-lock.yaml`.
 
-## Paketmanager für Apps
-pnpm 
+Der Umbau wurde am 2026-11-06 auf `dev-product` integriert (`2fe70f3`); der
+Produkt-Importer steht seit `e9ec5e9` im gemeinsamen Lockfile. `master` ist der
+private Produktionsbranch. Der ältere lokale `dev`-Strang und weitere Worktrees
+sind separate Arbeitsstände und dürfen nicht zurückgesetzt oder pauschal
+übernommen werden. Branch und Status vor jeder Änderung tatsächlich prüfen.
 
-- In `*-dev`-Checkouts kann die Codex-Sandbox den globalen pnpm-Engine-Store
-  (`~/.local/share/pnpm/package-manager-store`) schreibgeschützt einbinden.
-  Dann scheitert die Auflösung der in `package.json` gepinnten pnpm-Version mit
-  `ERR_PNPM_STORE_DIR_OPEN_OPERATION_LOCK`. pnpm-Befehle in diesen Checkouts
-  mit Schreibzugriff außerhalb der Sandbox ausführen; den Package-Manager-Pin
-  beibehalten und den Build nicht durch direkten Aufruf von Vite umgehen.
+`~/vitalos-prod` bleibt bis zur abgeschlossenen Ablösung erhalten. Dort können
+exklusive lokale Änderungen, Konfiguration und native Artefakte liegen.
+Das GitHub-Repo gleichen Namens kann als späteres Release-Ziel erhalten bleiben.
+Die geteilte Produktquelle ist jetzt `~/vitalos/prod`.
 
-## Commit-Regel (verbindlich)
+Einstieg: `README.md`, `docs/UNIFIED-PRODUCT.md`,
+`prod/docs/PRODUCT-CHECKOUT.md`, `prod/docs/FIREBASE.md` und
+`prod/docs/STORE-PUBLISHING-PLAN.md`. Strategie: `VitalOS-Produktstrategie-V1.2.0.md`;
+die Android-Roadmap unter
+`~/Vitaltraining/daniel-vitaltrainer-firebase/src/vitalos-android-roadmap.html`
+ist Planung, kein Nachweis eines Builds oder Releases.
 
-**Immer committen, nie fragen.** Sobald eine Aufgabe — egal ob vom Hauptagenten
-oder einem Subagenten ausgeführt — einen funktionierenden Zwischen- oder
-Endstand erreicht hat: sofort committen, ohne vorher um Erlaubnis zu fragen.
+## Edit-Orte und Zusammenarbeit
 
-- Bei Submodule-Änderungen (fitness-app, fuel-app, journal-app, habit-app,
-  learn-dev, relax-app): erst im Sub-Repo committen **und pushen**, danach
-  im Meta-Repo (`vitalos`) den Submodule-Pointer bumpen und committen.
-- Der Submodule-Push ist zwingend, weil der Meta-Repo-Pointer sonst auf einen
-  lokalen-only Commit zeigt und CI mit `fatal: not our ref` scheitert
-  (siehe `CLAUDE.md` → Submodule-Regel).
-- **pnpm-lock.yaml muss immer synchron sein:** Wenn ein Submodule neue
-  Abhängigkeiten bekommt, muss `pnpm install` im vitalos-Root ausgeführt
-  und das aktualisierte `pnpm-lock.yaml` im selben Commit wie der
-  Submodule-Pointer mitgeführt werden. Reihenfolge:
-  1. Sub-Repo: `pnpm add <paket>` → committen + pushen
-  2. vitalos-Root: `pnpm install` (aktualisiert Root-Lockfile)
-  3. `git add <submodule-path> pnpm-lock.yaml && git commit`
-  Der pre-push Hook fängt vergessene Lockfile-Updates automatisch ab
-  (amended den letzten Commit), ist aber kein Ersatz für bewusstes Vorgehen.
-- **Push des Meta-Repos bleibt separat** — nur committen, NICHT pushen, außer
-  der User fordert es explizit an.
+- Private Shell: `~/vitalos/src`; Produkt-Shell und native Produktkonfiguration:
+  `~/vitalos/prod`. Quelländerungen auf einem passenden Dev-Strang; derzeit
+  wird der gemeinsame Umbau auf `dev-product` bearbeitet. Kein direktes
+  Quellcode-Editieren auf `master`.
+- App-Quellcode: jeweiliges `~/dev/*-dev`-Repository. Die `*-app`-Ordner sind
+  Merge-/Integrations-Checkouts, keine zweiten Entwicklungsquellen.
+- Andere lokale Branches, Worktrees, vorgemerkte Änderungen und laufende
+  Agent-Arbeit erhalten. Vor Edits Backup anlegen. Nur eigene Pfade committen.
+- Laufende Services nicht killen oder neu starten. Kein sudo. AlphaOS bleibt
+  ein eigenständiges Projekt und ist kein Ziel dieses Umbaus.
 
-## Edit-Orte und Branch-Regel
+## Commit- und Gitlink-Regeln
 
-Quellcode wird ausschließlich in `~/vitalos/src` oder im jeweiligen `~/dev/*-dev/src` bearbeitet, ausschließlich auf einem `dev`-Branch und immer mit anschließendem Commit. Auf anderen Branches, insbesondere dem Produktionsbranch `master`, wird kein Quellcode direkt editiert. `*-app`-Submodule bleiben lokale Merge-/Integrations-Checkouts und werden nicht direkt editiert.
+**Funktionierende Zwischen- und Endstände sofort committen, ohne nachzufragen.**
+Thematisch passende Doku gehört in denselben Commit.
 
-## Repo- und Deploy-Rollen
+Ein Parent-Commit speichert die App-Commits als Gitlinks. `branch =` in
+`.gitmodules` steuert nur Updates mit `--remote`; es ersetzt keinen Gitlink.
+Lokaler Branchname, konfigurierter Integrationsbranch und gespeicherter Commit
+sind getrennte Angaben. Detached HEAD ist bei gepinnten Checkouts zulässig.
 
-- `~/vitalos` ist die VitalOS-Shell. `master` ist ihr Produktionsbranch; `deploy-shell.yml` deployed die Shell. Das Meta-Repo hat keinen `dev`-Branch.
-- Die `*-dev` Repos sind die Entwicklungsquellen. Qualifizierende Änderungen auf ihren `dev`-Branches starten die Preview-Workflows.
-- Die `*-app` Submodule in diesem Meta-Repo sind lokale Staging-/Integrations-Checkouts für Git-Merges und liefern Quellcode für die VitalOS-Subapps. Sie sind nicht zum direkten Editieren da: Änderungen werden im jeweiligen `*-dev`-Quellrepo vorgenommen und über den vorgesehenen Merge-/Release-Weg in den App-Checkout übernommen. Der Parent speichert pro Submodule einen Gitlink auf einen konkreten Commit.
-- `branch = vitalos` in `.gitmodules` bestimmt, welchem Remote-Branch `git submodule update --remote` folgt. Der gespeicherte Gitlink wird dadurch nicht automatisch verschoben.
-- Die eigenständigen App-Produktions-Branches unterscheiden sich: Fitness nutzt derzeit `vitalos`; Fuel nutzt derzeit `master`. Vor einem Release den aktiven Workflow im jeweiligen App-Repo prüfen.
+App-Änderungen zuerst im zuständigen Quellrepo committen und den benötigten
+App-Stand veröffentlichen, bevor ein neuer Parent-Gitlink darauf zeigt.
+Ein lokal-only Commit darf kein CI-Gitlink werden. Quellveröffentlichung und
+Parent-Push bleiben bewusste Schritte im autorisierten Release-Auftrag.
 
-## Release-Regel
+Bei geänderten App-Abhängigkeiten das gemeinsame Lockfile im Root mit pnpm
+aktualisieren und mit dem Gitlink committen. Kein zweites Produkt-Lockfile.
+Hooks können Pointer zusätzlich stagen oder beim Push Lockfiles ändern;
+ihren tatsächlichen Inhalt prüfen und nicht als Freigabeersatz behandeln.
+Meta-Repo-Push nur nach ausdrücklichem Auftrag.
 
-- Release-Weg (seit 2026-10-29): **`dev` → `master` → `vitalos`**. Schritt 1 `dev` → `master` ist ein PR (`vos-release-pr <modul>`); nach grünem `Check` mergt der Auto-Merge, der CI-Workflow des App-Repos deployed die Standalone-App. Schritt 2 `master` → `vitalos` macht `vos-release <modul>` (mergt `origin/master` in den `vitalos`-Branch des `*-app`-Checkouts). Ausführlich: `docs/DEPLOYMENT.md`.
-- VitalOS-Shell: den gewünschten App-Quellstand im jeweiligen `*-app` Submodule pinnen und den Pointer im Meta-Repo auf `master` committen (macht `vos-release`). Ein autorisierter Push auf `master` löst den Shell-CI-Deploy aus. `vos-release` mergt vor dem Push `origin/master` ein und gleicht Submodul-Checkouts an die Pointer an.
-- Ein App-Branch-Push aktualisiert den Meta-Repo-Gitlink nicht. Standalone-App-Release und Shell-Release sind getrennte CI-Ziele.
-- `main` ist für diese Branch-Aufteilung nicht erforderlich; keine Branch-Rolle allein aus dem Namen ableiten.
+## Paketmanager und Build-Ziele
 
-## Plan-Integration für Fitness
+Pin `pnpm@11.3.0` beibehalten. Bei
+`ERR_PNPM_STORE_DIR_OPEN_OPERATION_LOCK` den pnpm-Schreibzugriff in der
+zulässigen Umgebung ermöglichen; keinen direkten Vite-Aufruf als Ersatz.
+Supply-Chain-Prüfung kann dauern. Registry-Fehler konkret melden, nicht mit
+unbegrenzten Installationsschleifen oder abgeschalteten Policies übergehen.
 
-- Plan-Änderungen für Fitness starten in `~/plan-dev` auf `dev`. Der Plan-Pre-Push-Hook synchronisiert `src/views/Plan/` nach `~/fitness-dev/src/views/Plan/` und committet/pusht `fitness-dev/dev`; Fitness-Preview läuft dort per CI.
-- Der integrierte Fitness-Produktionsweg ist `fitness-dev/dev` -> `master` (PR) -> `fitness-app` auf Branch `vitalos` -> `fitness-app`-Gitlink in `~/vitalos` auf `master`. Das Fitness-Repo deployt seine Standalone-Produktion; der VitalOS-Parent deployt die Shell. `fitness-dev/plan` ist nicht mehr der Plan-Quellpfad.
+Private Root-Builds und `product:*`-Befehle haben unterschiedliche Ziele.
+Produkt-Builds verlangen `vitalos-prod` und ihre eigene Firebase-Konfiguration.
+Geheimnisse bleiben in ignoriertem `prod/.product-config/` oder der Build-
+Umgebung. Nichts davon ausgeben, kopieren in Doku oder committen.
+Build, native Synchronisierung, APK/AAB, Installation, Anmeldung, Signing und
+Veröffentlichung sind getrennte Nachweise. Kein erfolgreicher Teil ersetzt die
+übrigen Schritte. Details und Arbeitsverzeichnisse: `docs/UNIFIED-PRODUCT.md`.
 
-**Grund:** Ein Agent hat am 2026-08-06 seinen Context aufgegeben, bevor
-committed wurde — die Arbeit ging verloren, der User musste manuell
-nachfassen. Diese Regel überschreibt für dieses Repo das generelle
-"nie ohne explizite Erlaubnis committen"-Verhalten.
+## Private App-/Shell-Releases
 
-## Coach ownership (2026-10-20)
+Der bestehende App-Weg bleibt `dev -> master -> vitalos`; die tatsächlichen
+App-Workflows vor einer Veröffentlichung prüfen. `vos-release-pr`, `vos-ship`
+und `vos-release` gehören zum privaten Release-Weg und sind keine Produkt-
+Store-Veröffentlichung. Ein autorisierter Push von `master` kann die private
+Shell-CI auslösen. Ein App-Push verschiebt den Parent-Gitlink nicht automatisch.
 
-Coach is independent in `~/dev/coach-dev`; do not add it as a VitalOS app/submodule. `vos-ship coach` delegates to Coach-owned CI and verifies the live source SHA. Coach does not build the optional historical `vitalos/` checkout. Coach owns `firestore.rules.part`; import a published commit with `node scripts/import-coach-rules.mjs`, then compose with `node scripts/build-rules.mjs`. All app rules deploy together from this repository. No per-app rules deploy or Coach-driven Shell pointer bump.
+Produkt-Releases pinnen den gesamten Meta-Repo-Stand, optional mit `product-*`-
+Tag. Der Remote `product` ist nur eine Verbindung, keine automatische
+Synchronisierung oder Push-Freigabe. Kein Force-Push zur Ablösung der alten
+Produkt-Historie. Produkt-Hosting, Rules, Functions und Store-Uploads benötigen
+ihren jeweiligen expliziten Veröffentlichungsauftrag.
+
+## Plan, Mini-Apps und Coach
+
+Plan-Quellen liegen in `~/dev/plan-dev`, 6Pack und Skills in ihren eigenen
+Dev-Repos. Fitness löst diese über Nachbar-Checkouts (`*-app` / `*-dev`) auf;
+es besitzt keine eigenen verschachtelten Gitlinks dafür. Keine alten
+Anweisungen zum Kopieren nach `fitness/src/views/Plan` übernehmen.
+
+Coach ist unabhängig in `~/dev/coach-dev`, kein VitalOS-App-Submodul.
+Coach besitzt `firestore.rules.part`; nur veröffentlichte Quellen importieren
+und Regeln im zuständigen Meta-Repo zusammensetzen. Private Rules und
+Produkt-Rules bleiben unterschiedliche Deployment-Ziele. Kein Coach-bedingter
+Shell-Pointer-Bump. Details: `prod/docs/FIREBASE.md` und `docs/DEPLOYMENT.md`.

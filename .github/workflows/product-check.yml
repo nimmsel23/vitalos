@@ -1,0 +1,37 @@
+name: Product shared-source preparation
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  layout:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+      - name: Private Skills submodule access
+        uses: ./.github/actions/skills-submodule-auth
+        with:
+          deploy-key: ${{ secrets.SKILLS_DEPLOY_KEY }}
+      - name: Fetch exact app pins
+        env:
+          GH_TOKEN: ${{ secrets.GH_SUBMODULE_TOKEN || github.token }}
+        run: |
+          git config --global url."https://x-access-token:${GH_TOKEN}@github.com/".insteadOf "git@github.com:"
+          git submodule sync --recursive
+          git submodule update --init --recursive
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 22
+      - name: Check shared-source layout
+        run: node prod/scripts/check-shared-layout.mjs
+      - name: Record source manifest
+        run: node prod/scripts/release-manifest.mjs > "$RUNNER_TEMP/product-source.json"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: product-source-manifest
+          path: ${{ runner.temp }}/product-source.json

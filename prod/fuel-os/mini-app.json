@@ -1,0 +1,41 @@
+{
+  "defaults": {
+    "bg": "#090b10",
+    "themeColor": "#090b10",
+    "start": "./",
+    "scope": "./"
+  },
+  "apps": {
+    "fuel-os": {
+      "name": "Fuel OS",
+      "short": "Fuel OS",
+      "description": "Mahlzeiten, Supplements, Mikronährstoffe und Ernährungsprotokoll in einer App.",
+      "accent": "#fb923c",
+      "bg": "#090b10",
+      "splash": {
+        "icon": "./icons/icon-192.png"
+      },
+      "sw": {
+        "prefix": "fuel-os-",
+        "shell": [
+          "./",
+          "./index.html",
+          "./manifest.json"
+        ],
+        "cacheAllSameOrigin": true,
+        "api": {
+          "networkFirst": [
+            "/health",
+            "/coach/",
+            "/fuel/",
+            "/nutrition/",
+            "/supplements/"
+          ]
+        },
+        "notificationClick": false,
+        "extraFile": "scripts/fuel-sw-extra.js",
+        "assetFallback": "none"
+      }
+    }
+  }
+}

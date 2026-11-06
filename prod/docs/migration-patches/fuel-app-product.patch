@@ -1,0 +1,158 @@
+From e351845a85795786e7736fdaca531335b8c8ca30 Mon Sep 17 00:00:00 2001
+From: Alpha <alpha@alphaos.local>
+Date: Thu, 5 Nov 2026 08:31:42 +0100
+Subject: [PATCH] Explain unavailable legacy AI in product builds
+
+---
+ src/client/components/GeminiCatalogModal.jsx | 2 ++
+ src/client/lib/aiAvailability.js             | 4 ++++
+ src/client/lib/aiMealLogger.js               | 4 +++-
+ src/client/lib/kitchenAi.js                  | 2 ++
+ src/client/lib/visionScan.js                 | 2 ++
+ src/client/views/Log/LogView.jsx             | 2 ++
+ src/client/views/Micros/MicrosAiCoach.jsx    | 2 ++
+ src/client/views/Micros/MicrosEstimator.jsx  | 2 ++
+ 8 files changed, 19 insertions(+), 1 deletion(-)
+ create mode 100644 src/client/lib/aiAvailability.js
+
+diff --git a/src/client/components/GeminiCatalogModal.jsx b/src/client/components/GeminiCatalogModal.jsx
+index 3e2f8bd..81842c2 100644
+--- a/src/client/components/GeminiCatalogModal.jsx
++++ b/src/client/components/GeminiCatalogModal.jsx
+@@ -1,3 +1,4 @@
++import { assertLegacyAiAvailable } from "../lib/aiAvailability.js";
+ import { useState } from "react";
+ import { Sparkles, RotateCcw } from "lucide-react";
+ import { postJson } from "@api";
+@@ -19,6 +20,7 @@ export default function GeminiCatalogModal({ onClose, onSaved }) {
+     setError("");
+     setPreview(null);
+     try {
++      assertLegacyAiAvailable();
+       const cloud = import.meta.env.VITE_APP_MODE === "client";
+       let estimatedItem;
+ 
+diff --git a/src/client/lib/aiAvailability.js b/src/client/lib/aiAvailability.js
+new file mode 100644
+index 0000000..0b9ef34
+--- /dev/null
++++ b/src/client/lib/aiAvailability.js
+@@ -0,0 +1,4 @@
++// Legacy AI actions are unavailable in product builds until server quotas cover them.
++export function assertLegacyAiAvailable(product = import.meta.env?.VITE_VOS_PRODUCT_BUILD === "1") {
++  if (product) throw new Error("Diese KI-Funktion ist in VitalOS derzeit nicht verfügbar. Nutze Smart Log im Journal oder erfasse die Daten manuell.");
++}
+diff --git a/src/client/lib/aiMealLogger.js b/src/client/lib/aiMealLogger.js
+index 2067744..85581df 100644
+--- a/src/client/lib/aiMealLogger.js
++++ b/src/client/lib/aiMealLogger.js
+@@ -1,3 +1,4 @@
++import { assertLegacyAiAvailable } from "./aiAvailability.js";
+ import { OMEGA3_RULES } from "../../shared/config/omega3.mjs";
+ import { postJson } from "@api";
+ import { vertexAI } from "./firebase.js";
+@@ -11,7 +12,7 @@ export { findCatalogMatch } from "./mealCatalogMatch.js";
+ 
+ export const isCloud = () =>
+   typeof window !== "undefined" &&
+-  (window.location.hostname.includes("web.app") || window.location.hostname.includes("firebaseapp.com"));
++  (import.meta.env?.VITE_VOS_PRODUCT_BUILD === "1" || window.location.hostname.includes("web.app") || window.location.hostname.includes("firebaseapp.com"));
+ 
+ // "3x Stiegl Hell" → { qty: 3, rest: "Stiegl Hell" }. Ohne Präfix qty=1.
+ export function parseQuantityPrefix(text) {
+@@ -25,6 +26,7 @@ export { amountToGrams, normalizeComponents, sumYieldG } from "./mealComponents.
+ 
+ // Gemeinsames Response-Schema für Makro/Mikro-Analyse (AI-Logger + Re-Analyse).
+ export async function analyzeMealText(promptText) {
++  assertLegacyAiAvailable();
+   const model = getGenerativeModel(vertexAI, {
+     model: "gemini-2.5-flash",
+     generationConfig: {
+diff --git a/src/client/lib/kitchenAi.js b/src/client/lib/kitchenAi.js
+index eb17bcc..4a20959 100644
+--- a/src/client/lib/kitchenAi.js
++++ b/src/client/lib/kitchenAi.js
+@@ -1,3 +1,4 @@
++import { assertLegacyAiAvailable } from "./aiAvailability.js";
+ // Vertex/Gemini-Aufrufe der Küche (Bon, Prospekt, Freitext, Rezepte, Einkaufsempfehlungen).
+ // Muster wie lib/visionScan.js / lib/aiMealLogger.js: gemini-2.5-flash, JSON-Schema, withAiRetry. Wird nur bei
+ // Bedarf dynamisch importiert, damit der Chunk der Küche klein bleibt.
+@@ -52,6 +53,7 @@ function requireOnline() {
+ }
+ 
+ async function generateJson(schemaKey, parts) {
++  assertLegacyAiAvailable();
+   requireOnline();
+   const model = getGenerativeModel(vertexAI, {
+     model: "gemini-2.5-flash",
+diff --git a/src/client/lib/visionScan.js b/src/client/lib/visionScan.js
+index d529ae3..cca7955 100644
+--- a/src/client/lib/visionScan.js
++++ b/src/client/lib/visionScan.js
+@@ -1,3 +1,4 @@
++import { assertLegacyAiAvailable } from "./aiAvailability.js";
+ import { OMEGA3_RULES } from "../../shared/config/omega3.mjs";
+ import { scanToMeal } from "./mealDetails.js";
+ import { postJson } from "@api";
+@@ -51,6 +52,7 @@ export async function compressToBase64(file, maxSize = 1280, quality = 0.82) {
+ // Wirft bei Offline/Analysefehler — Aufrufer zeigen die Meldung und bieten
+ // einen Retry auf derselben Datei an.
+ export async function analyzeMealImage(file, { scanType = "food" } = {}) {
++  assertLegacyAiAvailable();
+   if (!file) throw new Error("Kein Bild übergeben.");
+   if (!navigator.onLine) {
+     throw new Error("Offline: Der Scan braucht eine Verbindung. Das Foto bleibt ausgewählt und kann später erneut versucht werden.");
+diff --git a/src/client/views/Log/LogView.jsx b/src/client/views/Log/LogView.jsx
+index 1775371..964f6d2 100644
+--- a/src/client/views/Log/LogView.jsx
++++ b/src/client/views/Log/LogView.jsx
+@@ -1,3 +1,4 @@
++import { assertLegacyAiAvailable } from "../../lib/aiAvailability.js";
+ import { normalizeMealMacros, mealMacrosAreValid } from "../../lib/mealMacros.js";
+ import { mealDetails, scaleMeal, rebaseMealPortion } from "../../lib/mealDetails.js";
+ import { useEffect, useRef, useState } from "react";
+@@ -33,6 +34,7 @@ const MICROS_DRILLDOWN_KEY = "fuel:micros-entry-focus";
+ // Vergleicht Journal-Freitext gegen die bereits geloggten Mahlzeiten des Tages
+ // und liefert nur eindeutig erwähnte, aber nicht geloggte Ernährungs-Infos zurück.
+ async function checkJournalAgainstLog(journalText, meals) {
++  assertLegacyAiAvailable();
+   const model = getGenerativeModel(vertexAI, {
+     model: "gemini-2.5-flash",
+     generationConfig: {
+diff --git a/src/client/views/Micros/MicrosAiCoach.jsx b/src/client/views/Micros/MicrosAiCoach.jsx
+index f7b2930..83062e3 100644
+--- a/src/client/views/Micros/MicrosAiCoach.jsx
++++ b/src/client/views/Micros/MicrosAiCoach.jsx
+@@ -1,3 +1,4 @@
++import { assertLegacyAiAvailable } from "../../lib/aiAvailability.js";
+ import React, { useState, useEffect } from "react";
+ import { X, Sparkles, Loader2, RotateCcw } from "lucide-react";
+ import ReactMarkdown from "react-markdown";
+@@ -30,6 +31,7 @@ export default function MicrosAiCoach({ weeks, results, onClose }) {
+     setLoading(true);
+     setError(null);
+     try {
++      assertLegacyAiAvailable();
+       // 1. Format the data
+       let dataText = "Nutrition Data (Weekly Averages vs DACH %):\n\n";
+       weeks.forEach((w, wi) => {
+diff --git a/src/client/views/Micros/MicrosEstimator.jsx b/src/client/views/Micros/MicrosEstimator.jsx
+index 2f50d49..8505653 100644
+--- a/src/client/views/Micros/MicrosEstimator.jsx
++++ b/src/client/views/Micros/MicrosEstimator.jsx
+@@ -1,3 +1,4 @@
++import { assertLegacyAiAvailable } from "../../lib/aiAvailability.js";
+ import { OMEGA3_RULES, normalizeOmega3, OMEGA3_KEYS } from "../../../shared/config/omega3.mjs";
+ import React, { useState } from "react";
+ import { X, Wand2, Loader2, CheckCircle2, RotateCcw } from "lucide-react";
+@@ -41,6 +42,7 @@ export default function MicrosEstimator({ missingMeals, onClose }) {
+       const mealName = mealsToProcess[i];
+ 
+       try {
++        assertLegacyAiAvailable();
+         let estimatedMicros;
+         if (cloud && vertexAI) {
+           const model = getGenerativeModel(vertexAI, {
+-- 
+2.56.0
+

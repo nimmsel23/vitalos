@@ -1,5 +1,14 @@
 # VitalOS Shell
 
+> Aktuelle gemeinsame Produktstruktur (2026-11-06): Root-PWA und getracktes
+> `prod/` verwenden gemeinsame App-Submodule und ein Root-Lockfile. Aktuelle
+> Branch-/Edit-Regeln: [AGENTS.md](AGENTS.md). Orientierung:
+> [README.md](README.md), [Produktstruktur](docs/UNIFIED-PRODUCT.md).
+> Historische Abschnitte unten zu Deploy-Audits, `~/*-dev` und verschachtelten
+> Fitness-Submodulen sind keine aktuellen Arbeitsanweisungen. Keine alten
+> Copy-/Deploy-Schritte allein aus diesen Abschnitten ausführen.
+
+
 VitalOS ist die übergreifende App-Shell die alle VOS-Module (fitness-app, fuel-app, journal-app, habit-app, learn-dev) zusammenhält.
 
 **Port Dev:** 9190 (`npm run dev`)
@@ -244,7 +253,7 @@ Neue Backend-Dependencies gehören in diese Repos, nicht in `~/vitalos/package.j
 
 ---
 
-## Deploy-Flow Gesamtbild (Audit 2026-07-15/16)
+## Historischer Deploy-Flow (Audit 2026-07-15/16)
 
 **Firebase-Projekt für ALLES: `fitness-aos`.** Jede App hat eine eigene
 Hosting-*Site* im selben Projekt (alle `.firebaserc` → `fitness-aos`):

@@ -1,0 +1,293 @@
+import { defineConfig } from 'vite'
+import react from '@vitejs/plugin-react'
+import { vosChangelog } from './packages/mini-app-shell/vos-changelog-vite.mjs'
+import tailwindcss from 'tailwindcss'
+import { resolve, dirname, relative, isAbsolute, sep } from 'path'
+import { existsSync, statSync } from 'fs'
+import { fileURLToPath } from 'url'
+import { crossAppAliases } from '@vos/cross-app-aliases'
+import { miniAppSubmodulePlugin } from '../fitness-app/vite-miniapp-submodules.mjs'
+
+const __dirname    = dirname(fileURLToPath(import.meta.url))  // ~/vitalos/
+const APP_ROOT = resolve(__dirname, '..')
+const VITALOS_SRC  = resolve(__dirname, 'src')
+const FITNESS_DEV  = resolve(APP_ROOT, 'fitness-app')
+const FITNESS_SRC  = resolve(FITNESS_DEV, 'src')
+
+// Plan und Skills kommen in der Shell aus den eigenen Submodulen plan-app und skills-app
+// (nicht aus der eingebetteten Kopie unter fitness-app/src/views bzw. dem verschachtelten
+// fitness-app/plan und fitness-app/Skills). Die Views in fitness-app importieren weiterhin
+// ihre alten Pfade; dieser Resolver biegt sie auf die Submodule um (Muster wie
+// miniAppSubmodulePlugin in fitness-app/vite.config.js).
+//
+// plan-app enthält ein eigenes, abweichendes Fitness-Gerüst (contexts, components, lib …).
+// Importe der Plan-Views auf diese Ordner werden auf das Gegenstück in fitness-app
+// zurückgeleitet, sofern es existiert — sonst entstünde z. B. ein zweiter UserContext,
+// zu dem der Provider der Shell nicht passt.
+const PLAN_APP     = resolve(APP_ROOT, 'plan-app')
+const SKILLS_APP   = resolve(APP_ROOT, 'skills-app')
+const SIXPACK_APP  = resolve(APP_ROOT, '6pack-app')
+const PLAN_VIEWS   = resolve(PLAN_APP, 'src/views/Plan')
+const MINIAPP_MAPS = [
+  { local: resolve(FITNESS_SRC, 'views/Plan'),   source: PLAN_VIEWS },
+  { local: resolve(FITNESS_SRC, 'views/Skills'), source: SKILLS_APP },
+]
+const RESOLVE_SUFFIXES = ['', '.js', '.jsx', '.mjs', '.json', '/index.js', '/index.jsx']
+const existingFile = (base) => {
+  for (const suffix of RESOLVE_SUFFIXES) {
+    const candidate = base + suffix
+    if (existsSync(candidate) && statSync(candidate).isFile()) return candidate
+  }
+  return null
+}
+const insideDir = (dir, target) => {
+  const rel = relative(dir, target)
+  return rel !== '..' && !rel.startsWith(`..${sep}`) && !isAbsolute(rel)
+}
+const miniAppSubmodules = () => ({
+  name: 'vitalos-miniapp-submodules',
+  enforce: 'pre',
+  resolveId(source, importer) {
+    if (!importer || importer.startsWith('\0')) return null
+    const request = source.split('?')[0]
+    if (!request.startsWith('.') && !isAbsolute(request)) return null
+    const importerPath = importer.split('?')[0]
+    const target = isAbsolute(request) ? request : resolve(dirname(importerPath), request)
+
+    // 1. fitness-app/src/views/{Plan,Skills}/* → plan-app / skills-app
+    for (const map of MINIAPP_MAPS) {
+      if (!insideDir(map.local, target)) continue
+      const hit = existingFile(resolve(map.source, relative(map.local, target)))
+      if (hit) return hit
+    }
+    // 2. Plan-Views: Importe auf plan-apps Fitness-Gerüst → fitness-app (gemeinsame Instanzen)
+    if (insideDir(PLAN_VIEWS, importerPath) && !insideDir(PLAN_VIEWS, target) && insideDir(resolve(PLAN_APP, 'src'), target)) {
+      const rel = relative(resolve(PLAN_APP, 'src'), target)
+      // Push-Hook: die Shell hat einen eigenen, zum Shell-@cloud/firebase passenden (src/hooks);
+      // der der fitness-app braucht Exporte, die die Shell-Firebase-Init nicht hat.
+      if (/^hooks[\\/]usePushNotifications(\.js)?$/.test(rel)) return resolve(VITALOS_SRC, 'hooks/usePushNotifications.js')
+      const hit = existingFile(resolve(FITNESS_SRC, rel))
+      if (hit) return hit
+    }
+    return null
+  },
+})
+const FUEL_ROOT    = resolve(APP_ROOT, 'fuel-app')
+const JOURNAL_DEV  = resolve(APP_ROOT, 'journal-app')
+const HABITS_DEV   = resolve(APP_ROOT, 'habit-app')
+const LEARN_DEV    = resolve(APP_ROOT, 'learn-app')
+const RELAX_DEV    = resolve(APP_ROOT, 'relax-app')
+const RELAX_BACKEND = 'http://localhost:9123'
+const BACKEND      = 'http://localhost:9150'
+
+// journalDbPlugin wurde entfernt (2026-07-05): sollte @db für journal-dev/
+// habits-dev-Importer kontextabhängig umleiten, feuerte aber nie — Vites
+// core Alias-Resolution (resolve.alias['@db']) läuft mit höherer Priorität
+// und löst '@db' auf, bevor normale Plugin-resolveId-Hooks es sehen
+// (empirisch verifiziert: resolveId wurde für keinen einzigen @db-Import
+// aus JournalVosView.jsx aufgerufen). Der bestehende Fallback — '@db' →
+// coach/db.js (lokal) bzw. cloud/db.firestore.js (firebase), beide re-
+// exportieren/implementieren journal+habits+sessions+meals vollständig —
+// hat die ganze Zeit funktioniert und liefert sogar bessere Daten als das
+// tote Plugin (echte fitness-dev-Sessions statt journal-devs Stubs).
+
+export default defineConfig(({ mode }) => {
+  if (process.env.VITE_VOS_PRODUCT_BUILD !== '1') throw new Error('Use the explicit VitalOS product build commands');
+  const isFirebase = mode === 'firebase'
+  const firebaseConfigSource = process.env.VITE_VOS_PRODUCT_BUILD === '1'
+    ? resolve(__dirname, '.product-config/firebase.config.js')
+    : resolve(__dirname, 'firebase.config.js')
+  const productEdition = process.env.VITE_VOS_EDITION || 'core'
+  if (!['core', 'store', 'observe', 'operate'].includes(productEdition)) {
+    throw new Error(`Unbekannte VitalOS-Edition: ${productEdition}`)
+  }
+
+  const aliases = {
+    ...crossAppAliases(),
+
+    '@src':        VITALOS_SRC,
+    '@shell':      resolve(VITALOS_SRC, 'shell'),
+    '@pulse':      resolve(__dirname, 'vos-fitness/src/pulse'), // Pulse-Kern (vos-fitness), eingebettet als Fitness-Untertab
+    '@coach':      resolve(VITALOS_SRC, 'coach'),
+    '@cloud':      resolve(VITALOS_SRC, 'cloud'),
+    '@components': resolve(FITNESS_SRC, 'components'),
+    '@fitness-components': resolve(FITNESS_SRC, 'components'),
+    '@lib':        resolve(FITNESS_SRC, 'lib'),
+    '@constants':  resolve(FITNESS_SRC, 'constants'),
+    '@utils':      resolve(FITNESS_SRC, 'lib/utils.js'),
+    '@db':         resolve(VITALOS_SRC, isFirebase ? 'shell/db/index.js' : 'coach/db.js'),
+
+    // ── Tab Sources (eine Zeile = ein Tab, Herkunft sofort sichtbar) ───────────
+    '@view/session':    resolve(FITNESS_SRC,          'views/Session'),        // fitness-dev
+    '@view/review':     resolve(FITNESS_SRC,          'views/WeeklyReview'),   // fitness-dev
+    '@view/muscles':    resolve(FITNESS_SRC,          'views/Muscles'),        // fitness-dev
+    '@view/learn':      resolve(LEARN_DEV,            'src/views/Learn'),      // learn-dev
+    '@view/inbox':      resolve(FITNESS_SRC,          'views/Inbox'),          // fitness-dev
+    '@view/anamnese':   resolve(FITNESS_SRC,          'views/Anamnese'),       // fitness-dev
+    '@view/focus':      resolve(FITNESS_SRC,          'views/Fokus'),          // fitness-dev
+    '@view/fitness-settings': resolve(FITNESS_SRC,    'views/Settings'),       // fitness-dev domain sections
+    '@view/journal':    resolve(JOURNAL_DEV,          'src/views/JournalVosView.jsx'), // journal-dev
+    '@view/journal-v2': resolve(JOURNAL_DEV,          'src/views/v2/JournalV2View.jsx'), // Observe/Operate journal + Smart Log
+    '@journal-db':      resolve(JOURNAL_DEV,          'src/db/index.js'), // shared Journal smart-log adapters
+    '@view/habits':     resolve(HABITS_DEV,           'src/views/Habits'),     // habits-dev
+    '@view/game':       resolve(JOURNAL_DEV,          'src/views/game/GameV2View.jsx'), // journal-dev (Game: Fire/Focus/Freedom/Frame/Voice)
+    '@view/door2':      resolve(JOURNAL_DEV,          'src/views/door/v2/DoorV2View.jsx'), // journal-dev (Door v2: Raster, Quellen, Plan-Board)
+    '@view/door':       resolve(JOURNAL_DEV,          'src/views/door/DoorView.jsx'), // journal-dev (Door v1)
+    '@view/settings':   resolve(VITALOS_SRC,          'shell/Settings'),       // vitalos-spezifisch
+    '@view/plan':       resolve(FITNESS_SRC,          'views/Plan'),           // fitness-dev
+    '@view/coach':      resolve(FITNESS_SRC,          'views/Coach'),          // fitness-dev
+
+    // Transitional adapter for embedded Fuel revisions not yet on firebase/ai.
+    'firebase/vertexai': resolve(VITALOS_SRC, 'cloud/firebaseVertexaiCompat.js'),
+    '@firebase-config': firebaseConfigSource,
+
+    'fuel/FuelApp':     resolve(VITALOS_SRC, 'shell/FuelApp.jsx'),
+    '@fuel-shared':     resolve(FUEL_ROOT, 'src/shared'),
+    '@api':             resolve(FUEL_ROOT, 'src/client/lib/api.js'),
+  }
+
+  const federationPlugin = []
+
+  // Firebase-Build: Sub-Repo-eigene firebase.js-Inits (fitness-dev, fuel-dev)
+  // auf die Shell-Init umleiten — genau eine initializeApp/initializeFirestore
+  // im Bundle, Config aus @firebase-config. enforce:'pre' nötig, damit der
+  // Hook vor vite:resolve läuft — im Gegensatz zum toten journalDbPlugin
+  // (s.o.) greift das hier, weil relative Imports nicht von der Alias-
+  // Resolution abgefangen werden.
+  const SHELL_FIREBASE = resolve(VITALOS_SRC, 'cloud/firebase.js')
+  const SHELL_FIREBASE_CONFIG = firebaseConfigSource
+  const SUBREPO_FIREBASE = new Set([
+    resolve(FITNESS_SRC, 'firebase.js'),
+    resolve(FUEL_ROOT, 'src/client/lib/firebase.js'),
+    resolve(JOURNAL_DEV, 'src/lib/firebase.js'),
+    resolve(HABITS_DEV, 'src/lib/firebase.js'),
+    resolve(RELAX_DEV, 'src/firebase.js'),
+  ])
+  const SUBREPO_FIREBASE_CONFIG = new Set([
+    resolve(FITNESS_DEV, 'firebase.config.js'),
+    resolve(FUEL_ROOT, 'src/client/lib/firebase.config.js'),
+    resolve(JOURNAL_DEV, 'src/lib/firebase.config.js'),
+    resolve(HABITS_DEV, 'src/lib/firebase.config.js'),
+    resolve(RELAX_DEV, 'firebase.config.js'),
+    resolve(PLAN_APP, 'firebase.config.js'),
+    resolve(SIXPACK_APP, 'firebaseConfig.js'),
+    resolve(SKILLS_APP, 'firebase.config.js'),
+  ])
+  const firebaseRedirect = {
+    name: 'vitalos:subrepo-firebase-redirect',
+    enforce: 'pre',
+    resolveId(source, importer) {
+      if (!isFirebase || !importer || !source.startsWith('.')) return null
+      const resolved = resolve(dirname(importer.split('?')[0]), source)
+      if (SUBREPO_FIREBASE_CONFIG.has(resolved) || SUBREPO_FIREBASE_CONFIG.has(`${resolved}.js`)) {
+        return SHELL_FIREBASE_CONFIG
+      }
+      if (SUBREPO_FIREBASE.has(resolved) || SUBREPO_FIREBASE.has(`${resolved}.js`)) {
+        return SHELL_FIREBASE
+      }
+      return null
+    },
+  }
+
+  return {
+    root: __dirname,
+    base: process.env.VITE_VOS_NATIVE_BUILD === '1' ? './' : '/',
+    define: {
+      'import.meta.env.VITE_VOS_EDITION': JSON.stringify(productEdition),
+    },
+    plugins: [
+      // Muss vor den Submodul-Resolvern laufen, damit Produkt-Firebase-Configs
+      // auch dann umgeleitet werden, wenn ein nachfolgender Plugin-Hook sie zuerst sieht.
+      firebaseRedirect,
+      miniAppSubmodules(),
+      // Rest von fitness-app (SixPack, Plan/Skills-Reste): gemeinsamer Resolver auf die Submodule
+      miniAppSubmodulePlugin(FITNESS_DEV),
+      vosChangelog({
+        appId: 'vitalos', appName: 'VitalOS', accent: '#6ee7b7', shell: true,
+        showRelease: productEdition === 'core' && process.env.VITE_VOS_PRODUCT_BUILD !== '1',
+        shellPaths: ['src/shell', 'src/App.jsx'],
+        apps: [
+          { path: '../fitness-app', name: 'Fitness' },
+          { path: '../fuel-app', name: 'Fuel' },
+          { path: '../journal-app', name: 'Journal' },
+          { path: '../habit-app', name: 'Habits' },
+          { path: '../learn-app', name: 'Learn' },
+          { path: '../relax-app', name: 'Relax' },
+          { path: '../6pack-app', name: '6Pack' },
+          { path: '../plan-app', name: 'Plan' },
+          { path: '../skills-app', name: 'Skills' },
+        ],
+      }),
+      react(),
+      ...federationPlugin,
+    ],
+    resolve: {
+      alias: aliases,
+      // firebase: Workspaces können eigene (neuere) SDK-Kopien mitbringen
+      // (z. B. habits-dev firebase@12 vs. Root @11) — zwei @firebase/app-Instanzen
+      // im Bundle ergeben "Component auth has not been registered yet" (Whitescreen).
+      dedupe: ['react', 'react-dom', '@tanstack/react-query', 'lucide-react', 'firebase'],
+    },
+    css: {
+      postcss: {
+        plugins: [tailwindcss({ config: resolve(__dirname, 'tailwind.config.cjs') })],
+      },
+    },
+    // Dep-Scan nur ab index.html – sonst crawlt Vite jede .html der Submodule
+    // (plan-app, coach-dev, catalog-ui, relax-app/physio-dev …) als Einstieg.
+    optimizeDeps: {
+      entries: ['index.html'],
+    },
+    server: {
+      port: 9190,
+      // Nur das Frontend beobachten: Build-Ausgaben, Worktrees und die dev/-Symlinks
+      // (zeigten auf ganze ~/*-dev-Repos) würden sonst vom Watcher mitverfolgt.
+      watch: {
+        ignored: [
+          '**/dev/**',
+          '**/.claude/**',
+          '**/dist*/**',
+          '**/dist-versions/**',
+          '**/.firebase/**',
+          '**/.worktrees/**',
+        ],
+      },
+      proxy: {
+        '^/exercises(/|\\?|$)': BACKEND,
+        '^/session(/|\\?|$)':   BACKEND,
+        '^/journal(/|\\?|$)':   BACKEND,
+        '^/coverage(/|\\?|$)':  BACKEND,
+        '^/plan(/|\\?|$)':      BACKEND,
+        '^/blocks(/|\\?|$)':    BACKEND,
+        '^/theme(/|\\?|$)':     BACKEND,
+        '^/health(/|\\?|$)':    BACKEND,
+        '^/fitness(/|\\?|$)':   BACKEND,
+        '^/firestore(/|\\?|$)': BACKEND,
+        '^/habitsync(/|\\?|$)': BACKEND,
+        // relax (:9123) — eigener Prefix, /journal & /session gehören fitness
+        '^/relax-api(/|\\?|$)': {
+          target: RELAX_BACKEND,
+          rewrite: (path) => path.replace(/^\/relax-api/, ''),
+        },
+      },
+    },
+    build: {
+      outDir:      resolve(__dirname, isFirebase ? 'dist-firebase' : 'dist'),
+      emptyOutDir: true,
+      target:      'esnext',
+      rollupOptions: {
+        input: resolve(__dirname, 'index.html'),
+        ...(!isFirebase && {
+          output: {
+            manualChunks: {
+              react:   ['react', 'react-dom'],
+              charts:  ['recharts'],
+              icons:   ['lucide-react'],
+              bodymap: ['react-body-highlighter'],
+            },
+          },
+        }),
+      },
+    },
+  }
+})

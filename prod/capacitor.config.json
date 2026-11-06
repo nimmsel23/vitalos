@@ -1,0 +1,14 @@
+{
+  "appId": "com.vitalos.app",
+  "appName": "VitalOS",
+  "webDir": "dist-native",
+  "server": {
+    "androidScheme": "https"
+  },
+  "plugins": {
+    "FirebaseAuthentication": {
+      "skipNativeAuth": true,
+      "providers": ["google.com"]
+    }
+  }
+}
