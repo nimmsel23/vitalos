@@ -40,6 +40,30 @@ Web-Assets können bei Bedarf gezielt aus `prod/` mit `pnpm exec cap sync androi
 oder `ios` synchronisiert werden. Synchronisierung ist kein nativer Build.
 Details: [Firebase](../prod/docs/FIREBASE.md) und [Store](../prod/docs/STORE-PUBLISHING-PLAN.md).
 
+## Wrapper und Lockfiles im Produkt
+
+Alle `product:*`-Befehle lösen ihre Abhängigkeiten ausschließlich über den
+gemeinsamen Importer `prod` im Root-Lockfile. Die Wrapper im Produktordner
+tragen bewusst keine eigene Dependency-Landschaft:
+
+- `prod/vos-fitness` liefert nur Quelltext über den Alias `@pulse ->
+  prod/vos-fitness/src/pulse`; `package.json` hat keine Abhängigkeiten. Das
+  mitgeführte leere `package-lock.json` (185 Byte, ohne Pakete) ist ein
+  Standalone-Relikt und pinnt nichts — im nächsten produktseitigen Pflegeschritt
+  entfernen.
+- `prod/fuel-os` ist die unabhängige Fuel-OS-Kopie und liegt NICHT im
+  Produkt-Shell-Buildpfad (die Shell bezieht Fuel über `fuel-app` aus dem
+  Parent). Sein `package.json` hat Abhängigkeiten, aber kein Lockfile; ein
+  späterer Fuel-OS-Standalone-Build braucht dann eine eigene Pinning-Entscheidung
+  (Workspace-Mitgliedschaft oder eigenes Lockfile).
+- `prod/vos-observe`, `prod/vos-fuel-mini`: keine Abhängigkeiten, nicht im
+  Shell-Buildpfad.
+- `prod/functions/package-lock.json`: Firebase-Deploy-Standard, bleibt.
+
+Damit pinnt ein Meta-Commit/-Tag heute den vollständigen Abhängigkeitsstand
+beider Shells; nur ein künftiger Fuel-OS-Standalone-Weg erzeugt eigene
+Pflichten.
+
 ## Pinning und Veröffentlichung
 
 Ein Meta-Commit pinnt Root-Dateien, `prod/`, Lockfile und sämtliche App-Gitlinks.

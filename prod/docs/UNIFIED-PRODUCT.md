@@ -45,6 +45,40 @@ Produkt-Checkout gesichert. Diese Zuordnung erhält die alte Arbeit, ohne
 alte private Root-Konfigurationen pauschal in den aktuellen Root zu mergen.
 Sie ist kein neuer Build- oder Laufzeitnachweis.
 
+## Shell-Kompositionsgrenze: prod/src gegenüber der Root-Shell
+
+Klassifikation der getrackten `prod/src`-Dateien (Stand `cb4a55b`, HEAD-Vergichl
+gegen Root `src`; 114 gemeinsame Pfade, 7 prod-exklusive, keine nur-Root-Pfade):
+
+| Klasse | Umfang | Pflegeregel |
+| --- | --- | --- |
+| 1:1-Kopie | 96 von 114 gemeinsamen Dateien | Bei Root-Shell-Änderungen an denselben Dateien synchron nachpflegen; unbeabsichtigte Drift ist ein Fehler, kein Produktmerkmal |
+| Symlink auf App-Quelle | 6 Dateien in `prod/src/components` auf `../../../{fitness,habit}-app/...` | Bewusst gemeinsame Quelle; niemals zu Kopien zurückwandeln |
+| Produktdelta | 12 Dateien: `App.jsx`, `main.jsx`, `cloud/firebase.js`, `cloud/db.firestore.js`, `shell/{Journal,Relax,Habits,SixPack,Skills,Coach}App.jsx`, `ShellAppRouter.jsx`, `layout/Sidebar.jsx` | prod-eigene Inhalte: Edition-Runtime (`productEdition`, `EditionModeSwitch`, native Auth-Init), Parent-Importpfade (`../../../*-app/`), Firebase-Redirect auf genau eine Produkt-Init |
+| prod-exklusiv | `cloud/{firebaseConfig,firebaseVertexaiCompat,productRuntime}.js`, `product-editions.css`, `shell/{productEdition.js,EditionModeSwitch.jsx}`, `shell/layout/ObserveNavigation.jsx` | Nur hier bearbeiten — das ist die produkt-eigene Kompositionsschicht |
+
+Empfehlung (kein Umbau ohne Abstimmung): die 96 synchronen Kopien mittelfristig
+auf Alias-/Symlink-Auflösung wie bei den Komponenten umstellen; bis dahin gilt
+obige Pflegeregel. Root-exklusive Bestandteile (z. B. `src/coach`-Serveranteile,
+`src/shell/views`) sind bewusst nicht Teil der Produktschale.
+
+## mini-app-shell: Doppelung und Entscheidung
+
+`prod/packages/mini-app-shell` ist eine Near-Copy des Root-Packages mit genau
+zwei Abweichungen (Stand `cb4a55b`): (1) die prod-Fassung von
+`vos-changelog-vite.mjs` versteht die Option `showRelease === false` (Blendet
+das Release-Changelog im Store-Produkt aus); (2) prod-exklusiver Test
+`test/product-edition.test.mjs`. Beide Produkt-Buildpfade (prod-Buildskripte
+und `prod/vos-fitness/vite.config.cjs`) nutzen die prod-Kopie.
+
+Entscheidung: Parameterisierung anstreben — `showRelease` als Option in das
+Root-Package übernehmen (Default unverändert, kein Verhaltenseffekt für die
+private Shell) und den Edition-Test zuordnen. Bis zu diesem abgestimmten
+Schritt gilt die prod-Kopie als explizite Abspaltung: Änderungen an
+`packages/mini-app-shell/vos-changelog-vite.mjs` sind verpflichtend gegen die
+prod-Kopie zu prüfen; die Divergenzliste oben ist die Referenz. Ungetrackte
+`*.bak-paths`-Dateien im Root-Package sind Arbeitsartefakte, kein Bestandteil.
+
 ## Zuständigkeit der Bestandteile
 
 - `src/`, `public/`, Wrapper, `android/`, `ios/` und `platforms/`: Produktbereich.
