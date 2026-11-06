@@ -189,10 +189,17 @@ Läuft und ist belegt:
 
 Bewusst offen (nicht als erledigt melden):
 
-- Kein Emulator-/Gerätetest: Benachrichtigung tatsächlich feuern, Berechtigungs-
-  dialog, Zweiter-Lauf-Überspringen, Neustart/Doze/`allowWhileIdle` — das prüft
-  eine an das Testrezept gebundene Instanz (Vibe-D-Handoff,
-  `~/dev/HANDOFF-woche3-emulator-stufe0-REZEPT.md`), nicht hier.
+- Emulatorbefund (2026-11-06, `emulator-5554`, API 37): Installation des
+  Debug-APK belegt — Erstversuch scheiterte erwartbar an
+  `INSTALL_FAILED_UPDATE_INCOMPATIBLE` (Vorgänger-Build von 03:22, versionName
+  1.0, andere Signatur), danach Deinstallieren und `adb install -r` Success
+  (versionName 0.1.0) sowie `adb shell pm grant … POST_NOTIFICATIONS` →
+  `granted=true` (dumpsys geprüft). Der Emulatorprozesse wurde danach abnormal
+  beendet, BEVOR die Benachrichtigung über das Debug-Panel ausgelöst wurde;
+  ein zweiter Start wurde aus Rücksicht auf die Maschinenauslastung bewusst
+  abgebrochen. FEUER-NACHWEIS (Benachrichtigung sichtbar, `dumpsys notification`,
+  Screenshot, Zweittag-Überspringen) fehlt damit weiterhin —
+  `~/dev/HANDOFF-woche3-emulator-stufe0-REZEPT.md` bleibt der Weg dorthin.
 - Der Runner ist nur über das Debug-Panel erreichbar; echte Anbindung beim
   App-Start mit Nutzerwerten (remindHour/Ruhezeit, Speicherwahl Preferences
   vs. localStorage) fehlt.
