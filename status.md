@@ -27,6 +27,14 @@ Auftraggeber-Berichte liegen ausserhalb des Repos in
 
 ## Sessions
 
+### 2026-11-06 (4) — Push auf ausdruecklichen Auftrag
+
+Branch `focus-stufe-0-1` (Commit `1cae9b6`) nach `origin`
+(github.com:nimmsel23/vitalos.git) gepusht und mit Upstream verknuepft. Kein
+Force, kein `master`, keine protected Branches beruehrt. Damit ist der Stand
+dauerhaft gesichert; /dev/shm-Fluechtigkeit entfallen. GitHub-PR-Vorschlag:
+https://github.com/nimmsel23/vitalos/pull/new/focus-stufe-0-1
+
 ### 2026-11-06 (3) — Vertragsluecken geschlossen: minimumLogAdapter + approximate
 
 Neu: `prod/src/focus/minimumLogAdapter.js` (Naht Controller ↔ journal-dev
