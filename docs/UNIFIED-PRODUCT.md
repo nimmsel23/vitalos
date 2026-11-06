@@ -93,6 +93,12 @@ betrifft Abhängigkeiten, native Synchronisierung und Produktartefakte.
 Noch nicht dokumentierte Ergebnisse dürfen nicht als bereits erledigt gelten.
 
 Der Alt-Checkout und dortige Artefakte bleiben bis zur vollständigen Ablösung
-erhalten. `vitalos-thin-results` verweist nach dem Integrationsbericht weiterhin
-auf den alten Ort; das ist separat umzustellen. Keine Dienste als Nebenwirkung
+erhalten. Der systemd-Dienst `vitalos-thin-results` wurde am 2026-11-06 auf
+das Meta-Repo umgestellt (Unit zeigt auf `/home/alpha/vitalos`, Skripte auf
+`prod/scripts/`, Meta-Wurzel wird aus der Skriptlage aufgelöst; Digest wie
+zuvor `docs/AUTO-DOC.md`, nur Doku-Commits, kein Push). Ein vollständiges
+Branch-Backup des Alt-Checkouts liegt gitignored unter
+`migration/unified-product/artifacts/vitalos-prod-legacy-20261106.bundle`;
+der Checkout selbst bleibt bis zur Klärung seiner lokal-exklusiven Commits
+und uncommitteten Änderungen unangetastet. Keine Dienste als Nebenwirkung
 von Quell- oder Doku-Arbeiten neu starten.
