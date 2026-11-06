@@ -9,7 +9,7 @@ on:
         options: [all, journal, fitness, vitalos]
         default: all
       verify_only:
-        description: 'Nur das Deploy-Konto anzeigen, nichts veröffentlichen'
+        description: 'Deploy-Konto und gepinnte Quellpakete prüfen, nichts veröffentlichen'
         type: boolean
         default: false
       replace_gen1:
@@ -41,18 +41,66 @@ jobs:
               target.write(f'GOOGLE_APPLICATION_CREDENTIALS={path}\n')
           print('Deploy service account: ' + credentials['client_email'])
           PY
-      - name: Checkout function sources
-        if: ${{ !inputs.verify_only }}
+      - name: Read pinned backend source
+        id: backend_source
+        run: |
+          python3 - <<'PYCODE'
+          import json, os, re
+          from pathlib import Path
+          pin = json.loads(Path('.github/backend-functions.json').read_text())
+          assert re.fullmatch(r'[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+', pin['repository']), 'Invalid backend repository'
+          assert re.fullmatch(r'[0-9a-f]{40}', pin['ref']), 'Backend source must be a full commit SHA'
+          with open(os.environ['GITHUB_OUTPUT'], 'a') as target:
+              target.write(f"repository={pin['repository']}\nref={pin['ref']}\n")
+          PYCODE
+      - name: Checkout pinned backend Functions
+        uses: actions/checkout@v5
+        with:
+          repository: ${{ steps.backend_source.outputs.repository }}
+          ref: ${{ steps.backend_source.outputs.ref }}
+          ssh-key: ${{ secrets.BACKEND_FUNCTIONS_DEPLOY_KEY }}
+          path: backend
+          persist-credentials: false
+      - name: Preserve Journal deploy parameters
+        if: ${{ inputs.app == 'all' || inputs.app == 'journal' }}
         env:
           SUBMODULE_TOKEN: ${{ secrets.GH_SUBMODULE_TOKEN || github.token }}
         run: |
           git config --global url."https://x-access-token:${SUBMODULE_TOKEN}@github.com/".insteadOf "git@github.com:"
-          git submodule update --init fitness-app journal-app
+          git submodule update --init journal-app
+          # Preserve existing Firebase params; never print or commit their contents.
+          if [ -f journal-app/functions/.env.fitness-aos ]; then
+            cp journal-app/functions/.env.fitness-aos backend/functions/journal/.env.fitness-aos
+          fi
       - uses: actions/setup-node@v5
-        if: ${{ !inputs.verify_only }}
         with:
           node-version: 22
           package-manager-cache: false
+      - name: Validate selected deployment inputs without loading function code
+        env:
+          PUSH_APP: ${{ inputs.app }}
+        run: |
+          python3 - <<'PYCODE'
+          import json, os, subprocess
+          from pathlib import Path
+          pin = json.loads(Path('.github/backend-functions.json').read_text())
+          actual = subprocess.check_output(['git', '-C', 'backend', 'rev-parse', 'HEAD'], text=True).strip()
+          assert actual == pin['ref'], 'Backend checkout does not match the deployment pin'
+          selection = os.environ['PUSH_APP']
+          assert selection in ('all', 'fitness', 'journal', 'vitalos'), 'Invalid app'
+          apps = ('vitalos', 'fitness', 'journal') if selection == 'all' else (selection,)
+          sources = {entry['codebase']: entry for entry in json.loads(Path('firebase.push.json').read_text())['functions']}
+          backend_sources = {entry['codebase']: entry for entry in json.loads(Path('backend/firebase.json').read_text())['functions']}
+          for app in apps:
+              entry = sources[app]
+              source = Path(entry['source'])
+              package = json.loads((source / 'package.json').read_text())
+              assert (source / package.get('main', 'index.js')).is_file(), f'{app}: missing function entrypoint'
+              assert entry['runtime'] == 'nodejs22', f'{app}: unexpected runtime'
+              if app != 'vitalos':
+                  assert source == Path('backend') / backend_sources[app]['source'], f'{app}: backend and deploy manifests disagree'
+              print(f"{app}: deployment package exists at {source}")
+          PYCODE
       - name: Install and deploy selected reminder functions
         if: ${{ !inputs.verify_only }}
         env:
@@ -67,10 +115,15 @@ jobs:
           for app in $apps; do
             case "$app" in
               vitalos) source=functions; function=scheduledVitalosPushReminders ;;
-              fitness) source=fitness-app/functions; function=scheduledFitnessPushReminders ;;
-              journal) source=journal-app/functions; function=scheduledJournalPushReminders ;;
+              fitness) source=backend/functions/fitness; function=scheduledFitnessPushReminders ;;
+              journal) source=backend/functions/journal; function=scheduledJournalPushReminders ;;
             esac
-            npm ci --prefix "$source" --no-audit --no-fund
+            if [ "$app" = vitalos ]; then
+              npm ci --prefix "$source" --no-audit --no-fund
+            else
+              # Backend lockfiles are explicitly deferred during consolidation.
+              npm install --prefix "$source" --workspaces=false --package-lock=false --no-audit --no-fund
+            fi
             if [ "${{ inputs.replace_gen1 }}" = "true" ]; then
               npx --yes firebase-tools@15.34.0 functions:delete "$function" \
                 --config firebase.push.json --project fitness-aos --non-interactive --force
