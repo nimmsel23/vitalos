@@ -67,13 +67,19 @@ Es wurde kein neuer Produkt-Build und kein APK erzeugt.
 5. Kein bestehender Produkt-Branch wird überschrieben. Ein Release-Mirror
    verwendet zunächst einen neuen Branch; Quell-/Release-Historie, Sichtbarkeit,
    CI-Variablen und Buildpfade werden vor Veröffentlichung geprüft.
-6. Der lokale Rechner bezieht sich weiter auf den alten Checkout: der
-   systemd-Dienst `vitalos-thin-results` und etwaige Runbooks zeigen auf
-   `/home/alpha/vitalos-prod`, das bis zur finalen Freigabe bestehen bleibt.
-   Eine Umschaltung (inkl. `boot-notify-enhanced`, der keine vitalos-Bezüge
-   hat) ist Teil der finalen Ablösung, nicht dieses Integrationsschritts.
-   Der ältere lokale `dev`-Strang (Observe/Operate-Arbeit, Spitze f6243f6)
-   ist vom Abgleich mit `dev-product` noch ausgenommen.
+6. Abgleich mit dem älteren lokalen `dev`-Strang abgeschlossen (2026-11-06):
+   Die Spitze `f6243f6` ist direkter Vorfahre des Produktquellstands `a3c3725`
+   — der Fork wurde aus genau dieser Linie geschnitten. Alle 120 von der
+   Linie berührten Pfade sind entweder per Abstammung in `prod/` enthalten
+   (103 Pfade mit prod-Gegenstück), als Legacy-Doku unmodifiziert nach
+   `prod/docs/archive/` verschoben (OBSERVE-OPERATE-ARCHITECTURE.md,
+   DAILY-EXECUTION.md; Nachweis reiner Move via Fork-Commit 73f40d0) oder
+   bewusst durch die Trennung von privater Root-Shell und Produkt abgelöst
+   (Root-Dateien wie package.json, vite.config.js; 17 Pfade, Root auf
+   master-Stand). Es fehlt nichts. Der lokal-only Ref wurde zusätzlich als
+   `migration/unified-product/artifacts/dev-line-f6243f6.bundle` gesichert
+   (gitignored). Eintradung des lokalen systemd-Dienstes und endgültige
+   Ablösung des alten Checkouts bleiben Teil der finalen Freigabe.
 
 ## Secrets
 
