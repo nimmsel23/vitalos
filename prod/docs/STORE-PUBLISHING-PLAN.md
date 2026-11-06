@@ -94,8 +94,12 @@ Owner-Checkliste nativer Google-Login (Console-Aktionen, Stand der Prüfung
 OAuth-Client, keinen Android-Client mit Fingerabdruck):
 
 1. Firebase Console → Authentication/Identity Platform im Projekt
-   `vitalos-prod` ermöglichen (Stand 2026-11-05: `SERVICE_DISABLED`;
-   erfordert Billing-Freigabe durch den Owner). Stand 2026-11-06: die
+   `vitalos-prod` ermöglichen. Stand 2026-11-06: erledigt (Owner-Aktion) —
+   verifiziert per read-only Check gegen `identitytoolkit.googleapis.com`
+   (HTTP 200, authorizedDomains: `vitalos-prod.firebaseapp.com`,
+   `vitalos-prod.web.app`, `localhost`; der frühere
+   `SERVICE_DISABLED`-Befund ist damit abgelöst). Eigene Web-Domains für
+   Auth vor Produkt-Hosting ggf. ergänzen. Stand 2026-11-06: die
    Identity-Platform-API `identitytoolkit` ist laut
    `gcloud services list --project vitalos-prod` aktiviert; der konkrete
    Provider-Status ist per CLI nicht abfragbar (Google-Sensitive-Scope-
