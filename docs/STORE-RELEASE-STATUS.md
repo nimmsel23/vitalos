@@ -3,6 +3,16 @@
 Stand: 3. November 2026. Keine native Store-Version gebaut, signiert, verteilt,
 eingereicht oder veröffentlicht.
 
+**Aktualisierung 6. November:** Aus dem gemeinsamen Produkt-Workspace
+`~/vitalos/prod` (Meta-Commit `cb4a55b`, Branch `dev-product`) sind jetzt eine
+Debug-APK und eine signierte Release-AAB gebaut und verifiziert — Pfade,
+Hashes und Signaturprüfung unter `prod/docs/STORE-PUBLISHING-PLAN.md`,
+„Erste Artefakte aus dem gemeinsamen Workspace“. Der native Buildpfad für
+Android (Punkt 3 unten) ist damit durchlaufen; als JDK genügt das
+Android-Studio-Runtime (`/opt/android-studio/jbr`). Installation auf einem
+Gerät und native Anmeldung sind damit nicht belegt. iOS bleibt ohne
+Mac/Xcode-Build offen.
+
 **Aktualisierung 4. November:** Der separate Produkt-Checkout liegt unter
 `/home/alpha/vitalos-prod` und enthält inzwischen Capacitor-Projekte für Android
 und iOS mit der konfigurierten Kennung `com.vitalos.app`. Im Firebase-Projekt

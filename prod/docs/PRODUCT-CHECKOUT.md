@@ -36,8 +36,10 @@ separate Nachweise.
    Dafür ist kein pauschaler erneuter Merge historischer Root-Konfigurationen nötig.
 2. Gemeinsame Abhängigkeiten bereitstellen, Produkt-Webausgabe bauen und native
    Projekte synchronisieren. Das vorhandene Lockfile ersetzt keinen Frozen-Install.
-3. Android-APK/AAB aus den neuen Pfaden erzeugen. Signing, Installation und
-   Anmeldung sind eigene Schritte; iOS braucht einen separaten Mac/Xcode-Build.
+3. Android-APK/AAB aus den neuen Pfaden erzeugen — am 2026-11-06 erledigt
+   (Nachweise siehe STORE-PUBLISHING-PLAN.md, „Erste Artefakte aus dem
+   gemeinsamen Workspace“). Installation, Anmeldung und Store-Upload sind
+   eigene Schritte; iOS braucht einen separaten Mac/Xcode-Build.
 4. Erst nach geklärtem Quell-/Artefaktstand einen Produkt-Tag und gegebenenfalls
    den Release-Mirror auf `nimmsel23/vitalos-prod` beauftragen.
 5. Alt-Checkout und Dienstpfade erst nach vollständiger Ablösung bereinigen.
