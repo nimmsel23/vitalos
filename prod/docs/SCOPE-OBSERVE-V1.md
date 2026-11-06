@@ -55,7 +55,7 @@ Abgeleitete Prüfkriterien (jede Scope-Änderung wird dagegen gemessen):
 | 3 | Habits + Habit-Vollzug aus dem Journal heraus | ja | ja | `JournalV2Habits.jsx`, `habitsModel.js`, `onSetHabitCompletion` |
 | 4 | Planner / The Door (Hotlist, Quellen) | ja (Tagesvollzug bleibt Free) | ja | `journal-app/src/views/door/`, Door v2 |
 | 5 | Skill Stack manuell: Fitness-Session, Fuel, Relax | ja — Journal-Einträge mit Smart Tags statt Pflichtformularen: KEINE Pflichtfelder, nichts scheitert an fehlenden Angaben; Datum im Zweifelsfall Zeitpunkt des Loggings (Entscheidung 4). Tag-Semantik: `+fuel` usw. bedeutet NUR Zuordnung des Eintrags zum jeweiligen Skill-Journal — kein Formularzwang, kein Parsing-Auslöser, keine Makro-Schätzung, keine simulierten Statistiken | ja | fitness/fuel/relax-app über `@view/*`-Aliase; Tag-Mechanik nach `hotFromJournal.js`-Muster |
-| 6 | Verlauf/Suche/Filter (p2-timeline) | ja — **Lücke B offen** (siehe unten) | ja (+ dieselbe Lücke) | `JournalV2Range.jsx` (Tag/Woche/Monat/Jahr-Raster), `JournalV2Cal`; Freitextsuche über Inhalte + Filter nach Skill/Tag existieren noch nicht |
+| 6 | Verlauf/Suche/Filter (p2-timeline) | ja — **umgesetzt in der Quelle** (journal-dev `4ca1348`: Modus „Suche“ mit Freitext-AND-Suche, `+tag`-Filter, Zeitfenster 30/90/365 Tage bzw. bis 500) | ja (+ dieselbe Quelle) | `JournalV2Search.jsx`, `src/lib/journalSearch.js`, `JournalV2Range.jsx` (Tag/Woche/Monat/Jahr-Raster); Meta-Pin publiziert erst mit dem nächsten Journal-Release |
 | 7 | Wochenübersicht | ja, regelbasiert (keine KI-Reports) | ja (+ später generative Auswertung, p6) | `JournalV2Range.jsx` |
 | 8 | Smart-Log-KI-Parsing (Freitext → Vorschläge: Habit-Completion, Mahlzeit/Makros, Tags) — liest den Nutzertext, benötigt KEINE Tags | Kontingent: **1 Analyse/Tag** (Update Daniel, ersetzt frühere 1/Woche). Optimalnutzung: den ganzen Tagesablauf in EINEN Eintrag formulieren — die Analyse erfasst ihn vollständig (MAX_INPUT 12000 deckt einen Tageseintrag); kein künstliches Kleinschneiden der Eingabe | höheres/entbundenes Limit via Entitlement | `journal-app/functions/smart-log.js` (gemini-2.5-flash, `quotaPolicy`, `smartLoggingEntitlements`); Tagesbudget umgesetzt in der Backend-Quelle (`~/dev/backend` `213d5c9`: `days/{YYYY-MM-DD}`-Zählung, `observeDailyLimit`), Frontend-Meldungen synchronisiert (journal-dev `d98148a`) |
 | 9 | Bestätigung vor Speichern (p6-confirm): KI-Vorschlag nie automatisch gespeichert | ja (beide Tier) | ja | Edit-Flow in `JournalV2View.jsx` (`startEdit`); serverseitig `requestId`-Dedup |
@@ -140,9 +140,12 @@ Dokument mit, ohne eigene Sammlung.
   journal-dev-Meldungen `d98148a`). Ausstehend: Firestore-Konfiguration vor
   Deploy (siehe Entscheidung 3), Journal-Release zur Publikation, Test-
   Adaptation (vom User aufgeschoben).
-- **Lücke B — Suche/Filter (p2-timeline, vergeben):** Freitextsuche über
-  Einträge + Filter nach Skill/Tag/Datum in Journal v2; Akzeptanzkriterien
-  aus Matrix-Zeile 6.
+- **Lücke B — Suche/Filter (p2-timeline): umgesetzt in der Quelle.** Modus
+  „Suche“ in Journal v2 (journal-dev `4ca1348`): Freitext-AND-Suche über
+  Einträge, `+tag`-Token filtert nach Tags (Skill-Filter = `+fitness/+fuel/
+  +relax`), Zeitfenster 30 Tage/90 Tage/1 Jahr/Alles (bis 500 Einträge,
+  cache-first also offline-tauglich), Treffer gruppiert nach Tag mit
+  Sprung in die Tag-Ansicht. Ausstehend: Journal-Release zur Publikation.
 - **Lücke C — UI-Gating-Kommunikation:** mit Tagesbudget-Umsetzung bzw. vor
   Launch umsetzen; die Free-Grenze (1 KI-Analyse/Tag, nur Smart-Log) muss dem
   Nutzer verständlich kommuniziert werden. Server-Gating (Zeile 10) ist über
