@@ -58,7 +58,14 @@ Bei geänderten App-Abhängigkeiten das gemeinsame Lockfile im Root mit pnpm
 aktualisieren und mit dem Gitlink committen. Kein zweites Produkt-Lockfile.
 Hooks können Pointer zusätzlich stagen oder beim Push Lockfiles ändern;
 ihren tatsächlichen Inhalt prüfen und nicht als Freigabeersatz behandeln.
-Meta-Repo-Push nur nach ausdrücklichem Auftrag.
+Meta-Repo-Push nur nach ausdrücklichem Auftrag. Grundlage dafür
+(verifiziert 2026-11-06): `origin` ist das öffentliche Repo
+`nimmsel23/vitalos`, und `prod/android/app/google-services.json` ist hier
+getrackt — jedes Pushen ohne gelöste Spiegelstrategie würde Firebase- und
+Produktwerte in den öffentlichen Ast bringen. Remote `product`
+(nimmsel23/vitalos-prod) existiert nur als Definition und braucht für
+jede Nutzung einen eigenen Auftrag; `product-*`-Tags nur nach
+freigegebenem, dokumentiertem Release.
 
 ## Paketmanager und Build-Ziele
 
