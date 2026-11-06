@@ -4,16 +4,21 @@ import { resolve } from 'node:path'
 import vm from 'node:vm'
 
 const root = resolve(import.meta.dirname, '..')
+// The backend checkout is a pinned CI input, independent of frontend Gitlinks.
+const backend = process.argv[2] || resolve(root, 'backend')
 const sources = [
-  ['vitalos', root],
-  ['fitness', process.argv[2] || resolve(root, 'fitness-app')],
-  ['journal', process.argv[3] || resolve(root, 'journal-app')],
+  ['vitalos', resolve(root, 'functions'), resolve(root, 'firebase.json')],
+  ['fitness', resolve(backend, 'functions/fitness'), resolve(backend, 'firebase.json')],
+  ['journal', resolve(backend, 'functions/journal'), resolve(backend, 'firebase.json')],
 ]
 const ids = []
-for (const [app, dir] of sources) {
-  const code = readFileSync(resolve(dir, 'functions/index.js'), 'utf8')
-  const config = JSON.parse(readFileSync(resolve(dir, 'firebase.json'), 'utf8'))
-  assert.equal(config.functions.codebase, app, `${app}: codebase owns its functions`)
+for (const [app, dir, configPath] of sources) {
+  const code = readFileSync(resolve(dir, 'index.js'), 'utf8')
+  const config = JSON.parse(readFileSync(configPath, 'utf8'))
+  const entries = Array.isArray(config.functions) ? config.functions : [config.functions]
+  const entry = entries.find((item) => item.codebase === app)
+  assert.ok(entry, `${app}: codebase owns its functions`)
+  assert.equal(resolve(configPath, '..', entry.source), resolve(dir), `${app}: deploy config points at the source package`)
   const exports = {}
   let sends = 0
   const errors = []
@@ -54,7 +59,7 @@ for (const [app, dir] of sources) {
   }
   const helpers = new Proxy({}, { get: (_, key) => key === 'REGION' ? 'europe-west1' : () => {} })
   vm.runInNewContext(code, {
-    exports, console: { log() {}, error: (...args) => errors.push(args) }, process: { env: {} }, __dirname: resolve(dir, 'functions'),
+    exports, console: { log() {}, error: (...args) => errors.push(args) }, process: { env: {} }, __dirname: dir,
     require: (name) => (name === 'firebase-functions' || name === 'firebase-functions/v1') ? { region: chain, logger: { info() {} } }
       : name === 'firebase-functions/v2' ? { logger: { info() {}, warn() {}, error() {} } }
       : name === 'firebase-functions/v2/scheduler' ? { onSchedule: (options, handler) => ({ region: options.region, schedule: options.schedule, timeZone: options.timeZone, handler }) }
@@ -82,4 +87,8 @@ for (const [app, dir] of sources) {
 assert.equal(new Set(ids).size, 3, 'All three live function identities are distinct')
 const config = JSON.parse(readFileSync(resolve(root, 'firebase.push.json'), 'utf8'))
 assert.deepEqual(config.functions.map((entry) => entry.codebase).sort(), ['fitness', 'journal', 'vitalos'])
+for (const [app, dir] of sources) {
+  const entry = config.functions.find((item) => item.codebase === app)
+  assert.equal(resolve(root, entry.source), resolve(dir), `${app}: central deploy config uses the same source`)
+}
 console.log('Push isolation passed: unique exports/codebases, independent schedules, settings and payload lanes; no messages sent.')
