@@ -3,6 +3,15 @@
 
 Aktive Arbeitsliste (max. 5 Punkte) für das vitalos Meta-Repo.
 
+## 2026-11-06 (Release-Ablauf master → vitalos, Shell-Tailwind-4)
+
+- [ ] `vos-ship`/`vos-release`-Umbau (`58f1ecf`/`36292cd`) ist nur lokal committet und nur per Dry-Run/Syntaxcheck geprüft: einmal real durchlaufen lassen (z. B. `vos-ship learn`) und erst dann pushen. `~/vitalos` steht auf `dev-product`, `vos-release` verlangt `master`.
+- [ ] Pointer-Bumps im Meta-Repo fehlen: auf `master` liegt mehr als auf `vitalos` (fitness +14, fuel +3, habits +3, relax +3, 6pack +3). Modul-PRs `master → vitalos` sollte Vibe-Agent B machen (Ergebnis in `~/dev/HANDOFF-ERGEBNIS-module-prs.md`); Ergebnis prüfen.
+- [ ] Shell auf Tailwind 4 (Agent A, Worktree `~/dev/.vitalos`, Übergabe `~/dev/HANDOFF-vitalos-tw4-shell-2026-11-06.md`): Stand und Build (Shell, `vos-fitness`, `vos-fuel`, Fuel-Embedded-CSS ohne Base-Schicht) prüfen, danach Lockfile, Push, Shell-CI. Nichts davon verifiziert.
+- [ ] Meta-Repo-PR #12 (Functions-CI-Fix) ist mergebar, aber offen; erst nach dem Shell-Push mergen, da beide `master` ändern.
+- [ ] `docs/DEPLOYMENT.md` und `CLAUDE.md` beschreiben noch `dev → master (PR) → vitalos`; auf den neuen Ablauf (`dev` Preview, `master` live, `master → vitalos` per PR) angleichen.
+- [ ] Offen aus dem Zielmodell: Dependabot (weniger, Ziel `master`), `ci-test/**`-Branches lösen in acht Modulen Live-Deploys aus, `coach-dev` hat keinen `master`, `automerge.yml` greift nur für Quelle `dev`.
+
 ## 2026-11-05 (Backend-Auslagerung, Dependabot)
 
 - [ ] Dependabot-Rest (130 Alerts, überwiegend Frontend-Pakete) nach Rescan neu bewerten; Dependabot-Update-Läufe waren gestartet, PRs standen noch aus.
@@ -254,3 +263,8 @@ Aktive Arbeitsliste (max. 5 Punkte) für das vitalos Meta-Repo.
 *   Die Selbstzusammenfassung übergeht vollständig den CI/CD-Deployment-Fehler für `coach-dev` (Exit 128 wegen privatem Submodul-Zugriff), der das direkte Ergebnis des `git push` war und das letzte ungelöste Problem der Session darstellt.
 *   Die 64 Dependabot-Schwachstellen (darunter 1 kritische), die beim `git push` explizit für `nimmsel23/coach-dev` gemeldet wurden, sind in der Selbstzusammenfassung nicht spezifisch aufgeführt.
 *   Es wird nicht explizit erwähnt, dass der Firebase-Rewrite für `/portal` nur syntaktisch geprüft und nicht gegen ein echtes Hosting verifiziert wurde.
+
+**Gemini-Review (potenzielle blinde Flecken, 2026-11-06):**
+*   **Ungeprüfte Behauptung über andere Module:** Claude berichtet, dass die Live-Deploys von `fuel` und `relax` nach einem ähnlichen Fix wie bei `fitness` "grün" waren, ohne dies im Transkript zu verifizieren.
+*   **Ungeprüfte Annahme zur Lockfile-Integrität:** Nach einem Timeout beim Journal-Lockfile-Regenerieren geht Claude davon aus, dass es "kein Problem mit dem Lockfile" gab und ein Retry ausreicht, ohne die Integrität des Lockfiles nach dem abgebrochenen Vorgang explizit zu prüfen.
+*   **Teilweise verdeckter Fehlerstatus:** Die Hintergrundaufgabe für den Fitness-Merge
