@@ -58,7 +58,7 @@ jobs:
         with:
           repository: ${{ steps.backend_source.outputs.repository }}
           ref: ${{ steps.backend_source.outputs.ref }}
-          token: ${{ secrets.GH_SUBMODULE_TOKEN || github.token }}
+          ssh-key: ${{ secrets.BACKEND_FUNCTIONS_DEPLOY_KEY }}
           path: backend
           persist-credentials: false
       - name: Preserve Journal deploy parameters
