@@ -22,7 +22,7 @@ Einstieg: `README.md`, `docs/UNIFIED-PRODUCT.md`,
 `prod/docs/PRODUCT-CHECKOUT.md`, `prod/docs/FIREBASE.md` und
 `prod/docs/STORE-PUBLISHING-PLAN.md`. Strategie: `VitalOS-Produktstrategie-V1.2.0.md`;
 die Android-Roadmap unter
-`~/Vitaltraining/daniel-vitaltrainer-firebase/src/vitalos-android-roadmap.html`
+`~/dev/coach-dev/public-coach/vitalos-android-roadmap.html`
 ist Planung, kein Nachweis eines Builds oder Releases.
 
 ## Edit-Orte und Zusammenarbeit

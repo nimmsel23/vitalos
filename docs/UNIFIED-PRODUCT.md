@@ -64,6 +64,42 @@ Damit pinnt ein Meta-Commit/-Tag heute den vollständigen Abhängigkeitsstand
 beider Shells; nur ein künftiger Fuel-OS-Standalone-Weg erzeugt eigene
 Pflichten.
 
+## Produkt-Functions (Smart-Log-Komposition)
+
+Der Produkt-Functions-Deploy nach `vitalos-prod` besteht aus zwei getrennten,
+beide fail-closed gepolten Codebases:
+
+- **`vitalos`-Codebase** (`prod/firebase.json`, Source `prod/functions`):
+  bewusst eigenständige Push-Reminder-Implementierung mit eigenem
+  `package-lock.json` (Firebase-Deploy-Standard). Dass `prod/functions/index.js`
+  nur Reminders enthält, ist korrekt, keine Lücke: Smart-Log gehört nicht in
+  die Shell-Codebase.
+- **`journal`-Codebase** (`prod/firebase.product-journal.json`, Source
+  `../journal-app/functions`): deployt direkt aus dem gemeinsamen Submodule —
+  keine Kopie, kein zweiter Pin. Damit gelangen `analyzeSmartLog` und
+  `getSmartLogQuota` (`smart-log.js`: Quota, Entitlement observe/operate,
+  `observeWeeklyLimit ?? 1`, requestId-Dedup, uid-Check) in den Produkt-Deploy;
+  im selben Whole-Codebase-Deploy liegen auch die `googleLink*`-Callables und
+  die geplanten Journal-/Door-Reminder.
+
+Predeploy-Guards (`prod/scripts/`): `check-product-journal.mjs` fordert
+`GCLOUD_PROJECT=vitalos-prod`, Journal-Checkout exakt gleich dem committeten
+Gitlink, sauberen getrackten Worktree, den geprüften Vorläufer-Commit
+`a1018cf` als Vorfahren und die geforderten Callables im Export;
+`check-product-ai-access.mjs` prüft über gcloud-Metadaten, dass direkte
+Firebase-AI-Zugriffe gesperrt und API-Key-Einschränkungen gesetzt sind
+(`VOS_GEMINI_SERVER_KEY_ID`). Preview-Push-Deploys laufen über
+`prod/firebase.push.json` mit denselben drei Quellen (vitalos, fitness,
+journal).
+
+Vor einem echten Deploy fehlen Secrets/Parameter in `vitalos-prod`
+(`GEMINI_API_KEY`, `GOOGLE_OAUTH_CLIENT_SECRET`, `GOOGLE_OAUTH_CLIENT_ID`).
+Kein Deploy wurde durchgeführt. Die Entscheidung, ob der Whole-Codebase-Deploy
+alle Journal-Functions ausbringt oder Callables gezielt ausgewählt werden
+(`prod/docs/FIREBASE.md`), bleibt Owner-Entscheidung. Der
+Smart-Log-Quota/Entitlement-Entwurf des Observe v1-Scopes liegt in
+`prod/docs/SCOPE-OBSERVE-V1.md`.
+
 ## Pinning und Veröffentlichung
 
 Ein Meta-Commit pinnt Root-Dateien, `prod/`, Lockfile und sämtliche App-Gitlinks.
