@@ -21,11 +21,21 @@ Auftraggeber-Berichte liegen ausserhalb des Repos in
 ## Tagesform / Teststatus
 
 - node:test, 4 Dateien unter `prod/tests/` (focus-remind 13, focus-settings 6,
-  focus-controller 7, focus-usage 10): **36 pass / 0 fail** (Node v26.13.0,
+  focus-controller 10, focus-usage 11): **40 pass / 0 fail** (Node v26.13.0,
   TMPDIR=/dev/shm). Letzter Lauf: 2026-11-06.
 - Nativ: NICHT gebaut, kein `cap sync`, kein Geraetetest — siehe offene Punkte.
 
 ## Sessions
+
+### 2026-11-06 (3) — Vertragsluecken geschlossen: minimumLogAdapter + approximate
+
+Neu: `prod/src/focus/minimumLogAdapter.js` (Naht Controller ↔ journal-dev
+`hasMinimumLogToday`, Truthy-Coercion, wirft bewusst bei fehlender Verdrahtung —
+Controller-Mapping 'minimum-log-unavailable' getestet). `normalizeUsageReport`
+reicht das `approximate`-Flag des Kotlin-Fallbacks durch (vorher still verworfen);
+`evaluateDailyLimit` liefert bei `no-limit` die Messwerte mit statt 0. Tests jetzt
+40 pass / 0 fail. Weiter offen: unveraendert (s. u.); von hier aus ist die
+Regel-/Install-Grenze erreicht — alles Weitere braucht andere Linien oder Auftrag.
 
 ### 2026-11-06 (2) — Weiterausarbeitung der Web-Naehte, Commit `1ecfe0c`
 

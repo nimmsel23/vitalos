@@ -97,7 +97,8 @@ Abhängigkeiten werden injiziert, damit die Logik heute ohne Install/Gerät läu
 | `settings.js` | Defaults (`DEFAULT_FOCUS_SETTINGS`), `normalizeFocusSettings` (defensiv, verwirft Ungültiges), `read/writeFocusSettings(storage)` mit injiziertem Storage (localStorage oder Capacitor Preferences), `createMemoryStorage` für Tests |
 | `remind.js` | Entscheidung (Abschnitt 1), zusätzlich `localDateKey` exportiert |
 | `controller.js` | `createReminderController({ getMinimumLogMet, loadSettings, saveSettings, sendNotification, now })` → `checkToday(): { sent, reason, settings }` |
-| `usageStats.js` | Stufe-1-Webseite: `normalizeUsageReport` (defensiv gegen kaputte Plugin-Daten), `usageStatsStep` (UI: unavailable/needs-permission/ready), `getUsageToday(plugin)` (nie Throw), `evaluateDailyLimit` (nur Status, setzt noch keine Sperre durch) |
+| `minimumLogAdapter.js` | `createMinimumLogAdapter({ hasMinimumLogToday, loadEntries, loadHabitCompletions, options })` — liefert dem Controller `getMinimumLogMet(now)` als echten boolean (Truthy-Coercion), reicht Options/Daten durch, wirft bewusst bei fehlender Verdrahtung → Controller reason 'minimum-log-unavailable' |
+| `usageStats.js` | Stufe-1-Webseite: `normalizeUsageReport` (defensiv gegen kaputte Plugin-Daten, reicht `approximate` des Kotlin-Fallbacks durch), `usageStatsStep` (UI: unavailable/needs-permission/ready), `getUsageToday(plugin)` (nie Throw), `evaluateDailyLimit` (nur Status, setzt noch keine Sperre durch; `no-limit` reicht die Messwerte durch) |
 | `notifications.js` | Adapter-Entwurf: `createNotificationAdapter(plugin)` — das echte `@capacitor/local-notifications`-Modul wird ÜBERGEBEN, nicht importiert (Registry-Regel); ohne Plugin `available: false`, `send()` bleibt `false` |
 
 Controller-Ablauf (Fehler-Philosophie: konservativ, kein Reminder-Spam):
@@ -119,18 +120,23 @@ Geplante Verdrahtung in der App (eine Stelle, nach Installation des Plugins):
 ```js
 const storage = Capacitor Preferences oder localStorage;       // Naht aus settings.js
 const controller = createReminderController({
-  getMinimumLogMet: (now) => Promise.resolve(hasMinimumLogToday(entries, habitCompletions, now, { rule: 'any' })),
-  loadSettings: () => readFocusSettings(storage),             // settings.js
+  getMinimumLogMet: createMinimumLogAdapter({                  // minimumLogAdapter.js
+    hasMinimumLogToday,                                         // Import siehe Abschnitt 1, sobald 9edb12a integriert
+    loadEntries: () => Journal-Store-lädt,                      //  z. B. Firestore-Snapshot der heutigen Entries
+    loadHabitCompletions: () => Habit-Store-lädt,
+    options: { rule: 'any' },
+  }),
+  loadSettings: () => readFocusSettings(storage),               // settings.js
   saveSettings: (s) => writeFocusSettings(storage, s),
   sendNotification: (n) => createNotificationAdapter(LocalNotifications).send(n), // nach Install
   now: () => new Date(),
 });
 ```
 
-Tests (alle `node --test`, ausgeführt im Worktree, **36 pass / 0 fail** gesamt):
+Tests (alle `node --test`, ausgeführt im Worktree, **40 pass / 0 fail** gesamt):
 `focus-remind.test.mjs` (13, inkl. Explain-Gründe und Null-Stunden-Regression),
-`focus-settings.test.mjs` (6), `focus-controller.test.mjs` (7),
-`focus-usage.test.mjs` (10, inkl. Notification-Adapter-Entwurf).
+`focus-settings.test.mjs` (6), `focus-controller.test.mjs` (10, inkl. MinimumLog-Adapter),
+`focus-usage.test.mjs` (11, inkl. Notification-Adapter-Entwurf und approximate-Flag).
 
 Gefundene und gefixte Randfälle als Dauer-Regressionstests:
 

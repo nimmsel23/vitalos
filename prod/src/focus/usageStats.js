@@ -12,12 +12,14 @@
 
 // Defensive Normalisierung des Plugin-Ergebnisses. Alles Ungewoehnliche fuehrt zu
 // `available: false` (UI zeigt „Messung nicht verfuegbar“ statt Muell an).
+// `approximate` (Kotlin-Fallback: heute noch keine UsageEvents, Approximation ueber
+// Aggregate) wird durchgereicht, damit die UI kennzeichnen kann.
 export function normalizeUsageReport(raw) {
-  if (!raw || typeof raw !== "object") return { available: false, totalMinutes: 0, apps: [] };
+  if (!raw || typeof raw !== "object") return { available: false, totalMinutes: 0, apps: [], approximate: false };
 
   const total = Number(raw.totalMinutes);
   if (!Number.isFinite(total) || total < 0) {
-    return { available: false, totalMinutes: 0, apps: [] };
+    return { available: false, totalMinutes: 0, apps: [], approximate: false };
   }
 
   const rawApps = Array.isArray(raw.apps) ? raw.apps : [];
@@ -28,7 +30,7 @@ export function normalizeUsageReport(raw) {
     .sort((a, b) => b.minutes - a.minutes)
     .slice(0, 5);
 
-  return { available: true, totalMinutes: Math.round(total), apps };
+  return { available: true, totalMinutes: Math.round(total), apps, approximate: raw.approximate === true };
 }
 
 function clampMinutes(v) {
@@ -70,17 +72,19 @@ export async function getUsageToday(plugin) {
 // Auswertung gegen die selbst gesetzte Tagesgrenze (Stufe 1: nur Messen und
 // Sichtbarmachen; eine SPAERRE (Stufe 2) wird hier noch NICHT durchgesetzt —
 // die Funktion liefert nur den Status, den eine spaetere Sperre konsumiert).
+// Ohne gueltiges Limit (null) bleibt `status: 'no-limit'`, aber totalMinutes
+// wird durchgereicht — die reine Messanzeige funktioniert auch ohne Grenze.
 export function evaluateDailyLimit(report, limitMinutes) {
+  const total = report && report.available ? report.totalMinutes : 0;
   const limit = Number(limitMinutes);
   if (!Number.isInteger(limit) || limit <= 0) {
-    return { status: "no-limit", totalMinutes: 0, limitMinutes: null, remainingMinutes: null };
+    return { status: "no-limit", totalMinutes: total, limitMinutes: null, remainingMinutes: null };
   }
-  const total = report && report.available ? report.totalMinutes : 0;
-  const remaining = limit - total;
+  const status = !report || !report.available ? "unavailable" : total >= limit ? "over" : "ok";
   return {
-    status: !report || !report.available ? "unavailable" : total >= limit ? "over" : "ok",
+    status,
     totalMinutes: total,
     limitMinutes: limit,
-    remainingMinutes: remaining,
+    remainingMinutes: limit - total,
   };
 }

@@ -35,8 +35,17 @@ test('normalizeUsageReport: ungueltige/gebrochene Plugin-Daten => available:fals
     { totalMinutes: -3, apps: [] },
     { apps: [{ packageName: 'a', minutes: 5 }] }, // totalMinutes fehlt
   ]) {
-    assert.deepEqual(normalizeUsageReport(bad), { available: false, totalMinutes: 0, apps: [] }, JSON.stringify(bad));
+    assert.deepEqual(normalizeUsageReport(bad), { available: false, totalMinutes: 0, apps: [], approximate: false }, JSON.stringify(bad));
   }
+});
+
+test('normalizeUsageReport: approximate-Flag des Kotlin-Fallbacks wird durchgereicht', () => {
+  const exact = normalizeUsageReport({ totalMinutes: 30, apps: [], approximate: false });
+  assert.equal(exact.approximate, false);
+  const approx = normalizeUsageReport({ totalMinutes: 30, apps: [], approximate: true });
+  assert.equal(approx.approximate, true);
+  // Ungueltige Angabe => false (nie versehentlich "ungefaehr" behaupten).
+  assert.equal(normalizeUsageReport({ totalMinutes: 30, apps: [], approximate: 'ja' }).approximate, false);
 });
 
 test('normalizeUsageReport: kaputte App-Eintraege werden gefiltert/run gerundet', () => {
@@ -88,8 +97,12 @@ test('getUsageToday: bereitgestellt, verweigert, fehlgeformt, Broker/Plugin-Fehl
 });
 
 test('evaluateDailyLimit: no-limit / unavailable / ok / over mit Restzeit', () => {
+  // Ohne Limit: Status no-limit, aber der Messwert bleibt sichtbar.
   assert.deepEqual(evaluateDailyLimit({ available: true, totalMinutes: 100, apps: [] }, null), {
-    status: 'no-limit', totalMinutes: 0, limitMinutes: null, remainingMinutes: null,
+    status: 'no-limit', totalMinutes: 100, limitMinutes: null, remainingMinutes: null,
+  });
+  assert.deepEqual(evaluateDailyLimit({ available: true, totalMinutes: 100, apps: [] }, 'x'), {
+    status: 'no-limit', totalMinutes: 100, limitMinutes: null, remainingMinutes: null,
   });
   assert.deepEqual(evaluateDailyLimit(null, 120), {
     status: 'unavailable', totalMinutes: 0, limitMinutes: 120, remainingMinutes: 120,

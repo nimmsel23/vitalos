@@ -1,6 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { createReminderController, FOCUS_REMINDER_NOTIFICATION } from '../src/focus/controller.js';
+import { createMinimumLogAdapter } from '../src/focus/minimumLogAdapter.js';
 import { createMemoryStorage, readFocusSettings, writeFocusSettings } from '../src/focus/settings.js';
 
 const at = (y, mo, d, h, mi) => new Date(y, mo - 1, d, h, mi, 0, 0);
@@ -119,4 +120,71 @@ test('saveSettings wirft: Benachrichtigung bleibt gaeltig, kein Crash, sent true
   const res = await controller.checkToday();
   assert.equal(res.sent, true);
   assert.equal(res.reason, 'sent');
+});
+
+test('createMinimumLogAdapter: reicht Entries/Habits/options/now an hasMinimumLogToday durch', async () => {
+  const seen = [];
+  const entries = [{ id: 'e1' }];
+  const habits = [{ id: 'h1' }];
+  const now = at(2026, 11, 6, 11, 0);
+  const adapter = createMinimumLogAdapter({
+    hasMinimumLogToday: (e, h, n, o) => { seen.push({ e, h, n, o }); return true; },
+    loadEntries: async () => entries,
+    loadHabitCompletions: async () => habits,
+    options: { rule: 'journal', requiredBeforeHour: 10 },
+  });
+  assert.equal(await adapter(now), true);
+  assert.deepEqual(seen, [{ e: entries, h: habits, n: now, o: { rule: 'journal', requiredBeforeHour: 10 } }]);
+});
+
+test('createMinimumLogAdapter: Truthy-Wert wird zu echtem boolean, eloquente Form bleibt unwichtig', async () => {
+  const adapter = createMinimumLogAdapter({
+    hasMinimumLogToday: () => 'vergleichbar-truthy',
+    loadEntries: async () => [],
+    loadHabitCompletions: async () => [],
+  });
+  assert.equal(await adapter(new Date()), true); // Boolean-Coercion
+  const adapterOne = createMinimumLogAdapter({
+    hasMinimumLogToday: () => 1,
+    loadEntries: async () => [],
+    loadHabitCompletions: async () => [],
+  });
+  assert.equal(await adapterOne(new Date()), true);
+  const adapterZero = createMinimumLogAdapter({
+    hasMinimumLogToday: () => 0,
+    loadEntries: async () => [],
+    loadHabitCompletions: async () => [],
+  });
+  assert.equal(await adapterZero(new Date()), false);
+});
+
+test('createMinimumLogAdapter: fehlende Funktion wirft; Controller macht daraus minimum-log-unavailable', async () => {
+  const broken = createMinimumLogAdapter({
+    loadEntries: async () => [],
+    loadHabitCompletions: async () => [],
+  });
+  await assert.rejects(() => broken(new Date()));
+  const failLoader = createMinimumLogAdapter({
+    hasMinimumLogToday: () => true,
+    loadEntries: async () => { throw new Error('Store weg'); },
+    loadHabitCompletions: async () => [],
+  });
+  await assert.rejects(() => failLoader(new Date()));
+
+  const settings = createMemoryStorage();
+  const sent = [];
+  const controller = createReminderController({
+    getMinimumLogMet: failLoader,
+    loadSettings: async () => readFocusSettings(settings),
+    saveSettings: async (s) => writeFocusSettings(settings, s),
+    sendNotification: async (n) => { sent.push(n); return true; },
+    now: () => at(2026, 11, 6, 11, 0),
+  });
+  const res = await controller.checkToday();
+  assert.deepEqual(res, {
+    sent: false,
+    reason: 'minimum-log-unavailable',
+    settings: readFocusSettings(settings),
+  });
+  assert.deepEqual(sent, []);
 });
