@@ -1,0 +1,37 @@
+@media print {
+  @page { size: A4; margin: 12mm; }
+
+  body, body * {
+    color: #17202a !important;
+    background-color: #fff !important;
+    box-shadow: none !important;
+  }
+
+  body * { visibility: hidden; }
+
+  .meal-plan-print-root,
+  .meal-plan-print-root * { visibility: visible; }
+
+  .meal-plan-print-root {
+    position: absolute !important;
+    inset: 0 auto auto 0 !important;
+    width: 100% !important;
+    max-width: none !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    color: #17202a !important;
+  }
+
+  .meal-plan-print-root header,
+  .plan-day-card {
+    border: 1px solid #cbd5e1 !important;
+    background: #fff !important;
+    break-inside: avoid;
+    page-break-inside: avoid;
+  }
+
+  .meal-plan-print-root header { padding: 0 0 8mm !important; }
+  .meal-plan-print-root .xl\:grid-cols-2 { display: block !important; }
+  .plan-day-card { margin: 0 0 5mm !important; padding: 5mm !important; }
+  .print-hidden { display: none !important; }
+}

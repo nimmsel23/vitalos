@@ -1,0 +1,15 @@
+{
+  "hosting": {
+    "target": "fitness-product",
+    "public": "vos-fitness/dist-firebase",
+    "predeploy": ["node scripts/deploy-product.mjs"],
+    "ignore": ["firebase*.json", "**/node_modules/**", "**/.git/**", "**/.env*", "**/.DS_Store", "**/*.local"],
+    "rewrites": [{ "source": "**", "destination": "/index.html" }],
+    "headers": [
+      { "source": "/.well-known/assetlinks.json", "headers": [{ "key": "Content-Type", "value": "application/json" }, { "key": "Cache-Control", "value": "no-cache" }] },
+      { "source": "/sw.js", "headers": [{ "key": "Cache-Control", "value": "no-cache" }] },
+      { "source": "/manifest.json", "headers": [{ "key": "Cache-Control", "value": "no-cache" }] },
+      { "source": "**", "headers": [{ "key": "Cross-Origin-Opener-Policy", "value": "same-origin-allow-popups" }] }
+    ]
+  }
+}

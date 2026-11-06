@@ -1,0 +1,15 @@
+{
+  "name": "vos-fitness",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite --config vite.config.cjs --port 9140",
+    "build": "VITE_APP_MODE=client vite build --config vite.config.cjs",
+    "preview": "vite preview",
+    "build:cloud": "npm run build",
+    "firebase": "npm run build && npm run deploy",
+    "deploy": "node -e \"console.error('Fitness-VOS product deployment is not configured; no site was changed.'); process.exit(1)\"",
+    "deploy:cloud": "npm run deploy"
+  }
+}

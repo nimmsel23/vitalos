@@ -1,0 +1,141 @@
+import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useEscapeKey } from '../hooks/useEscapeKey.js'
+import Session from '@view/session/index.jsx'
+import WeeklyReview from '@view/review/index.jsx'
+import Learn from '@view/learn/index.jsx'
+import Coach from './CoachApp.jsx'
+import Inbox from '@view/inbox/index.js'
+import ExerciseInsightModal from '@fitness-components/ExerciseInsightModal.jsx'
+import { buildFitnessGateItems } from '@shell/NavigationItems.js'
+import { getAnatomy, getAllMuscles, getPlan } from '@db'
+import FitnessAppGate from './FitnessAppGate.jsx'
+import PulseLog from '@pulse/PulseLog.jsx'
+
+function resolveFitnessRoute(id) {
+  if (!id || id === 'gate') return { tab: 'gate', sessionSubTab: null, reviewSubTab: null, learnSubTab: null }
+  if (id === 'session') return { tab: 'session', sessionSubTab: null, reviewSubTab: null, learnSubTab: null }
+  if (id === 'today') return { tab: 'session', sessionSubTab: null, reviewSubTab: null, learnSubTab: null }
+  if (id === 'timer' || id === 'skills' || id === 'plan' || id === 'history') {
+    return { tab: 'session', sessionSubTab: id, reviewSubTab: null, learnSubTab: null }
+  }
+  if (id === 'review') return { tab: 'review', sessionSubTab: null, reviewSubTab: null, learnSubTab: null }
+  if (id === 'report') return { tab: 'review', sessionSubTab: null, reviewSubTab: 'report', learnSubTab: null }
+  if (id === 'muscles' || id === 'readiness' || id === 'verlauf') {
+    return { tab: 'review', sessionSubTab: null, reviewSubTab: id, learnSubTab: null }
+  }
+  if (id === 'pulse') return { tab: 'pulse', sessionSubTab: null, reviewSubTab: null, learnSubTab: null }
+  if (id === 'learn') return { tab: 'learn', sessionSubTab: null, reviewSubTab: null, learnSubTab: 'exercises' }
+  if (id === 'exercises' || id === 'anatomy' || id === 'quiz' || id === 'strength') return { tab: 'learn', sessionSubTab: null, reviewSubTab: null, learnSubTab: id }
+  return { tab: id, sessionSubTab: null, reviewSubTab: null, learnSubTab: null }
+}
+
+export default function FitnessApp({ user, recentDays, coverageThreshold, gender, muscleLanguage, taxonomy, subTab, onSubTab, sessionDate, sessionDraft, onOpenSession, onRuntimeDateChange, sidebarPinned, showDesktopChrome }) {
+  const [inspectorExercise, setInspectorExercise] = useState(null)
+  const [reviewSubTab, setReviewSubTab] = useState(null)
+  const [learnSubTab, setLearnSubTab] = useState('exercises')
+
+  const setTab = onSubTab || (() => {})
+
+  // ESC schließt hier die von FitnessApp aufgespannten Ebenen — von innen
+  // nach außen, immer nur eine pro Druck (siehe handleShellEscape in
+  // App.jsx für die Gesamt-Reihenfolge):
+  //   1. ExerciseInsightModal (falls offen)
+  //   2. die fixe Trainings-Fläche → zurück aufs Fitness-Menü ('gate')
+  // Session-lokale Modals (@view/session) haben ihr eigenes ESC-Handling
+  // und setzen document.body.dataset.sessionModalOpen — solange das steht,
+  // fassen wir die Fläche nicht an.
+  const handleFitnessEscape = useCallback(() => {
+    if (inspectorExercise) { setInspectorExercise(null); return }
+    if (typeof document !== 'undefined' && document.body.dataset.sessionModalOpen) return
+    const currentTab = resolveFitnessRoute(subTab).tab
+    if (currentTab !== 'gate') setTab('gate')
+  }, [inspectorExercise, subTab, setTab])
+  useEscapeKey(handleFitnessEscape, true)
+
+  // fitness-app/src/App.jsx bootstrapt setKBMuscles() (shared/muscle.js) via
+  // getAllMuscles() beim Mount — die Shell mountet fitness-apps eigenes
+  // App.jsx nie, sondern rendert Session/WeeklyReview/Muscles direkt über
+  // @view/*. Ohne diesen Aufruf bleibt der In-Memory-KB-Cache leer und
+  // muscleToRegion() (genutzt von getWeeklyReport() UND Muscles/index.jsx)
+  // gibt jede Muskel-ID unverändert statt gruppiert zurück — Ursache für
+  // fragmentierte "Relative Muskelbelastung" und fehlende Treffer im
+  // Muscles-Tab innerhalb der VitalOS Shell.
+  useEffect(() => {
+    getAllMuscles().catch(() => {})
+  }, [])
+
+  const route = resolveFitnessRoute(subTab)
+  const tab = route.tab
+  const activeReviewSubTab = route.reviewSubTab ?? reviewSubTab
+  const activeLearnSubTab = route.learnSubTab ?? learnSubTab
+  const gateItems = useMemo(() => buildFitnessGateItems(), [])
+
+  async function handleGateSelect(id) {
+    if (id === 'today' || id === 'session') {
+      try {
+        const plan = await getPlan()
+        const hasTodayPlan = Array.isArray(plan?.today?.exercises) && plan.today.exercises.length > 0
+        setTab(hasTodayPlan ? 'plan' : 'session')
+        return
+      } catch {}
+    }
+
+    const next = resolveFitnessRoute(id)
+    if (next.reviewSubTab !== null) setReviewSubTab(next.reviewSubTab)
+    if (next.learnSubTab !== null) setLearnSubTab(next.learnSubTab)
+    setTab(id)
+  }
+
+  async function inspectExercise(exercise) {
+    if (!exercise) return
+    setInspectorExercise(exercise)
+    const id = exercise.exercise_id || exercise.id
+    if (!id || exercise.lesson) return
+    try {
+      const lesson = await getAnatomy(id)
+      if (lesson) setInspectorExercise(prev => prev ? { ...prev, lesson } : prev)
+    } catch {}
+  }
+
+  return (
+    <div className="flex flex-col h-full">
+      <div className="relative flex-1 overflow-hidden">
+        <div className={`transition-all duration-700 ease-[cubic-bezier(0.32,0.72,0,1)] max-w-[1600px] mx-auto min-h-[100dvh] flex flex-col ${tab !== 'gate' ? 'scale-[0.98] opacity-30 blur-[2px] pointer-events-none' : 'scale-100 opacity-100'}`}>
+          <FitnessAppGate navigate={handleGateSelect} items={gateItems} />
+        </div>
+
+        <div
+          className={`
+            fixed inset-0 z-30 overflow-x-hidden transform transition-all duration-500 ease-[cubic-bezier(0.32,0.72,0,1)]
+            ${showDesktopChrome ? (sidebarPinned ? 'lg:left-[304px]' : 'lg:left-[108px]') : ''}
+            ${tab === 'gate' ? 'translate-y-full pointer-events-none' : 'translate-y-0'}
+          `}
+        >
+          <div className="relative h-full w-full overflow-y-auto overflow-x-hidden rounded-t-[40px] border-t border-[var(--line)]/30 bg-[var(--bg)] pt-6 shadow-[0_-20px_50px_rgba(0,0,0,0.3)] lg:m-4 lg:h-[calc(100dvh-2rem)] lg:rounded-[32px] lg:border lg:border-[var(--line)]/30 lg:shadow-[0_24px_80px_rgba(0,0,0,0.32)]">
+            {tab !== 'gate' && (
+              <button
+                onClick={() => setTab('gate')}
+                aria-label="Zurück zum Fitness-Menü"
+                className="sticky top-0 z-30 mx-auto flex w-full flex-col items-center gap-1 bg-gradient-to-b from-[var(--bg)] via-[var(--bg)] to-transparent pt-2 pb-3 transition-opacity active:opacity-60"
+              >
+                <div className="h-1.5 w-10 rounded-full bg-fit-line" />
+                <span className="text-[9px] font-black uppercase tracking-widest text-fit-dim opacity-60">Menü</span>
+              </button>
+            )}
+
+            <div className={`animate-in fade-in duration-500 ${tab !== 'gate' ? 'p-4 pb-20 sm:p-10' : ''}`}>
+              {tab === 'session' && <Session key={sessionDate || 'today'} initialDate={sessionDate} initialDraft={sessionDraft} onInspectExercise={inspectExercise} recentDays={recentDays} coverageThreshold={coverageThreshold} subTab={route.sessionSubTab} onDateChange={onRuntimeDateChange} onSubNav={setTab} />}
+              {tab === 'review'  && <WeeklyReview onOpenSession={onOpenSession} onInspectExercise={inspectExercise} muscleLanguage={muscleLanguage} taxonomy={taxonomy} gender={gender} recentDays={recentDays} subTab={activeReviewSubTab} onSubNav={setReviewSubTab} />}
+              {tab === 'learn'   && <Learn subTab={activeLearnSubTab} onInspectExercise={inspectExercise} muscleLanguage={muscleLanguage} taxonomy={taxonomy} />}
+              {tab === 'pulse'   && <PulseLog embedded user={user} onOpenMore={() => setTab('gate')} />}
+              {tab === 'inbox'   && <Inbox />}
+              {tab === 'coach'   && <Coach onInspectExercise={inspectExercise} />}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <ExerciseInsightModal exercise={inspectorExercise} onClose={() => setInspectorExercise(null)} muscleLanguage={muscleLanguage} taxonomy={taxonomy} />
+    </div>
+  )
+}

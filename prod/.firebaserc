@@ -1,0 +1,18 @@
+{
+  "projects": {
+    "default": "vitalos-prod"
+  },
+  "targets": {
+    "vitalos-prod": {
+      "hosting": {
+        "vitalos": [
+          "vitalos-prod"
+        ],
+        "fitness-product": [
+          "vitalos-fitness-prod"
+        ]
+      }
+    }
+  },
+  "etags": {}
+}

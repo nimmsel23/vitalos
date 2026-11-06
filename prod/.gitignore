@@ -1,0 +1,25 @@
+node_modules/
+dist/
+dist-firebase/
+dist-observe/
+dist-operate/
+dist-store/
+dist-native/
+.product-config/
+firebase.observe.generated.json
+firebase.operate.generated.json
+.firebase/
+*.log
+.env
+.env.*
+*.bak
+*.bak*
+.cache/
+.DS_Store
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+serviceAccountKey.json
+
+# Local Firebase configuration for the independent Fuel OS copy.
+fuel-os/src/client/lib/firebase.config*.js
