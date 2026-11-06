@@ -1,5 +1,13 @@
 # AGENTS.md — VitalOS
 
+## Vorbereitete gemeinsame Produktstruktur
+
+Dieser isolierte Entwurf wird auf `dev` vorbereitet. `prod/` ist ein getrackter
+Ordner dieses Meta-Repos und nutzt die vorhandenen App-Submodule im Root.
+Produkt-Shell-Edits in `prod/` auf `dev` sind erlaubt. Der aktive private
+Checkout und sein bisheriger Releaseweg werden durch den Entwurf nicht geändert.
+Siehe `docs/UNIFIED-PRODUCT.md`; ältere Fork-Pfadangaben unten sind überholt.
+
 ## Produktstrategie und Android-Roadmap
 
 - Produktstrategie: `/home/alpha/vitalos/VitalOS-Produktstrategie-V1.2.0.md`; die lesbare HTML-Fassung liegt daneben als `VitalOS-Produktstrategie-V1.2.0.html`.

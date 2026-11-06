@@ -1,0 +1,88 @@
+From 3db5810186fdfd1646c246d6fc7edb34c89032f1 Mon Sep 17 00:00:00 2001
+From: Alpha <alpha@alphaos.local>
+Date: Thu, 5 Nov 2026 08:39:14 +0100
+Subject: [PATCH] Reject future habit completion in smart logs
+
+---
+ src/db/index.js                         | 2 ++
+ src/lib/smartJournalApplyCore.js        | 8 +++++++-
+ src/views/v2/JournalV2View.jsx          | 1 +
+ tests/smart-journal-apply-core.test.mjs | 7 +++++++
+ 4 files changed, 17 insertions(+), 1 deletion(-)
+
+diff --git a/src/db/index.js b/src/db/index.js
+index 2a096ef..4f2e052 100644
+--- a/src/db/index.js
++++ b/src/db/index.js
+@@ -105,6 +105,7 @@ export async function getHabitRecordsForDate(date = localToday()) {
+ // Habit-Records: lokal sofort fertig, Abgleich im Hintergrund (track) – nie auf die Server-Bestätigung warten,
+ // sonst hängt das Abhaken offline ewig.
+ export async function recordHabit(uuid, date = localToday(), provenance = {}) {
++  if (date > localToday()) throw new Error("smart_future_habit_not_allowed");
+   const ref = doc(db, "fitness", getUid(), "habitRecords", `${uuid}_${date}`);
+   const record = {
+     habitId: uuid,
+@@ -121,6 +122,7 @@ export async function recordHabit(uuid, date = localToday(), provenance = {}) {
+ // The Smart Log pipeline is online/transactional: do not report success until
+ // the habit record has been confirmed by Firestore.
+ export async function recordSmartHabit(uuid, date = localToday(), { requestId, sourceJournalId } = {}) {
++  if (date > localToday()) throw new Error("smart_future_habit_not_allowed");
+   if (!requestId || !sourceJournalId) throw new Error("smart_habit_provenance_required");
+   const ref = doc(db, "fitness", getUid(), "habitRecords", `${uuid}_${date}`);
+   return applySmartHabitTransaction({ db, ref, uuid, date, requestId, sourceJournalId, runTransaction, serverTimestamp });
+diff --git a/src/lib/smartJournalApplyCore.js b/src/lib/smartJournalApplyCore.js
+index e11c20b..5a4556f 100644
+--- a/src/lib/smartJournalApplyCore.js
++++ b/src/lib/smartJournalApplyCore.js
+@@ -238,7 +238,12 @@ export function mergeSmartNutritionLog(currentValue, { date, requestId, journalI
+   };
+ }
+ 
+-export function createSmartJournalApplier({ saveJournal, updateJournal, claimJournal, updateStatus, applyNutrition, recordHabit, applyFitness, applyRelax, applyPlanner, assertAccount = () => {}, now = () => new Date().toISOString() }) {
++function currentLocalDate() {
++  const date = new Date();
++  return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}-${String(date.getDate()).padStart(2, "0")}`;
++}
++
++export function createSmartJournalApplier({ saveJournal, updateJournal, claimJournal, updateStatus, applyNutrition, recordHabit, applyFitness, applyRelax, applyPlanner, assertAccount = () => {}, now = () => new Date().toISOString(), today = currentLocalDate }) {
+   return async function applySmartAnalysis({ date, analysis, habits = [] }) {
+     assertAccount();
+     const guarded = async (fn, ...args) => {
+@@ -249,6 +254,7 @@ export function createSmartJournalApplier({ saveJournal, updateJournal, claimJou
+     };
+     const data = validateSmartAnalysis(analysis);
+     if (!validISODate(date)) throw new Error("smart_schema_date_invalid");
++    if (date > today() && data.habits_done.length) throw new Error("smart_future_habit_not_allowed");
+     for (const meal of data.meals) assertExistingLocalTime(date, meal.time);
+     for (const session of data.fitness_sessions) assertExistingLocalTime(session.date || date, session.time);
+     const journalId = sourceJournalId(data.request_id);
+diff --git a/src/views/v2/JournalV2View.jsx b/src/views/v2/JournalV2View.jsx
+index 4b0e831..9babbd2 100644
+--- a/src/views/v2/JournalV2View.jsx
++++ b/src/views/v2/JournalV2View.jsx
+@@ -32,6 +32,7 @@ const iso = (d) => format(d, "yyyy-MM-dd");
+ 
+ function smartLogErrorText(error) {
+   const message = error?.message || "";
++  if (message.includes("smart_future_habit_not_allowed")) return "Für ein zukünftiges Datum können Habits noch nicht als erledigt übernommen werden. Entferne diese Habit-Vorschläge oder wähle den Tag der tatsächlichen Ausführung.";
+   if (message.includes("smart_local_time_invalid")) return "Eine Mahlzeit oder Trainingseinheit hat eine Uhrzeit, die an diesem Tag in deiner Zeitzone nicht existiert. Bitte ändere oder entferne die Uhrzeit.";
+   if (message.includes("smart_retry_tracker_changed") || message.includes("smart_retry_planner_order_changed") || message.includes("smart_retry_planner_already_applied")) return "Ein Teil wurde bereits gespeichert. Bitte ändere gespeicherte Tracker-Einträge direkt im jeweiligen Tracker; offene Kalender-Vorschläge kannst du an derselben Stelle ergänzen.";
+   if (message.includes("smart_retry_source_changed") || message.includes("smart_retry_payload_unavailable")) return "Der Journaleintrag wurde geändert oder die gespeicherten Vorschläge fehlen. Bitte öffne den Journaleintrag erneut; vorhandene Daten bleiben erhalten.";
+diff --git a/tests/smart-journal-apply-core.test.mjs b/tests/smart-journal-apply-core.test.mjs
+index 40ae2df..a3fe627 100644
+--- a/tests/smart-journal-apply-core.test.mjs
++++ b/tests/smart-journal-apply-core.test.mjs
+@@ -291,3 +291,10 @@ test('rejects nonexistent local tracker times before any write', async () => {
+     assert.equal(writes, 0);
+   } finally { if (old === undefined) delete process.env.TZ; else process.env.TZ = old; }
+ });
++
++test('future journal dates cannot mark habits done or start partial writes', async () => {
++  let writes = 0;
++  const apply = createSmartJournalApplier({ today: () => '2026-11-04', saveJournal: async () => { writes++; }, recordHabit: async () => { writes++; } });
++  await assert.rejects(apply({ date: '2026-11-05', analysis: analysis({ meals: [], water_ml: 0 }), habits: [{ uuid: 'a', name: 'Meditieren' }] }), /smart_future_habit_not_allowed/);
++  assert.equal(writes, 0);
++});
+-- 
+2.56.0
+

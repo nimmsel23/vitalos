@@ -1,0 +1,66 @@
+import { withStorageFeedback } from "../../storageFeedback.js";
+/**
+ * Firestore Notes — nutrition/{uid}/journal/{date} (Freitext-Notizen)
+ */
+
+import { doc, getDoc, setDoc as firestoreSetDoc, serverTimestamp, collection, query, getDocs, orderBy, limit, arrayUnion, arrayRemove } from "firebase/firestore";
+import { db } from "../../firebase.js";
+import { getUid } from "./core.js";
+const setDoc = (...args) => withStorageFeedback("Tagesnotizen / KI-Entwurf", () => firestoreSetDoc(...args));
+import { todayISO } from "./utils.js";
+import { projectCloudNotes, hasPendingFor } from "../../cloudOutbox.js";
+
+export async function getNotes(date = todayISO()) {
+  let content = "";
+  try { const snap = await getDoc(doc(db, "nutrition", getUid(), "journal", date)); content = snap.exists() ? snap.data().content : ""; }
+  catch (error) { if (navigator.onLine || !hasPendingFor("notes", date)) throw error; }
+  return projectCloudNotes(date, content); // + noch nicht bestätigte Offline-Notiz
+}
+
+export async function saveNotes(date = todayISO(), content) {
+  // merge:true — sonst würde das Überschreiben der Notiz das ai_pending-Feld
+  // (wartende AI-Logger-Einträge) desselben Tages-Dokuments mitlöschen.
+  await setDoc(doc(db, "nutrition", getUid(), "journal", date), {
+    date,
+    content,
+    updated_at: serverTimestamp(),
+  }, { merge: true });
+}
+
+// "Wartend"-Ablage für AI-Logger-Rohtext: sofort persistiert, unabhängig vom
+// Erfolg der nachgelagerten Gemini-Analyse. Lebt im selben Journal-Dokument
+// wie die Freitext-Notiz des Tages, aber als eigenes Feld — kein Fake-Meal.
+export async function getPendingAiEntries(date = todayISO()) {
+  const snap = await getDoc(doc(db, "nutrition", getUid(), "journal", date));
+  return snap.exists() ? (snap.data().ai_pending || []) : [];
+}
+
+export async function addPendingAiEntry(date, entry) {
+  await setDoc(doc(db, "nutrition", getUid(), "journal", date), {
+    date,
+    ai_pending: arrayUnion(entry),
+    updated_at: serverTimestamp(),
+  }, { merge: true });
+}
+
+export async function removePendingAiEntry(date, entry) {
+  await setDoc(doc(db, "nutrition", getUid(), "journal", date), {
+    ai_pending: arrayRemove(entry),
+  }, { merge: true });
+}
+
+export async function getNutritionNotesHistory(limitCount = 50) {
+  const q = query(
+    collection(db, "nutrition", getUid(), "journal"),
+    orderBy("date", "desc"),
+    limit(limitCount)
+  );
+  const snap = await getDocs(q);
+  return snap.docs.map((d) => ({
+    id: `nutrition-notes-${d.id}`,
+    date: d.id,
+    text: d.data().content || "",
+    type: "nutrition-notes",
+    time: `${d.id}T12:00:00`,
+  }));
+}

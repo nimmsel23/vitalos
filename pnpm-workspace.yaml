@@ -1,5 +1,6 @@
 packages:
   - "."
+  - "prod"
   - "fitness-app"
   - "6pack-app"
   - "plan-app"

@@ -1,0 +1,46 @@
+{
+  "project_info": {
+    "project_number": "149035799731",
+    "project_id": "vitalos-prod",
+    "storage_bucket": "vitalos-prod.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:149035799731:android:dbe70b98fd4a78f9d18cc6",
+        "android_client_info": {
+          "package_name": "com.vitalos.app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "149035799731-gjjmtqrisfhblsa4pl33es930sn5et3o.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA_eWB16QvE5RrGTYgmzGs6CbeYzbBBTws"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "149035799731-gjjmtqrisfhblsa4pl33es930sn5et3o.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "149035799731-siooss4cje2ap44rjrnq2ks0660m0cq5.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.vitalos.app"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

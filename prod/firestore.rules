@@ -1,0 +1,332 @@
+rules_version = '2';
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Konsolidiertes SSOT-Ruleset für das Firebase-Projekt fitness-aos.
+// Deployed NUR aus ~/vitalos (firebase deploy --only firestore:rules).
+// fitness-dev und fuel-dev deployen KEINE eigenen Rules mehr — ihre
+// firebase.json haben keinen firestore-Block. Vorher: fitness-dev hatte
+// `allow read, write: if true` und überschrieb fuels uid-scoped Rules.
+//
+// Coach-Rolle: Firestore-Doc roles/{uid} mit { role: "coach" } anlegen
+// (einmalig via Firebase Console oder Admin SDK). Coach darf Klienten-Daten
+// lesen/schreiben (Inbox-Review, Plan-Zuweisung). Server-Sync-Prozesse
+// (firestore-mirror.mjs, sync_gateway) laufen mit Admin SDK und sind von
+// Rules nicht betroffen.
+//
+// App-Rules werden in ihren App-Repos gepflegt und hier zentral registriert:
+// - fitness-app/firestore.rules
+// - fuel-app/firestore.rules
+// - plan-app/firestore.rules.part (Modul-Fragment: fitness/{uid}/** inkl. macrocycles, per scripts/build-rules.mjs eingebettet)
+// - journal-app/firestore.rules.part (Modul-Fragment, per scripts/build-rules.mjs eingebettet)
+// - coach-dev/firestore.rules (Repo liegt bewusst ausserhalb von ~/vitalos)
+// - plan-dev/firestore.rules (Repo liegt bewusst ausserhalb von ~/vitalos;
+//   nutzt ausschliesslich bereits registrierte fitness/{uid}/...-Pfade,
+//   keine neuen Collections)
+// ─────────────────────────────────────────────────────────────────────────────
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function authed() {
+      return request.auth != null;
+    }
+    function owner(uid) {
+      return authed() && request.auth.uid == uid;
+    }
+    // Coach = Custom Claim (set_admin.py) ODER roles-Doc ODER Alpha-UID
+    // (hartkodierte UID stammt aus den alten fitness-dev-Rules — Fallback,
+    // falls Claim/roles-Doc auf dem Account nie gesetzt wurden)
+    function isCoach() {
+      return authed() && (
+        request.auth.token.coach == true
+        || request.auth.uid == '59ole36uNpNwml5H6VDYCXyCME92'
+        || (exists(/databases/$(database)/documents/roles/$(request.auth.uid))
+            && get(/databases/$(database)/documents/roles/$(request.auth.uid)).data.role == 'coach')
+      );
+    }
+
+    // Rollen: eigene Rolle lesbar, Schreiben nur via Console/Admin SDK
+    match /roles/{uid} {
+      allow read: if owner(uid);
+      allow write: if false;
+    }
+
+    // Private 6Pack selfies: separate from coach-readable fitness/users trees.
+    match /sixpackSelfies/{uid}/photos/{photoId} {
+      allow read, delete: if owner(uid);
+      allow create, update: if owner(uid)
+        && photoId.matches('[A-Za-z0-9_-]{1,128}')
+        && request.resource.data.keys().hasOnly(['date', 'dataUrl'])
+        && request.resource.data.date is string
+        && request.resource.data.date.size() <= 32
+        && request.resource.data.dataUrl is string
+        && request.resource.data.dataUrl.size() <= 700000
+        && request.resource.data.dataUrl.matches('data:image/jpeg;base64,[A-Za-z0-9+/=]+');
+    }
+
+    // >>> module: skills-app/firestore/skills.rules.part
+// Skills domain; embedded and deployed only from VitalOS.
+    match /skillsCatalogs/{version} {
+      allow read: if request.auth != null;
+      allow write: if false;
+    }
+    match /skillsUsers/{uid}/events/{eventId} {
+      function owner() { return request.auth != null && request.auth.uid == uid; }
+      function valid() {
+        let d = request.resource.data;
+        return d.keys().hasAll(['id','schemaVersion','catalogVersion','type','skillId','stageId','at','payload'])
+          && d.keys().hasOnly(['id','schemaVersion','catalogVersion','type','skillId','stageId','at','payload'])
+          && d.id == eventId && eventId.matches('^[a-zA-Z0-9_-]{1,128}$')
+          && d.schemaVersion == 1 && d.catalogVersion == 1
+          && d.type in ['legacy','stage','hold','session']
+          && d.skillId in ['muscle-up','planche','front-lever','back-lever','handstand-pushup','v-sit','pistol-squat','human-flag','one-arm-pullup','dragon-flag','hefesto','one-arm-handstand','one-arm-pushup','shrimp-squat']
+          && d.stageId is string && d.stageId.size() < 180
+          && d.stageId.matches('^' + d.skillId + '/[a-z0-9-]+$')
+          && d.at is string && d.at.matches('^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9:.]+Z$')
+          && d.payload is map
+          && (d.type != 'hold' || (d.payload.duration is number && d.payload.duration > 0))
+          && (d.type != 'session' || d.payload.exercises is list)
+          && (d.type != 'stage' || d.payload.mastered is bool);
+      }
+      allow read: if owner();
+      allow create: if owner() && valid();
+      // Idempotent replay is allowed; history edits and deletions are denied.
+      allow update: if owner() && request.resource.data == resource.data;
+      allow delete: if false;
+    }
+    // <<< module
+
+    // ── Fitness (inkl. Journal/Habits/Learn der vitalos-Shell) ──────────────
+    // Userdaten: /fitness/{uid}/sessions|plan|journal|habits|habitRecords|
+    //            habitJournals|inbox|profile|…
+    // >>> module: firestore/coach.rules.part
+// Imported from nimmsel23/coach-dev @ 1c427f0e8d0343241d952c7377eac1dd0a8d162a; source: firestore.rules.part
+    // Coach/client conversation: isolated from the broad legacy fitness owner rule.
+    match /coachConversations/{uid} {
+      function participant() { return owner(uid) || isCoach(); }
+      function validPlan(plan) {
+        return plan == null || (plan is map
+          && plan.keys().hasAll(['id', 'name', 'version'])
+          && plan.keys().hasOnly(['id', 'name', 'version'])
+          && plan.id is string && plan.id.size() > 0 && plan.id.size() <= 128
+          && plan.name is string && plan.name.size() > 0 && plan.name.size() <= 200
+          && plan.version is int && plan.version > 0);
+      }
+      match /messages/{messageId} {
+        allow read: if participant();
+        allow create: if participant()
+          && messageId.matches('[A-Za-z0-9_-]{1,128}')
+          && request.resource.data.keys().hasAll(['body', 'senderUid', 'senderRole', 'createdAt', 'plan'])
+          && request.resource.data.keys().hasOnly(['body', 'senderUid', 'senderRole', 'createdAt', 'plan'])
+          && request.resource.data.body is string
+          && request.resource.data.body.size() > 0 && request.resource.data.body.size() <= 4000
+          && request.resource.data.senderUid == request.auth.uid
+          && ((request.resource.data.senderRole == 'coach' && isCoach())
+            || (request.resource.data.senderRole == 'client' && owner(uid)))
+          && request.resource.data.createdAt == request.time
+          && validPlan(request.resource.data.plan);
+        allow update, delete: if false;
+      }
+      match /readStates/{readerUid} {
+        allow read: if participant();
+        allow create, update: if participant() && readerUid == request.auth.uid
+          && request.resource.data.keys().hasOnly(['lastReadAt'])
+          && request.resource.data.keys().hasAll(['lastReadAt'])
+          && request.resource.data.lastReadAt == request.time;
+        allow delete: if false;
+      }
+    }
+    // <<< module
+    // >>> module: plan-app/firestore.rules.part
+    // Plan-Modul (plan-dev/firestore.rules.part): wird von ~/vitalos (scripts/build-rules.mjs)
+    // in firestore.rules eingebettet und nur von dort deployed. Nutzt owner()/isCoach().
+    // Pläne (macrocycles): der Besitzer darf nur Pläne schreiben, die er selbst angelegt hat
+    // (coachUid == uid, Self-Service). Coach-Pläne und ihre Versionen sind für den Klienten
+    // schreibgeschützt; Versionen sind nach dem Anlegen unveränderlich. Completions bleiben offen.
+    match /fitness/{uid}/{document=**} {
+      allow read: if owner(uid) || isCoach();
+      allow write: if isCoach() || (owner(uid) && !string(request.path).matches('.*/macrocycles/.*'));
+    }
+    match /fitness/{uid}/macrocycles/{planId} {
+      allow create: if owner(uid) && request.resource.data.coachUid == uid;
+      allow update: if owner(uid) && resource.data.coachUid == uid && request.resource.data.coachUid == uid;
+      allow delete: if owner(uid) && resource.data.coachUid == uid;
+      match /versions/{versionId} {
+        allow create: if owner(uid)
+          && get(/databases/$(database)/documents/fitness/$(uid)/macrocycles/$(planId)).data.coachUid == uid;
+      }
+      // Lesebestätigung: der Klient legt je Version einmalig ein Dokument an (unveränderlich, nur eigene Felder).
+      match /receipts/{receiptId} {
+        allow create: if owner(uid)
+          && request.resource.data.keys().hasOnly(['planId', 'version', 'readAt'])
+          && request.resource.data.planId == planId
+          && request.resource.data.version is int
+          && receiptId == 'v' + string(request.resource.data.version);
+      }
+      match /completions/{completionId} {
+        allow write: if owner(uid);
+      }
+    }
+
+    // Plan-owned, version-bound feedback and explicit receipt. Isolated from legacy fitness writes.
+    match /planResponses/{uid}/plans/{planId}/versions/{versionId} {
+      function participant() { return owner(uid) || isCoach(); }
+      function releasedVersion() {
+        return versionId.matches('v[1-9][0-9]*')
+          && exists(/databases/$(database)/documents/fitness/$(uid)/macrocycles/$(planId)/versions/$(versionId));
+      }
+      allow read: if participant();
+      allow create: if owner(uid) && releasedVersion()
+        && request.resource.data.keys().hasAll(['readerUid', 'readAt'])
+        && request.resource.data.keys().hasOnly(['readerUid', 'readAt'])
+        && request.resource.data.readerUid == request.auth.uid
+        && request.resource.data.readAt == request.time;
+      allow update, delete: if false;
+      match /entries/{entryId} {
+        allow read: if participant();
+        allow create: if participant() && releasedVersion()
+          && request.resource.data.keys().hasAll(['body', 'senderUid', 'senderRole', 'createdAt'])
+          && request.resource.data.keys().hasOnly(['body', 'senderUid', 'senderRole', 'createdAt'])
+          && request.resource.data.body is string
+          && request.resource.data.body.size() > 0 && request.resource.data.body.size() <= 2000
+          && request.resource.data.senderUid == request.auth.uid
+          && ((request.resource.data.senderRole == 'coach' && isCoach())
+            || (request.resource.data.senderRole == 'client' && owner(uid)))
+          && request.resource.data.createdAt == request.time;
+        allow update, delete: if false;
+      }
+    }
+    // <<< module
+
+    // >>> module: journal-app/firestore.rules.part
+    // Journal-v2-Apps (journal-dev): journal/{uid}/frame/{domain} (Game v2 · Frame Map),
+    // journal/{uid}/settings/{door,taskchampion} u. a. Nur der Besitzer; Coach bewusst ausgenommen.
+    // Modul-Fragment: wird von ~/vitalos (scripts/build-rules.mjs) in firestore.rules eingebettet
+    // und von dort deployed. Nutzt owner() aus dem Root-Ruleset.
+    match /journal/{uid}/{document=**} {
+      allow read, write: if owner(uid);
+    }
+    // <<< module
+
+    // Geteilte Exercise-KB (pseudo-uid "kb"): alle lesen, nur Coach schreibt
+    // (approveInbox promoted Inbox-Einträge nach fitness/kb/exercises)
+    match /fitness/kb/{document=**} {
+      allow read: if authed();
+      allow write: if isCoach();
+    }
+
+    // Coach-Review über alle Klienten-Inboxen (collectionGroup "inbox");
+    // User erreicht eigene Einträge via userId-Feld (fitness-dev PWA)
+    match /{path=**}/inbox/{id} {
+      allow read:  if isCoach() || (authed() && resource.data.userId == request.auth.uid);
+      // Users write inbox via direct path /fitness/{uid}/inbox (per-user rule above).
+      // CollectionGroup write = coach only (approve/reject).
+      allow write: if isCoach();
+    }
+
+    // collectionGroup-Queries der fitness-dev PWA (Coach-Feed + eigene Daten)
+    match /{path=**}/sessions/{sessionId} {
+      allow read: if isCoach() || (authed() && resource.data.userId == request.auth.uid);
+    }
+    // Live-Traction (Coach-Konsole/Fitness-Coach-Tab): collectionGroup-Lesen nur für den Coach.
+    // Schreiben deckt die per-User-Regel fitness/{uid}/{document=**} ab.
+    match /{path=**}/tractionDaily/{dayId} {
+      allow read: if isCoach();
+    }
+    match /{path=**}/profile/{doc} {
+      // Own profile accessible via /fitness/{uid}/... (per-user rule above).
+      // CollectionGroup: coach-only — prevents cross-user profile leaks.
+      allow read: if isCoach();
+    }
+    match /{path=**}/habitJournals/{doc} {
+      allow read:  if isCoach() || (authed() && resource.data.userId == request.auth.uid);
+      // request.resource.data = incoming doc (works on create + update).
+      // resource.data = existing doc (fails on create).
+      allow write: if isCoach() || (authed() && request.resource.data.userId == request.auth.uid);
+    }
+
+    // ── Coach-App (coach-dev / vos-coach) + Plan-App (plan-dev / vos-plan) ───
+    // Eigene App-Rules liegen in ~/dev/coach-dev/firestore.rules bzw.
+    // ~/dev/plan-dev/firestore.rules. Deploybar ist nur dieses konsolidierte Set
+    // aus ~/vitalos fuer das gemeinsame fitness-aos. Plan-App nutzt dieselben
+    // routines/workouts/wf_workouts/macrocycles-Collections wie Coach-App,
+    // keine eigenen Regeln noetig.
+    match /coachInbox/{id} {
+      allow read: if isCoach();
+      allow write: if false;
+    }
+    match /coachState/{id} {
+      allow read: if isCoach();
+      allow write: if false;
+    }
+    match /coachCommands/{id} {
+      allow read: if isCoach();
+      allow create: if isCoach()
+        && request.resource.data.keys().hasOnly(['action', 'item_id', 'uid', 'payload', 'requested_by', 'status', 'created_at'])
+        && request.resource.data.requested_by == request.auth.uid
+        && request.resource.data.status == 'queued'
+        && request.resource.data.action in ['approve', 'reenrich', 'delete', 'link-source', 'duplicates', 'merge-duplicates']
+        && request.resource.data.item_id is string
+        && request.resource.data.item_id.size() > 0
+        && request.resource.data.item_id.size() <= 200
+        && request.resource.data.payload is map;
+      allow update, delete: if false;
+    }
+    match /{path=**}/journal/{doc} {
+      allow read: if isCoach() || (authed() && resource.data.userId == request.auth.uid);
+      allow write: if isCoach();
+    }
+    match /{path=**}/settings/{doc} {
+      allow read, write: if isCoach();
+    }
+    match /{path=**}/routines/{doc} {
+      allow read, write: if isCoach();
+    }
+    match /{path=**}/workouts/{doc} {
+      allow read, write: if isCoach();
+    }
+    match /{path=**}/wf_workouts/{doc} {
+      allow read, write: if isCoach();
+    }
+    match /{path=**}/macrocycles/{doc} {
+      allow read, write: if isCoach();
+    }
+
+    // ── Fuel (Nutrition & Supplements) ───────────────────────────────────────
+    // /nutrition/{uid}/logs|journal|meta/… und /supplements/{uid}/logs|meta/…
+    match /nutrition/{uid}/{document=**} {
+      allow read, write: if owner(uid) || isCoach();
+    }
+    match /supplements/{uid}/{document=**} {
+      allow read, write: if owner(uid) || isCoach();
+    }
+
+    // User-Settings (fuel cloud: users/{uid}/meta/settings)
+    match /users/{uid}/{document=**} {
+      allow read, write: if owner(uid) || isCoach();
+    }
+
+    // Geteilter Mikronährstoff-Katalog (pseudo-uid "public", read-only,
+    // Pflege via Admin SDK/CLI)
+    match /nutrition/public/{document=**} {
+      allow read: if authed();
+      allow write: if false;
+    }
+
+    // ── Relax (dritter Tempel, gleiche Struktur) ─────────────────────────────
+    match /relax/{uid}/{document=**} {
+      allow read, write: if owner(uid) || isCoach();
+    }
+
+    // ── Global Knowledge (KB-Sync via Admin SDK/CLI) ─────────────────────────
+    match /knowledge/{document=**} {
+      allow read: if authed();
+      allow write: if false;
+    }
+    match /knowledge_tasks/{taskId} {
+      allow read: if authed();
+      allow create: if authed();
+      allow update: if false;
+    }
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "functions": {
+    "codebase": "journal",
+    "source": "../journal-app/functions",
+    "runtime": "nodejs22",
+    "predeploy": [
+      "node scripts/check-product-journal.mjs",
+      "node scripts/check-product-ai-access.mjs"
+    ]
+  }
+}

@@ -1,0 +1,145 @@
+import { Flame, UtensilsCrossed, NotebookPen, BookOpen, Pill, Microscope, Settings2, History, LayoutGrid, GitCommitVertical, TerminalSquare, ChefHat, Library, FileText, CalendarDays } from "lucide-react";
+// Keine dynamischen Imports/lazy(): einzeln nachgeladene Chunks brechen nach einem Deploy weg
+// (Firebase Hosting hält nur den letzten Release, der SPA-Rewrite liefert dann index.html als "Modul").
+import DashboardView from "./views/DashboardView.jsx";
+import LogView from "./views/Log/LogView.jsx";
+import FoodView from "./views/FoodView.jsx";
+import RecipeBuilderView from "./views/RecipeBuilderView.jsx";
+import MealPlanView from "./views/MealPlanView.jsx";
+import CatalogView from "./views/CatalogView.jsx";
+import HistoryView from "./views/HistoryView.jsx";
+import NutritionReportView from "./views/Report/NutritionReportView.jsx";
+import JournalVosView from "./views/JournalVosView.jsx";
+import SupplementsView from "./views/SupplementsView.jsx";
+import MicrosView from "./views/MicrosView.jsx";
+import SettingsView from "./views/SettingsView.jsx";
+import DevView from "./views/Dev/DevView.jsx";
+
+const BUILD_IS_LOCAL = import.meta.env.VITE_APP_MODE !== "client" && import.meta.env.MODE !== "firebase";
+const BUILD_IS_SHELL = import.meta.env.MODE === "firebase";
+// Mini-App-Build (VITE_SOLO=log|supplements|micros|report): nur dieser eine Tab wird gebündelt.
+// Die Bedingungen unten stehen bewusst als Literal-Vergleich, damit Rollup die übrigen
+// Views (und deren Imports) per Tree-Shaking aus dem Bundle wirft.
+const SOLO = import.meta.env.VITE_SOLO || "";
+
+// Tab-Reihenfolge (2026-09-06, User-Vorgabe): Dashboard · Log · Food · Rezepte ·
+// Katalog · Historie · Journal · Supplements · Mikros · Setup · Dev.
+export const TAB_CONFIG = [
+  ...((!BUILD_IS_SHELL && !SOLO) ? [{
+    key: "dashboard",
+    label: "Dashboard",
+    Icon: Flame,
+    View: DashboardView,
+    getProps: (ctx) => ({ nutrition: ctx.nutrition, sup: ctx.sup, journal: ctx.journal, macroTrend: ctx.macroTrend, setActiveTab: ctx.setActiveTab, activeDate: ctx.activeDate }),
+  }] : []),
+  ...((!SOLO || SOLO === "log") ? [{
+    key: "log",
+    label: "Log",
+    Icon: NotebookPen,
+    View: LogView,
+    getProps: (ctx) => ({ date: ctx.activeDate, nutrition: ctx.nutrition, journal: ctx.journal || "" }),
+  }] : []),
+  ...(!SOLO ? [{
+    // Log-Ansichten als eigene Tab-Pills (gleiche LogView, erzwungener Modus).
+    key: "log-dashboard",
+    label: "Log-Dashboard",
+    Icon: LayoutGrid,
+    View: LogView,
+    getProps: (ctx) => ({ date: ctx.activeDate, nutrition: ctx.nutrition, journal: ctx.journal || "", mode: "dashboard" }),
+  }, {
+    key: "log-timeline",
+    label: "Timeline",
+    Icon: GitCommitVertical,
+    View: LogView,
+    getProps: (ctx) => ({ date: ctx.activeDate, nutrition: ctx.nutrition, journal: ctx.journal || "", mode: "timeline" }),
+  }] : []),
+  ...((!SOLO || SOLO === "food") ? [{
+    key: "food",
+    label: "Food",
+    Icon: UtensilsCrossed,
+    View: FoodView,
+    getProps: (ctx) => ({ activeDate: ctx.activeDate, setActiveDate: ctx.setActiveDate, nutrition: ctx.nutrition }),
+  }] : []),
+  ...((!SOLO || SOLO === "recipes") ? [{
+    key: "recipes",
+    label: "Rezepte",
+    Icon: ChefHat,
+    View: RecipeBuilderView,
+    getProps: () => ({}),
+  }] : []),
+  ...(!SOLO ? [{
+    key: "meal-plan",
+    label: "Essensplan",
+    Icon: CalendarDays,
+    View: MealPlanView,
+    getProps: (ctx) => ({ setActiveTab: ctx.setActiveTab }),
+  }] : []),
+  ...((!SOLO || SOLO === "catalog") ? [{
+    key: "catalog",
+    label: "Katalog",
+    Icon: Library,
+    View: CatalogView,
+    getProps: (ctx) => ({ activeDate: ctx.activeDate }),
+  }] : []),
+  ...((!SOLO || SOLO === "history") ? [{
+    key: "history",
+    label: "Historie",
+    Icon: History,
+    View: HistoryView,
+    getProps: (ctx) => ({ setActiveDate: ctx.setActiveDate, setActiveTab: ctx.setActiveTab }),
+  }] : []),
+  ...((!SOLO || SOLO === "report") ? [{
+    // Ernährungsprotokoll-Report (2026-09-06): abgabefertiges 7-/14-Tage-
+    // Protokoll für die FFA-Pflichtaufgaben (Ernährungstrainer Task 1/19,
+    // Fitnesstrainer-Zusatzaufgabe Task 147). Druck-/PDF-Ausgabe via window.print().
+    key: "report",
+    label: "Protokoll",
+    Icon: FileText,
+    View: NutritionReportView,
+    getProps: () => ({}),
+  }] : []),
+  ...((!BUILD_IS_SHELL && !SOLO) ? [{
+    // Seit 2026-08-07 (TODO.md): im Firebase-Frontend (cloud) ausgeblendet —
+    // Journal-VOS-Tab ist Cross-Repo-Import aus journal-dev, nicht Teil des
+    // Ernährungs-Tagebuchs. Das bleibt via JournalWidget im Dashboard
+    // weiterhin ladbar (siehe DashboardView.jsx). Habits-Tab wurde entfernt
+    // (2026-08-23) — fuel-dev braucht habits-dev nicht als Dependency.
+    key: "journal",
+    label: "Journal",
+    Icon: BookOpen,
+    View: JournalVosView,
+    getProps: (ctx) => ({ date: ctx.activeDate }),
+    cloudHidden: true,
+  }] : []),
+  ...((!SOLO || SOLO === "supplements") ? [{
+    key: "supplements",
+    label: "Supplements",
+    Icon: Pill,
+    View: SupplementsView,
+    getProps: (ctx) => ({ date: ctx.activeDate, sup: ctx.sup, catalog: ctx.suppCatalog || [], suppLog: ctx.suppLog, onDateChange: ctx.setActiveDate }),
+  }] : []),
+  ...((!SOLO || SOLO === "micros") ? [{
+    key: "micros",
+    label: "Mikros",
+    Icon: Microscope,
+    View: MicrosView,
+    getProps: () => ({}),
+  }] : []),
+  ...((!BUILD_IS_SHELL && !SOLO) ? [{
+    key: "settings",
+    label: "Setup",
+    Icon: Settings2,
+    View: SettingsView,
+    getProps: () => ({}),
+  }] : []),
+  ...((BUILD_IS_LOCAL && !SOLO) ? [{
+    // Lokale Builds (Fuel standalone coach + VitalOS ohne firebase mode)
+    // dürfen den Dev/Prod-Server-Tab bundlen; Cloud-/Firebase-Builds nicht.
+    key: "dev",
+    label: "Dev",
+    Icon: TerminalSquare,
+    View: DevView,
+    getProps: () => ({}),
+    localOnly: true,
+  }] : []),
+];
