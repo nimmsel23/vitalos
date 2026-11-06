@@ -33,16 +33,18 @@ Android-Vorlaufstand 2026-11-06 (Schritte 1-3 der Reihenfolge erledigt):
   committierten stabilen Pfaden gehalten werden (`git checkout --`).
 - Schritt 4 (Gradle-Build) am 2026-11-06 erstmals aus diesem Workspace
   erledigt — Debug-APK und signierte Release-AAB gebaut, Nachweise unter
-  „Artefaktnachweis“. JDK-Befund präzisiert (2026-11-06, gemeinsamer
-  Workspace): JDK 17 kennt das Source-Level 21 der Capacitor-8-Module nicht
-  und JDK 27 scheitert an der jlink-Transformation von
-  `android-36/core-for-system-modules.jar`; das mitgelieferte Runtime des
-  lokalen Android Studio ist dagegen ausreichend — mit
+  „Artefaktnachweis“. JDK-Befund korrigiert (2026-11-06): Die frühere
+  Aussage „benötigt exakt JDK 21; JBR 25 zu neu (Classfile 69)“ war
+  falsch. Richtig ist: JDK 17 kennt das Source-Level 21 der
+  Capacitor-8-Module nicht, und JDK 27 scheitert an der jlink-
+  Transformation von `android-36/core-for-system-modules.jar` — aber das
+  mitgelieferte Runtime des lokalen Android Studio genügt: mit
   `/opt/android-studio/jbr` (JBR 25.0.4+) liefen `assembleDebug` und
   `bundleRelease --rerun-tasks` inklusive `:app:signReleaseBundle`
-  jeweils `BUILD SUCCESSFUL` (früherer Classfile-69-Befund zu „JBR 25“
-  reproduziert sich in diesem Workspace nicht). Alternativ verifiziert:
-  Temurin JDK 21 unter `~/.local/share/jvm/jdk-21.0.13+9`.
+  jeweils `BUILD SUCCESSFUL`. Das Archiv belegt, dass JBR 25 bereits im
+  alten Checkout baute; ein separater JDK-Download ist nicht nötig.
+  Alternativ verifiziert: Temurin JDK 21 unter
+  `~/.local/share/jvm/jdk-21.0.13+9`.
 - Der native Web-Build `dist-native` wurde aus gemeinsamen Quellen (Stand
   `afbdda9` inkl. Import-Korrektur) erzeugt; APK/AAB aus diesem Workspace
   existieren seit dem 2026-11-06 (Quellstand `cb4a55b`, Nachweise unten).
@@ -93,13 +95,18 @@ OAuth-Client, keinen Android-Client mit Fingerabdruck):
 
 1. Firebase Console → Authentication/Identity Platform im Projekt
    `vitalos-prod` ermöglichen (Stand 2026-11-05: `SERVICE_DISABLED`;
-   erfordert Billing-Freigabe durch den Owner).
+   erfordert Billing-Freigabe durch den Owner). Stand 2026-11-06: die
+   Identity-Platform-API `identitytoolkit` ist laut
+   `gcloud services list --project vitalos-prod` aktiviert; der konkrete
+   Provider-Status ist per CLI nicht abfragbar (Google-Sensitive-Scope-
+   Beschränkung für ADC-Token) — Console-Sicht/Gerät bleibt maßgeblich.
 2. Unter der Android-App `com.vitalos.app` den Release-SHA-1 registrieren
    (für Entwicklungsgeräte zusätzlich den Debug-SHA-1); danach die neu
    gezogene `google-services.json` committen — erst dann ist ein nativer
-   Google Sign-In OAuth-Client vorhanden. Stand laut Owner, 2026-11-06:
-   SHA-1 ist registriert; der Commit der neu gezogenen
-   `google-services.json` ist noch offen.
+   Google Sign-In OAuth-Client vorhanden. Erledigt 2026-11-06: beide SHA-1
+   (Release-Draft B2:61:28:... und Debug 8A:07:CC:...) sind registriert;
+   die neu gezogene `google-services.json` mit zwei `client_type 1`-Clients
+   ist als `b1a3c26` committet.
 3. Google als Sign-In-Provider aktivieren und die authorized domains gegen
    das spätere Produkt-Hosting prüfen.
 4. VAPID-Paar prüfen: seit 2026-11-05 Console-verwaltet; Registrierung des
@@ -107,6 +114,20 @@ OAuth-Client, keinen Android-Client mit Fingerabdruck):
 5. Vor erstem Store-Upload entscheiden: Play App Signing oder eigener
    Upload-Key. Der lokale Draft-Keystore ist bis zum ersten Upload austausch-
    bar, danach identitätsbestimmend; nie committen.
+
+### Fehlt-Liste: erste vermarktbare Edition (core/store)
+
+Bestandsaufnahme 2026-11-06 (Inventar, kein Build/Auftrag):
+
+| Baustein | Stand | Fehlt |
+| --- | --- | --- |
+| Paketkennung | `com.vitalos.app` konsistent in Capacitor/Manifest/google-services | endgültige Bestätigung durch Owner (derzeit Draft-Status) |
+| Signatur | Draft-Release-Keystore, SHA-1 registriert, signierte AAB gebaut (Artefaktnachweis) | Entscheidung Play App Signing vs. eigener Key; bei Keywechsel erneute SHA-Registrierung |
+| Brand-Assets | nur observe/operate-Icons in `prod/branding/` | eigenes Store-Edition-Icon-Set (maskable 512, adaptive foreground/background) und Feature-Grafik |
+| Splash | mini-app-shell-Splash-Generierung vorhanden (`stamp`/`splash`) | Store-Edition-Splash-Quellen hinterlegen/prüfen |
+| Store-Texte | `STORE-LISTING-DRAFT.md` als Basis | finale Texte, Datenschutzerklärung, Support, Kontolöschung — passend zum ausgelieferten Produkt |
+| Anmeldung | OAuth-Clients (`client_type 1`) und Identity-Platform-API stehen | Google-Provider-Aktivierung in der Console prüfen; digitale Abnahme am Gerät offen |
+| Push | öffentlicher VAPID-Schlüssel in der lokalen Produktkonfiguration | Registrierung des Paars in der Console bestätigen (FIREBASE.md) |
 
 ### Weitere Release-Vorgaben
 
