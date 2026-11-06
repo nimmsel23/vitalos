@@ -1,10 +1,10 @@
 #!/usr/bin/env node
 /**
  * thin-results.mjs — tägliche RESULTS.md-Hygiene in den Submodulen des
- * Produkt-Checkouts (vitalos-prod). NICHT die ~/dev/*-dev-Worktrees —
+ * Submodule des Meta-Repos (~/vitalos). NICHT die ~/dev/*-dev-Worktrees —
  * die sind aktive Entwicklungscheckouts und bleiben unberührt ("dev is ja eh dev").
  *
- * Pro Submodule-Checkout (~/vitalos-prod/<path>, sauberer Worktree, RESULTS.md
+ * Pro Submodule-Checkout (~/vitalos/<path>, sauberer Worktree, RESULTS.md
  * ab THRESHOLD Zeilen, HEAD im .gitmodules-Branch von origin enthalten):
  *   1. Die aktive Engine destilliert dauerhaft relevantes Wissen aus
  *      RESULTS.md → wird der ARCHITECTURE.md NUR ANGEHÄNGT (nie umgeschrieben;
@@ -17,7 +17,7 @@
  *      alten RESULTS muss in neuer RESULTS, Destillat oder PATTERNS überleben;
  *      sonst stoppt der Bot sie zurück in die RESULTS.
  *   3. Der Checkout wird dafür auf seinen .gitmodules-Branch (z. B.
- *      product/vitalos-prod oder vitalos) gestellt, Commit NUR der drei
+ *      vitalos) gestellt, Commit NUR der drei
  *      Doku-Dateien (--no-verify), KEIN Push.
  *   4. Zentraler Lauf-Digest in docs/AUTO-DOC.md des Meta-Repos (committed,
  *      kein Push).
@@ -47,10 +47,12 @@
 import { execFileSync } from 'node:child_process';
 import { existsSync, mkdirSync, readFileSync, readdirSync, statSync, writeFileSync, openSync } from 'node:fs';
 import { homedir } from 'node:os';
-import { join, relative, resolve } from 'node:path';
+import { dirname, join, relative, resolve } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { runEngineChain } from './auto-doc-engines.mjs';
 
-const META = '/home/alpha/vitalos-prod';
+// Meta-Repo-Wurzel: prod/scripts/ → zwei Ebenen aufwärts.
+const META = resolve(dirname(fileURLToPath(import.meta.url)), '..', '..');
 const SUBMODULES = ['fitness-app', 'fuel-app', 'journal-app', 'habit-app', 'learn-app',
                     'relax-app', 'plan-app', 'skills-app', '6pack-app'];
 const THRESHOLD_LINES = 150;
@@ -296,10 +298,10 @@ async function main() {
       if (!d.isNew && existsSync(d.rel)) {
         writeFileSync(d.rel, readFileSync(d.rel, 'utf8').replace(/\s+$/, '') + header + d.content + '\n', 'utf8');
       } else if (d.name === 'ARCHITECTURE.md') {
-        writeFileSync(d.rel, `# ARCHITECTURE — ${p.repo}\n\nStruktur- und Wissensdokumentation dieses Submodules. Angelegt automatisch am ${TODAY}, weil die RESULTS.md dafür keinen thematisch passenderen Ziel-Doc fand; bei passenden Änderungen mitschreiben (Regel der vitalos-prod AGENTS.md).${header}${d.content}\n`, 'utf8');
+        writeFileSync(d.rel, `# ARCHITECTURE — ${p.repo}\n\nStruktur- und Wissensdokumentation dieses Submodules. Angelegt automatisch am ${TODAY}, weil die RESULTS.md dafür keinen thematisch passenderen Ziel-Doc fand; bei passenden Änderungen mitschreiben (Regel der VitalOS AGENTS.md).${header}${d.content}\n`, 'utf8');
         console.log(`  neues Themen-Doc: ${d.name}`);
       } else {
-        writeFileSync(d.rel, `# ${d.name.replace('.md', '')}\n\nThemen-Doku, angelegt vom thin-results-Dienst am ${TODAY} aus dem Destillat der RESULTS.md (kein passendes Zuhause vorhanden); proaktiv mitschreiben (Regel der vitalos-prod AGENTS.md).${header}${d.content}\n`, 'utf8');
+        writeFileSync(d.rel, `# ${d.name.replace('.md', '')}\n\nThemen-Doku, angelegt vom thin-results-Dienst am ${TODAY} aus dem Destillat der RESULTS.md (kein passendes Zuhause vorhanden); proaktiv mitschreiben (Regel der VitalOS AGENTS.md).${header}${d.content}\n`, 'utf8');
         console.log(`  neues Themen-Doc: ${d.name}`);
       }
     }
@@ -312,7 +314,7 @@ async function main() {
         ...wantedDestinations.map((d) => relative(p.path, d.rel))];
       git(p.path, 'add', ...addFiles);
       git(p.path, 'commit', '--no-verify', '-m',
-        `docs: RESULTS.md ausgedünnt, Wissen in thematisch passende Doku-Dateien destilliert (${TODAY})\n\nAutomatisierter Tageslauf des thin-results-Dienstes (vitalos-prod), Engine ${usedEngine}. Nur Doku, kein Code. Gitlink im Meta-Repo bleibt bewusst ungebumpst bis zum nächsten Skill-Release.`);
+        `docs: RESULTS.md ausgedünnt, Wissen in thematisch passende Doku-Dateien destilliert (${TODAY})\n\nAutomatisierter Tageslauf des thin-results-Dienstes (VitalOS Meta-Repo), Engine ${usedEngine}. Nur Doku, kein Code. Gitlink im Meta-Repo bleibt bewusst ungebumpst bis zum nächsten Skill-Release.`);
       const sha = git(p.path, 'rev-parse', '--short', 'HEAD');
       const patternTitles = out.patterns_md.split('\n').filter((l) => l.startsWith('### ')).map((l) => l.slice(4).trim());
       const destinations = wantedDestinations.map((d) => relative(p.path, d.rel));
