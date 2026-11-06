@@ -98,7 +98,11 @@ Kein Deploy wurde durchgeführt. Die Entscheidung, ob der Whole-Codebase-Deploy
 alle Journal-Functions ausbringt oder Callables gezielt ausgewählt werden
 (`prod/docs/FIREBASE.md`), bleibt Owner-Entscheidung. Der
 Smart-Log-Quota/Entitlement-Entwurf des Observe v1-Scopes liegt in
-`prod/docs/SCOPE-OBSERVE-V1.md`.
+`prod/docs/SCOPE-OBSERVE-V1.md`; das dort beschlossene Tagesbudget
+(1 KI-Analyse/Tag, `observeDailyLimit`) ist in der Backend-Quelle
+(`~/dev/backend`, Commit `213d5c9`) umgesetzt — der journal-app-Gitlink
+publiziert es erst mit dem nächsten Journal-Release, bis dahin führt der
+Meta-Pin noch die Wochen-Zählung.
 
 ## Pinning und Veröffentlichung
 

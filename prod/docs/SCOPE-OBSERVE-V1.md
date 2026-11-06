@@ -57,7 +57,7 @@ Abgeleitete Prüfkriterien (jede Scope-Änderung wird dagegen gemessen):
 | 5 | Skill Stack manuell: Fitness-Session, Fuel, Relax | ja — Journal-Einträge mit Smart Tags statt Pflichtformularen: KEINE Pflichtfelder, nichts scheitert an fehlenden Angaben; Datum im Zweifelsfall Zeitpunkt des Loggings (Entscheidung 4). Tag-Semantik: `+fuel` usw. bedeutet NUR Zuordnung des Eintrags zum jeweiligen Skill-Journal — kein Formularzwang, kein Parsing-Auslöser, keine Makro-Schätzung, keine simulierten Statistiken | ja | fitness/fuel/relax-app über `@view/*`-Aliase; Tag-Mechanik nach `hotFromJournal.js`-Muster |
 | 6 | Verlauf/Suche/Filter (p2-timeline) | ja — **Lücke B offen** (siehe unten) | ja (+ dieselbe Lücke) | `JournalV2Range.jsx` (Tag/Woche/Monat/Jahr-Raster), `JournalV2Cal`; Freitextsuche über Inhalte + Filter nach Skill/Tag existieren noch nicht |
 | 7 | Wochenübersicht | ja, regelbasiert (keine KI-Reports) | ja (+ später generative Auswertung, p6) | `JournalV2Range.jsx` |
-| 8 | Smart-Log-KI-Parsing (Freitext → Vorschläge: Habit-Completion, Mahlzeit/Makros, Tags) — liest den Nutzertext, benötigt KEINE Tags | Kontingent: **1 Analyse/Tag** (Update Daniel, ersetzt frühere 1/Woche). Optimalnutzung: den ganzen Tagesablauf in EINEN Eintrag formulieren — die Analyse erfasst ihn vollständig (MAX_INPUT 12000 deckt einen Tageseintrag); kein künstliches Kleinschneiden der Eingabe | höheres/entbundenes Limit via Entitlement | `journal-app/functions/smart-log.js` (gemini-2.5-flash, `quotaPolicy`, `smartLoggingEntitlements`); Zählschlüssel ist heute pro Kalenderwoche (`weeks`) — Tagesbudget braucht Tagesschlüssel (Designnotiz unten, Umsetzung als Folgeschritt) |
+| 8 | Smart-Log-KI-Parsing (Freitext → Vorschläge: Habit-Completion, Mahlzeit/Makros, Tags) — liest den Nutzertext, benötigt KEINE Tags | Kontingent: **1 Analyse/Tag** (Update Daniel, ersetzt frühere 1/Woche). Optimalnutzung: den ganzen Tagesablauf in EINEN Eintrag formulieren — die Analyse erfasst ihn vollständig (MAX_INPUT 12000 deckt einen Tageseintrag); kein künstliches Kleinschneiden der Eingabe | höheres/entbundenes Limit via Entitlement | `journal-app/functions/smart-log.js` (gemini-2.5-flash, `quotaPolicy`, `smartLoggingEntitlements`); Tagesbudget umgesetzt in der Backend-Quelle (`~/dev/backend` `213d5c9`: `days/{YYYY-MM-DD}`-Zählung, `observeDailyLimit`), Frontend-Meldungen synchronisiert (journal-dev `d98148a`) |
 | 9 | Bestätigung vor Speichern (p6-confirm): KI-Vorschlag nie automatisch gespeichert | ja (beide Tier) | ja | Edit-Flow in `JournalV2View.jsx` (`startEdit`); serverseitig `requestId`-Dedup |
 | 10 | Serverseitige Rechteprüfung (Entitlement/Quota am Server, nie nur UI) | ja | ja | `smart-log.js`: HttpsError `permission-denied`, uid-Check, Firestore-Transaktion |
 | 11 | „The Voice reflektieren“-Einstieg im Journal-Eintrag | ja — v1 ist die vorhandene regelbasierte, clientseitige Reflexion: KEIN KI-Call, kein Budgetverbrauch (P1-Befund: `views/voice/` ohne fetch/Callable/API-Key, feste Phasen-Prompts, `saveJournal` + localStorage) | später: echter KI-Kanal als Premium-Anker, Budget nach Kanal-Design | `JournalV2View.jsx:557` → `main.jsx` `startVoiceFromJournal` → `views/voice/VoicePanel.jsx`, `voiceData.js` |
@@ -86,9 +86,14 @@ existierte.
    pro Tag**. Das Tagesbudget gilt für Smart-Log — in v1 der einzige
    KI-Kanal; The Voice ist regelbasiert und verbraucht nichts. Optimalnutzung
    ist ausdrücklich gewünscht: der ganze Tagesablauf detailliert in EINEM
-   Eintrag. Implementierungshinweis: `smart-log.js` zählt heute Wochen
-   (`weeks`-Sammlung); ein Tagesbudget braucht einen Tagesschlüssel
-   (Designnotiz, Umsetzung als Folgeschritt in der Backend-Quelle).
+   Eintrag. **Umgesetzt** in der Backend-Quelle (`~/dev/backend` `213d5c9`):
+   Tagesschlüssel `smartLoggingQuotas/{uid}/days/{YYYY-MM-DD}`,
+   `observeDailyLimit`, operate über `entitlements.dailyLimit` (fail-closed);
+   Frontend-Meldungen in journal-dev synchronisiert (`d98148a`). Vor einem
+   Deploy: `smartLoggingConfig/default` um `observeDailyLimit` und
+   bestehende Operate-Entitlements um `dailyLimit` ergänzen; der Meta-Pin
+   (journal-app) publiziert den Tagesbudget-Stand erst mit dem nächsten
+   Journal-Release.
 4. **Skill Stack:** Journal mit Smart Tags, keine Pflichtfelder, keine
    fehlschlagende Eingabe; Datum = Zeitpunkt des Loggings als Fallback.
    Tag-Semantik: Ein Skill-Tag (`+fuel`, `+fitness`, `+relax`) ist nur ein
@@ -105,8 +110,10 @@ Tagesbudget statt eigener Wochen-/Tageslimits); Entitlement-Prüfung für
 Operate unverändert; fail-closed am Server (unbekannter Kanaltyp oder
 fehlende Konfiguration → `permission-denied`/`failed-precondition`).
 The Voice braucht kein eigenes Budget, solange kein KI-Call existiert.
-Die Tageszählung ersetzt die heutige `weeks`-Zählung im zugehörigen
-Umsetzungsschritt der Backend-Quelle (`~/dev/backend/functions/journal/`).
+**Umgesetzt** in der Backend-Quelle (`~/dev/backend` `213d5c9`): Tages-Doc
+mit `byChannel`-Attribution (`smartLog`-Zähler im selben Tagesbudget),
+`channel` am Request-Protokoll; ein künftiger Voice-KI-Kanal zählt im selben
+Dokument mit, ohne eigene Sammlung.
 
 ## Prüfungsergebnisse (ehemalige Restpunkte P1/P2)
 
@@ -128,9 +135,11 @@ Umsetzungsschritt der Backend-Quelle (`~/dev/backend/functions/journal/`).
   Functions“ im Root-`docs/UNIFIED-PRODUCT.md` ist maßgeblich. Vor einem
   echten Deploy fehlen Secrets/Parameter in `vitalos-prod` (`GEMINI_API_KEY`,
   `GOOGLE_OAUTH_CLIENT_SECRET`, `GOOGLE_OAUTH_CLIENT_ID`).
-- **Tagesbudget (Folgeschritt, vergeben):** `smart-log.js`/Quota auf
-  Tagesschlüssel + `observeDailyLimit` umstellen (fail-closed bleibt),
-  Implementierung in der Backend-Quelle, betroffene Doku im selben Zug.
+- **Tagesbudget (Folgeschritt): umgesetzt in der Quelle.** `smart-log.js`
+  zählt auf Tagesschlüssel mit `observeDailyLimit` (Backend `213d5c9`,
+  journal-dev-Meldungen `d98148a`). Ausstehend: Firestore-Konfiguration vor
+  Deploy (siehe Entscheidung 3), Journal-Release zur Publikation, Test-
+  Adaptation (vom User aufgeschoben).
 - **Lücke B — Suche/Filter (p2-timeline, vergeben):** Freitextsuche über
   Einträge + Filter nach Skill/Tag/Datum in Journal v2; Akzeptanzkriterien
   aus Matrix-Zeile 6.
