@@ -1,4 +1,17 @@
+## 2026-11-06 — Android-Produktlinie: erste APK/AAB aus dem gemeinsamen Workspace, falsche JDK-21-These zurückgezogen
+
+Auftrag war die Gradle-Phase der vereinten Produktlinie aus `~/vitalos/prod`. Ergebnis: Debug-APK und signierte Release-AAB sind erstmals aus dem gemeinsamen Workspace gebaut und verifiziert; die falsche Aussage „JBR 25 zu neu (Classfile 69)“ wurde empirisch widerlegt und in der Doku zurückgezogen. Kein Push, kein Deploy, kein Store-Upload; Installation und native Anmeldung wurden nicht ausgeführt.
+
+- **Builds (Quellstand `cb4a55b`, dev-product):** `assembleDebug` → `prod/android/app/build/outputs/apk/debug/app-debug.apk` (SHA-256 `3c73c074…5d813`, apksigner verify OK, Android-Debug-Key); `bundleRelease` → `prod/android/app/build/outputs/bundle/release/app-release.aab` (SHA-256 `06cca969…5795f5`, jarsigner verify OK, Signer-Fingerprint identisch mit dem Draft-Release-Key `3D:4F:62:E0:…`). Erstbau unter Temurin 21, Wiederholungsbau mit Android-Studio-JBR — beide JDKs bauen vollständig inkl. `:app:signReleaseBundle`.
+- **Signing-Fix (lokal, gitignored):** `prod/android/keystore.properties` hatte falschen `keyPassword`-Eintrag (PKCS12-Key ist mit dem Store-Passwort geschützt); nach Angleichung läuft bundleRelease. Kein Secret ausgegeben oder committet.
+- **JDK-Korrektur:** „JBR 25 zu neu“ war nie richtig — `/opt/android-studio/jbr` (JBR 25.0.4+) baut debug und release; das Archiv belegt JBR-25-Bauten schon aus dem alten Checkout. Nur JDK 17 (Source-Level 21) und JDK 27 (jlink) scheitern tatsächlich. Doku-Korrektur in `prod/docs/STORE-PUBLISHING-PLAN.md`.
+- **Nachweise:** Layout-Guard PASS, `release-manifest.mjs` (Release Candidate), `build-product-rules.mjs --check` PASS; Artefaktnachweise mit Pfaden/Hashes/Toolchain in STORE-PUBLISHING-PLAN.md „Erste Artefakte aus dem gemeinsamen Workspace“; PRODUCT-CHECKOUT.md und `docs/STORE-RELEASE-STATUS.md` nachgezogen („Aktualisierung 6. November“). Committete `google-services.json` (Fingerprints) gegen Doku kreuzgeprüft — beide SHA-1 identisch.
+- **Commits:** `67744b3`, `616463c`, `dfa24af` (vibe, dev-product); master-Worktree per `git merge --ff-only` gleichgezogen. Nicht gepusht.
+
+---
+
 ## 2026-11-06 — Release-Ablauf `master → vitalos` (vos-ship/vos-release), Stand der Modul-Releases und Shell-Tailwind-4
+
 
 Auftrag war ein Durchgang über alle Modul-Repos (Stand gegenüber `origin`, `dev` → `master`) mit dem Zielmodell: `dev` = Preview, `master` geht direkt live, nur `master → vitalos` läuft per PR mit Checks. Im Meta-Repo selbst wurde nur der Release-Ablauf (`bin/vos-ship`, `bin/vos-release`) umgebaut; Pointer-Bumps und die Shell-Umstellung auf Tailwind 4 sind **nicht** abgeschlossen. Der Umbau ist nur per Dry-Run/Syntaxcheck getestet, ein kompletter Release lief damit nicht.
 

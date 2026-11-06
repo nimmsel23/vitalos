@@ -3,6 +3,12 @@
 
 Aktive Arbeitsliste (max. 5 Punkte) für das vitalos Meta-Repo.
 
+## 2026-11-06 (Android-Produktlinie, APK/AAB gebaut)
+
+- [ ] Identity Platform im Firebase-Projekt `vitalos-prod` aktivieren (Owner-Aktion, Stand: `SERVICE_DISABLED`) — Voraussetzung für native Anmeldung; danach nativen Google-Sign-In auf einem Gerät abnehmen (Installation + Login sind separate Nachweise, bisher nicht ausgeführt).
+- [ ] Vor erstem Play-Upload entscheiden: Play App Signing oder eigener Upload-Key; danach erst `product-*`-Tag/Release-Mirror beauftragen (nicht Teil der Build-Session).
+- [ ] Bei zukünftigen Bauten: `prod/android/keystore.properties` lokal korrekt halten (PKCS12-Key nutzt das Store-Passwort; `keyPassword` war falsch und wurde lokal angeglichen).
+
 ## 2026-11-06 (Release-Ablauf master → vitalos, Shell-Tailwind-4)
 
 - [ ] `vos-ship`/`vos-release`-Umbau (`58f1ecf`/`36292cd`) ist nur lokal committet und nur per Dry-Run/Syntaxcheck geprüft: einmal real durchlaufen lassen (z. B. `vos-ship learn`) und erst dann pushen. `~/vitalos` steht auf `dev-product`, `vos-release` verlangt `master`.
