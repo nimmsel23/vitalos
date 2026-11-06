@@ -67,6 +67,44 @@ Eine TWA-Webvorbereitung ist noch keine gebaute oder veröffentlichte Android-Ap
 
 ## Release vorbereiten
 
+### Signing und Anmeldung — lokal vorbereitet am 2026-11-06
+
+Lokales Signing (Draft, nie committen): `prod/android/keystore.properties`
+(gitignored) referenziert den Draft-Release-Keystore (RSA 4096, Alias
+`vitalos`) unter `prod/.product-config/android/`. `app/build.gradle` nutzt
+ihn nur, wenn die Properties-Datei existiert — sonst bleibt der
+Release-Build unsigned; der Standard-Debug-Keystore ist davon unberührt.
+Versionierung: `versionCode 1`, `versionName 0.1.0` (am Product-Manifest
+`@vitalos/product` 0.1.0 ausgerichtet).
+
+Fingerabdrücke für die Console-Registrierung (öffentlich teilbar):
+
+| Keystore | SHA-1 | SHA-256 |
+| --- | --- | --- |
+| Release (Draft, Alias `vitalos`) | `B2:61:28:DA:F8:95:94:A1:EC:EA:B3:5A:98:9C:5D:31:18:CE:A3:EF` | `3D:4F:62:E0:10:47:08:4E:51:75:A1:FE:67:C8:71:D0:4C:26:BB:7B:CC:30:1B:66:64:1A:45:CC:39:C6:EB:A7` |
+| Debug (`androiddebugkey`) | `8A:07:CC:FA:F6:3E:C1:09:48:27:52:2D:F0:2B:DE:28:6F:0D:9E:9D` | `77:75:CF:01:33:72:75:43:58:56:7A:0F:83:55:D0:BB:56:D1:68:8B:00:67:DE:BA:20:82:4B:A7:4F:EF:24:E1` |
+
+Owner-Checkliste nativer Google-Login (Console-Aktionen, Stand der Prüfung
+2026-11-06; `google-services.json` hat bislang nur einen `client_type 3`
+OAuth-Client, keinen Android-Client mit Fingerabdruck):
+
+1. Firebase Console → Authentication/Identity Platform im Projekt
+   `vitalos-prod` ermöglichen (Stand 2026-11-05: `SERVICE_DISABLED`;
+   erfordert Billing-Freigabe durch den Owner).
+2. Unter der Android-App `com.vitalos.app` den Release-SHA-1 registrieren
+   (für Entwicklungsgeräte zusätzlich den Debug-SHA-1); danach die neu
+   gezogene `google-services.json` committen — erst dann ist ein nativer
+   Google Sign-In OAuth-Client vorhanden.
+3. Google als Sign-In-Provider aktivieren und die authorized domains gegen
+   das spätere Produkt-Hosting prüfen.
+4. VAPID-Paar prüfen: seit 2026-11-05 Console-verwaltet; Registrierung des
+   öffentlichen Schlüssels bestätigen (siehe FIREBASE.md).
+5. Vor erstem Store-Upload entscheiden: Play App Signing oder eigener
+   Upload-Key. Der lokale Draft-Keystore ist bis zum ersten Upload austausch-
+   bar, danach identitätsbestimmend; nie committen.
+
+### Weitere Release-Vorgaben
+
 - Dauerhafte Paketkennung, Versionscode und Signing-/Upload-Verantwortung festlegen.
 - Aktuelle Play-/Apple-Anforderungen unmittelbar vor Einreichung aus den
   offiziellen Quellen prüfen; ältere SDK-/Gebührenangaben nicht fortschreiben.

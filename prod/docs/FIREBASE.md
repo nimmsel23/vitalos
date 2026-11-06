@@ -69,6 +69,9 @@ Rücksprungkonfiguration. Google-Login, Kalender-OAuth und Push sind getrennte
 Integrationen. Ein vorhandener Client-Eintrag oder ein Sync beweist keine Anmeldung.
 Die früher dokumentierte Android-Google-Auth-Lücke ist vor einer Abnahme frisch
 zu prüfen; keinen inzwischen überholten Konsolen-Schritt blind wiederholen.
+Stand 2026-11-06: `google-services.json` enthält noch keinen Android-OAuth-Client
+mit Fingerabdruck; Owner-Checkliste und lokale Signing-Fingerabdrücke stehen im
+[Store-Plan](STORE-PUBLISHING-PLAN.md).
 
 ## Deployment-Ziele — nur bei eigenem Veröffentlichungsauftrag
 
