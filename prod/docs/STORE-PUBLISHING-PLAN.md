@@ -33,13 +33,16 @@ Android-Vorlaufstand 2026-11-06 (Schritte 1-3 der Reihenfolge erledigt):
   committierten stabilen Pfaden gehalten werden (`git checkout --`).
 - Schritt 4 (Gradle-Build) am 2026-11-06 erstmals aus diesem Workspace
   erledigt — Debug-APK und signierte Release-AAB gebaut, Nachweise unter
-  „Artefaktnachweis“. Toolchain-Befund bleibt aktuell: Gradle 8.14.3, AGP
-  8.13, compileSdk 36 benötigt exakt JDK 21. JDK 17 kennt das Source-Level
-  21 von Capacitor-8-Modulen nicht; JDK 27 scheitert an der jlink-
-  Transformation von `android-36/core-for-system-modules.jar`; JBR 25 ist
-  für Gradle 8.14.3 zu neu (Classfile 69). Verwendet wurde das lokal
-  vorhandene Temurin JDK 21 — `JAVA_HOME` auf
-  `~/.local/share/jvm/jdk-21.0.13+9` gesetzt (kein Download oder sudo nötig).
+  „Artefaktnachweis“. JDK-Befund präzisiert (2026-11-06, gemeinsamer
+  Workspace): JDK 17 kennt das Source-Level 21 der Capacitor-8-Module nicht
+  und JDK 27 scheitert an der jlink-Transformation von
+  `android-36/core-for-system-modules.jar`; das mitgelieferte Runtime des
+  lokalen Android Studio ist dagegen ausreichend — mit
+  `/opt/android-studio/jbr` (JBR 25.0.4+) liefen `assembleDebug` und
+  `bundleRelease --rerun-tasks` inklusive `:app:signReleaseBundle`
+  jeweils `BUILD SUCCESSFUL` (früherer Classfile-69-Befund zu „JBR 25“
+  reproduziert sich in diesem Workspace nicht). Alternativ verifiziert:
+  Temurin JDK 21 unter `~/.local/share/jvm/jdk-21.0.13+9`.
 - Der native Web-Build `dist-native` wurde aus gemeinsamen Quellen (Stand
   `afbdda9` inkl. Import-Korrektur) erzeugt; APK/AAB aus diesem Workspace
   existieren seit dem 2026-11-06 (Quellstand `cb4a55b`, Nachweise unten).
@@ -94,7 +97,9 @@ OAuth-Client, keinen Android-Client mit Fingerabdruck):
 2. Unter der Android-App `com.vitalos.app` den Release-SHA-1 registrieren
    (für Entwicklungsgeräte zusätzlich den Debug-SHA-1); danach die neu
    gezogene `google-services.json` committen — erst dann ist ein nativer
-   Google Sign-In OAuth-Client vorhanden.
+   Google Sign-In OAuth-Client vorhanden. Stand laut Owner, 2026-11-06:
+   SHA-1 ist registriert; der Commit der neu gezogenen
+   `google-services.json` ist noch offen.
 3. Google als Sign-In-Provider aktivieren und die authorized domains gegen
    das spätere Produkt-Hosting prüfen.
 4. VAPID-Paar prüfen: seit 2026-11-05 Console-verwaltet; Registrierung des
@@ -136,23 +141,32 @@ Fehlende Nachweise bleiben offen, auch wenn ein früherer Teilschritt grün war.
   (`releaseCandidate: true`, Lockfile SHA-256
   `1a8ada5d8992c225a3bbe671395fac999746c519d99b175e2d2ca41203ef280b`),
   `build-product-rules.mjs --check` PASS (transformationstimme Produkt-Rules).
-- Toolchain: Gradle 8.14.3 (Wrapper), AGP 8.13, compileSdk 36, Temurin
-  JDK 21.0.13+9 (`JAVA_HOME=~/.local/share/jvm/jdk-21.0.13+9`),
-  `sdk.dir=/home/alpha/Android/Sdk` (build-tools 36.0.0). Buildkommando aus
-  `prod/android` mit geladenem `../.product-config/product.env`:
-  `JAVA_HOME=<jdk21> ./gradlew assembleDebug` bzw. `bundleRelease`.
+- Toolchain: Gradle 8.14.3 (Wrapper), AGP 8.13, compileSdk 36; JDK: Temurin
+  JDK 21.0.13+9 (`JAVA_HOME=~/.local/share/jvm/jdk-21.0.13+9`) für die
+  Erstbauten, für den Wiederholungsbau verifiziertes Android-Studio-Runtime
+  `/opt/android-studio/jbr` (JBR 25.0.4+). `sdk.dir=/home/alpha/Android/Sdk`
+  (build-tools 36.0.0). Buildkommando aus `prod/android` mit geladenem
+  `../.product-config/product.env`:
+  `JAVA_HOME=<jdk> ./gradlew assembleDebug` bzw. `bundleRelease`.
 - Debug-APK: `prod/android/app/build/outputs/apk/debug/app-debug.apk`,
-  8 093 395 Bytes, SHA-256
+  8 120 168 Bytes, SHA-256
+  `3c73c07445583c9295f1ab0551fc9bad06d24ad7ef2a32e7a583449a73b5d813`
+  (Wiederholungsbau mit JBR 25.0.4, `assembleDebug`, `BUILD SUCCESSFUL in
+  41s`; Erstbau unter Temurin 21 ergab SHA-256
   `8a6f8bbb37e6ecee442e9dc695aab30a5d2efe713c0edd3946156b1c92c13581`,
-  `BUILD SUCCESSFUL in 51s`. Signatur: `apksigner verify` OK, Standard-
+  `BUILD SUCCESSFUL in 51s`). Signatur: `apksigner verify` OK, Standard-
   Debug-Keystore (`CN=Android Debug`, SHA-256
   `77:75:CF:01:33:72:75:43:58:56:7A:0F:83:55:D0:BB:56:D1:68:8B:00:67:DE:BA:20:82:4B:A7:4F:EF:24:E1`).
 - Release-AAB: `prod/android/app/build/outputs/bundle/release/app-release.aab`,
-  6 266 961 Bytes, SHA-256
-  `817a60e7da0929f9b76f607a7ed2492416e29a480f538aeccb24a8d1eaf748ad`,
-  `BUILD SUCCESSFUL`. Signatur: `jarsigner -verify` bestätigt („JAR-Datei
-  verifiziert.“; die JarFile/JarInputStream-Hinweise sind das bekannte
-  jarsigner-Artefakt bei Play-Bundles), Signer `CN=VitalOS Product, O=VitalOS`
+  6 266 712 Bytes, SHA-256
+  `06cca969a553cf1e7c755ee63d851fa9303717f5987af6eb67956bae5d5795f5`
+  (Wiederholungsbau mit JBR 25.0.4 aus `/opt/android-studio/jbr`,
+  `bundleRelease --rerun-tasks`, `BUILD SUCCESSFUL in 39s`, 156 Tasks;
+  Erstbau unter Temurin 21 ergab SHA-256
+  `817a60e7da0929f9b76f607a7ed2492416e29a480f538aeccb24a8d1eaf748ad`).
+  Signatur: `jarsigner -verify` bestätigt („JAR-Datei verifiziert.“; die
+  JarFile/JarInputStream-Hinweise sind das bekannte jarsigner-Artefakt
+  bei Play-Bundles), Signer `CN=VitalOS Product, O=VitalOS`
   (SHA384withRSA, 4096 Bit), Zertifikats-SHA-256
   `3D:4F:62:E0:10:47:08:4E:51:75:A1:FE:67:C8:71:D0:4C:26:BB:7B:CC:30:1B:66:64:1A:45:CC:39:C6:EB:A7`
   — identisch mit dem registrierten Draft-Release-Fingerprint (Alias
