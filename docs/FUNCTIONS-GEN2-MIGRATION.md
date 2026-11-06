@@ -46,3 +46,19 @@
 - Migration-Commits: bb3fd04 (Gen2-Code + logger-Mock), 557b07a (replace_gen1-Option)
 - Erfolgreicher Lauf: 42124845762 / 42125146195 / 42127547329 ( Attempt 3)
 - Folgeschulden: fitness/journal Gen1→Gen2 nach derselben Rezeptur, je einzeln und außerhalb der Reminder-Runde
+
+## Addendum 2026-11-06: fitness + journal nachgezogen — alle drei Reminder auf Gen2
+
+**Fitness** (Release-PR #76, Lauf 42130097000, erfolgreich): identische Rezeptur, Löschung 23:32:46, Gen2 scharf 23:34:04 — **Lücke 78 Sekunden**. Ticks verifiziert ab 23:44 im sauberen 5-Minuten-Raster (HTTP 200, `Push reminders: 0 sent, 0 failed`). Die übrigen Fitness-Functions (onCoachFeedback, onClientWorkout, sendTestPush) bleiben bewusst Gen1 (Gemischte Generationen in einer Codebasis werden von firebase-tools unterstützt).
+
+**Journal** (Release-PRs #22/#23/#24, Lauf 42133793020, erfolgreich) — drei Stolperstufen mehr:
+
+1. **Secret-IAM 403**: firebase-tools liest beim Build die Secrets ALLER Funktionen der Codebase (u.a. `GOOGLE_OAUTH_CLIENT_SECRET` von scheduledDoorReminders) — auch wenn nur eine Funktion deployt wird. Dem Deploy-SA wurden `secretmanager.viewer` + `secretmanager.secretAccessor` auf den Secrets fehlten. Nachgezogen auf GOOGLE_OAUTH_CLIENT_SECRET und GEMINI_API_KEY.
+2. **Fehlendes Secret**: `GEMINI_API_KEY` (defineSecret in journal index.js) existierte im Projekt gar nicht — Secret Manager meldet das als 403. Secret angelegt mit Platzhalter-Version `unset` (füllbar per `gcloud secrets versions add`, der analyzeSmartLog-Pfad hat einen try/catch für fehlenden Provider). **Offen: echter Gemini-API-Key muss noch hinterlegt werden.**
+3. **pnpm-Build ohne Framework**: journal-app/functions trägt (für den CI-Frozen-Lock) ein pnpm-lock.yaml; Cloud Build wählt damit den pnpm-Pfad, und dort injiziert Google das Functions Framework NICHT. Fix: `@google-cloud/functions-framework` ^5.0.5 deklariert, pnpm-lock UND npm-lock (npm ci im Deploy-Workflow verlangt Sync) regeneriert.
+
+Downtime Journal: 23:40 Gen1-Löschung → 00:03 Gen2 scharf, **23 Minuten** — Ursache war die sequentielle Entdeckung der Secret/Framework-Baustellen nach bereits vollzogener Löschung. Lehre für künftige Drittmigrationen: Secret-Enumeration und Lockfile-Inventur VOR dem replace_gen1-Lauf prüfen. Tick-Verifikation: 00:08 HTTP 200 + `Push reminders: 0 sent, 0 failed`.
+
+**GitHub-Zwischenfall 05./06.11.** (`fatal error in commit_refs_rules`): Account-weit wurden git-/Repository-Endpoints in dieser Nacht unregelmäßig abgelehnt (Plattform-Vorfall, community discussions #212105/#212107, Statusseite grün). Sämtliche Schritte der Kette (git push, PR, Merge) liefen über einfachen Retry mit wenigen Minuten Abstand erfolgreich durch — kein Datenverlust, kein Arbeitsverlust.
+
+**Verbleibend Gen1** (bewusst): journal scheduledDoorReminders (Secrets-RunWith), journal Callable-API (getSmartLogQuota, analyzeSmartLog, googleLink\*), fitness onCoachFeedback/onClientWorkout/sendTestPush. Der journal _functions_-Baum läuft administrativ noch auf admin ^12 / functions ^5 (deploybar und funktional; die transitive Verwundbarkeitsliste des npm-Locks ist vorbestehend) — die admin-14-Übernahme ist die gleiche Maschine wie coach-dev (eigener Batch).
