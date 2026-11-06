@@ -1,4 +1,7 @@
 # NEXT.md
+- [ ] vos-fuel: TW4-fähige Konfiguration (postcss + fuel 04493de) liegt bereit, Deploy ist workflow_dispatch-only — beim geplanten Umschalten der Live-Site `fuel-vos` manuell deployen und danach in fuel-dev den hosting:client-Schritt entfernen (Kommentar in deploy-vos-fuel.yml).
+- [ ] Habits/journal-Überführung (fremder Agent): journal-dev master (ec5f5cd, PR #28) liegt vor dem vitalos-Pointer 85759af — nach Abschluss Migrationsabschluss journal master→vitalos syncen und Meta-Pointer bumpen. Alter Standalone-Habits-Deploy bleibt rot (ERR_PNPM_LOCKFILE_CONFIG_MISMATCH, overrides-Block fehlt in habits-dev/deploy-master.yml) — stilllegen oder fixen gehört zur Überführung.
+- [ ] Dependabot: 1_low-Alert im Meta-Repo (nimmsel23/vitalos/security/dependabot/147) beim nächsten Dependency-Strich mitnehmen.
 - [ ] Session 4af6f88b („VitalOS repos open PRs and merges“, 2026-11-06): Das Transcript enthält nur Start-, Konfigurations- und Statusdatensätze, keine Nachrichten und keine Tool-Aufrufe. Ob offene Worktrees, Branches, PRs und Dependabot-Alerts geprüft oder gemerged wurden, ist daraus nicht belegbar. Stand mit `git worktree list`, `git branch -vv` und `gh pr list` prüfen und die Session nachdokumentieren.
 
 Aktive Arbeitsliste (max. 5 Punkte) für das vitalos Meta-Repo.

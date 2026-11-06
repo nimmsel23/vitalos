@@ -1,3 +1,15 @@
+## 2026-11-06 — Shell auf Tailwind 4, TW4-Shell-Release (dev-Worktree, Agent A)
+
+Zwei-Agenten-Release nach `HANDOFF-vitalos-tw4-shell-2026-11-06.md` (A: Shell/Schritte 1,2,4,5,6; B: Modul-PRs/Schritt 3). Die VitalOS-Shell wurde im Worktree `~/dev/.vitalos` auf Tailwind 4.3.4 gehoben und mit gebumpten Submodul-Pointern in EINEM Master-Push released; `vitalos.web.app` ist live verifiziert.
+
+- **Shell TW4 (`dbfbe4e`):** `package.json` (tailwindcss + `@tailwindcss/postcss` 4.3.4), `vite.config.js` (PostCSS-Plugin statt Inline-Plugin), `src/styles.css` (`@import "tailwindcss"; @config`), `vos-fuel/postcss.config.cjs`, `pnpm-lock.yaml` (−402 Zeilen). Builds grün (`pnpm run build`, `build:firebase`); Lockfile-Frozen-Check grün. CI-Checks `test-sixpack-auth.mjs`/`test-firebase-messaging.mjs` vorher lokal grün.
+- **Fuel-Stolperstein:** `fuel-app/src/client/styles.embedded.css` erzeugte unter v4 eine zweite Utilities-Ladung (Shell-CSS 332 statt 188 kB, `.flex` 2x). Fix per `HANDOFF-ANFRAGE-fuel-embedded.md` an Agent B delegiert: fuel-dev `04493de` + PR #22 → vitalos (Checks + Live-Deploy grün).
+- **Pointer-Bump (`b5bfd99`):** fitness ae99f125, fuel 04493de, relax 1b8c527, habit dce8a88e, 6pack 36fad303; journal/learn/plan/skills ohne Drift. Lockfile nachgezogen, `pnpm install --frozen-lockfile --lockfile-only` grün.
+- **Release:** Push `240a66a..b5bfd99` (fast-forward dev→master, bewusst ein Deploy statt zwei, um die Bloat-CSS-Zwischenversion nicht auf Prod zu bringen). `Deploy VitalOS Shell` 42239788469 grün; live `index-DtS3EK4o.css` 289 kB ohne Duplikate/`@tailwind`-Reste. `Deploy VOS Fitness PWA` 42239788825 grün; `fitness-vos.web.app` liefert byte-identisch den lokalen Build (`index-CnSRrJy4.css`). vos-fuel lokal gebaut und sauber (124 kB), Deploy wie konzipiert manuell. Bericht: `~/dev/HANDOFF-ERGEBNIS-vitalos-tw4-shell.md`; tele-Meldung ging raus.
+- **Nebenbefunde:** Submodul-Workingtrees des frischen Worktrees waren leer materialisiert (per `checkout -f` wiederhergestellt, learn-app komplett nachgefetcht); Root-Pre-Commit-Hook resynchronisiert Submodule beim Committen auf Gitlinks; TW4-Backups liegen in `.archiv/tw4-bak-20261106/`.
+
+---
+
 ## 2026-11-05 — Dependabot: Node-Backends aus dem Dependency-Baum, Release-Kette, Plan-Release
 
 Auftrag war ein Dependabot-Check (147 offene Alerts, 2 kritisch `proxy-addr`). Daraus wurde (Arbeit am 04.11. abends/05.11.) das Auslagern der Node-Backends (fastify, hono, better-sqlite3, firebase-admin, pino, web-push) aus dem vitalos-Baum, die Release-Kette dev → master → `vos-release` → Push und danach ein `vos-ship plan`. Shell-CI `Deploy VitalOS Shell` für `a6c7884` war grün; Dependabot-Alerts 147 → 130 (Rest überwiegend Frontend-Pakete, Rescan nötig). Das Plan-UI (Routinen, Makrozyklen, Fortschritt) wurde nicht im Browser angesehen.
