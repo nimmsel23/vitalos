@@ -32,8 +32,26 @@ Regeln (alle zusammen, siehe Modulkopf für Details):
 - Ungültiges `now` → konservativ `false` (niegrundlos erinnern).
 - Maßgeblich ist die lokale Zeitzone des Geräts (wie im Journal-Baustein).
 
-Tests: `prod/tests/focus-remind.test.mjs`, `node --test`, 9 Tests, lokal im
-Worktree ausgeführt: 9 pass, 0 fail (Node v26.13.0, UTC-unabhängig konstruiert).
+Tests: `prod/tests/focus-remind.test.mjs`, `node --test`, lokal im
+Worktree ausgeführt (Node v26.13.0, UTC-unabhängig konstruiert).
+
+### `explainReminderDecision` (reason-erhaltende Variante)
+
+```js
+explainReminderDecision(minimumLogMet, now, settings) // => { remind: boolean, reason: string }
+```
+
+Gleiche Entscheidung wie `shouldRemindNow` (das delegiert seitdem daran), zusätzlich
+mit stabil geordnetem Grund für UI/Debugging/Controller:
+
+| reason | Bedeutung |
+|---|---|
+| `minimum-log-met` | Log erfüllt — nie erinnern |
+| `invalid-now` | ungültige Uhrzeit — konservativ nicht erinnern |
+| `before-remind-hour` | vor `remindHour` |
+| `quiet-time` | in der Ruhezeit |
+| `already-reminded-today` | `lastRemindedOn` ist heute |
+| `remind` | alle Bedingungen erfüllt — feuern |
 
 ### Eingabe aus dem Web-Teil: `hasMinimumLogToday` (journal-dev, Commit `9edb12a`)
 
@@ -73,9 +91,71 @@ if (shouldRemindNow(met, now, settings)) fireReminder();
 
 Bis dahin ist `minimumLogMet` in `shouldRemindNow` bewusst ein boolescher Input:
 die Erinnerungslogik hängt nur an einem `boolean`, nicht an den Journal-Datenformen
-(Entries, Firestore-Timestamps etc. bleiben im Journal-Baustein).
+(Entries, Firestore-Timestamps etc. bleiben im Journal-Baustein). Der Controller
+(`src/focus/controller.js`) nimmt den Adapter als injizierte Funktion
+`getMinimumLogMet(now)` — siehe Abschnitt 2.
 
-## 2. Stufe 0: Capacitor-Local-Notifications-Anbindung (Entwurf, geprüfter Stand)
+## 2. Web-Nähte für die Integration (Meta-eigen, implementiert und getestet)
+
+Alle Dateien unter `prod/src/focus/`, reine Module ohne Capacitor-/Registert-importe;
+Abhängigkeiten werden injiziert, damit die Logik heute ohne Install/Gerät läuft:
+
+| Modul | Aufgabe |
+|---|---|
+| `settings.js` | Defaults (`DEFAULT_FOCUS_SETTINGS`), `normalizeFocusSettings` (defensiv, verwirft Ungültiges), `read/writeFocusSettings(storage)` mit injiziertem Storage (localStorage oder Capacitor Preferences), `createMemoryStorage` für Tests |
+| `remind.js` | Entscheidung (Abschnitt 1), zusätzlich `localDateKey` exportiert |
+| `controller.js` | `createReminderController({ getMinimumLogMet, loadSettings, saveSettings, sendNotification, now })` → `checkToday(): { sent, reason, settings }` |
+| `minimumLogAdapter.js` | `createMinimumLogAdapter({ hasMinimumLogToday, loadEntries, loadHabitCompletions, options })` — liefert dem Controller `getMinimumLogMet(now)` als echten boolean (Truthy-Coercion), reicht Options/Daten durch, wirft bewusst bei fehlender Verdrahtung → Controller reason 'minimum-log-unavailable' |
+| `usageStats.js` | Stufe-1-Webseite: `normalizeUsageReport` (defensiv gegen kaputte Plugin-Daten, reicht `approximate` des Kotlin-Fallbacks durch), `usageStatsStep` (UI: unavailable/needs-permission/ready), `getUsageToday(plugin)` (nie Throw), `evaluateDailyLimit` (nur Status, setzt noch keine Sperre durch; `no-limit` reicht die Messwerte durch) |
+| `notifications.js` | Adapter-Entwurf: `createNotificationAdapter(plugin)` — das echte `@capacitor/local-notifications`-Modul wird ÜBERGEBEN, nicht importiert (Registry-Regel); ohne Plugin `available: false`, `send()` bleibt `false` |
+
+Controller-Ablauf (Fehler-Philosophie: konservativ, kein Reminder-Spam):
+
+```
+checkToday()
+  → loadSettings + normalize
+  → getMinimumLogMet(now)            | Adapter-Fehler → reason 'minimum-log-unavailable', NICHT erinnern
+  → explainReminderDecision          | Grund-Durchreichung aus remind.js
+  → sendNotification({title, body})  | false/Throw → 'notification-failed',
+                                      |   KEIN Schreiben von lastRemindedOn (Retry später am Tag)
+  → saveSettings(lastRemindedOn=heute) | Schreibfehler annulliert die gestellte
+                                      |   Benachrichtigung nicht (schlimmstenfalls morgen erneut)
+  → { sent: true, reason: 'sent' }
+```
+
+Geplante Verdrahtung in der App (eine Stelle, nach Installation des Plugins):
+
+```js
+const storage = Capacitor Preferences oder localStorage;       // Naht aus settings.js
+const controller = createReminderController({
+  getMinimumLogMet: createMinimumLogAdapter({                  // minimumLogAdapter.js
+    hasMinimumLogToday,                                         // Import siehe Abschnitt 1, sobald 9edb12a integriert
+    loadEntries: () => Journal-Store-lädt,                      //  z. B. Firestore-Snapshot der heutigen Entries
+    loadHabitCompletions: () => Habit-Store-lädt,
+    options: { rule: 'any' },
+  }),
+  loadSettings: () => readFocusSettings(storage),               // settings.js
+  saveSettings: (s) => writeFocusSettings(storage, s),
+  sendNotification: (n) => createNotificationAdapter(LocalNotifications).send(n), // nach Install
+  now: () => new Date(),
+});
+```
+
+Tests (alle `node --test`, ausgeführt im Worktree, **40 pass / 0 fail** gesamt):
+`focus-remind.test.mjs` (13, inkl. Explain-Gründe und Null-Stunden-Regression),
+`focus-settings.test.mjs` (6), `focus-controller.test.mjs` (10, inkl. MinimumLog-Adapter),
+`focus-usage.test.mjs` (11, inkl. Notification-Adapter-Entwurf und approximate-Flag).
+
+Gefundene und gefixte Randfälle als Dauer-Regressionstests:
+
+- `Number(null) === 0`: fehlende `quietStartHour`/`quietEndHour` wurde zu
+  Mitternachtsstunde 0 verbogen (halbe Paare bauten ein Ruhezeit-Fenster ab
+  `quietStart` statt zu deaktivieren). Beide `hourOr`-Implementierungen
+  (remind.js, settings.js) behandeln null now explizit.
+- Doppelt normalisieren ist idempotent (read → normalize → write → read).
+- Grenzwert `totalMinutes === limitMinutes` gilt als `over` (dann wird gewarnt/gesper).
+
+## 3. Stufe 0: Capacitor-Local-Notifications-Anbindung (Entwurf, geprüfter Stand)
 
 Stand nach `9bd71c9` (Dep/Manifest/Lockfile, 2026-11-06) und dem Sync-Nachtrag auf
 `dev-product` (gleicher Tag):
@@ -117,9 +197,16 @@ Umsetzungsschritte (Planung von `fd78eda`, erledigte markiert):
    Capacitor Preferences) ist offen. Erfüllten Log nie benachrichtigen (regeln
    `shouldRemindNow` und der Test-Schalter „Mindest-Log heute erfüllt“).
 
+Die Schritte 3–5 greifen nach Installation direkt auf den fertigen Adapter
+`src/focus/notifications.js` zurück: `createNotificationAdapter(LocalNotifications)`
+kapselt `checkPermissions`/`requestPermissions` (inkl. `prompt`-Übergang) und
+`schedule` mit `allowWhileIdle`; API-Annahmen sind im Modulkopf für die
+Verifikation gegen 8.3.1 markiert. Der Controller (Abschnitt 2) konsumiert nur
+`send({title, body})`.
+
 Keine Server-Abhängigkeit, kein Backend-Deploy (Konzept Stufe 0 eingehalten).
 
-### Debug-Schalter (Minimal-UI, nur Debug-Builds)
+### Debug-Schalter (Minimal-UI, nur Debug-Builds, Android-Linie)
 
 `prod/src/focus/DebugReminderPanel.jsx` + Gate in `prod/src/main.jsx`:
 Eingebaut nur, wenn zur Build-Zeit `VITE_FOCUS_DEBUG=1` gesetzt ist
@@ -127,9 +214,11 @@ Eingebaut nur, wenn zur Build-Zeit `VITE_FOCUS_DEBUG=1` gesetzt ist
 Ohne das Flag existiert das Panel nicht im Bundle; Release-Builds sind
 unberührt. Der Schalter „Mindest-Log heute erfüllt“ setzt `minimumLogMet` für
 den Test; Standort des Panels: fixe Overlay-Box unten links (über Auth-Gate
-montiert, damit sie vor der Anmeldung erreichbar ist).
+montiert, damit sie vor der Anmeldung erreichbar ist). Ruft `runReminderCheck`
+(`reminderRunner.js`, Android-Linie) mit dem echten Plugin auf; der Controller
+(Abschnitt 2, Vibe C) ist die produktive Gegenseite derselben Logik.
 
-## 3. Stufe 1: `UsageStatsPlugin` (Kotlin-Skizze, angelegt, NICHT gebaut)
+## 4. Stufe 1: `UsageStatsPlugin` (Kotlin-Skizze, angelegt, NICHT gebaut)
 
 Datei: `prod/src/native/focus/UsageStatsPlugin.kt` — bewusst außerhalb des
 Gradle-Source-Sets (`android/app/src/main/java`), damit der Android-Build der
@@ -137,8 +226,15 @@ Android-Linie unberührt bleibt. Skizze enthält Endintegrations-Schritte im Kop
 
 - Design: `@CapacitorPlugin(name = "UsageStats")`; Methoden `hasPermission`,
   `requestPermission`, `getTodayUsage` (Top-5 je App + Tages-Summe in Minuten,
-  eigene App ausgeschlossen, `UsageStatsManager.queryAndAggregateUsageStats`
-  über den heutigen lokalen Kalendertag).
+  eigene App ausgeschlossen). Messweg überarbeitet: Ereignis-Stitching per
+  `UsageStatsManager.queryEvents` (`MOVE_TO_FOREGROUND` öffnet, `MOVE_TO_BACKGROUND`/
+  `ACTIVITY_STOPPED` schließt ein Intervall, offene Intervalle werden an `now`
+  geklemmt), weil `UsageStats.totalTimeInForeground` System-/Lockscreen-Zeiten
+  überzeichnen kann; Fallback auf `queryAndAggregateUsageStats` mit
+  `approximate: true` im Ergebnis, falls heute noch keine Events vorliegen.
+  Web-Seite: `src/focus/usageStats.js` normalisiert das
+  `{ totalMinutes, approximate, apps }`-Ergebnis defensiv und wertet es gegen
+  `settings.dailyMinutesLimit` aus (Abschnitt 2).
 - Manifest: `PACKAGE_USAGE_STATS` als `ProtectedPermissions`-Eintrag.
 
 Berechtigungsfluss (dokumentiert, umsetzbar; Ablehnung bleibt absturzfrei):
@@ -209,3 +305,7 @@ Bewusst offen (nicht als erledigt melden):
 - Messwert-Vergleich mit Digital Wellbeing offen (nur auf echtem Gerät möglich).
 - Signierter Release-Build dieses Fokus-Stands offen (die dokumentierte Release-
   AAB ist älter als dieser Stand); kein Deploy, kein Store-Upload, kein Push.
+- Die grünen node:test-Fälle (Reminder-Logik, Web-Nähte, Controller/Settings/
+  Usage, inkl. der 36 aus dem Vibe-C-Strang) prüfen ausschließlich die reinen
+  JS-Module mit injizierten Fakes — sie sind KEIN Nachweis für natives
+  Verhalten, Plugin-Wirklichkeit oder Gerätverhalten.

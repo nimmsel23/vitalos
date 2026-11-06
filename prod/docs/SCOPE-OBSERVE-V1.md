@@ -146,11 +146,19 @@ Dokument mit, ohne eigene Sammlung.
   +relax`), Zeitfenster 30 Tage/90 Tage/1 Jahr/Alles (bis 500 Einträge,
   cache-first also offline-tauglich), Treffer gruppiert nach Tag mit
   Sprung in die Tag-Ansicht. Ausstehend: Journal-Release zur Publikation.
-- **Lücke C — UI-Gating-Kommunikation:** mit Tagesbudget-Umsetzung bzw. vor
-  Launch umsetzen; die Free-Grenze (1 KI-Analyse/Tag, nur Smart-Log) muss dem
-  Nutzer verständlich kommuniziert werden. Server-Gating (Zeile 10) ist über
-  `getSmartLogQuota`/`analyzeSmartLog` im Produkt-Deploy-Pfad fail-closed
-  vorhanden.
+- **Lücke C — UI-Gating-Kommunikation: umgesetzt.** Tag-Modus mit
+  eingeschaltetem Smart-Log zeigt laufend Tier, `remaining`/`limit`
+  („heute verfügbar. Tageswechsel: Mitternacht, Zeitzone Wien.") und
+  Reservierungshinweis (`JournalV2View.jsx`, Disclosure-Block). Prüfkriterien:
+  (a) sichtbar VOR der ersten Nutzung — `getSmartLogQuota` ist serverseitig
+  eine reine Lese-Transaktion (`getQuotaStatus`, kein Verbrauch), Abfrage
+  aktiviert allein durch den Smart-Toggle; (b) der Suche-Modus enthält
+  keine KI-Aktion und keine Quota-Aussage — keine Widersprüche; (c) kein
+  Bestrafungs-Zustand: erschöpftes Budget zeigt nur den Hinweis „ohne KI
+  im Journal speichern" samt Reset-Zeitpunkt, kein Sperrzustand, kein
+  wiederkehrendes Popup, Nicht-Nutzung erzeugt keinen Hinweis-Druck
+  (Gewöhnungs-Grundsatz). Backend-Zeitzone Europe/Vienna deckt die
+  Mitternachts-Zusage.
 
 ## Nicht-Ziele von Observe v1 (ausdrücklich)
 

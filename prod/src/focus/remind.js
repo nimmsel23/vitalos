@@ -31,7 +31,10 @@
 
 const DEFAULT_REMIND_HOUR = 10;
 
-function localDateKey(date) {
+// 'YYYY-MM-DD' der lokalen Kalendertages des Datums (wie elsewhere im Fokus-Baustein
+// massgeblich: lokale Geraetezeit). Exportiert, damit der Controller denselben
+// Schluessel fuer `lastRemindedOn` erzeugt wie die Entscheidung hier.
+export function localDateKey(date) {
   return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}-${String(date.getDate()).padStart(2, "0")}`;
 }
 
@@ -47,6 +50,7 @@ function toValidDate(v) {
 
 // Volle Stunde 0–23 oder `fallback` (bei null/undefined/ungültig).
 function hourOr(v, fallback) {
+  if (v === null || v === undefined) return fallback; // Number(null) === 0, nicht NaN
   const n = Number(v);
   return Number.isInteger(n) && n >= 0 && n <= 23 ? n : fallback;
 }
@@ -57,10 +61,14 @@ function inQuietTime(hour, start, end) {
   return hour >= start || hour < end; // Fenster über Mitternacht
 }
 
-export function shouldRemindNow(minimumLogMet, now, settings) {
-  if (minimumLogMet) return false;
+// Reason-erhaltende Variante: gleiche Entscheidung wie shouldRemindNow, zusätzlich
+// mit maschinenlesbarem Grund für UI, Debugging und den Controller.
+// Reihenfolge der Prüfungen ist bewusst stabil: minimum-log-met > invalid-now >
+// before-remind-hour > quiet-time > already-reminded-today > remind.
+export function explainReminderDecision(minimumLogMet, now, settings) {
+  if (minimumLogMet) return { remind: false, reason: "minimum-log-met" };
   const nowDate = now === undefined ? new Date() : toValidDate(now);
-  if (!nowDate) return false; // ungültige Zeit => konservativ nicht erinnern
+  if (!nowDate) return { remind: false, reason: "invalid-now" };
 
   const s = settings && typeof settings === "object" ? settings : {};
   const remindHour = hourOr(s.remindHour, DEFAULT_REMIND_HOUR);
@@ -68,7 +76,14 @@ export function shouldRemindNow(minimumLogMet, now, settings) {
   const quietEnd = hourOr(s.quietEndHour, null);
   const hour = nowDate.getHours();
 
-  if (hour < remindHour) return false;
-  if (inQuietTime(hour, quietStart, quietEnd)) return false;
-  return s.lastRemindedOn !== localDateKey(nowDate); // höchstens einmal pro Tag
+  if (hour < remindHour) return { remind: false, reason: "before-remind-hour" };
+  if (inQuietTime(hour, quietStart, quietEnd)) return { remind: false, reason: "quiet-time" };
+  if (s.lastRemindedOn === localDateKey(nowDate)) {
+    return { remind: false, reason: "already-reminded-today" };
+  }
+  return { remind: true, reason: "remind" };
+}
+
+export function shouldRemindNow(minimumLogMet, now, settings) {
+  return explainReminderDecision(minimumLogMet, now, settings).remind;
 }
