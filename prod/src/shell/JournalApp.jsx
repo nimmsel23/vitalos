@@ -13,6 +13,10 @@ const qc = new QueryClient({
 
 export default function JournalApp({ user, onOpenSession, onNavigateShell, runtimeDate, onRuntimeDateChange, edition = PRODUCT_EDITION.id }) {
   const [classic, setClassic] = useState(false)
+  // Journal v2 verwaltet den Modus (Tag/Woche/Monat/Jahr/Suche) im Parent — im
+  // Standalone tut das main.jsx; in der Shell muss dieser Wrapper den Zustand
+  // halten, sonst sind die Modus-Buttons wirkungslose No-Ops (Abnahme-Befund).
+  const [jv2Mode, setJv2Mode] = useState('tag')
   const productEdition = edition !== 'core' || PRODUCT_EDITION.id === 'store'
 
   return (
@@ -27,6 +31,8 @@ export default function JournalApp({ user, onOpenSession, onNavigateShell, runti
           <JournalV2
             user={user}
             date={runtimeDate}
+            mode={jv2Mode}
+            onModeChange={setJv2Mode}
             onDateChange={onRuntimeDateChange}
             onSetHabitCompletion={(habitId, date, completed) => {
               const save = Reflect.get(habitsDb, 'setHabitCompletionFromHabits')
