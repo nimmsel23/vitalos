@@ -1,0 +1,696 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc 3.11" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>VitalOS · Produktstrategie V1.2.1</title>
+  <style>
+    /* Default styles provided by pandoc.
+    ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+    */
+    html {
+      color: #1a1a1a;
+      background-color: #fdfdfd;
+    }
+    body {
+      margin: 0 auto;
+      max-width: 36em;
+      padding-left: 50px;
+      padding-right: 50px;
+      padding-top: 50px;
+      padding-bottom: 50px;
+      hyphens: auto;
+      overflow-wrap: break-word;
+      text-rendering: optimizeLegibility;
+      font-kerning: normal;
+    }
+    @media (max-width: 600px) {
+      body {
+        font-size: 0.9em;
+        padding: 12px;
+      }
+      h1 {
+        font-size: 1.8em;
+      }
+    }
+    @media print {
+      html {
+        background-color: white;
+      }
+      body {
+        background-color: transparent;
+        color: black;
+      }
+      p, h2, h3 {
+        orphans: 3;
+        widows: 3;
+      }
+      h2, h3, h4 {
+        page-break-after: avoid;
+      }
+    }
+    p {
+      margin: 1em 0;
+    }
+    a {
+      color: #1a1a1a;
+    }
+    a:visited {
+      color: #1a1a1a;
+    }
+    img {
+      max-width: 100%;
+    }
+    svg {
+      height: auto;
+      max-width: 100%;
+    }
+    h1, h2, h3, h4, h5, h6 {
+      margin-top: 1.4em;
+    }
+    h5, h6 {
+      font-size: 1em;
+      font-style: italic;
+    }
+    h6 {
+      font-weight: normal;
+    }
+    ol, ul {
+      padding-left: 1.7em;
+      margin-top: 1em;
+    }
+    li > ol, li > ul {
+      margin-top: 0;
+    }
+    blockquote {
+      margin: 1em 0 1em 1.7em;
+      padding-left: 1em;
+      border-left: 2px solid #e6e6e6;
+      color: #606060;
+    }
+    code {
+      white-space: pre-wrap;
+      font-family: Menlo, Monaco, Consolas, 'Lucida Console', monospace;
+      font-size: 85%;
+      margin: 0;
+      hyphens: manual;
+    }
+    pre {
+      margin: 1em 0;
+      overflow: auto;
+    }
+    pre code {
+      padding: 0;
+      overflow: visible;
+      overflow-wrap: normal;
+    }
+    .sourceCode {
+     background-color: transparent;
+     overflow: visible;
+    }
+    hr {
+      border: none;
+      border-top: 1px solid #1a1a1a;
+      height: 1px;
+      margin: 1em 0;
+    }
+    table {
+      margin: 1em 0;
+      border-collapse: collapse;
+      width: 100%;
+      overflow-x: auto;
+      display: block;
+      font-variant-numeric: lining-nums tabular-nums;
+    }
+    table caption {
+      margin-bottom: 0.75em;
+    }
+    tbody {
+      margin-top: 0.5em;
+      border-top: 1px solid #1a1a1a;
+      border-bottom: 1px solid #1a1a1a;
+    }
+    th {
+      border-top: 1px solid #1a1a1a;
+      padding: 0.25em 0.5em 0.25em 0.5em;
+    }
+    td {
+      padding: 0.125em 0.5em 0.25em 0.5em;
+    }
+    header {
+      margin-bottom: 4em;
+      text-align: center;
+    }
+    #TOC li {
+      list-style: none;
+    }
+    #TOC ul {
+      padding-left: 1.3em;
+    }
+    #TOC > ul {
+      padding-left: 0;
+    }
+    #TOC a:not(:hover) {
+      text-decoration: none;
+    }
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: 1.5em;}
+    div.column{flex: auto;}
+    @media screen {
+    div.columns{gap: min(4vw, 1.5em);}
+    div.column{overflow-x: auto;}
+    }
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+  </style>
+    <style>html{background:#f1f4f2}body{max-width:52rem;margin:auto;padding:3rem clamp(1rem,5vw,4rem);background:white;color:#233439;font:17px/1.62 system-ui,sans-serif}h1,h2{line-height:1.22;color:#124e51}h1{font-size:2.6em}h2{margin-top:2.5rem;border-bottom:1px solid #cddbd7;padding-bottom:.45em}a{color:#175d5e}nav{background:#edf5f2;padding:1rem 2rem}nav ul{padding-left:1em}table{border-collapse:collapse;width:100%;font-size:.91em}td,th{padding:.6em;vertical-align:top;border-bottom:1px solid #cddbd7;text-align:left}th{background:#e7f0ed}blockquote{border-left:3px solid #31716f;margin-left:0;padding-left:1.2em}code{background:#eef2f0;padding:.1em .3em}@media(max-width:600px){table{display:block;overflow:auto}td{min-width:8em}}@media print{nav{display:none}body{padding:0;max-width:none}tr{break-inside:avoid}}</style>
+</head>
+<body>
+<nav id="TOC" role="doc-toc">
+<ul>
+<li><a href="#vitalos-v1.2.1-produktstrategie"
+id="toc-vitalos-v1.2.1-produktstrategie">VitalOS V1.2.1 ·
+Produktstrategie</a>
+<ul>
+<li><a href="#produktthese" id="toc-produktthese">Produktthese</a></li>
+<li><a href="#für-wen-vitalos-entsteht"
+id="toc-für-wen-vitalos-entsteht">Für wen VitalOS entsteht</a></li>
+<li><a href="#herkunft-und-eigene-methode"
+id="toc-herkunft-und-eigene-methode">Herkunft und eigene
+Methode</a></li>
+<li><a href="#kernfunktion-der-aufklappbare-tagestracker"
+id="toc-kernfunktion-der-aufklappbare-tagestracker">Kernfunktion · Der
+aufklappbare Tagestracker</a></li>
+<li><a href="#das-journal-als-terminal"
+id="toc-das-journal-als-terminal">Das Journal als Terminal</a></li>
+<li><a href="#the-voice-wenn-abhaken-allein-zu-wenig-erklärt"
+id="toc-the-voice-wenn-abhaken-allein-zu-wenig-erklärt">The Voice · Wenn
+Abhaken allein zu wenig erklärt</a></li>
+<li><a href="#vom-heutigen-eintrag-zur-nächsten-woche"
+id="toc-vom-heutigen-eintrag-zur-nächsten-woche">Vom heutigen Eintrag
+zur nächsten Woche</a></li>
+<li><a href="#observe-und-operate" id="toc-observe-und-operate">Observe
+und Operate</a></li>
+<li><a href="#erster-überprüfbarer-produktdurchlauf"
+id="toc-erster-überprüfbarer-produktdurchlauf">Erster überprüfbarer
+Produktdurchlauf</a></li>
+<li><a href="#geschäftsmodell-und-markteinführung"
+id="toc-geschäftsmodell-und-markteinführung">Geschäftsmodell und
+Markteinführung</a></li>
+<li><a href="#technische-grundlage-und-lieferreihenfolge"
+id="toc-technische-grundlage-und-lieferreihenfolge">Technische Grundlage
+und Lieferreihenfolge</a></li>
+<li><a href="#smartphone-und-langfristige-entwicklung"
+id="toc-smartphone-und-langfristige-entwicklung">Smartphone und
+langfristige Entwicklung</a></li>
+<li><a href="#woran-sich-die-strategie-bewähren-muss"
+id="toc-woran-sich-die-strategie-bewähren-muss">Woran sich die Strategie
+bewähren muss</a></li>
+<li><a href="#änderungen-gegenüber-v1.2.0"
+id="toc-änderungen-gegenüber-v1.2.0">Änderungen gegenüber
+V1.2.0</a></li>
+</ul></li>
+</ul>
+</nav>
+<h1 id="vitalos-v1.2.1-produktstrategie">VitalOS V1.2.1 ·
+Produktstrategie</h1>
+<p>Stand 6. November 2026 · Zielbild für Observe und Operate</p>
+<h2 id="produktthese">Produktthese</h2>
+<p>Wer sich regelmäßig Bewegung, Erholung oder Zeit zum Nachdenken
+vornimmt, kennt die Lücke zwischen Vorsatz und Alltag. VitalOS hilft,
+die eigene Aufmerksamkeit dort einzusetzen, wo sie heute etwas verändern
+kann. Vier selbst gewählte Gewohnheiten geben dem Tag eine Richtung. Das
+Journal hält fest, was tatsächlich passiert ist. Wo beides
+auseinanderliegt, kann der Nutzer eine Entscheidung treffen und sie in
+seinen nächsten Tag übernehmen.</p>
+<h2 id="für-wen-vitalos-entsteht">Für wen VitalOS entsteht</h2>
+<p>Die erste Zielgruppe sind Klienten im Vitaltraining, die bereits
+wissen, was ihnen guttut, und zwischen zwei Trainingsterminen ihren
+eigenen Rhythmus finden wollen. Ein typischer Fall ist jemand, der für
+freie Tage einen guten Trainingsplan hat und ihn nach langen Diensten
+regelmäßig auslässt. Im nächsten Gespräch kann er zeigen, an welchen
+Abenden ein kurzer Heimweg zu Fuß tatsächlich funktioniert hat. Welche
+Einträge er dafür teilt, entscheidet er selbst.</p>
+<p><strong>Positionierung für Klienten:</strong> „Was hast du dir für
+heute vorgenommen? In VitalOS hältst du fest, was davon Platz hatte.
+Wenn dein Plan wiederholt am selben Punkt scheitert, findest du einen
+nächsten Schritt, der zu deinem Tag passt.“</p>
+<p>Der Einstieg über Vitaltraining prägt die Tiefe des Produkts. Wer
+sein Krafttraining genauer dokumentiert, braucht Übungen, Sätze,
+Wiederholungen und Last. Für den Tagesüberblick genügt weiterhin ein
+einziges Häkchen. Dieselbe Person kann je nach Tag beide Ansichten
+verwenden.</p>
+<h2 id="herkunft-und-eigene-methode">Herkunft und eigene Methode</h2>
+<p>Die persönliche Entwicklungslinie führt von Wake Up Warrior über das
+von Daniel adaptierte AlphaOS zu VitalOS für Klienten. Aus dieser Praxis
+kommen die tägliche Ausführung, die strukturierte Reflexion und die
+Verbindung zur Wochenplanung. VitalOS verbindet sie mit Bewegung,
+Ernährung und Erholung aus dem Vitaltraining. Die Alpha/Beta-Sprache
+gehört zur persönlichen Entstehungsgeschichte. Für Klienten bilden ihre
+eigenen Vorhaben den Maßstab.</p>
+<p>Drei Begriffe halten die Methode auseinander. <strong>Doing,
+Thinking, Feeling und Being</strong> sind die Perspektiven auf den Tag.
+<strong>Skill Stack</strong> bezeichnet die Werkzeuge, mit denen man
+arbeitet. <strong>The Voice</strong> ist das Reflexionsmodell, an das in
+der Diskussion auch „The Stack“ erinnerte. Eine Meditation kann im
+Relax-Skill dokumentiert sein und einen selbst gewählten Being-Habit
+erfüllen. Dadurch wird Relax nicht grundsätzlich der Ebene Being
+zugeordnet.</p>
+<h2 id="kernfunktion-der-aufklappbare-tagestracker">Kernfunktion · Der
+aufklappbare Tagestracker</h2>
+<p>Auf den ersten Blick sieht der Nutzer vier Gewohnheiten und seinen
+Tagesstand von 0 bis 4. Hinter jedem Punkt kann er aufklappen, was er
+sich vorgenommen hat und welcher Eintrag die Ausführung dokumentiert.
+Wer nur abhaken möchte, ist damit fertig. Wer verstehen möchte, warum
+etwas immer wieder liegen bleibt, kann aus demselben Tageskontext The
+Voice öffnen.</p>
+<table>
+<colgroup>
+<col style="width: 33%" />
+<col style="width: 33%" />
+<col style="width: 33%" />
+</colgroup>
+<thead>
+<tr>
+<th>Ebene</th>
+<th>Leitfrage für die Wahl der Gewohnheit</th>
+<th>Beispiel für eine tägliche Ausführung</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Doing</td>
+<td>Was will ich körperlich tun?</td>
+<td>Nach der Arbeit zehn Minuten gehen.</td>
+</tr>
+<tr>
+<td>Thinking</td>
+<td>Worauf möchte ich meine Gedanken richten?</td>
+<td>Vor dem ersten Termin die wichtigste Aufgabe aufschreiben.</td>
+</tr>
+<tr>
+<td>Feeling</td>
+<td>Wann nehme ich wahr, wie es mir geht?</td>
+<td>Nach der Arbeit mein Gefühl in einem Satz benennen.</td>
+</tr>
+<tr>
+<td>Being</td>
+<td>Welcher Haltung möchte ich heute Raum geben?</td>
+<td>Vor dem ersten Griff zum Handy zwei Minuten in Stille sitzen.</td>
+</tr>
+</tbody>
+</table>
+<p>Pro Ebene zählt die ausgeführte Gewohnheit einmal. Die Beispiele sind
+austauschbar. Drei Trainingseinträge ergeben weiterhin höchstens einen
+Doing-Punkt. Ein offenes Feld darf offen bleiben. Gerade für das
+Gespräch mit einem Vitaltrainer ist interessant, was hinter einer
+wiederholt offenen Gewohnheit steckt.</p>
+<h2 id="das-journal-als-terminal">Das Journal als Terminal</h2>
+<p>Die vier Ebenen ordnen die Tagespraxis. Der <strong>Skill
+Stack</strong> stellt die Werkzeuge dafür bereit. Journal, Fitness,
+Nutrition, Relax, Habits und Planner können unterschiedliche Teile
+desselben Erlebnisses abbilden. Der Nutzer entscheidet selbst, welche
+Gewohnheit damit erfüllt ist.</p>
+<blockquote>
+<p>Nach der Schicht bin ich zwölf Minuten heimgegangen. Der Spaziergang
+hat mir gutgetan. +hot Eine kurze Heimroute für lange Dienste
+suchen.</p>
+</blockquote>
+<p>Im Zielbild bleibt der Wortlaut im Journal. Smart Logging kann „Gehen
+· 12 Minuten“ für Fitness vorschlagen. Ist der tägliche Spaziergang als
+Doing-Habit hinterlegt, kann der Nutzer denselben Eintrag dafür
+bestätigen. Der ausdrückliche Befehl <code>+hot</code> legt die Idee auf
+der Hotlist von The Door unter Potential ab. Damit ist sie für die
+spätere Auswahl vorgemerkt. Ein fixer Termin entsteht erst, wenn der
+Nutzer ihn plant.</p>
+<p>Tags und KI-Auswertung sind zwei getrennte Mechaniken. Ein Tag wie
+<code>+fuel</code> ordnet einen Eintrag dem Ernährungsjournal zu; mehr
+passiert nicht. Aus dem Tag allein wird nichts abgeleitet – keine
+Mengen, keine Makros, keine Schätzung. Die KI-Analyse liest dagegen den
+freien Text der Einträge und kommt ganz ohne Tags aus. Beide Wege
+ergänzen sich, hängen aber nicht voneinander ab.</p>
+<h2 id="the-voice-wenn-abhaken-allein-zu-wenig-erklärt">The Voice · Wenn
+Abhaken allein zu wenig erklärt</h2>
+<p>The Voice ist die vertiefende Reflexion aus AlphaOS. Der Arbeitstitel
+„The Pivot“ aus V1.0 entfällt. Ein möglicher Durchlauf nach mehreren
+ausgelassenen Trainings zeigt die vier Phasen in der Praxis.</p>
+<table>
+<colgroup>
+<col style="width: 50%" />
+<col style="width: 50%" />
+</colgroup>
+<thead>
+<tr>
+<th>Phase</th>
+<th>Beispiel aus dem Journal</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Stop</td>
+<td>„Ich wollte heute trainieren und sitze nach der Schicht wieder am
+Handy.“</td>
+</tr>
+<tr>
+<td>Submit</td>
+<td>„Ich bin müde. Für die geplanten 45 Minuten fehlt mir gerade die
+Energie.“</td>
+</tr>
+<tr>
+<td>Struggle</td>
+<td>„Ich behandle eine kurze Einheit so, als würde sie gar nicht zählen.
+Was wäre heute machbar?“</td>
+</tr>
+<tr>
+<td>Strike</td>
+<td>„Morgen gehe ich direkt nach Dienstschluss zehn Minuten zu
+Fuß.“</td>
+</tr>
+</tbody>
+</table>
+<p>Der Strike kann als einmaliger Schritt in den Planner oder als
+angepasster Habit übernommen werden. Erst die tatsächliche Ausführung
+zählt für den Tag. Die Reflexion bleibt auch ohne anschließende Aufgabe
+nutzbar.</p>
+<h2 id="vom-heutigen-eintrag-zur-nächsten-woche">Vom heutigen Eintrag
+zur nächsten Woche</h2>
+<table>
+<colgroup>
+<col style="width: 33%" />
+<col style="width: 33%" />
+<col style="width: 33%" />
+</colgroup>
+<thead>
+<tr>
+<th>Werkzeug</th>
+<th>Aufgabe im Produkt</th>
+<th>Beispiel</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Journal</td>
+<td>Wortlaut und Tageskontext festhalten</td>
+<td>„Nach langen Diensten fehlt mir die Energie fürs Studio.“</td>
+</tr>
+<tr>
+<td>Fitness, Nutrition und Relax</td>
+<td>Bewegung, Mahlzeiten und Erholung im passenden Detailgrad
+dokumentieren</td>
+<td>Gehzeit, Mittagessen oder Atemübung erfassen</td>
+</tr>
+<tr>
+<td>Habits</td>
+<td>Wiederkehrende Praxis und tatsächliche Ausführung verbinden</td>
+<td>An Diensttagen einen Teil des Heimwegs gehen</td>
+</tr>
+<tr>
+<td>The Voice</td>
+<td>Einen konkreten Konflikt reflektieren</td>
+<td>Herausfinden, weshalb eine kurze Einheit bisher als wertlos
+galt</td>
+</tr>
+<tr>
+<td>The Door</td>
+<td>Möglichkeiten sammeln, auswählen und bis zum Ergebnis verfolgen</td>
+<td>Eine kurze Heimroute über Potential, Plan, Production und Profit
+erproben</td>
+</tr>
+<tr>
+<td>Planner und Tent</td>
+<td>Einen nächsten Schritt einplanen und in der Wochenplanung wieder
+aufgreifen</td>
+<td>Die Route für Donnerstag vormerken und am Wochenende prüfen</td>
+</tr>
+<tr>
+<td>The Game</td>
+<td>Tagesentscheidungen mit Standort, längerfristigem Ziel und aktuellem
+Fokus verbinden</td>
+<td>Für die nächsten 30 Tage eine umsetzbare Bewegungsroutine
+finden</td>
+</tr>
+</tbody>
+</table>
+<p>Die Startansicht braucht dafür das Journal und die vier Tagesfelder.
+Die weiteren Werkzeuge öffnen sich aus dem jeweiligen Anlass. Ein
+spontaner Gedanke darf im Journal bleiben, bis der Nutzer etwas daraus
+machen möchte.</p>
+<h2 id="observe-und-operate">Observe und Operate</h2>
+<table>
+<colgroup>
+<col style="width: 33%" />
+<col style="width: 33%" />
+<col style="width: 33%" />
+</colgroup>
+<thead>
+<tr>
+<th></th>
+<th>Observe · Free</th>
+<th>Operate · Premium</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Tägliche Praxis</td>
+<td>Vier Habits, Journal und manuelle Nutzung der Skills</td>
+<td>Dieselbe Tagespraxis und dieselben Einträge</td>
+</tr>
+<tr>
+<td>Direkte Eingabe</td>
+<td>Freitext und explizite Tags wie <code>+hot</code></td>
+<td>Dieselben Befehle</td>
+</tr>
+<tr>
+<td>Smart Logging</td>
+<td>Eine KI-gestützte Verarbeitung pro Tag</td>
+<td>Regelmäßige Verarbeitung mit höherem Tageskontingent</td>
+</tr>
+<tr>
+<td>Nutzen</td>
+<td>Den eigenen Tag mit wenig Aufwand festhalten</td>
+<td>Mehrere Skills aus einem freien Eintrag bedienen</td>
+</tr>
+</tbody>
+</table>
+<p>Die KI extrahiert Angaben und schlägt Zuordnungen vor. Vorschläge
+lassen sich vor der Übernahme korrigieren. Unbekannte Mengen bleiben
+offen. Normale Journaleinträge und manuelle Tags verbrauchen kein
+KI-Kontingent. Wer seinen ganzen Tagesablauf in einem einzigen Eintrag
+formuliert und diese eine Analyse nutzt, hat das Tagesbudget optimal
+ausgeschöpft – ein künstliches Kleinschneiden der Eingabe gibt es nicht.
+Preis, Premium-Kontingent und Modellanbieter sind offene
+Implementierungsentscheidungen. Coachingberichte gehören nicht zum
+Produktumfang.</p>
+<p><strong>Gewöhnungs-Grundsatz.</strong> Observe ist so vollständig,
+dass niemand die App löschen muss, bevor er an Premium denkt. Fünf
+Prüfkriterien messen jede Änderung am Scope:</p>
+<ul>
+<li><strong>Löschschwellen-Test:</strong> Wer 30 Tage keine KI-Aktion
+nutzt, hat trotzdem einen vollständigen Tages- und Wochen-Loop –
+Journal, Tags, Habits, Door, Wochenansicht – ohne Funktionslücke.</li>
+<li><strong>Kein Bestrafungs-Zustand:</strong> Ist das Tagesbudget
+verbraucht, bleibt die App voll bedienbar. Die Kommunikation zeigt, wann
+es zurück ist – kein wiederkehrendes Popup, kein gesperrter
+Kernfluss.</li>
+<li><strong>KI ist Veredelung, nicht Voraussetzung:</strong> Kein
+Feature darf so gestaltet sein, dass die Bedienung ohne KI-Aktion als
+defekt wirkt.</li>
+<li><strong>Kein Daten-Geiselstück:</strong> Export und Löschung der
+eigenen Daten sind Free-Kernfunktionen. Der Nutzer bleibt
+freiwillig.</li>
+<li><strong>Premium-Argument ist mehr KI-Tiefe</strong> – unbegrenzt,
+mit Kontext, skillübergreifend –, nie der Entzug bereits genutzter
+manueller Funktionen.</li>
+</ul>
+<h2 id="erster-überprüfbarer-produktdurchlauf">Erster überprüfbarer
+Produktdurchlauf</h2>
+<p>Ein Nutzer legt vier Tagesgewohnheiten fest, erfasst einen
+Spaziergang im Journal und findet denselben Eintrag im Fitness-Skill und
+beim Doing-Habit wieder. Eine erneute Übernahme erzeugt weder eine
+zweite Aktivität noch einen weiteren Punkt. Aus einem anderen,
+wiederholt offenen Habit startet er The Voice, übernimmt seinen Strike
+in den Planner und kann am Folgetag festhalten, ob er ihn ausgeführt
+hat.</p>
+<p><strong>Prüffrage für den Pilotbetrieb:</strong> Können Nutzer nach
+einer Woche einen konkreten Moment benennen, in dem sie aufgrund ihrer
+eigenen Einträge den nächsten Tag anders gestaltet haben? Der Tagesstand
+zeigt die Ausführung. Die Antwort auf diese Frage prüft das eigentliche
+Produktversprechen.</p>
+<h2 id="geschäftsmodell-und-markteinführung">Geschäftsmodell und
+Markteinführung</h2>
+<p>Observe soll als dauerhaftes persönliches Logbuch funktionieren. Der
+tägliche Smart Log macht den Komfortunterschied an den eigenen Worten
+erlebbar. Operate richtet sich an Menschen, die regelmäßig mehrere Dinge
+in einem Satz erfassen möchten. Bezahlt wird für die häufigere
+strukturierte Übernahme. Der wirtschaftliche Prüfstein ist die
+eingesparte Eingabezeit bei akzeptablen Verarbeitungskosten.</p>
+<p>Der erste Vertriebskanal ist als Pilot im eigenen Vitaltrainer-Umfeld
+vorgesehen. Beim Einstieg wählt jeder Teilnehmer vier kleine,
+beobachtbare Handlungen. In Woche eins genügt ein gemeinsamer
+Beispieldurchlauf. In Woche zwei zeigt der Teilnehmer selbst einen
+Eintrag, der eine Entscheidung beeinflusst hat. Für eine erste
+Angebotsseite eignet sich genau dieser Ablauf als Demo. 6,90 Euro
+monatlich und 300 Smart Logs pro Monat sind frühere
+<strong>Testannahmen</strong>. Vor einer Preisentscheidung zählen
+tatsächliche Nutzung, Kosten je erfolgreicher Analyse und
+Zahlungsbereitschaft.</p>
+<h2 id="technische-grundlage-und-lieferreihenfolge">Technische Grundlage
+und Lieferreihenfolge</h2>
+<p>Die bisherige Durchsicht beschreibt ein VitalOS-Metarepository mit
+Skill-Submodulen und einem dedizierten Produkt-Wrapper, der die
+Editionen Observe und Operate aus denselben eingebundenen Quellständen
+baut. Im geprüften Journal-Stand gibt es bereits Freitextanalyse,
+Vorschau und Übernahme für Journal, Ernährung und Habits. Die Abdeckung
+von Fitness, Relax und Planner im gemeinsamen Übernahmepfad ist noch zu
+prüfen. Grundlage dieser Einschätzung ist die frühere Durchsicht von
+journal-dev auf master. Für jede Umsetzung ist der tatsächlich im
+Metarepository eingebundene Commit maßgeblich.</p>
+<table>
+<colgroup>
+<col style="width: 33%" />
+<col style="width: 33%" />
+<col style="width: 33%" />
+</colgroup>
+<thead>
+<tr>
+<th>Etappe</th>
+<th>Ergebnis</th>
+<th>Abnahme</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1 · Bestand abgleichen</td>
+<td>Eingebundene Commits, Observe/Operate-Einstiege, Datenpfade und
+Zugriffsregeln prüfen</td>
+<td>Ein manueller Tagesablauf ist auf dem tatsächlichen Build
+reproduzierbar.</td>
+</tr>
+<tr>
+<td>2 · Tagespraxis verbinden</td>
+<td>Journal, vier Tagesfelder, aufklappbare Details und explizite
+Befehle verbinden</td>
+<td>Ein Offline-Eintrag bleibt nach dem Synchronisieren erhalten. Ein
+wiederholtes Speichern erzeugt keinen zweiten Punkt oder
+Hotlist-Eintrag.</td>
+</tr>
+<tr>
+<td>3 · Smart Logging verlässlich machen</td>
+<td>Originaltext, erkannte Angaben und bestätigte Zuordnungen getrennt
+speichern</td>
+<td>Zwei Trinkvorgänge à 500 ml ergeben 1.000 ml. Eine wiederholte
+Übernahme verändert die Summe nicht. Fehlende Mengen, Schätzungen und
+ausdrücklich genannte Uhrzeiten bleiben unterscheidbar.</td>
+</tr>
+<tr>
+<td>4 · Reflexion anschließen</td>
+<td>The Voice aus dem Tageskontext öffnen und einen Strike auf Wunsch
+übernehmen</td>
+<td>Eine geplante Handlung lässt sich später als ausgeführt
+dokumentieren.</td>
+</tr>
+<tr>
+<td>5 · Premium erproben</td>
+<td>Analysezugriff und Tageskontingent serverseitig prüfen; Zahlungsweg
+konkretisieren (Google Play Billing bei mobiler Auslieferung nahe
+liegend, Stripe-Web-Checkout als Alternative – offene Entscheidung)</td>
+<td>Ein erneuter Versuch nach einem Teilfehler verdoppelt weder Buchung
+noch Daten. Ein ausgeschöpftes KI-Kontingent lässt manuelle Einträge
+weiterhin zu.</td>
+</tr>
+</tbody>
+</table>
+<p>Für die Analyse sind Gemini beziehungsweise Vertex AI die bisher
+vorgesehenen Optionen. Der Nutzer soll erkennen können, welcher Text zur
+Analyse übermittelt wird, und die Vorschau korrigieren können. Vor dem
+Pilotstart wird geprüft, welche Daten das Gerät verlassen und ob Nutzer
+ausschließlich ihre eigenen Einträge abrufen können. Observe und Operate
+sollen dieselben Regeln für Tagespunkte, Befehle und Speicherung
+verwenden.</p>
+<h2 id="smartphone-und-langfristige-entwicklung">Smartphone und
+langfristige Entwicklung</h2>
+<p>Als erster mobiler Einstieg ist die installierbare Web-App mit
+direktem Zugriff aufs Journal vorgesehen. Im Pilot zählt, wie schnell
+jemand unterwegs einen Gedanken festhalten und später wiederfinden kann.
+Wenn schon das Öffnen der App Einträge verhindert, sind ein Widget, ein
+Kurzbefehl oder das Teilen-Menü sinnvolle nächste Versuche. Freiwillige
+Fokusregeln beim Öffnen ablenkender Apps wären ein späteres, gesondert
+zu prüfendes Vorhaben.</p>
+<h2 id="woran-sich-die-strategie-bewähren-muss">Woran sich die Strategie
+bewähren muss</h2>
+<p>Ein erster Pilot mit etwa 20 Personen über zwei bis vier Wochen ist
+ein Vorschlag für die Validierung. Neben der Nutzung zählt vor allem die
+konkrete Verhaltensänderung. Die Teilnehmer können hierzu einzelne
+Beispiele freiwillig schildern.</p>
+<table>
+<colgroup>
+<col style="width: 33%" />
+<col style="width: 33%" />
+<col style="width: 33%" />
+</colgroup>
+<thead>
+<tr>
+<th>Frage</th>
+<th>Beobachtung</th>
+<th>Konsequenz</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Hilft VitalOS beim bewussten Steuern des Alltags?</td>
+<td>Jemand benennt eine Entscheidung, ändert seinen Plan und probiert
+die Änderung tatsächlich aus.</td>
+<td>Bleiben die Beispiele beim Abhaken stehen, den Übergang von
+Beobachtung zu Handlung verbessern.</td>
+</tr>
+<tr>
+<td>Trägt der Tagestracker im Alltag?</td>
+<td>Teilnehmer kehren in der zweiten Woche freiwillig zurück und können
+einen Punkt einem konkreten Ereignis zuordnen.</td>
+<td>Bei Abbrüchen zunächst Einstieg und Aufwand untersuchen.</td>
+</tr>
+<tr>
+<td>Hat Operate einen bezahlbaren Mehrwert?</td>
+<td>Zeitaufwand und Korrekturen bei manueller Erfassung und Smart
+Logging vergleichen. Anschließend Zahlungsbereitschaft erfragen.</td>
+<td>Premium-Kontingent und Preis anhand von Nutzung und Kosten
+festlegen.</td>
+</tr>
+</tbody>
+</table>
+<p>Die entscheidende Frage im Abschlussgespräch lautet: <strong>„Was
+hast du diese Woche aufgrund eines Eintrags in VitalOS anders
+gemacht?“</strong> Eine konkrete Antwort verbindet den Tagestracker, das
+Journal und die operative Planung mit dem versprochenen Ergebnis.</p>
+<h2 id="änderungen-gegenüber-v1.2.0">Änderungen gegenüber V1.2.0</h2>
+<p>Ergänzungsfassung vom 6. November 2026; das Zielbild von V1.2.0
+bleibt unangetastet. Die Präzisierungen stammen aus den
+Produktentscheidungen dieser Runde (Detailtiefe und Belege:
+<code>prod/docs/SCOPE-OBSERVE-V1.md</code> im Metarepository).</p>
+<ol type="1">
+<li><strong>Tagesbudget statt Wochenbudget:</strong> Für Observe gilt
+eine KI-Analyse pro Tag. Wer den ganzen Tagesablauf in einem Eintrag
+formuliert, nutzt sie optimal.</li>
+<li><strong>Tag-Semantik geklärt:</strong> Tags sind reines Routing, die
+KI-Analyse liest freien Text – zwei getrennte Mechaniken.</li>
+<li><strong>Gewöhnungs-Grundsatz</strong> als verbindliches
+Free-Design-Prinzip mit fünf Prüfkriterien ergänzt.</li>
+<li><strong>Zahlungsweg</strong> ist als offene Entscheidung
+gekennzeichnet statt Stripe als gesetzt.</li>
+<li><strong>Terminologie:</strong> Das Produkt ist ein Wrapper mit den
+Editionen Observe und Operate; die früheren separaten Produktvarianten
+vos-observe/vos-operate entfallen als Planungsgröße.</li>
+</ol>
+<p>Die HTML-Fassung (<code>VitalOS-Produktstrategie-V1.2.0.html</code>)
+bleibt bis zu einer erneuten Generierung auf dem Stand von V1.2.0.</p>
+</body>
+</html>
