@@ -1,8 +1,8 @@
-import SixPackPromiseCard from '../../6pack-app/SixPackPromiseCard.jsx'
+import SixPackPromiseCard from '../../../6pack-app/SixPackPromiseCard.jsx'
 import { getUid, getSixpackProgram, saveSixpackProgram } from '@db'
-import { getAllCoachingNotes } from '../../fitness-app/src/lib/coachNotes.js'
-import { logWorkoutAsSession } from '../../fitness-app/src/lib/logExternalWorkout.js'
-import '../../6pack-app/sixpack.css'
+import { getAllCoachingNotes } from '../../../fitness-app/src/lib/coachNotes.js'
+import { logWorkoutAsSession } from '../../../fitness-app/src/lib/logExternalWorkout.js'
+import '../../../6pack-app/sixpack.css'
 
 const loadProgram = () => getSixpackProgram()
 const saveProgram = (_uid, program) => saveSixpackProgram(program)

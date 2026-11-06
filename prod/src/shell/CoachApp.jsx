@@ -11,7 +11,7 @@
  */
 
 import Coach from '@view/coach'
-import '../../fitness-app/src/styles/coach-console.css'
+import '../../../fitness-app/src/styles/coach-console.css'
 
 export default function CoachApp(props) {
   return (
