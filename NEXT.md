@@ -1,4 +1,5 @@
 # NEXT.md
+- [ ] Session 4af6f88b („VitalOS repos open PRs and merges“, 2026-11-06): Das Transcript enthält nur Start-, Konfigurations- und Statusdatensätze, keine Nachrichten und keine Tool-Aufrufe. Ob offene Worktrees, Branches, PRs und Dependabot-Alerts geprüft oder gemerged wurden, ist daraus nicht belegbar. Stand mit `git worktree list`, `git branch -vv` und `gh pr list` prüfen und die Session nachdokumentieren.
 
 Aktive Arbeitsliste (max. 5 Punkte) für das vitalos Meta-Repo.
 
