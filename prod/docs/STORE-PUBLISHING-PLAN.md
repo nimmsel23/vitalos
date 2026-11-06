@@ -31,18 +31,18 @@ Android-Vorlaufstand 2026-11-06 (Schritte 1-3 der Reihenfolge erledigt):
   8.6.0) erkannt; `prod/android/local.properties` (gitignored) zeigt auf
   `~/Android/Sdk`. Nach Sync muss `capacitor.settings.gradle` mitunter auf den
   committierten stabilen Pfaden gehalten werden (`git checkout --`).
-- Schritt 4 (Gradle-Build) offen und vom Nutzer zurückgestellt. Technischer
-  Befund: `./gradlew assembleDebug` (Gradle 8.14.3, AGP 8.13, compileSdk 36)
-  benötigt exakt ein JDK 21. JDK 17 kennt das Source-Level 21 von
-  Capacitor-8-Modulen nicht; JDK 27 scheitert an der jlink-Transformation
-  von `android-36/core-for-system-modules.jar`; JBR 25 ist für Gradle
-  8.14.3 zu neu (Classfile 69). Ohne sudo bleibt z. B. ein lokaler
-  Temurin-21-Tarball nach `~/jdks`; danach `JAVA_HOME=<jdk21-Verzeichnis>`
-  setzen. Danach:
-  `cd prod/android && ./gradlew assembleDebug` bzw. `bundleRelease`.
+- Schritt 4 (Gradle-Build) am 2026-11-06 erstmals aus diesem Workspace
+  erledigt — Debug-APK und signierte Release-AAB gebaut, Nachweise unter
+  „Artefaktnachweis“. Toolchain-Befund bleibt aktuell: Gradle 8.14.3, AGP
+  8.13, compileSdk 36 benötigt exakt JDK 21. JDK 17 kennt das Source-Level
+  21 von Capacitor-8-Modulen nicht; JDK 27 scheitert an der jlink-
+  Transformation von `android-36/core-for-system-modules.jar`; JBR 25 ist
+  für Gradle 8.14.3 zu neu (Classfile 69). Verwendet wurde das lokal
+  vorhandene Temurin JDK 21 — `JAVA_HOME` auf
+  `~/.local/share/jvm/jdk-21.0.13+9` gesetzt (kein Download oder sudo nötig).
 - Der native Web-Build `dist-native` wurde aus gemeinsamen Quellen (Stand
   `afbdda9` inkl. Import-Korrektur) erzeugt; APK/AAB aus diesem Workspace
-  existieren noch nicht.
+  existieren seit dem 2026-11-06 (Quellstand `cb4a55b`, Nachweise unten).
 
 ## Reihenfolge bis Android
 
@@ -128,6 +128,44 @@ Zu jedem späteren Kandidaten festhalten: Meta-Commit/Tag, App-Pins, Lockfile-Ha
 Buildmodus und Produktziel, Toolchain, Artefaktpfad/Hash und Signing-Status.
 Installation, Anmeldung und Veröffentlichung mit eigenem Datum/Ergebnis nennen.
 Fehlende Nachweise bleiben offen, auch wenn ein früherer Teilschritt grün war.
+
+### Erste Artefakte aus dem gemeinsamen Workspace (2026-11-06, lokal)
+
+- Quellstand: Meta-Commit `cb4a55b` auf `dev-product` (Release-Kandidat ohne
+  Tag). Layout-Guard PASS (neun App-Pins), `release-manifest.mjs` läuft
+  (`releaseCandidate: true`, Lockfile SHA-256
+  `1a8ada5d8992c225a3bbe671395fac999746c519d99b175e2d2ca41203ef280b`),
+  `build-product-rules.mjs --check` PASS (transformationstimme Produkt-Rules).
+- Toolchain: Gradle 8.14.3 (Wrapper), AGP 8.13, compileSdk 36, Temurin
+  JDK 21.0.13+9 (`JAVA_HOME=~/.local/share/jvm/jdk-21.0.13+9`),
+  `sdk.dir=/home/alpha/Android/Sdk` (build-tools 36.0.0). Buildkommando aus
+  `prod/android` mit geladenem `../.product-config/product.env`:
+  `JAVA_HOME=<jdk21> ./gradlew assembleDebug` bzw. `bundleRelease`.
+- Debug-APK: `prod/android/app/build/outputs/apk/debug/app-debug.apk`,
+  8 093 395 Bytes, SHA-256
+  `8a6f8bbb37e6ecee442e9dc695aab30a5d2efe713c0edd3946156b1c92c13581`,
+  `BUILD SUCCESSFUL in 51s`. Signatur: `apksigner verify` OK, Standard-
+  Debug-Keystore (`CN=Android Debug`, SHA-256
+  `77:75:CF:01:33:72:75:43:58:56:7A:0F:83:55:D0:BB:56:D1:68:8B:00:67:DE:BA:20:82:4B:A7:4F:EF:24:E1`).
+- Release-AAB: `prod/android/app/build/outputs/bundle/release/app-release.aab`,
+  6 266 961 Bytes, SHA-256
+  `817a60e7da0929f9b76f607a7ed2492416e29a480f538aeccb24a8d1eaf748ad`,
+  `BUILD SUCCESSFUL`. Signatur: `jarsigner -verify` bestätigt („JAR-Datei
+  verifiziert.“; die JarFile/JarInputStream-Hinweise sind das bekannte
+  jarsigner-Artefakt bei Play-Bundles), Signer `CN=VitalOS Product, O=VitalOS`
+  (SHA384withRSA, 4096 Bit), Zertifikats-SHA-256
+  `3D:4F:62:E0:10:47:08:4E:51:75:A1:FE:67:C8:71:D0:4C:26:BB:7B:CC:30:1B:66:64:1A:45:CC:39:C6:EB:A7`
+  — identisch mit dem registrierten Draft-Release-Fingerprint (Alias
+  `vitalos`). Signiert als Upload-Bundle; Play App Signing entscheidet erst
+  beim ersten Upload (siehe Checkliste unten).
+- Signing-Konfiguration: `keystore.properties` (gitignored) hatte einen
+  falschen `keyPassword`-Eintrag; im PKCS12-Keystore ist der Key mit dem
+  Store-Passwort geschützt. Nach lokaler Angleichung läuft `:app:signReleaseBundle`.
+  Kein Secret in Doku oder Commit übernommen.
+- Nicht belegt durch diese Builds: Installation auf einem Gerät, native
+  Anmeldung, Store-Upload. Die Console-Aktionen des Owners (Identity
+  Platform aktivieren, Release-/Debug-SHA-1 registrieren,
+  `google-services.json` neu ziehen) bleiben offen.
 
 ## Quellen und Historie
 

@@ -22,6 +22,13 @@ Die Tabelle dokumentiert den Integrationsabschluss, nicht jeden nachfolgenden
 Agent-Schritt. Ein aktueller Build braucht einen eigenen Quellcommit und
 Artefaktnachweis. Frühere native Builds im alten Checkout bleiben frühere Builds.
 
+Erste native Artefakte aus dem gemeinsamen Workspace am 2026-11-06: Debug-APK
+und signierte Release-AAB aus Meta-Commit `cb4a55b` (`dev-product`), inklusive
+Toolchain, Hashes und Signaturprüfung dokumentiert unter
+[STORE-PUBLISHING-PLAN.md](STORE-PUBLISHING-PLAN.md) → „Erste Artefakte aus
+dem gemeinsamen Workspace“. Installation, Anmeldung und Upload bleiben
+separate Nachweise.
+
 ## Nächste Schritte
 
 1. Gewünschten gemeinsamen Quellstand festhalten. Der ältere Dev-Abgleich ist
