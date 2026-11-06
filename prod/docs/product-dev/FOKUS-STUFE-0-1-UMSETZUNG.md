@@ -1,9 +1,16 @@
 # Fokus-Sperre Stufe 0 und 1 — Umsetzungsstand (Worktree `focus-stufe-0-1`, Woche 3, 2026-11-06)
 
 Entwurf auf Basis von `~/vitalos-prod/docs/product-dev/ANDROID-FOKUS-STUFE-0-1.md` und
-`FOKUS-SPERRMODUS.md` (beide nur gelesen). Alles in diesem Dokument bezieht sich auf
-den Worktree `/dev/shm/wt-focus` (Branch `focus-stufe-0-1`, Basis `dev-product`,
-Stand `fd78eda`). Kein Android-Build, kein Gerätetest, kein Deploy (siehe „Offen“).
+`FOKUS-SPERRMODUS.md` (beide nur gelesen). Ursprünglicher Bezugsstand: Worktree
+`/dev/shm/wt-focus` (Branch `focus-stufe-0-1`, Basis `dev-product`, Stand `fd78eda`).
+
+**Aktualisiert am 2026-11-06 auf dem Haupt-Checkout `/home/alpha/vitalos` (`dev-product`):**
+Der Groundwork-Stand `acd9906` ist in `dev-product` aufgegangen; danach landeten
+`9bd71c9` (Local-Notifications-Deklaration, gemeinsames Lockfile, `POST_NOTIFICATIONS`)
+und `b8e7f84` (`reminderRunner` mit injiziertem Plugin/Speicher). Die Branches
+`focus-stufe-0-1`, `focus-notifications` und `focus-runner` sind vollständig in
+`dev-product` gemerged. Android-Build, `cap sync`, Gerätetest und Deploy laufen
+weiterhin nicht (siehe „Offen“).
 
 ## 1. Web-/TS-Teil: `shouldRemindNow` (Meta-eigen, implementiert und getestet)
 
@@ -43,9 +50,10 @@ hasMinimumLogToday(entries, habitCompletions, now, options)
 //    prüfbare, vor dieser volle Stunde angelegte Zeitstempel.
 ```
 
-Geplanter Importweg (Status: **noch nicht verdrahtet**, `src/lib/focus/minimumLog.js`
-fehlt im `journal-app`-Integrations-Checkout auf `dev-product` — dort liegt `9edb12a`
-noch nicht):
+Geplanter Importweg (Status: **noch nicht verdrahtet** — `src/lib/focus/minimumLog.js`
+fehlt im `journal-app`-Integrations-Checkout auf `dev-product`; `9edb12a` ist im
+Quellrepo `~/dev/journal-dev` auf `origin/dev` gepusht, aber noch nicht auf der
+`vitalos`-Gitlink-Branche, über die `journal-app` integriert):
 
 1. journal-dev (Entwicklungsquelle, `~/dev/journal-dev`) merged/integriert den Commit.
 2. `journal-app` (Integrations-Checkout im Meta-Repo) nimmt ihn auf
@@ -69,38 +77,57 @@ die Erinnerungslogik hängt nur an einem `boolean`, nicht an den Journal-Datenfo
 
 ## 2. Stufe 0: Capacitor-Local-Notifications-Anbindung (Entwurf, geprüfter Stand)
 
-Befund am Worktree-Stand `fd78eda`:
+Stand nach `9bd71c9` (Dep/Manifest/Lockfile, 2026-11-06) und dem Sync-Nachtrag auf
+`dev-product` (gleicher Tag):
 
-- `@capacitor/local-notifications` ist NICHT in `prod/package.json` deklariert —
-  auch nicht im restlichen Produkt-Importer. Im gemeinsamen `pnpm-lock.yaml`
-  existiert `@capacitor/local-notifications@8.3.1` (Capacitor 8), aber nur über die
-  Importer `fitness-app` und `6pack-app` (Meta-Root, private PWA), nicht über `prod`.
-- `prod/android` ist ein reguläres Capacitor-Android-Projekt (Package
-  `com.vitalos.app`, `MainActivity.java` = leeres `BridgeActivity`);
-  `capacitor.settings.gradle` enthält kein Local-Notifications-Plugin → ein
-  `cap sync` heute würde es NICHT in den Android-Build bringen.
-- `prod/android/app/src/main/AndroidManifest.xml` deklariert nur `INTERNET`;
-  `POST_NOTIFICATIONS` fehlt (wird vom Plugin-Manifest gemerged, sobald installiert).
+- `@capacitor/local-notifications@8.3.1` ist in `prod/package.json` deklariert und
+  über den `prod`-Importer im gemeinsamen `pnpm-lock.yaml` aufgelöst. Das Paket lag
+  bereits im pnpm-Store (Importer `fitness-app`/`6pack-app` im Meta-Root), die
+  Verlinkung lief offline: `pnpm install --offline --filter @vitalos/product`
+  (Root) — kein Registry-Zugriff nötig.
+- `POST_NOTIFICATIONS` steht seit `9bd71c9` in
+  `prod/android/app/src/main/AndroidManifest.xml`.
+- `cap sync android` wurde ausgeführt: `capacitor.settings.gradle`/
+  `capacitor.build.gradle` binden `:capacitor-local-notifications` (cap-Ausgabe:
+  „Found 2 Capacitor plugins for android“, Kopie der Assets nach
+  `android/app/src/main/assets/public`, gitignored). Zugrundeliegender Web-Build:
+  `pnpm run build:native` mit Firebase-Isolation PASS für `dist-native`.
 
-Umsetzungsschritte (offen — erfordern Registry/Install, hier nicht ausgeführt):
+Umsetzungsschritte (Planung von `fd78eda`, erledigte markiert):
 
-1. `@capacitor/local-notifications` (Version aus dem gemeinsamen Lockfile: 8.3.1,
-   passend zu Capacitor 8.6.0) in `prod/package.json` aufnehmen und im PrimeCheckout
-   installieren (Voll-Install über die langsame Registry bewusst vermieden);
-   Lockfile mitführen.
-2. `pnpm --filter @vitalos/product run native:sync` (cap sync) im Haupt-Checkout.
-3. Vorab-Hinweistext („wofür?“) anzeigen, dann
-   `LocalNotifications.requestPermissions()` — Android 13+ verlangt
-   `POST_NOTIFICATIONS` zur Laufzeit.
-4. Feuern entweder (a) beim App-Öffnen per Polling: `shouldRemindNow(...)` prüfen
-   und `LocalNotifications.schedule({ allowWhileIdle: true, ... })` feuern, oder
-   (b) vorgeplant pro Tag — Empfehlung (a) für Stufe 0: kein Alarm-Management,
-   kein Reboot-Handling; das Prüfkriterium „feuert nach Neustart und im Doze-Modus“
-   bleibt dadurch ausdrücklich offen und ist nur auf einem echten Gerät prüfbar.
-5. Erfolgsfall: `settings.lastRemindedOn` = heutiger lokaler Tag schreiben.
-   Erfüllten Log nie benachrichtigen (Ruhezeit + Deckelung regelt `shouldRemindNow`).
+1. [erledigt] Plugin deklarieren, offline installieren, Lockfile mitführen
+   (`9bd71c9`; Offline-Verlinkung wie oben).
+2. [erledigt] Web-Build + `cap sync android` im Haupt-Checkout (2026-11-06).
+3. [erledigt, minimal] Vorab-Hinweistext („wofür?“) und
+   `LocalNotifications.requestPermissions()` — im Debug-Schalter
+   `prod/src/focus/DebugReminderPanel.jsx` (nur bei Builds mit
+   `VITE_FOCUS_DEBUG=1` im Bundle, siehe unten): fragt die Berechtigung erst
+   beim Knopfdruck an und ruft danach `runReminderCheck` mit dem echten Plugin
+   auf. Android 13+ verlangt `POST_NOTIFICATIONS` zur Laufzeit.
+4. [Stub für Stufe 0] Feuern beim App-Öffnen: das Debug-Panel deckt den
+   Emulator-/Abnahmebeweis ab; die echte Anbindung (Aufruf beim App-Start mit
+   Nutzerwerten) bleibt offen. Empfehlung (a) Polling bleibt Stand der Planung —
+   kein Alarm-Management, kein Reboot-Handling; das Prüfkriterium „feuert nach
+   Neustart und im Doze-Modus“ bleibt ausdrücklich offen und ist nur auf einem
+   echten Gerät/Emulator prüfbar (Handoff-Rezept
+   `~/dev/HANDOFF-woche3-emulator-stufe0-REZEPT.md`).
+5. [teilweise] Erfolgsfall: `settings.lastRemindedOn` schreibt der Runner erst
+   nach erfolgreichem Planen selbst. Debug-Panel nutzt einen localStorage-Adapter
+   als Speicher; die echte Settings-UI (remindHour/Ruhezeit, Speicherwahl,
+   Capacitor Preferences) ist offen. Erfüllten Log nie benachrichtigen (regeln
+   `shouldRemindNow` und der Test-Schalter „Mindest-Log heute erfüllt“).
 
 Keine Server-Abhängigkeit, kein Backend-Deploy (Konzept Stufe 0 eingehalten).
+
+### Debug-Schalter (Minimal-UI, nur Debug-Builds)
+
+`prod/src/focus/DebugReminderPanel.jsx` + Gate in `prod/src/main.jsx`:
+Eingebaut nur, wenn zur Build-Zeit `VITE_FOCUS_DEBUG=1` gesetzt ist
+(React.lazy-Chunk, im Web-Build sichtbar als `assets/DebugReminderPanel-*.js`).
+Ohne das Flag existiert das Panel nicht im Bundle; Release-Builds sind
+unberührt. Der Schalter „Mindest-Log heute erfüllt“ setzt `minimumLogMet` für
+den Test; Standort des Panels: fixe Overlay-Box unten links (über Auth-Gate
+montiert, damit sie vor der Anmeldung erreichbar ist).
 
 ## 3. Stufe 1: `UsageStatsPlugin` (Kotlin-Skizze, angelegt, NICHT gebaut)
 
@@ -132,13 +159,46 @@ Registrierung bei der Endintegration: eine Zeile in
 `MainActivity.java` (`register(UsageStatsPlugin.class)`); konkrete Capacitor-8-
 Signatur beim Build gegen die lokale Android-Ausstattung prüfen.
 
-## Explicit-open list (nicht als erledigt melden!)
+## Explicit-open list (Stand 2026-11-06, Haupt-Checkout `dev-product`)
 
-- Android-Build / Gradle-Sync wurde NICHT ausgeführt (auch kein `cap sync`).
-- Keine nativen Tests, kein Gerätetest, kein Neustart-/Doze-/Ablehnungs-Praxistest.
+Läuft und ist belegt:
+
+- `@capacitor/local-notifications@8.3.1` deklariert, offline verlinkt, `cap sync android`
+  ausgeführt (`capacitor.settings.gradle`/`capacitor.build.gradle` binden das Plugin).
+- Web-Build `dist-native` mit Debug-Flag: Firebase-Isolation PASS, Panel als eigener
+  Chunk (`assets/DebugReminderPanel-DRJHmj2J.js`), kopiert nach
+  `android/app/src/main/assets/public`.
+- Debug-APK gebaut (2026-11-06, aus `dev-product`, Quellstand inkl. Fokus-Commits
+  bis `b8e7f84`):
+  `prod/android/app/build/outputs/apk/debug/app-debug.apk`,
+  8 140 679 B, SHA-256
+  `57d0bbd876415014ca39b351544426cf4ca55030101833cc78395dd133ec003b`,
+  apksigner verify OK — Signer = registrierter Debug-Key
+  (`8A:07:CC:FA:F6:3E:C1:09:48:27:52:2D:F0:2B:DE:28:6F:0D:9E:9D`).
+  Buildkommando:
+  `cd prod/android && JAVA_HOME=<Temurin 21 / JDK 21> ANDROID_USER_HOME=$HOME/.android ./gradlew assembleDebug`.
+  Toolchain: Gradle 8.14.3/AGP 8.13, JDK 21 (`~/.local/share/jvm/jdk-21.0.13+9`);
+  der Android-Studio-JBR 25 scheitert hier an `Unsupported class file major
+  version 69` (Gradle läuft nicht auf Java 25 — Gradle-Runner und Kotlin- -
+  /AGP-Level sind getrennte Angaben).
+- **Debug-Keystore-Falle (beim Bau festgestellt):** Ohne `ANDROID_USER_HOME=$HOME/.android`
+  signiert AGP 8.13 Debug-Builds mit `~/.config/.android/debug.keystore`
+  (SHA-1 `2C:E6:E1:0B:…`, XDG-Auflösung) statt dem in Firebase registrierten
+  `~/.android/debug.keystore` (`8A:07:CC:…`). Erst mit der env-Variable passt die
+  Debug-Signatur zur Registrierung (Google Sign-In im Debug bleibt nutzbar).
+
+Bewusst offen (nicht als erledigt melden):
+
+- Kein Emulator-/Gerätetest: Benachrichtigung tatsächlich feuern, Berechtigungs-
+  dialog, Zweiter-Lauf-Überspringen, Neustart/Doze/`allowWhileIdle` — das prüft
+  eine an das Testrezept gebundene Instanz (Vibe-D-Handoff,
+  `~/dev/HANDOFF-woche3-emulator-stufe0-REZEPT.md`), nicht hier.
+- Der Runner ist nur über das Debug-Panel erreichbar; echte Anbindung beim
+  App-Start mit Nutzerwerten (remindHour/Ruhezeit, Speicherwahl Preferences
+  vs. localStorage) fehlt.
 - `minimumLog` ist auf `dev-product` noch nicht in `journal-app` integriert;
-  Importweg oben dokumentiert, nicht umgesetzt — Journal-Modul-Code nicht editiert.
-- `@capacitor/local-notifications` NICHT installiert (bewusst, Registry-Regel);
-  daher kein Test der nativen Benachrichtigung möglich.
+  `9edb12a` liegt auf `origin/dev` (journal-dev), nicht auf der vitalos-Gitlink-
+  Branche. Journal-Modul-Code nicht editiert.
 - Messwert-Vergleich mit Digital Wellbeing offen (nur auf echtem Gerät möglich).
-- Signierter Release-Build offen.
+- Signierter Release-Build dieses Fokus-Stands offen (die dokumentierte Release-
+  AAB ist älter als dieser Stand); kein Deploy, kein Store-Upload, kein Push.

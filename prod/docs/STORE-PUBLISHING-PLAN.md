@@ -45,6 +45,20 @@ Android-Vorlaufstand 2026-11-06 (Schritte 1-3 der Reihenfolge erledigt):
   alten Checkout baute; ein separater JDK-Download ist nicht nötig.
   Alternativ verifiziert: Temurin JDK 21 unter
   `~/.local/share/jvm/jdk-21.0.13+9`.
+- Korrektur der Korrektur (2026-11-06, gleicher Tag, nach Aufnahme von
+  `@capacitor/local-notifications` in den Android-Build): JBR 25 ist am NEUEN
+  Stand KEIN lauffähiger Gradle-Runner mehr — der JBR-Daemon scheitert schon
+  bei der Auswertung von `capacitor.settings.gradle` mit „Unsupported class
+  file major version 69“ (Gradle 8.14.3 läuft nicht auf Java 25, sobald das
+  Plugin-Projekt `:capacitor-local-notifications` involviert ist). Die beiden
+  erfolgreichen JBR-Bauten liefen am Stand `cb4a55b` OHNE dieses Plugin.
+  Verbindlich für den aktuellen Stand: `JAVA_HOME=
+  ~/.local/share/jvm/jdk-21.0.13+9` (Temurin 21). Debug-Builds zusätzlich mit
+  `ANDROID_USER_HOME=$HOME/.android` starten: Ohne die Variable signiert
+  AGP 8.13 mit dem XDG-Keystore `~/.config/.android/debug.keystore`
+  (SHA-1 `2C:E6:E1:0B:…`), dessen Schlüssel NICHT in Firebase registriert
+  ist — mit der Variable passt die Debug-Signatur zur Registrierung
+  (`8A:07:CC:…`).
 - Der native Web-Build `dist-native` wurde aus gemeinsamen Quellen (Stand
   `afbdda9` inkl. Import-Korrektur) erzeugt; APK/AAB aus diesem Workspace
   existieren seit dem 2026-11-06 (Quellstand `cb4a55b`, Nachweise unten).
@@ -173,6 +187,12 @@ Fehlende Nachweise bleiben offen, auch wenn ein früherer Teilschritt grün war.
   (build-tools 36.0.0). Buildkommando aus `prod/android` mit geladenem
   `../.product-config/product.env`:
   `JAVA_HOME=<jdk> ./gradlew assembleDebug` bzw. `bundleRelease`.
+  Ab dem Fokus-Stand (Local-Notifications-Plugin im Android-Build): zwingend
+  `JAVA_HOME=Temurin-21` und für Debug `ANDROID_USER_HOME=$HOME/.android`
+  (Begründung siehe JDK-Korrektur oben). Der daraus gebaute Debug-APK
+  (SHA-256 `57d0bbd8…03b`, Stand `b8e7f84` + Focus-Verdrahtung) ist mit
+  Pfad/Hash/Signatur in `docs/product-dev/FOKUS-STUFE-0-1-UMSETZUNG.md`
+  nachgewiesen.
 - Debug-APK: `prod/android/app/build/outputs/apk/debug/app-debug.apk`,
   8 120 168 Bytes, SHA-256
   `3c73c07445583c9295f1ab0551fc9bad06d24ad7ef2a32e7a583449a73b5d813`
