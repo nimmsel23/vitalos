@@ -20,6 +20,30 @@ Apps, gemeinsames Lockfile mit Produkt-Importer. Der dokumentierte Abschluss
 Ein früherer APK-/AAB-Build im alten Checkout ist kein Build aus diesem neuen
 Workspace. Die laufende Folgearbeit muss ihre Artefakte und Commits separat nennen.
 
+Android-Vorlaufstand 2026-11-06 (Schritte 1-3 der Reihenfolge erledigt):
+
+- Workspace vollständig installiert; `pnpm install` benötigte erhöhten
+  `--fetch-timeout` (Registry-Timeouts, keine Policy-Änderung).
+- `pnpm run product:build:native` aus dem neuen Workspace erfolgreich:
+  `prod/dist-native` (ca. 7 MB), Firebase-Isolation bestanden, Service-Worker
+  gestempelt. Voraussetzung: `. prod/.product-config/product.env` in der Shell.
+- `cap sync android` erfolgreich; ein Plugin (`@capacitor-firebase/authentication`
+  8.6.0) erkannt; `prod/android/local.properties` (gitignored) zeigt auf
+  `~/Android/Sdk`. Nach Sync muss `capacitor.settings.gradle` mitunter auf den
+  committierten stabilen Pfaden gehalten werden (`git checkout --`).
+- Schritt 4 (Gradle-Build) offen und vom Nutzer zurückgestellt. Technischer
+  Befund: `./gradlew assembleDebug` (Gradle 8.14.3, AGP 8.13, compileSdk 36)
+  benötigt exakt ein JDK 21. JDK 17 kennt das Source-Level 21 von
+  Capacitor-8-Modulen nicht; JDK 27 scheitert an der jlink-Transformation
+  von `android-36/core-for-system-modules.jar`; JBR 25 ist für Gradle
+  8.14.3 zu neu (Classfile 69). Ohne sudo bleibt z. B. ein lokaler
+  Temurin-21-Tarball nach `~/jdks`; danach `JAVA_HOME=<jdk21-Verzeichnis>`
+  setzen. Danach:
+  `cd prod/android && ./gradlew assembleDebug` bzw. `bundleRelease`.
+- Der native Web-Build `dist-native` wurde aus gemeinsamen Quellen (Stand
+  `afbdda9` inkl. Import-Korrektur) erzeugt; APK/AAB aus diesem Workspace
+  existieren noch nicht.
+
 ## Reihenfolge bis Android
 
 1. Gewünschten gemeinsamen Quellstand auf einem Dev-Strang committen. Der alte
