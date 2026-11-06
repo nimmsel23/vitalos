@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# vos-ship — dev -> master (PR) -> vitalos in EINEM Lauf.
+# vos-ship — master -> vitalos (PR mit Checks) -> Meta-Repo in EINEM Lauf. master wird vorher direkt gepusht (= Live-Deploy).
 #
 #   vos-ship fitness                interaktiv (fragt vor dem Start und in vos-release nach)
 #   vos-ship coach --yes           Standalone-Coach-CI + Live-SHA prüfen (kein Shell-Build)
@@ -75,24 +75,14 @@ if [[ "$module" == coach ]]; then
 fi
 for tool in gh jq git; do command -v "$tool" >/dev/null || die "$tool fehlt"; done
 
-SRC=dev; DST=master
+SRC=master; DST=vitalos; LIVE_BRANCH=master
 RELEASE_ARGS=(); YES_HINT=""
 if [[ "$YES" -eq 1 ]]; then RELEASE_ARGS+=(--yes); YES_HINT=" --yes"; fi
 
 # ── 1. Preflight ───────────────────────────────────────────────────────────────
-step "1/7 Preflight ($module: $SRC -> $DST -> vitalos)"
+step "1/7 Preflight ($module: $SRC -> $DST -> Meta-Repo)"
 git -C "$dir" fetch -q origin "$SRC" "$DST"
-branch="$(git -C "$dir" branch --show-current)"
-[[ "$branch" == "$SRC" ]] || die "$dir steht auf '$branch', erwartet '$SRC'"
-# Ausgeliefert wird immer origin/$SRC. Lokal vorauslaufende Commits (z. B. eine parallele Session mit
-# ungepushter Arbeit) gehören NICHT zum Release und sind deshalb nur eine Warnung; ein lokal
-# HINTERHER liegender $SRC ist dagegen verdächtig (jemand hat auf origin weitergearbeitet).
-local_only="$(git -C "$dir" rev-list --count "origin/$SRC..$SRC")"
-origin_only="$(git -C "$dir" rev-list --count "$SRC..origin/$SRC")"
-if [[ "$local_only" -gt 0 ]]; then
-  info "WARNUNG: lokal liegen $local_only ungepushte Commit(s) auf $SRC — sie sind NICHT Teil dieses Releases (es gilt origin/$SRC)."
-fi
-[[ "$origin_only" -eq 0 || "$local_only" -gt 0 ]] || info "Hinweis: lokal fehlen $origin_only Commit(s) von origin/$SRC (git pull); ausgeliefert wird origin/$SRC."
+# Es zählt nur der Remote-Stand: ausgeliefert wird immer origin/$SRC; der lokale Checkout (Branch, ungepushte Commits) ist egal.
 ahead="$(git -C "$dir" rev-list --count "origin/$DST..origin/$SRC")"
 info "origin/$SRC liegt $ahead Commit(s) vor origin/$DST"
 if [[ "$ahead" -gt 0 ]]; then
@@ -140,38 +130,43 @@ Nach dem Merge deployt der Live-Deploy per CI. Merge ohne Squash (\`--merge\`).
 
   # ── 3. Checks ────────────────────────────────────────────────────────────────
   step "3/7 CI-Checks von PR #$pr_number"
-  # Nur PFLICHT-Checks (Branch-Schutz): sonst bricht z. B. die Dependabot-Statusmeldung
-  # ".github/dependabot.yml" (kein Workflow, kein Pflicht-Check) den Release ab.
-  if ! timeout "$CHECK_TIMEOUT" gh pr checks "$pr_number" -R "$repo" --required --watch --interval 20 >/dev/null 2>&1; then
-    gh pr checks "$pr_number" -R "$repo" --required 2>&1 | sed 's/^/  /' || true
-    die "Checks nicht grün (oder Zeitlimit ${CHECK_TIMEOUT}s). Fehler beheben, dev pushen, dann vos-ship erneut."
-  fi
+  # vitalos ist nicht geschützt, also gibt es keine Pflicht-Checks: gewartet wird auf die Workflows "Check (…)" des PRs
+  # (check.yml, pull_request -> vitalos). Preview-/Dependabot-Meldungen zählen nicht.
+  waited=0
+  while :; do
+    checks="$(gh pr checks "$pr_number" -R "$repo" --json workflow,bucket 2>/dev/null | jq -c '[.[] | select(.workflow | test("^Check"))]' || echo '[]')"
+    total="$(jq 'length' <<<"$checks")"; pending="$(jq '[.[] | select(.bucket == "pending")] | length' <<<"$checks")"
+    failed="$(jq '[.[] | select(.bucket == "fail" or .bucket == "cancel")] | length' <<<"$checks")"
+    [[ "$failed" -gt 0 ]] && { gh pr checks "$pr_number" -R "$repo" 2>&1 | sed 's/^/  /' || true; die "Check rot. Beheben, auf master pushen, dann vos-ship erneut."; }
+    [[ "$total" -gt 0 && "$pending" -eq 0 ]] && break
+    (( waited >= CHECK_TIMEOUT )) && die "Checks nicht fertig nach ${CHECK_TIMEOUT}s (gefunden: $total, offen: $pending): gh pr checks $pr_number -R $repo"
+    sleep 20; waited=$((waited + 20))
+  done
   info "alle Checks grün"
 
   # ── 4. Merge ─────────────────────────────────────────────────────────────────
-  step "4/7 Merge (Auto-Merge, Merge-Commit)"
-  waited=0
-  while :; do
-    state="$(gh pr view "$pr_number" -R "$repo" --json state,mergedAt --jq '.state + " " + (.mergedAt // "")')"
-    if [[ "$state" == MERGED* ]]; then merged_at="${state#MERGED }"; break; fi
-    [[ "$state" == CLOSED* ]] && die "PR #$pr_number wurde geschlossen"
-    (( waited >= MERGE_WAIT )) && die "kein Auto-Merge nach ${MERGE_WAIT}s. Von Hand (kein Squash!): gh pr merge $pr_number -R $repo --merge — danach vos-ship erneut."
-    sleep 10; waited=$((waited + 10))
-  done
+  step "4/7 Merge (Merge-Commit, kein Squash)"
+  state="$(gh pr view "$pr_number" -R "$repo" --json state --jq .state)"
+  if [[ "$state" == OPEN ]]; then
+    gh pr merge "$pr_number" -R "$repo" --merge >/dev/null || die "Merge von PR #$pr_number fehlgeschlagen: gh pr merge $pr_number -R $repo --merge"
+  fi
+  merged_at="$(gh pr view "$pr_number" -R "$repo" --json mergedAt --jq '.mergedAt // empty')"
+  [[ -n "$merged_at" ]] || die "PR #$pr_number ist nicht gemergt (Status: $(gh pr view "$pr_number" -R "$repo" --json state --jq .state))"
   info "PR #$pr_number gemergt ($merged_at)"
 else
-  info "nichts zu releasen dev -> master; es geht direkt mit master -> vitalos weiter"
+  info "origin/$DST enthält schon alles von origin/$SRC — es geht direkt mit dem Pointer im Meta-Repo weiter"
 fi
 
 # ── 5. Live-Deploy ─────────────────────────────────────────────────────────────
 LIVE_FAILED_LOCK=0
 LIVE_WORKFLOW=""
-if [[ -n "$merged_at" ]]; then
-  step "5/7 Live-Deploy der CI"
+master_sha="$(git -C "$dir" rev-parse "origin/$SRC")"
+if :; then
+  step "5/7 Live-Deploy der CI (Push auf $LIVE_BRANCH, Commit ${master_sha:0:7})"
   run_id=""; waited=0
   while [[ -z "$run_id" ]]; do
-    run_id="$(gh run list -R "$repo" --branch "$DST" --limit 15 --json databaseId,name,createdAt \
-      --jq "[.[] | select((.name | test(\"Live Deploy\")) and .createdAt >= \"$merged_at\")] | sort_by(.createdAt) | last | .databaseId // empty")"
+    run_id="$(gh run list -R "$repo" --branch "$LIVE_BRANCH" --limit 20 --json databaseId,name,headSha,createdAt \
+      --jq "[.[] | select((.name | test(\"Live Deploy|deploy\"; \"i\")) and .headSha == \"$master_sha\")] | sort_by(.createdAt) | last | .databaseId // empty")"
     [[ -n "$run_id" ]] && break
     (( waited >= DEPLOY_APPEAR_WAIT )) && { info "kein Live-Deploy-Run erschienen (nach ${DEPLOY_APPEAR_WAIT}s) — weiter mit vitalos"; break; }
     sleep 10; waited=$((waited + 10))
@@ -235,7 +230,7 @@ fi
 step "7/7 Nachlauf"
 if [[ "$LIVE_FAILED_LOCK" -eq 1 && -n "$LIVE_WORKFLOW" ]]; then
   info "Live-Deploy war am Lockfile gescheitert — starte \"$LIVE_WORKFLOW\" neu"
-  gh workflow run "$LIVE_WORKFLOW" -R "$repo" --ref "$DST"
+  gh workflow run "$LIVE_WORKFLOW" -R "$repo" --ref "$LIVE_BRANCH"
   sleep 8
   new_id="$(gh run list -R "$repo" --workflow "$LIVE_WORKFLOW" --limit 1 --json databaseId --jq '.[0].databaseId')"
   if "$SCRIPT_DIR/gh-run-check" --repo "$repo" --timeout "$DEPLOY_TIMEOUT" "$new_id"; then
@@ -257,5 +252,5 @@ if [[ "$FUNCTIONS" -eq 1 ]]; then
 else
   info "Functions übersprungen; bei Bedarf mit --functions erneut als gezielten Release starten."
 fi
-info "fertig: $module ist dev -> master -> vitalos ausgeliefert."
+info "fertig: $module ist master -> vitalos ausgeliefert (PR mit Checks, Pointer im Meta-Repo)."
 info "Run prüfen: gh-run-check --repo nimmsel23/vitalos --latest --workflow deploy-push-functions.yml"

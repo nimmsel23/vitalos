@@ -439,34 +439,23 @@ merge_module() {
         run "$REAL_GIT" -C "$submodule" checkout -- pnpm-lock.yaml
     fi
 
-    info "[$module] Pull submodule $target_branch"
-    run "$REAL_GIT" -C "$submodule" pull origin "$target_branch"
-
-    # fuel/fitness/habits/journal sind Git-Worktrees EINES Repos (geteilte
-    # .git/modules/<name>/worktrees/<name>) — dort existiert der lokale
-    # Branch "$source_branch" im Submodule-Checkout automatisch. relax ist
-    # (Stand 2026-08-23) ein davon unabhaengiger zweiter Klon desselben
-    # Remotes — dort gibt es lokal nur "origin/$source_branch", keinen
-    # lokalen Branch gleichen Namens. Frisch fetchen + gegen den
-    # Remote-Tracking-Branch mergen funktioniert in beiden Faellen.
-    run "$REAL_GIT" -C "$submodule" fetch origin "$source_branch"
-
-    info "[$module] Merge $source_branch into submodule $target_branch"
-    if ! run "$REAL_GIT" -C "$submodule" merge "origin/$source_branch" --no-edit; then
+    # Neuer Ablauf (2026-11-06): master -> vitalos läuft als PR mit Checks (vos-ship). Hier wird nur noch gefolgt:
+    # Submodul-Checkout per fast-forward auf origin/$target_branch. Kein eigener Merge, kein Push in das Modul-Repo.
+    run "$REAL_GIT" -C "$submodule" fetch origin "$source_branch" "$target_branch"
+    if ! "$REAL_GIT" -C "$submodule" merge-base --is-ancestor "origin/$source_branch" "origin/$target_branch"; then
         if [[ "$DRY_RUN" -eq 1 ]]; then
-            error "Dry-run cannot auto-resolve merge failures for $module"
+            warn "[$module] origin/$target_branch enthält origin/$source_branch noch nicht (Dry-Run, Plan unvollständig) — erst PR $source_branch -> $target_branch mit Checks: vos-ship $module"
+        else
+            error "[$module] origin/$target_branch enthält origin/$source_branch noch nicht. Erst den PR $source_branch -> $target_branch mit Checks mergen: vos-ship $module"
             exit 1
         fi
-        resolve_backup_conflicts "$submodule" || exit 1
-        run "$REAL_GIT" -C "$submodule" commit --no-edit
     fi
+    info "[$module] Submodul $target_branch per fast-forward auf origin/$target_branch"
+    run "$REAL_GIT" -C "$submodule" merge --ff-only "origin/$target_branch"
 
     info "[$module] Initialize nested submodules before release build/push"
     run "$REAL_GIT" -C "$submodule" submodule sync --recursive
     run "$REAL_GIT" -C "$submodule" submodule update --init --recursive
-
-    info "[$module] Push submodule $target_branch -> origin/$target_branch"
-    run "$REAL_GIT" -C "$submodule" push origin "$target_branch"
 
     PARENT_BUMPS+=("$submodule_name")
 
