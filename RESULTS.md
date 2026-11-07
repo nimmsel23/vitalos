@@ -494,10 +494,16 @@ an Zugriffsregeln, Submodule-Pointern oder App-Code.
 - Strategieentwurf verdichtet: täglicher Freitext statt umständlicher
   Logger; je ein Deposit in Body, Business, Balance und Being. Der
   Habit-Tracker bleibt für feste Gewohnheiten verfügbar.
+- Repo-Prüfung: Smart Log verarbeitet Ernährung, Fitness, Relax, Habits und
+  Aufgaben; ein fertig sichtbarer Vier-Deposit-Ablauf ist im aktuellen
+  Journalcode nicht belegt. Als M1-RC-Abnahmepunkt aufgenommen.
 - Die beabsichtigte Veränderung von Gewohnheiten, Fokus und Zielerreichung
   soll sich durch die Nutzung zeigen. Langfristige KI-Musteranalyse bleibt
   als Ausbauhypothese markiert.
-- Deckungsbeitrag, Codex-Upgrade und Vollkostenprofit getrennt beschrieben;
-  reale Kosten, Preise und Zahlungsbereitschaft bleiben offen.
+- Preisanker 6,90 Euro aus älterer Testannahme aufgenommen und als
+  unbestätigt markiert; 6,90/9,90-Euro-Preisinteresse ist ein Vorschlag.
+  Smart-Log-Funktion nutzt Gemini 2.5 Flash, aber speichert keine
+  Provider-Tokenmetrik; echte Analyse- und Storekosten bleiben offen.
+- Deckungsbeitrag, Codex-Upgrade und Vollkostenprofit getrennt beschrieben.
 - HTML-Fassung aktualisiert. Keine Preisfestlegung, Zahlung, Store-Aktion,
   Build oder Release. V1.2.1 bleibt bis Owner-Abnahme maßgeblich.

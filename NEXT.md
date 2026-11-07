@@ -1,8 +1,13 @@
 # NEXT.md
 - [ ] CEO-Entwurf `VitalOS-Produktstrategie-V1.3.0.md` mit Owner abnehmen;
-  danach Smart Day Log mit den M2-Testusern auf Nutzen, Wiederkehr und
-  Zahlungsbereitschaft prüfen. Keine neue App-Implementierung vor dem
-  Demand-Gate.
+  im M1-RC prüfen, ob ein Freitext-Tag alle vier Deposits (Body, Business,
+  Balance, Being) abdeckt. Danach M2-Testuser auf tägliche Nutzung,
+  Rückkehr, erlebten Nutzen und Preisinteresse testen. Keine neue App vor
+  diesem Demand-Gate.
+- [ ] Smart-Log-Kosten erfassen: aktueller Backendpfad nutzt `gemini-2.5-flash`,
+  speichert aber im Smart-Log-Ergebnis bislang keine Provider-Tokenmetrik.
+  Abrechnungsart und reale Kosten je erfolgreicher Analyse vor dem
+  Premium-Kontingent klären.
 - [ ] Session 4af6f88b („VitalOS repos open PRs and merges“, 2026-11-06): Das Transcript enthält nur Start-, Konfigurations- und Statusdatensätze, keine Nachrichten und keine Tool-Aufrufe. Ob offene Worktrees, Branches, PRs und Dependabot-Alerts geprüft oder gemerged wurden, ist daraus nicht belegbar. Stand mit `git worktree list`, `git branch -vv` und `gh pr list` prüfen und die Session nachdokumentieren.
 
 Aktive Arbeitsliste (max. 5 Punkte) für das vitalos Meta-Repo.
