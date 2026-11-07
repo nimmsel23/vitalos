@@ -1,0 +1,38 @@
+domain: CEO
+year: 2026
+updated: '2026-11-07'
+period: annual
+type: frame-map
+kind: annual-frame-map
+status: complete
+source_refs:
+  chapter: Game Chapter 32 - Frame
+  scope: CEO-Rolle (VitalOS-Produktarchitektur), nicht Daniel privat
+questions:
+  where_am_i_now: 'The operating CEO-agent of vitalos-prod. 7-role organization with
+    CTO and department lines runs: p2 series (timeline/weekly/habits/fitness/terminal)
+    LIVE, Functions 8/8 ACTIVE, emulator round 3 largely green, 2 voluntary test
+    users waiting. M1-RC stands before a single last blocker: SmartLog Invoker-Binding
+    waits for the owner go; emulator-test timer waits for a green first run.'
+  how_did_i_get_here: 'From the frozen Observe-v1 scope (SCOPE-OBSERVE-V1) over the
+    p2 implementation rounds through to the M1-RC path: Emulator-Verifikationsrunden
+    (Runde 2 passed, Runde 3 weitgehend gruen), Functions-Deploy 00:50 CET nach
+    Owner-Secret-Lieferung. Organization grew from solo line to CEO/CTO/AL/Angestellte
+    with thin-results discipline after the stream-of-reports lesson of 2026-11-06/07.'
+  how_do_i_feel_about_where_i_am: 'Sharp and impatient. Almost the entire functional
+    series is live and only ONE Owner-Gate separates the RC. Dark feeling: the CEO
+    line itself produces digest decay - session context is limited, report corpus
+    grows faster than it gets digested (644-line prune was the warning shot). Light
+    feeling: the daily AL machine stands, test users come voluntarily - the product
+    pulls.'
+  what_is_working_about_where_i_am_now: 'Weekly rhythm is in place (AL runs 02:10,
+    ceo-run daily 23:45, 1 digest/day rule after owner process critique). File-based
+    state holding (ABTEILUNG.md, CEO.md, STATUS.md) instead of session context. Thin-results
+    cascade works. Release mechanics: dev push -> auto-promote master -> live deploy,
+    Dependabot automerge (majors held back).'
+  what_is_not_working_about_where_i_am: 'The single-owner bottleneck: Invoker-Binding,
+    meta publications (mirror strategy), secrets, roadmap sync - all wait on Daniel,
+    not on the CEO line. The roadmap.html as planning is behind the real state (progress
+    0%, localStorage only). Docs debts (FIREBASE.md deploy image outdated). fuel
+    iOS-Login P1 unresolved. And: the CEO itself has no binding weekly discipline
+    yet (Frame/Focus/Fire for the CEO role did not exist until 2026-11-07).'

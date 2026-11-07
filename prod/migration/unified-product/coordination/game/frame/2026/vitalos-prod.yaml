@@ -1,0 +1,40 @@
+domain: VITALOS-PROD
+year: 2026
+updated: '2026-11-07'
+period: annual
+type: frame-map
+kind: annual-frame-map
+status: complete
+source_refs:
+  chapter: Game Chapter 32 - Frame
+questions:
+  where_am_i_now: 'vitalos-prod is a Capacitor-android product fork (com.vitalos.app)
+    on the Observe-v1 strategy: p2 series complete LIVE (p2-timeline e2ee028, p2-weekly
+    8fd1eb5, p2-habits 0dd978a, p2-fitness 3d7d93d, p2-terminal b637a37), Functions
+    8/8 ACTIVE (incl. analyzeSmartLog/getSmartLogQuota, observeDailyLimit 1/day,
+    fail-closed operate), emulator acceptance v1 round 2 passed, round 3 largely green
+    (signin, voice panel, journal v2, persistence after restart; TW4-merge regression
+    found + fixed 2f37589). 2 voluntary test users (Simon & Matthias, Android) wait
+    for the Debug-APK Owner-Gate. M1-RC: last open item SmartLog quota/analysis (FINDING,
+    functions deployed - cause diagnosis commissioned, no deploy gate) plus A11y/cosmetics.'
+  how_did_i_get_here: 'From the branches-chaos audit (GIT-AUDIT, LAGEBERICHT 2026-11-06)
+    via frozen Observe-v1 scope and dev->master auto-promote release chain from the
+    report burden lesson of the owner into a running product: journal-vos.web.app
+    live, vos-plan 200, vos-Serie finished in live deploy runs.'
+  how_do_i_feel_about_where_i_am: 'The product is one binding away from RC. Dark:
+    free-user daily limit of 1 KI-analysis/day is thin and must not break the trust
+    of the first testers; shell/meta publication series (voice wiring 7873a95, emulator
+    fixes, SCOPE rows) sits unpublished on local dev - value exists, but visibility
+    is missing. Light: Observe is now usable end-to-end - a day can be captured,
+    found and evaluated without KI-premium.'
+  what_is_working_about_where_i_am_now: 'Observe-core-loop closed (journal as entry
+    point, skill stack, reflection). Test users come voluntarily - no recruitment
+    needed. Emulator tests automated as service (RAM-Gate, timer after green first
+    run). Release chain green and automated; Dependabot automerge with major lock.'
+  what_is_not_working_about_where_i_am: 'SmartLog Invoker-Binding open (quota/analysis
+    finding) = the LAST M1-RC blocker, and it waits for the owner. fuel Mini Apps
+    fail on iOS login (P1, shell-wrapper quality). Unpublished local shell series
+    (meta publication = owner gate, mirror strategy google-services.json). Roadmap.html
+    as plan is behind reality (progress 0%). Docs debts FIREBASE.md; hotlist duplicates;
+    remaining owner points: secret rotation, downloads-JSON, Google sign-in debug
+    SHA-1.'

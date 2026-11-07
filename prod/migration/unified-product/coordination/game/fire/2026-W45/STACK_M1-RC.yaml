@@ -1,0 +1,67 @@
+# STACK_M1-RC — War Stack (Chapter 28) für die Domino Door der Woche 2026-W45
+# Felder kanonisch nach Chapter 28 (WARSTACK_STEPS); importierbar per
+# `aos door plan warstack-import` (Owner-Regel: Chapter wählt die Felder).
+author: oracle (AlphaOS-CEO-Bau)
+created: 2026-11-07
+week: 2026-W45
+status: built
+title: 'M1-RC — Domino Door W45/W46'
+transfer: 'Taskwarrior-Übernahme (project vitalos.*, +door-Task + hit_uuids) offen bis Vertrags-Ratifizierung laut coordination/CEO-DEPARTMENTS-KONZEPT.md; bis dahin ist diese Datei der Kriegszustand.'
+taskwarrior_anchor: 'Org-Task 5 (project vitalos-prod, +ceo +br +fire) — Domino-Tuer W45/W46; Verwaltung bleibt beim CEO, hier nur Verlinkung. Kaskade: Org-Task 3 (Nov-Mission) -> Org-Task 2 (Q4-Fokus) -> Org-Task 1 (Freedom-Goal 2027).'
+hit_uuids: []  # nach Vertragsratifizierung mit echten Taskwarrior-UUIDs füllen
+inquiry:
+  domain: Production
+  subdomain: Systems
+  domino_door: 'M1-RC rauslassen: SmartLog-Invoker-Binding entschieden, Emulator-Testdienst grün mit aktivem Timer, dann der RC-Ruf für Observe v1.'
+  trigger: >-
+    Emulator-Runde 3 ist weitgehend grün (Signin, Voice-Panel, Journal v2,
+    Persistenz-Überleben), 2 Testuser warten freiwillig, die p2-Serie ist
+    komplett live — und trotzdem steht M1-RC seit 24h+, weil genau ein
+    Befund (SmartLog-Kontingent/Analyse) auf eine Owner-Weiterentscheidung
+    wartet. Daniel hat gesagt: RC-Ruf soll kommen, wenn die Checkliste grün ist.
+  narrative: >-
+    Vermeidungsgeschichte: "Ohne Owner-Weiter kann ich nichts tun, also
+    berichte ich nochmal." Ehrliche Fassung: Warten ist hier keine Pflicht,
+    sondern bequem — die Ursachendiagnose des Findings und die
+    Timer-Vorbereitung liegen MITTEN in der CEO/Ausführungs-Linie, nicht
+    im Owner-Gate. Nur die Endgenehmigung ist Daniels.
+  validation: >-
+    Notwendig, weil RC der Wendepunkt vom Bauen-zum-Testen ist: Die
+    End-to-End-Annahme (echte Geräte, ECM-Checkliste grün, Runde-2-Belege)
+    verliert Nachweiswert, solange sie nicht der RC-Deklaration folgt.
+    Die freiwilligen Testuser sind ein Geschenk mit Verfallsdatum: jede
+    Wartewoche entsteht Vertrauenszins-Rückzahlungspflicht.
+  impact_opening: >-
+    M1-RC öffnet M2 (Testzyklus Simon & Matthias mit Debug-APK) und
+    hebt den Meta-Release der Shell-Serie — der erste produktive
+    Reifegrad-Nachweis für vitalos-prod überhaupt. Das ist
+    Produktionsschicht, nicht Kosmetik.
+  consequences: >-
+    Der Emulator-Feed rostet (Zustände veralten, ältere Funde lassen sich
+    nicht reproduzierbar nachweisen), die A11y-/Kosmetik-Findings bleiben
+    unbestätigt, die Testuser verlieren Interesse — und die CEO-Rangfolge
+    verliert ihr Wort. Wer die eigene Kaskade anschiebt, muss damit
+    rechnen, dass die nächste Blocker-Meldung weniger Gehör findet.
+  insights: ''
+  lessons: ''
+hits:
+  - hit_number: '1'
+    fact: 'SmartLog-Kontingent/Analyse-FINDING auf Ursache diagnostiziert, CEO kann Daniel eine 3-Zeilen-Entscheidungsvorlage (Weiter / Beobachten / Anpassen) vorlegen.'
+    obstacle: 'Diagnose kann auf Serverkonfigurations-Rechte oder Firestore-Config stossen, die die Linie ohne Owner nicht aendern darf.'
+    strike: 'Ursachenauftrag an die Ausführungslinie praezisieren (erwarten: Invoker-Binding-Nachweis aus Emulator-Log + funktionseitiger Test des Kontingents), moegliche Rechte-Boundaries klar benennen statt improvisieren; Vorlage mit Optionen + Empfehlung ablegen.'
+    responsibility: 'CEO (Vorlage) + Ausführungslinie (Diagnosebericht bis Di./Mi.)'
+  - hit_number: '2'
+    fact: 'Emulator-Testdienst Erstlauf GRUEN (voller Durchgang, Beleg-Log archiviert) und Timer enabled (13:00 CET).'
+    obstacle: 'RAM-Gate braucht >5 GB freien RAM — grosse Downloads/Geraetelast koennen das Zeitfenster killen.'
+    strike: 'Erstlauf in ein ruhiges Zeitfenster legen (frueher Morgen, vor dem laptop-lastigen Tagesbetrieb), Vorbereitung noop-trocken laufen lassen, RAM-Beleg im CEO-Digest des Tages protokollieren.'
+    responsibility: 'Ausführungslinie (Lauf) + CEO (Abnahme + Timer-Enable nach grünem Erstlauf)'
+  - hit_number: '3'
+    fact: 'A11y-/Kosmetik-Findings aus Runde 3 abgearbeitet oder klassifiziert (fix / bewusst RC-akzeptiert), Liste im RC-Ruf sichtbar.'
+    obstacle: 'Findings ohne erklaerte Nicht-Ziele (SCOPE-Zeilen) drohen zum Schein-Blocker zu werden — keine Trivialitaet bleibt uebrig, RC verschiebt sich unnoetig.'
+    strike: 'Findings gegen SCOPE-OBSERVE-V1 filtern; alles im Scope fixen, alles ausserhalb als "nicht RC-Gate" markieren; Befundliste endgueltig im RC-Ruf dokumentieren.'
+    responsibility: 'Ausführungslinie (Umsetzung) + CEO (Filter/Klassifizierung)'
+  - hit_number: '4'
+    fact: 'RC-Ruf dokumentiert in TODO.md-CEO-Sektion (komplett grüne Runde-3-Checkliste + Invoker-Binding-Entscheidung + offene Restpunkte) und an Daniel raus.'
+    obstacle: 'RC-Ruf ohne letzte Owner-Untersuchung wirkt wie ein Stellvertreter-Release und verstoesst gegen die Freigabe-Regel (keine Freigaben stellvertretend).'
+    strike: 'RC-Ruf als Empfehlung formulieren ("RC empfehlbar, deine Unterschrift fehlt" / "RC wird abgerufen — Freigabe jetzt bei dir"), Beschluss nicht vorwegnehmen; Anfrage mit Beleglinks in einer Decision-Box bündeln.'
+    responsibility: 'CEO'

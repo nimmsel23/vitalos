@@ -1,0 +1,32 @@
+name: Build Fitness VOS TWA draft
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  android:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: prod/platforms/fitness-twa
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+      - uses: android-actions/setup-android@v3
+      - name: Install Android platform
+        run: sdkmanager 'platforms;android-36' 'build-tools;36.0.0'
+      - name: Build unsigned artifacts
+        run: ./gradlew --no-daemon assembleDebug bundleRelease
+      - uses: actions/upload-artifact@v4
+        with:
+          name: fitness-vos-twa-draft
+          path: |
+            prod/platforms/fitness-twa/app/build/outputs/apk/debug/*.apk
+            prod/platforms/fitness-twa/app/build/outputs/bundle/release/*.aab
+          if-no-files-found: error
