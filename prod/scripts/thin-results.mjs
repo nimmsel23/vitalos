@@ -39,7 +39,7 @@
  * Engine-Kette (reine Textgenerierung, keine Tools → kann nichts anderes
  * anfassen; pro Repo fällt der Lauf bei Ausfall auf die nächste Stufe):
  *   1. claude -p --model haiku
- *   2. codex exec -m luna (read-only-Sandbox; verfügbar, sobald das Konto luna Zugriff gibt)
+ *   2. codex exec -m gpt-6-luna (read-only-Sandbox; Name im ChatGPT-Konto, config.toml-Default)
  *   3. vibe --model mistral-medium-3.5 (agent ask, headless)
  * Manuell zusätzlich: --engine gemini (Key/Modell aus ~/.env/, gemini.env zuerst).
  */
