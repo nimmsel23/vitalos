@@ -14,8 +14,8 @@ sind separate Arbeitsstände und dürfen nicht zurückgesetzt oder pauschal
 übernommen werden. Branch und Status vor jeder Änderung tatsächlich prüfen.
 
 `~/vitalos/prod` ist die kanonische Produktquelle. Der frühere lokale Checkout
-wurde vollständig unter `~/vitalos-prod-legacy-2026-11-07` archiviert; lokale
-Änderungen, Konfiguration, native Artefakte und Worktrees bleiben dort erhalten.
+ist unter `~/vitalos-prod-legacy-2026-11-07` archiviert; lokale Änderungen,
+Konfiguration, native Artefakte und Worktrees bleiben dort erhalten.
 `~/vitalos-prod` ist ein lokaler Symlink auf `~/vitalos/prod`. Das private
 GitHub-Repo gleichen Namens bleibt ein separates mögliches Release-Ziel.
 

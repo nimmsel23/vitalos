@@ -5,8 +5,8 @@
 `~/vitalos/prod` ist der getrackte Produktbereich des Meta-Repos `~/vitalos`.
 Die gemeinsame Struktur wurde auf `dev-product` integriert. Der frühere
 Checkout `~/vitalos-prod` wurde lokal als `~/vitalos-prod-legacy-2026-11-07`
-archiviert und `~/vitalos-prod` anschließend als Symlink auf `~/vitalos/prod`
-vorgesehen. Der Archiv-Checkout bewahrt lokale Änderungen, Konfiguration,
+archiviert; `~/vitalos-prod` ist jetzt ein Symlink auf `~/vitalos/prod`.
+Der Archiv-Checkout bewahrt lokale Änderungen, Konfiguration,
 Artefakte und Worktrees; neue Produkt-Builds beziehen ihre Apps aus dem Parent.
 Observe und Operate verwenden denselben Produkt-Unterbau.
 
