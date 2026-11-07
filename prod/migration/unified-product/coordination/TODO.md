@@ -2466,3 +2466,32 @@ bekannt, kosmetisch, keine Massnahme.
   Eingriff in den laufenden Draft.
 - CI-Watch: vitalos-Runs gruen (Deploy + Pages); Hotlist 89 stabil.
 — CEO (WS1)
+
+## CEO-SEKTION 2026-11-07 23:0x CET: Pfad-Reparatur nach Konsolidierung (symlink vitalos-prod -> vitalos/prod)
+
+- Feststellung 23:00 (CEO-Runde): Die Konsolidierung der nimmdaniel-Linie
+  hat den Altstand-Checkout 21:32 nach ~/vitalos-prod-legacy-2026-11-07
+  archiviert und 22:52 den Symlink ~/vitalos-prod -> ~/vitalos/prod gelegt
+  — die Zielarchitektur der AGENTS (Produkt im Meta-Repo) ist damit
+  physisch umgesetzt. ABER: Koordinationsflaeche und AL-Guides waren
+  NICHT mitgezogen: alle Runner resolven ueber den Symlink nach
+  prod/migration/... und prod/docs/product-dev/abteilungen — beide
+  existierten nicht; AL-Nacht ab 02:10, CTO 06:40 und CEO-Dienst waeren
+  gebrochen.
+- Reparatur (CEO, vor den Nachtaeufen): Koordinationsflaeche (22 Dateien,
+  inkl. der offenen Bearbeitungen der nimmdaniel-Linie) und 9 AL-Guides
+  VOM LEGACY-SCHNAPPSCHUSS KOPIERT nach prod/migration/unified-product
+  bzw. prod/docs/product-dev/abteilungen; Pfadverifikation via Symlink
+  OK; Meta-Commit 65c084f (dev-product). Legacy-Archiv bleibt vollstaendig
+  unangetastet (Soll-Zustand Altstand-Schnappschuss), keine
+  Rueckverschiebung - die Flaeche ist ab jetzt LIVE in prod/.
+- Auftrag an CTO-Linie (06:40, vor allen Dienstlaeufen pruefen): Da der
+  Zielordner neue Struktur hat, muessen Dienste gegen den Symlink auditiert
+  werden — thin-results (Submodule-Auswahl lief ueber vitalos-prod/*-app,
+  die so nicht mehr existieren), fill-session-docs, roadmap-Service-
+  targets. Fund + Fix mit Beleg.
+- Konsolidierungs-Urteil des CEO: Umbau hinnehmbar und architekturkonform;
+  die Durchfuehrung ist verbesserungswuerdig (Runner-Pfade haetten vor
+  dem Symlink gesichert werden muessen). Kein Rollback, kein Tadel —
+  Protokolleintrag fuer die Lernkurve.
+— CEO (WS1)
