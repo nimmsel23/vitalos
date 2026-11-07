@@ -1,6 +1,13 @@
 #!/usr/bin/env node
 /**
- * fill-session-docs.mjs — nächtlicher Handoff-Fill für Vibe-Sessions.
+ * fill-session-docs.mjs — DEAKTIVIERT (2026-11-07, Owner-Entscheidung).
+ *
+ * Nachfolge: docs-sync.mjs (Commits melden Doku-Bedarf per post-commit-Hook
+ * über das Hilfsskript vos-docs-dirty selbst; das Session-Transkript-Raten
+ * entfällt). Diese Datei bleibt als Referenz für Prompt-Format und
+ * prepend/insert-Logik erhalten, wird vom Dienst aber nicht mehr aufgerufen.
+ *
+ * Ursprünglicher Ansatz: nächtlicher Handoff-Fill für Vibe-Sessions.
  *
  * Pendant zu Claudes PreCompact-Hook (~/.claude/hooks/pre-compact-docs.sh):
  * Vibe hat KEIN Compact-Hook-Event (Stand 3.1.0, nur post_agent/pre_tool/

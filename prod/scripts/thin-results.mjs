@@ -305,7 +305,15 @@ async function main() {
         console.log(`  neues Themen-Doc: ${d.name}`);
       }
     }
-    writeFileSync(p.resultsPath, out.results_thinned.trim() + '\n', 'utf8');
+    // Dünne-Grenze (Owner-Vorgabe 2026-11-07): KLARE Trennlinie am Ende der
+    // gedünnten RESULTS — alles darüber ist künftig, alles darunter wäre
+    // Destillat-Rest, der nicht mehr existiert. Alte Grenz-Marker vorher raus,
+    // damit sie sich nicht stapeln.
+    const thinCut = `${'-'.repeat(74)}\n<!-- thin-results-Grenze ${TODAY}: BIS HIERHER AUSGEDÜNNT — Destillat in den Doku-Dateien des Repos. Neue Einträge immer ÜBER diese Grenze. -->\n`;
+    const thinnedClean = out.results_thinned
+      .replace(/^-{20,}[ \t]*\n<!-- thin-results-Grenze[^\n]*-->[^\n]*\n?/gm, '')
+      .trim();
+    writeFileSync(p.resultsPath, thinnedClean + '\n\n' + thinCut, 'utf8');
     writeFileSync(patternsPath, out.patterns_md.trim() + '\n', 'utf8');
     try {
       const wasDetached = (git(p.path, 'branch', '--show-current') === '');
