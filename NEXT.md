@@ -1,8 +1,16 @@
 # NEXT.md
-- [x] vos-fuel (geprüft 2026-11-06, Vibe Alpha): Deploy-Rückstand existiert nicht — `fuel-vos` live wird von fuel-dev bedient; `Live Deploy (Fuel master)` lief mit TW4-Fix `04493de` am 06.11. 14:53 grün (Run 42238014172), Live-CSS `index-CYQHW3N7.css` ohne `@tailwind`-Reste. `Deploy VOS Fuel PWA` (Wrapper, workflow_dispatch-only) lief noch nie; offen bleibt allein die vertagte Umschalt-Entscheidung Wrapper vs. fuel-dev-Pipeline — dann deployen und in fuel-dev den hosting:client-Schritt entfernen.
-- [ ] Habits/journal-Überführung: alter Standalone-Habits-Deploy bleibt rot (ERR_PNPM_LOCKFILE_CONFIG_MISMATCH, overrides-Block fehlt in habits-dev/deploy-master.yml). journal-Pointer ist auf ec5f5cd gebumpt (2026-11-06); Restliche Stilllegung der habits-dev-Pipeline gehört zur Überführung.
-- [x] Dependabot-Alert 147 im Meta-Repo (bewertet 2026-11-06, Vibe Alpha): `deepmerge` 4.3.1, low, Prototype-Pollution in `mergeObject()`; einzige Quelle im Lockfile ist `@rollup/plugin-node-resolve` (Vite/Rollup-Build-Tooling, kein Runtime-Pfad). Upstream bietet KEINE gepatchte Version (`first_patched: null`, 4.3.1 ist latest) — nichts fixbar ohne Upstream-Release. Behandlung: beobachten und beim nächsten Dependency-Strich neu bewerten; ein manuelles Dismiss bleibt dem User vorbehalten.
-- [x] Session 4af6f88b nachdokumentiert (2026-11-06, Vibe Alpha): `git worktree list` zeigt nur aktive Linien (~/vitalos dev-product + /dev/shm/wt-focus, wt-notif; vitalos-coach-traction-rules; master-flow; vos-editions) — keine verwaisten Worktrees. Offene PRs Stand 2026-11-06 abends: nur Dependabot-Bumps — journal-dev #30,#31,#32-#38 (3 davon /apps/habits), fitness-dev #87 (vite 6→8), learn-dev #11 (brace-expansion). Kein funktionaler PR offen; Major-Bumps (vite 8, react, @vitejs/plugin-react) bewusst NICHT ungefragt gemerged.
+- [ ] CEO-Entwurf `VitalOS-Produktstrategie-V1.3.0.md` mit Owner abnehmen;
+  im M1-RC prüfen, ob ein Freitext-Tag alle vier Deposits (Body, Business,
+  Balance, Being) abdeckt. Danach M2-Testuser auf tägliche Nutzung,
+  Rückkehr, erlebten Nutzen und Preisinteresse testen (6,90/9,90 Euro als
+  Gesprächsvarianten). Danach genau ein Premium-Angebot freigeben und erst
+  bei positivem variablem Deckungsbeitrag Reichweite zukaufen. Keine neue
+  App vor diesem Demand-Gate; weitere Fach-App-Einstiege nacheinander.
+- [ ] Smart-Log-Kosten erfassen: aktueller Backendpfad nutzt `gemini-2.5-flash`,
+  speichert aber im Smart-Log-Ergebnis bislang keine Provider-Tokenmetrik.
+  Abrechnungsart und reale Kosten je erfolgreicher Analyse vor dem
+  Premium-Kontingent klären.
+- [ ] Session 4af6f88b („VitalOS repos open PRs and merges“, 2026-11-06): Das Transcript enthält nur Start-, Konfigurations- und Statusdatensätze, keine Nachrichten und keine Tool-Aufrufe. Ob offene Worktrees, Branches, PRs und Dependabot-Alerts geprüft oder gemerged wurden, ist daraus nicht belegbar. Stand mit `git worktree list`, `git branch -vv` und `gh pr list` prüfen und die Session nachdokumentieren.
 
 Aktive Arbeitsliste (max. 5 Punkte) für das vitalos Meta-Repo.
 

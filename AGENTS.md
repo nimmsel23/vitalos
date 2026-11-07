@@ -13,15 +13,19 @@ private Produktionsbranch. Der ältere lokale `dev`-Strang und weitere Worktrees
 sind separate Arbeitsstände und dürfen nicht zurückgesetzt oder pauschal
 übernommen werden. Branch und Status vor jeder Änderung tatsächlich prüfen.
 
-`~/vitalos-prod` bleibt bis zur abgeschlossenen Ablösung erhalten. Dort können
-exklusive lokale Änderungen, Konfiguration und native Artefakte liegen.
-Das GitHub-Repo gleichen Namens kann als späteres Release-Ziel erhalten bleiben.
-Die geteilte Produktquelle ist jetzt `~/vitalos/prod`.
+`~/vitalos/prod` ist die kanonische Produktquelle. Der frühere lokale Checkout
+wurde vollständig unter `~/vitalos-prod-legacy-2026-11-07` archiviert; lokale
+Änderungen, Konfiguration, native Artefakte und Worktrees bleiben dort erhalten.
+`~/vitalos-prod` ist ein lokaler Symlink auf `~/vitalos/prod`. Das private
+GitHub-Repo gleichen Namens bleibt ein separates mögliches Release-Ziel.
 
 Einstieg: `README.md`, `docs/UNIFIED-PRODUCT.md`,
 `prod/docs/PRODUCT-CHECKOUT.md`, `prod/docs/FIREBASE.md` und
-`prod/docs/STORE-PUBLISHING-PLAN.md`. Strategie: `VitalOS-Produktstrategie-V1.2.1.md`
-(maßgeblich); V1.2.0 bleibt als historische Fassung samt HTML-Export erhalten;
+`prod/docs/STORE-PUBLISHING-PLAN.md`. Freigegebene Strategie: `VitalOS-Produktstrategie-V1.2.1.md`;
+der CEO-Entwurf `VitalOS-Produktstrategie-V1.3.0.md` schlägt eine Familie
+einzelner Problemlöser vor (HTML-Export daneben) und ersetzt die Freigabe
+erst nach Owner-Abnahme.
+V1.2.0 bleibt als historische Fassung samt HTML-Export erhalten;
 die Android-Roadmap unter
 `~/dev/coach-dev/public-coach/vitalos-android-roadmap.html`
 ist Planung, kein Nachweis eines Builds oder Releases.
@@ -58,7 +62,14 @@ Bei geänderten App-Abhängigkeiten das gemeinsame Lockfile im Root mit pnpm
 aktualisieren und mit dem Gitlink committen. Kein zweites Produkt-Lockfile.
 Hooks können Pointer zusätzlich stagen oder beim Push Lockfiles ändern;
 ihren tatsächlichen Inhalt prüfen und nicht als Freigabeersatz behandeln.
-Meta-Repo-Push nur nach ausdrücklichem Auftrag.
+Meta-Repo-Push nur nach ausdrücklichem Auftrag. Grundlage dafür
+(verifiziert 2026-11-06): `origin` ist das öffentliche Repo
+`nimmsel23/vitalos`, und `prod/android/app/google-services.json` ist hier
+getrackt — jedes Pushen ohne gelöste Spiegelstrategie würde Firebase- und
+Produktwerte in den öffentlichen Ast bringen. Remote `product`
+(nimmsel23/vitalos-prod) existiert nur als Definition und braucht für
+jede Nutzung einen eigenen Auftrag; `product-*`-Tags nur nach
+freigegebenem, dokumentiertem Release.
 
 ## Paketmanager und Build-Ziele
 
@@ -102,3 +113,34 @@ Coach besitzt `firestore.rules.part`; nur veröffentlichte Quellen importieren
 und Regeln im zuständigen Meta-Repo zusammensetzen. Private Rules und
 Produkt-Rules bleiben unterschiedliche Deployment-Ziele. Kein Coach-bedingter
 Shell-Pointer-Bump. Details: `prod/docs/FIREBASE.md` und `docs/DEPLOYMENT.md`.
+
+## Org-Taskwarrior (global) — gilt fuer alle Agenten der VitalOS-Org
+
+Verbindlich fuer alle Agenten (Vibe, Claude, Codex, Gemini) in Org-Kontexten
+(Owner-Weisung 2026-11-07):
+
+1. EINE globale Org-Task-DB — KEINE eigenen Rollen- oder Repo-DBs mehr:
+   `TASKRC=~/.local/state/vitalos-org/taskrc` (DB liegt daneben in `task/`).
+   Alte Repo-DBs sind archiviert unter `~/.local/state/vitalos-org/archive-repodb/`.
+2. Daniels private Taskwarrior-DB (`~/.task`, u. a. Hotlist `+hot`) bleibt
+   TABU fuer Schreibzugriffe — nur lesend (CEO-Runde: Task `status:pending +hot`).
+3. Rolle = Tag: Jeder Agent taggt seine eigenen Aufgaben mit seiner Rolle:
+   `+ceo`, `+cto`, `+al`, `+pm`, `+alpha`, `+betta` …
+4. Abteilung/Repo = project: `project:fitness-dev`, `project:journal-dev`,
+   `project:vitalos-prod`, `project:dotfiles`, `project:aos` …
+5. Prio-Encoder (in der Org-taskrc verankert):
+   - `+hit` und `+br` sind EIN Tier (Hits = Big Rocks, Koeffizient 8.0) —
+     hoechste Dringlichkeit, `+hit` = `+br`.
+   - `+lr` 2.0 (Little Rocks).
+   - `+hot` 1.0 — NUR Potential/Sichtbarkeit, wird NIE automatisch ausgefuehrt;
+     ob ein Potential jetzt anfaellt, entscheidet der Door War (Sonntagsrunde).
+   - `+s` -1.0 (Sand, Zeitverschwendungsroutine).
+   - `+go` ist KEINE Prioritaet und bewirkt nichts — Freigaben laufen ueber
+     die Rollen (CTO-Freigabeprozess), nicht ueber Urgency.
+6. Aufgaben IMMER per UUID anfassen (`task <uuid> modify|done|info`), NIE per
+   ID — IDs renummerieren sich nach jedem `done` (Fehltreffer-Gefahr).
+7. Guard: orgsh und die Runner verweigern den Lauf, wenn die Org-taskrc fehlt —
+   kein stiller Rueckfall auf die Privat-DB.
+8. Uebersicht/Rang: `TASKRC=~/.local/state/vitalos-org/taskrc \
+   ~/.org/venv/bin/python ~/aos/bin/aos door plan quadrants --json`
+   (Eisenhower-Sicht Q1–Q4).

@@ -296,6 +296,22 @@ Bewusst offen (nicht als erledigt melden):
   abgebrochen. FEUER-NACHWEIS (Benachrichtigung sichtbar, `dumpsys notification`,
   Screenshot, Zweittag-Überspringen) fehlt damit weiterhin —
   `~/dev/HANDOFF-woche3-emulator-stufe0-REZEPT.md` bleibt der Weg dorthin.
+
+**Feuer-Nachweis ERBRACHT (2026-11-06, zweite Emulator-Runde, Vibe Alpha):**
+Frischer Gesamtstand-Bau (journal-app 51b484e; Web-Build 41 s + cap sync +
+`assembleDebug` 28 s, SHA-256 `b90f26fd…`/`b0d43ea1…` je Runde), Installation
+Success, `POST_NOTIFICATIONS` granted. Debug-Panel „Erinnerung testen" →
+Ergebniszeile „Berechtigung: granted · Ergebnis: scheduled — Benachrichtigung
+sollte ~2 s später erscheinen"; `dumpsys notification --noredact` belegt
+`NotificationRecord(pkg=com.vitalos.app id=41001 importance=3, contentIntent
+→ startActivity)`; Screenshot des Shades zeigt „Noch kein Log heute / Ein
+kurzer Eintrag reicht, um den Tag freizuschalten." Zweitlauf am selben Tag:
+„Ergebnis: skipped — übersprungen (Log erfüllt, Uhrzeit/Ruhezeit oder heute
+schon erinnert)". Belege: `~/dev/emulator-abnahme-20261106/`
+(04-notification-feuer.png, 05-dumpsys-notification.txt). Verhalten nach
+`am force-stop`: Anmeldung bleibt (Auth-Persistenz), Debug-Erinnerungs-
+Speicher wurde im Lauf versehentlich über „zurücksetzen" geleert (Feldprobe;
+Zweitlauf-Skip war davor belegt) — Beobachtung, kein Negativbefund.
 - Der Runner ist nur über das Debug-Panel erreichbar; echte Anbindung beim
   App-Start mit Nutzerwerten (remindHour/Ruhezeit, Speicherwahl Preferences
   vs. localStorage) fehlt.

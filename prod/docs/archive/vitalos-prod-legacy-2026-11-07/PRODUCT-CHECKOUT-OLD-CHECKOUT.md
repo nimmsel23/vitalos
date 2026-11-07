@@ -1,0 +1,115 @@
+# VitalOS product checkout
+
+## Aktuelle Quelle: gemeinsames Meta-Repo
+
+Die Migration ist lokal umgesetzt: `/home/alpha/vitalos/prod` ist auf
+`dev-product` getrackt, mit gemeinsamen App-Gitlinks und Root-Lockfile.
+Integration `2fe70f3`, Lockfile `e9ec5e9`; Abgleich der älteren Dev-Linie
+`6b088d9`. Die aktiven Runbooks wurden in `fa0c98f` neu geordnet.
+
+Aktueller Einstieg: `/home/alpha/vitalos/README.md`, Produktstatus:
+`/home/alpha/vitalos/prod/docs/PRODUCT-CHECKOUT.md`. Dieser alte Checkout
+bleibt erhalten, ist aber nicht die Quelle der neuen Produkt-Builds.
+Vibe bearbeitet die anschließende native Build-Arbeit separat. Der Umzug
+belegt weder einen neuen nativen Build noch einen Store-Release.
+
+## Datierte Berichte des früheren Produkt-Forks
+
+Die folgenden Snapshots beschreiben den damaligen Checkout und können sich
+zeitlich überholen. Insbesondere frühere offene Lockfile- und Übernahmepunkte
+sind durch die oben genannten Integrationscommits erledigt.
+
+2026-11-06: A [unified-layout preparation and situation report](LAGEBERICHT-PROD-IN-VITALOS-2026-11-06.md)
+now describes tracked `prod/` inside the private VitalOS meta-repository, using
+its shared app pins. The isolated draft preserves the committed product sources;
+active checkouts have not been moved. Fuel and Journal product patches are already
+patch-equivalent to commits in their common `vitalos` branches. Shared lockfile
+completion remains blocked by registry failures. No further tests were run after
+the owner's instruction; no push or deployment was performed.
+
+2026-11-06: The subsequent [Git audit](GIT-AUDIT-2026-11-06.md) supersedes
+the branch-setup assumptions below: a fresh GitHub fetch confirmed that the
+Fitness remote `product/vitalos-prod` branch is absent, although its committed
+pin remains reachable through `vitalos`/`master`. Local branch attachment alone
+does not repair that tracking target. The audit also records divergent local
+6Pack/lockfile states, all app merge previews and the product CI branch mismatch.
+No app integration or deployment was performed by the audit.
+
+2026-11-06: Local submodule branch setup: all app checkouts are attached to
+their configured `.gitmodules` branch and track the corresponding `origin`
+branch (Fitness/Fuel/Journal/Habits: `product/vitalos-prod`; remaining apps:
+`vitalos`). Existing checkout commits were preserved. `.gitmodules` now uses
+`update = merge` so normal submodule updates preserve an attached branch.
+Inside an app, use `git pull --ff-only` to fetch and advance its tracked branch;
+this may leave the parent Gitlink modified until the new integration is committed.
+CI still obtains the committed pins in a fresh checkout; it must not use
+`--remote` for a reproducible build. On a fresh local checkout, attach each app
+to its configured branch and set its upstream; `update = merge` alone does not
+create or attach branches. No remote fetch, dependency update or release was
+performed for this setup change.
+
+2026-11-06: Local integration verification: the Observe Shell compiled with the
+product Firebase config (5,758 modules), and the Fitness-VOS web bundle compiled
+separately (5,720 modules); the Fitness bundle passed
+`test-product-firebase-isolation.mjs` using the ignored product config. The exact
+6Pack Gitlink commit `79760537` was built from a detached worktree: data generation
+produced 32 exercises, 10 workout days and 14 skills; Vite 6.4.5 transformed
+2,099 modules and the 6Pack shell stamp succeeded. These local builds do not prove
+Hosting or TWA acceptance. The TWA asset-links preflight still lacks the package
+and signing-fingerprint environment values, and this session could not resolve
+`vitalos-fitness-prod.web.app` to re-check its live response. `pnpm` could not
+start because its engine-store operation lock is read-only, so the already
+installed local Vite binaries were used for these compilation checks. No deploy
+was run.
+
+2026-11-06: Android Google-Auth preflight: `./gradlew --no-daemon --max-workers=2 signingReport` reports the emulator Debug SHA-1 `2C:E6:E1:0B:23:0C:FA:24:AD:78:FB:21:CF:E1:FE:7A:98:ED:79:1C`. The tracked `android/app/google-services.json` for `com.vitalos.app` contains only the Web OAuth client (`client_type: 3`); the generated `default_web_client_id` matches it, but there is no Android OAuth client entry. Firebase's current Android Google-auth instructions require registering the Android app's SHA-1 and downloading the refreshed config. This is a likely configuration gap, not a proven explanation of the earlier native error: no Google sign-in has been attempted on the emulator. Owner step: add this Debug SHA-1 to Firebase project `vitalos-prod` → Project settings → Android app `com.vitalos.app`, download the refreshed `google-services.json`, and confirm Google is enabled/configured under Authentication → Sign-in method. Afterward rebuild, reinstall, and test sign-in. Add the Play App Signing SHA-1 separately before release. References: [Firebase Android Google sign-in](https://firebase.google.com/docs/auth/android/google-signin); installed Capacitor Firebase Authentication `8.6.0` reads `default_web_client_id` for its Google Credential Manager flow.
+
+2026-11-06: The shared Capacitor Shell was built locally with `pnpm run build:native`; product Firebase isolation passed. `pnpm exec cap sync android` and `pnpm exec cap sync ios` copied that exact `dist-native` build into both native projects. Android was built with Android Studio JBR 25 (`JAVA_HOME=/opt/android-studio/jbr`, SDK 36): `./gradlew --no-daemon --max-workers=2 assembleDebug` succeeded and the Debug APK was installed on `emulator-5554`. The app launches and renders the Observe email/password + Google sign-in screen after Firebase `authStateReady()` resolves. No account was created and no authenticated data flow was exercised. `bundleRelease` also succeeded; `android/app/build/outputs/bundle/release/app-release.aab` is unsigned (`jarsigner -verify` reports `jar is unsigned`) and is not upload-ready. iOS project sync succeeded with Firebase Authentication 8.6.0 via Swift Package Manager; bundle ID is `com.vitalos.app`, minimum iOS 15.0. There is no Mac/Xcode in this environment, so no iOS simulator/archive build exists.
+
+> Integration update: Product branches for Fitness, Fuel, Habits and Journal have been published separately, and product Gitlinks plus the pnpm lockfile were updated in commit `1c11a3d`. The Journal backend source preflight passes. Earlier snapshots below describe prior states; they do not establish a deployment or device acceptance. Product Auth, billing, live backend configuration, real VAPID and end-to-end acceptance are still outstanding.
+
+2026-11-05: Firebase Auth is provisioned on `vitalos-prod` after the owner activated Blaze. Done via `gcloud`/Identity Toolkit v2: `identitytoolkit.googleapis.com` enabled and the config initialized with `projects/vitalos-prod/identityPlatform:initializeAuth`. Authorized domains are `vitalos-prod.firebaseapp.com`, `vitalos-prod.web.app` and `localhost`; the email/password provider is enabled and was verified live: a real REST signup against the deployed project succeeded (issuer `securetoken.google.com/vitalos-prod`) and the probe user was deleted again. The product sign-in UI offers both email/password and Google; email/password is usable now. Google sign-in remains blocked: the Identity Toolkit v2 API rejects `google.com` without an OAuth client ID/secret, automatic client provisioning is only available in the Firebase Console today, and the IAP OAuth Admin APIs previously usable for programmatic provisioning were shut down in 2026. It needs one console action by the owner (Authentication → Sign-in method → Google).
+
+2026-11-05: The first product Hosting release is live. `firebase deploy --only hosting --public dist-store --project vitalos-prod` (local deploy, deploy guard explicitly confirmed, user approved) published the combined Observe/Operate store build (`pnpm run build:cloud`) to `https://vitalos-prod.web.app` (target `vitalos`). The build used the real product web config of the registered `VitalOS Product Web` app and a newly generated, project-owned P-256 VAPID key pair; the pair is stored only in the gitignored `.product-config/product.env` (public key for builds, private JWK for the eventual Firebase Console Cloud Messaging upload). The product Firebase isolation check passed. Post-release smoke checks via curl: `/`, `/sw.js` (no-cache), `/manifest.json` and the main hashed asset all return HTTP 200, and the served asset hash matches the built one. This is no browser or device acceptance: real sign-in was not attempted, push was not exercised, and the VAPID pair is not yet registered in the Console. Firebase Auth remains unavailable (`SERVICE_DISABLED` on Identity Platform), so real sign-in still requires enabling Auth with billing in the Console by the owner.
+
+2026-11-05: Against local Auth and Firestore emulators with the product rules and synthetic accounts, the integrated Habits manual transaction created a four-dimension daily snapshot, counted a repeated completion once, preserved the assignment lock after undo, and denied another account's read. This exercises the storage transaction and representative rules, not the React flow or the deployed Firebase project.
+
+2026-11-05: A temporary Observe build configured exclusively for the Auth and Firestore emulators was exercised with a synthetic account in an isolated browser. Sign-in, selecting four pre-seeded habits, saving assignments and completing one habit produced a persisted `1/4`. This does not establish real Firebase sign-in, tracker-detail acceptance or a release-ready deployment.
+
+Product builds disable the legacy browser-side Firebase AI client used by some Fuel and Fitness features; those AI features need server-backed adapters before they can be offered. Manual skill use and the server-side Smart Log path are separate. The Journal predeploy metadata gate also requires Firebase AI Logic to be disabled and rejects unrestricted API keys or Gemini-enabled keys other than an explicitly identified server key (`VOS_GEMINI_SERVER_KEY_ID`); it does not prove that such a key is secret or that no other project offers direct AI. This client guard alone is not a security boundary: ensure the corresponding direct AI APIs cannot be used to bypass server-side entitlements before deployment.
+
+2026-11-05: The product `dev` branch and the four Skill `product/vitalos-prod` branches are published. The frozen lockfile check and Journal source preflight pass. An Observe build using the pinned sources, existing local dependencies, a temporary workspace alias correction and a test-only VAPID value passed Firebase isolation. A later fresh installation completed with the frozen lockfile and scripts disabled; the pinned sources then built successfully without the temporary workspace alias correction, and Firebase isolation passed. Both builds used a test-only VAPID value and are not deployment artifacts. A browser check using a virtual clock showed the recovery UI but could not establish real Auth timing. A follow-up isolated browser check with seven seconds of real elapsed time rendered the Observe sign-in form. No sign-in was attempted; authenticated access and the daily flow have not been accepted. Billing remains disabled for `vitalos-prod`.
+
+`~/vitalos-prod` is an independent clone based on the Observe/Operate product work. Its `upstream` remote reads from `nimmsel23/vitalos`; pushing to that remote is disabled. `origin` points to the private repository `nimmsel23/vitalos-prod`; the integrated `dev` branch is published. Existing Skill repositories remain pinned submodules of the clone.
+
+The default Firebase project is `vitalos-prod`. Hosting targets are `vitalos` for the common Shell (`vitalos-prod.web.app`) and `fitness-product` for the first Fitness-VOS TWA pilot (`vitalos-fitness-prod.web.app`). The Fitness hosting site is provisioned but has no product deployment. `pnpm run build:fitness:product` prepares the isolated product Firebase config, builds the required Fitness data, builds the wrapper and checks the bundle for private Firebase values. It requires the product Firebase environment variables and an actual product VAPID key; an internal build used a test-only placeholder and must not be deployed. The legacy `vos-fitness` deploy command is disabled in this checkout until a verified product deployment path is ready.
+
+The integrated Gitlinks are Fitness `574f661`, Fuel `e351845`, Habits `74e226f` and Journal `3db5810`, each available on its Skill repository’s `product/vitalos-prod` branch. Product authentication, backend functions, CI credentials and device acceptance remain open. Firestore rules have been deployed as documented below.
+
+The inherited private-project Actions for rules, push functions, Fitness, Observe and PR previews are retained with the `.yml.disabled` suffix, so GitHub does not run them in the product repository. The local legacy preview command is disabled as well. Separate product workflows need explicit project, credentials, codebase and security-rule validation before use.
+
+`firebase.product-journal.json` defines the product Journal functions codebase. Its predeploy check requires `vitalos-prod`, a clean Journal checkout matching the committed Gitlink and a revision containing Journal commit `a1018cf` (including account-bound Google callable requests). The integrated Gitlink contains that commit; the preflight passes locally. For an eventual targeted deployment, filter each intended callable explicitly (`functions:journal:analyzeSmartLog`, `functions:journal:getSmartLogQuota`, `functions:journal:googleLinkConfig`, `functions:journal:googleLink`, `functions:journal:googleAccessToken`, `functions:journal:googleUnlink`); a whole-codebase deployment also includes unrelated scheduled functions. Before deployment, configure and validate product Firebase Auth, Firestore rules, Google OAuth consent/client and its secret, Gemini secret and billing. The check does not verify those external prerequisites.
+
+Product Firestore rules are generated from the shared rules by `node scripts/build-product-rules.mjs`, replacing the inherited global coach privilege with a disabled product coach role. `node scripts/build-product-rules.mjs --check` verifies that the generated file is current. `firebase.product-rules.json` points to this separate ruleset. An emulator test checks representative owner, other-account, unauthenticated, legacy coach-UID and server-only Smart Logging/Google token paths; this is not a complete security audit or a live deployment. Product coach access requires a separately designed authorization model.
+
+2026-11-04: Product Firestore rules from commit `1096bcf` were deployed to `vitalos-prod` after emulator checks, including cross-user collection-group forgery. The live release was fetched and its source matched the committed `firestore.product.rules` exactly (ruleset `e94fc22e-b0f8-4f4a-b9c8-9567ebc540bd`, SHA-256 `c8d3b93d16d6f1c4ce66dd8598371a31401e4144a7b3509e4957744ecdc2c2b6`). Only rules were deployed; this does not establish Firebase Auth, indexes, functions, or app acceptance.
+
+Firebase Auth initialization was attempted via the public Identity Platform API and returned `BILLING_NOT_ENABLED`; this does not establish whether another Firebase Console setup path is available without billing. Product Shell builds suppress the local Fitness bridge and enrichment request and keep Relax API requests on the product origin. The product Relax API is not yet implemented; manual Relax Firestore sessions remain a separate path and need runtime acceptance. The Fitness-VOS wrapper still needs a full private-service audit before publication.
+
+Fitness source commit `a3fe8a6` prevents product builds from calling the private local Fitness backend; inbox writes use the existing Firestore fallback. Its focused tests, standalone Firebase build and the repository's lint/build commit hook passed. This commit is included in the current `fitness-app` product Gitlink; the standalone Fitness-VOS product must not be considered isolated until that source is integrated and the wrapper is rebuilt and checked.
+
+Product root commands: `pnpm run build:cloud` (also callable as `npm run build:cloud`) creates the combined Observe/Operate store build after validating the three product Firebase environment values. `pnpm run firebase` currently reports the missing release prerequisites and stops; it does not yet deploy. The integrated Gitlinks contain the published Daily Four and Journal changes; a real authenticated acceptance test and the external prerequisites remain necessary.
+
+`pnpm run build:product:observe` and `pnpm run build:product:operate` use the same isolated product Firebase validation and `vitalos-prod.web.app` auth domain for individual edition builds. They prepare local artifacts only; separate hosting domains would require their own auth-domain configuration and authorization before deployment.
+
+`pnpm run build:fitness:twa:web` builds the Fitness product web assets and writes `.well-known/assetlinks.json` only when `VOS_FITNESS_ANDROID_PACKAGE` and `VOS_FITNESS_ANDROID_SHA256` contain the actual app package and comma-separated SHA-256 signing fingerprints. It does not generate an Android project or deploy a site. The existing `vos-fitness/firebase.json` ignores dot paths and still names the private site; it must not be used for this product. `firebase.product-fitness.json` is the separate product Hosting configuration: it permits `.well-known` and currently blocks deployment through the product readiness guard. Android package, Play signing, SDK tooling and device tests remain open.
+
+A local unsigned Android TWA draft is in `platforms/fitness-twa`, generated with Bubblewrap Core 1.27.0 from the checked-in Fitness web manifest using the product Hosting origin. Its provisional package is `at.vitalos.fitness`, pending confirmation. The draft targets API 36 and has a manual CI build workflow for debug APK and unsigned release AAB. This environment lacks the full Android SDK and JDK 17; no build, signing, Play registration, Digital Asset Links verification or device test has yet been established.
+
+### Earlier local integration snapshot (superseded by commit `1c11a3d`)
+
+The checked-in Gitlinks remain `habit-app=09623a8`, `journal-app=adc22d91`, and `fitness-app=542af223`; they do not include the product changes described below. The local Habits `dev` head is `92f401f` and Journal `dev` head is `f32937b`; these commits have not been pushed as part of this work. Follow the repositories' explicit release/merge policy before updating product Gitlinks. A build of the committed product checkout does not include these local changes.
+
+The shared shell alias `@habits-db` resolves to the selected Habits submodule's `src/db`, as does the standalone Habits alias. The new manual Habit transaction therefore has one implementation once the corresponding revision is integrated. Its focused model tests pass locally, but a shell build and real Firestore/browser acceptance of this revision are still outstanding. The transaction currently requires connectivity, including when used from the Habits/Core4 views; the former offline-first manual toggle is not preserved by that path.
+
+The local Journal `dev` and product Shell now prepare an optional manual Habit adapter that calls the Habits transaction, without turning inferred Smart Log text into a daily point. These revisions are not in the pinned Gitlinks: the current product checkout still uses the old Journal and Habits behavior. The integrated build and Firestore/browser acceptance remain outstanding; standalone Journal continues to use its own Habit adapter.

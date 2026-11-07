@@ -1,4 +1,12 @@
 
+## 2026-11-07 — Produktdokumente in `vitalos/prod` abgeglichen, Alt-Checkout archiviert
+
+Die nach der gestrigen Kopie weitergeschriebenen Produktdokumente wurden mit dem öffentlichen Meta-Repo abgeglichen. Fehlender Migrationsbericht, fokusspezifische Notizen und ältere abweichende Runbooks liegen datiert unter `prod/docs/archive/` bzw. `prod/docs/product-dev/legacy/`; interne CEO/CTO- und Abteilungskoordination blieb im privaten Alt-Checkout. `/home/alpha/vitalos-prod` zeigt jetzt per Symlink auf `/home/alpha/vitalos/prod`. Der frühere 1,6-GB-Checkout samt lokalen Änderungen und Worktree wurde vollständig nach `/home/alpha/vitalos-prod-legacy-2026-11-07` verschoben und bleibt erhalten.
+
+Der vollständige `dev-product`-Merge ist in einem isolierten `master`-Integrationsworktree vorbereitet; `NEXT.md` und der Journal-Gitlink wurden aufgelöst. Änderungen und Dokumentation sind lokal im Merge vorbereitet; es wurde nichts gepusht oder deployed.
+
+---
+
 ## 2026-11-06 — Android-Produktlinie: erste APK/AAB aus dem gemeinsamen Workspace, falsche JDK-21-These zurückgezogen
 
 Auftrag war die Gradle-Phase der vereinten Produktlinie aus `~/vitalos/prod`. Ergebnis: Debug-APK und signierte Release-AAB sind erstmals aus dem gemeinsamen Workspace gebaut und verifiziert; die falsche Aussage „JBR 25 zu neu (Classfile 69)“ wurde empirisch widerlegt und in der Doku zurückgezogen. Kein Push, kein Deploy, kein Store-Upload; Installation und native Anmeldung wurden nicht ausgeführt.
@@ -502,3 +510,25 @@ Zentralen Collection-Index für `messages` (`senderRole ASC`, `createdAt DESC`)
 für die Ungelesen-Abfragen beider Apps ergänzt. Vor Live-Übernahme der
 Coach-Erweiterungen deployen und Index-Bereitschaft prüfen. Keine Änderung
 an Zugriffsregeln, Submodule-Pointern oder App-Code.
+## 2026-11-07 — CEO-Entwurf V1.3.0: Problemlöser-Portfolio und Gewinnschwelle
+
+- Strategieentwurf verdichtet: täglicher Freitext statt umständlicher
+  Logger; je ein Deposit in Body, Business, Balance und Being. Der
+  Habit-Tracker bleibt für feste Gewohnheiten verfügbar.
+- Repo-Prüfung: Smart Log verarbeitet Ernährung, Fitness, Relax, Habits und
+  Aufgaben; ein fertig sichtbarer Vier-Deposit-Ablauf ist im aktuellen
+  Journalcode nicht belegt. Als M1-RC-Abnahmepunkt aufgenommen.
+- Die beabsichtigte Veränderung von Gewohnheiten, Fokus und Zielerreichung
+  soll sich durch die Nutzung zeigen. Langfristige KI-Musteranalyse bleibt
+  als Ausbauhypothese markiert.
+- Preisanker 6,90 Euro aus älterer Testannahme aufgenommen und als
+  unbestätigt markiert; 6,90/9,90-Euro-Preisinteresse ist ein Vorschlag.
+  Smart-Log-Funktion nutzt Gemini 2.5 Flash, aber speichert keine
+  Provider-Tokenmetrik; echte Analyse- und Storekosten bleiben offen.
+- 90-Tage-Sequenz für Journal-Kern, M2-Pilot, Preisgespräche und einen
+  anschließenden Premium-Start ergänzt. Vorhandene Fach-Apps als fokussierte
+  Einzel-Einstiege geordnet; keine parallelen App-Builds oder bezahlte
+  Akquise vor positivem variablem Deckungsbeitrag.
+- Deckungsbeitrag, Codex-Upgrade und Vollkostenprofit getrennt beschrieben.
+- HTML-Fassung aktualisiert. Keine Preisfestlegung, Zahlung, Store-Aktion,
+  Build oder Release. V1.2.1 bleibt bis Owner-Abnahme maßgeblich.

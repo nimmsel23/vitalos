@@ -1,4 +1,5 @@
 {
+  "_comment": "Functions-Deploy zurueckgestellt bis Operate (Phase 06, Owner-Entscheid 2026-11-07): Die paarigen Journal-Functions (analyzeSmartLog, getSmartLogQuota, googleLink*) laufen NUR im privaten Projekt aus dem Backend-SOT (~/dev/backend/functions/journal); vitalos-prod hatte nie einen Functions-Deploy. Diese Konfiguration bleibt als Operate-Vorausarbeitung im Repo und wird bei Nicht-Deploy nicht ausgefuehrt; der Predeploy-Guard wird erst nach Rueckfuehrung der Functions in den journal-App-Pin wieder lauffaehig (Quelle seit PR #28 e6e3170 nicht mehr im Submodule).",
   "functions": {
     "codebase": "journal",
     "source": "../journal-app/functions",
