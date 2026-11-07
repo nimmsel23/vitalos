@@ -489,3 +489,19 @@ Zentralen Collection-Index für `messages` (`senderRole ASC`, `createdAt DESC`)
 für die Ungelesen-Abfragen beider Apps ergänzt. Vor Live-Übernahme der
 Coach-Erweiterungen deployen und Index-Bereitschaft prüfen. Keine Änderung
 an Zugriffsregeln, Submodule-Pointern oder App-Code.
+## 2026-11-07 — CEO-Entwurf V1.3.0: Problemlöser-Portfolio und Gewinnschwelle
+
+- Aus der Owner-Richtung einen versionierten Entwurf für eigenständige
+  Ein-Problem-Einstiege erstellt. Den vorhandenen Smart Day Log als ersten
+  Verkaufseinstieg priorisiert, danach die spezialisierten Einstiege in
+  Fitness, Fuel, Relax und Habits; Scroll Reset bleibt eine spätere
+  Nachfragehypothese. WarriorOS-Methode, vier Perspektiven und Archetypen-
+  Beschriftungen dokumentiert. Produktcode für Smart-Log-Vorschau,
+  Journal→Voice-Kontext und STRIKE→Planner geprüft; Auto-Klassifikation
+  sowie langfristige KI-Musterreflexion nicht als live behauptet.
+- HTML-Fassung mit dem bestehenden VitalOS-Strategie-Stil erzeugt.
+- Codex-Max-Upgrade von Vollkostenprofit getrennt: Schwellenformel basiert
+  auf tatsächlichem Upgradebetrag und Netto-Deckungsbeitrag; Kosten, Preise
+  und Zahlungsbereitschaft bleiben mangels Messdaten offen.
+- Noch keine App, Preisfestlegung, Zahlung, Store-Aktion, Build oder Release.
+  Der Entwurf ersetzt V1.2.1 erst nach Owner-Abnahme.
