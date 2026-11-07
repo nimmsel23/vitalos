@@ -504,6 +504,10 @@ an Zugriffsregeln, Submodule-Pointern oder App-Code.
   unbestätigt markiert; 6,90/9,90-Euro-Preisinteresse ist ein Vorschlag.
   Smart-Log-Funktion nutzt Gemini 2.5 Flash, aber speichert keine
   Provider-Tokenmetrik; echte Analyse- und Storekosten bleiben offen.
+- 90-Tage-Sequenz für Journal-Kern, M2-Pilot, Preisgespräche und einen
+  anschließenden Premium-Start ergänzt. Vorhandene Fach-Apps als fokussierte
+  Einzel-Einstiege geordnet; keine parallelen App-Builds oder bezahlte
+  Akquise vor positivem variablem Deckungsbeitrag.
 - Deckungsbeitrag, Codex-Upgrade und Vollkostenprofit getrennt beschrieben.
 - HTML-Fassung aktualisiert. Keine Preisfestlegung, Zahlung, Store-Aktion,
   Build oder Release. V1.2.1 bleibt bis Owner-Abnahme maßgeblich.

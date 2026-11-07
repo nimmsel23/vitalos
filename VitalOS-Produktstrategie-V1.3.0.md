@@ -59,6 +59,22 @@ alle vier Bereiche ist damit noch nicht belegt. Automatische Erkennung von
 Änderungsversuchen und langfristige zielbezogene KI-Musteranalyse sind
 ebenfalls Ausbauhypothesen.
 
+### Fokussierte Einstiege im bestehenden Produkt
+
+| Einstieg | Eine klare Aufgabe | Verkaufsbeleg |
+|---|---|---|
+| Journal | Den Tag einmal frei festhalten und die vier Deposits sehen | Eintrag geht schneller als mehrere Tracker; Nutzer kommen am Folgetag zurück |
+| Habits | Wenige selbst gewählte feste Gewohnheiten abhaken | Nutzer richten Habits ein und führen sie mindestens zwei Wochen weiter |
+| Fitness | Trainingseinheit festhalten und die nächste Einheit planen | Gespeicherte Sessions und wiederkehrende Nutzung |
+| Fuel | Mahlzeit erfassen und Ernährung grob überblicken | Wiederkehrende Mahlzeitenerfassung; Schätzungen bleiben klar markiert |
+| Relax | Entspannungs- oder Meditationspraxis starten und dokumentieren | Abgeschlossene Praxis und freiwillige Wiederkehr |
+
+Das sind fokussierte Einstiege in die vorhandene Produktfamilie, keine
+Freigabe für fünf parallele Neuentwicklungen. Jede Kampagne führt direkt
+zur passenden Aufgabe. Erst wenn der Journal-Pilot Wiederkehr und Nutzen
+zeigt, folgt die nächste Fach-App-Kampagne. Separate Apps oder neue
+Funktionen entstehen nur bei eigenem Nachfragebeleg.
+
 ## Erstes Angebot
 
 **Einstieg:** Ein Tag, ein Freitext, die vier täglichen Deposits sichtbar —
@@ -89,24 +105,47 @@ weder alle Bereiche verwenden noch eine bestimmte Methode lernen.
 
 ## Verkauf und Validierung
 
-- Mit einer kleinen Pilotgruppe aus dem Vitaltrainer-Umfeld beginnen.
-- Den echten Ablauf zeigen: Freitext, prüfbare Vorschläge, Bestätigung und
-  passende Fachansicht.
-- Eine Kampagne und eine Einstiegsseite jeweils auf einen verständlichen
-  Alltagsnutzen ausrichten. LinkedIn und Instagram sind die vorhandenen
-  Kanäle; echte Anwendungsbeispiele zählen mehr als Reichweite.
-- Wiederkehrende Nutzung, freiwillige Rückkehr, wahrgenommene Veränderung
-  und Zahlungsbereitschaft messen. Downloads allein sind kein Nachweis.
-- Coaching, etwa ein Personal-Training-10er-Block, als separates Angebot
-  und separat vom App-Umsatz ausweisen.
-- Erst nach belegter Nutzung und positivem variablem Deckungsbeitrag
-  bezahlte Reichweite erwägen.
+### 90-Tage-Sequenz
+
+1. **Tage 1–14 — Kernablauf:** Im M1-RC mit fünf Personen beobachten, ob
+   ein freier Tageseintrag zu den vier Deposits führt, ohne dass jemand
+   mehrere Formulare ausfüllt. Reibung und Korrekturen notieren; fehlende
+   Zuordnung im Journal schließen, bevor Werbung beginnt.
+2. **Tage 15–35 — Pilot:** Mit bis zu 20 passenden Personen aus dem
+   Vitaltrainer-Umfeld testen. Eine kurze Demo zeigt nur Freitext,
+   bestätigte Zuordnung und den Tagesrückblick. Erheben: erster Eintrag,
+   Nutzung in Woche zwei, Vollständigkeit der Deposits, freiwillige
+   Rückkehr und konkrete Handlung, die jemand wegen eines Eintrags
+   ausprobiert hat.
+3. **Tage 36–50 — Preis und Angebot:** 6,90 und 9,90 Euro monatlich als
+   klar markierte Preisvarianten in Gesprächen prüfen. Ein Interesse gilt
+   erst dann als Signal, wenn die Person das Angebot und den Preis
+   verstanden hat und eine konkrete Kaufabsicht äußert. Noch keine
+   Preisentscheidung allein aus Likes, Downloads oder unverbindlichem Lob.
+4. **Tage 51–90 — Verkauf:** Nach Owner-Freigabe und erfolgreicher
+   End-to-End-Zahlungsabnahme genau eine Premium-Variante live stellen.
+   Zuerst über Trainerkontakte und Empfehlungen verkaufen, danach mit
+   denselben konkreten Nutzungsbeispielen auf LinkedIn und Instagram
+   Reichweite aufbauen. Keine bezahlte Akquise bis der Deckungsbeitrag je
+   Zahler positiv und messbar ist.
+
+Jede Phase hat einen CTA und ein Problem. App-Umsatz wird getrennt von
+Coaching-Umsatz erfasst; der Personal-Training-10er-Block kann ein
+Vertriebskontakt sein, darf aber App-MRR nicht verdecken. Downloads allein
+sind kein Nachweis. Die 20 Personen validieren Nutzen und Preis, sie sind
+noch kein skalierbarer Vertriebskanal.
 
 Als erste interne Testhypothese können 20 passende Personen angesprochen,
 10 zur Nutzung und mindestens fünf zu Rückkehr, konkreter Preisabsicht und
 einem selbst wahrgenommenen Alltagsnutzen bewegt werden. Das sind
 veränderbare Startwerte, keine Marktprognose. Testpersonen, Zeitraum und
 Freigaben folgen dem bestehenden M2-Testuser-Gate.
+
+Der skalierbare Vertrieb wird anschließend rückwärts aus dem Zahlerziel
+berechnet: `benötigte qualifizierte Interessenten = Zielzahler / gemessene
+Interessent-zu-Zahler-Rate`. Die Pilotgruppe liefert erst den echten
+Umwandlungswert. Bis dahin wird keine Reichweite oder Conversion-Rate
+unterstellt.
 
 ## Angebot und Erlös
 
@@ -157,6 +196,16 @@ Netto-Deckungsbeitrag pro aktivem Zahler: 50 Euro monatliche Kosten brauchen
 keine VitalOS-Kostenprognose; sie zeigen nur, wie der Break-even mit der
 Zahl der Zahler wächst. Die echte Rechnung nutzt die tatsächliche
 Store-Auszahlung und Kosten je Analyse.
+
+| Monatspreis als Test | 25 Zahler | 50 Zahler | 100 Zahler |
+|---|---:|---:|---:|
+| 6,90 Euro | 172,50 Euro brutto MRR | 345 Euro brutto MRR | 690 Euro brutto MRR |
+| 9,90 Euro | 247,50 Euro brutto MRR | 495 Euro brutto MRR | 990 Euro brutto MRR |
+
+Brutto-MRR ist weder Deckungsbeitrag noch Gewinn. Die 100-Zahler-Marke ist
+ein sinnvoller erster Skalierungsbeweis, kein Ersatz für die echte
+Kostenschwelle. Die Zahl qualifizierter Interessenten, die dafür nötig ist,
+folgt erst aus der gemessenen Conversion im Pilot.
 
 Einzubeziehen sind tatsächliche Auszahlungen nach Plattform- und
 Zahlungsgebühren, Rückerstattungen, KI- und Hostingkosten, Support,

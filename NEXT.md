@@ -2,8 +2,10 @@
 - [ ] CEO-Entwurf `VitalOS-Produktstrategie-V1.3.0.md` mit Owner abnehmen;
   im M1-RC prüfen, ob ein Freitext-Tag alle vier Deposits (Body, Business,
   Balance, Being) abdeckt. Danach M2-Testuser auf tägliche Nutzung,
-  Rückkehr, erlebten Nutzen und Preisinteresse testen. Keine neue App vor
-  diesem Demand-Gate.
+  Rückkehr, erlebten Nutzen und Preisinteresse testen (6,90/9,90 Euro als
+  Gesprächsvarianten). Danach genau ein Premium-Angebot freigeben und erst
+  bei positivem variablem Deckungsbeitrag Reichweite zukaufen. Keine neue
+  App vor diesem Demand-Gate; weitere Fach-App-Einstiege nacheinander.
 - [ ] Smart-Log-Kosten erfassen: aktueller Backendpfad nutzt `gemini-2.5-flash`,
   speichert aber im Smart-Log-Ergebnis bislang keine Provider-Tokenmetrik.
   Abrechnungsart und reale Kosten je erfolgreicher Analyse vor dem
