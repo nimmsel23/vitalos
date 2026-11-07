@@ -31,6 +31,7 @@ Dev-/Release-Weg in den gemeinsamen Gitlink übernommen; beide Varianten bauen
 danach aus diesem Stand. Ein `product-*`-Tag kann einen geprüften Gesamtstand
 festhalten. CI lädt seine gespeicherten Gitlinks ohne `--remote`.
 
-`~/vitalos-prod` bleibt vorerst Altstand, Artefaktablage und Koordinationsort.
-Es ist nicht die Quellbasis der neuen Produkt-Builds. Ein gelungener Umzug ist
-noch kein neuer Android-Build oder Store-Release.
+`~/vitalos-prod` ist ein lokaler Symlink auf `~/vitalos/prod`. Der frühere
+Checkout mit Artefakten und Koordinationsdateien ist unter
+`~/vitalos-prod-legacy-2026-11-07` archiviert. Ein gelungener Umzug ist noch
+kein neuer Android-Build oder Store-Release.

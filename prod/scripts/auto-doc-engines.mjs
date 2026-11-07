@@ -1,7 +1,7 @@
 /**
  * auto-doc-engines.mjs — geteilte Modell-Engine-Kette der Auto-Doc-Dienste.
  *
- * Kette (User-Vorgabe 2026-11-05): Claude Haiku → Codex luna → Vibe low.
+ * Kette (User-Vorgabe 2026-11-05): Claude Haiku → Codex gpt-6-luna → Vibe low.
  * Reine Textgenerierung (keine Tools), je 300s Timeout; schlägt eine Stufe
  * fehlt, fällt der Lauf auf die nächste zurück. Manuell: gemini (Key aus
  * ~/.env/, gemini.env zuerst).
@@ -39,7 +39,7 @@ export function askClaude(promptText) {
 
 export function askCodex(promptText) {
   const res = spawnSync('codex',
-    ['exec', '-m', 'luna', '-s', 'read-only', '--skip-git-repo-check', '-'],
+    ['exec', '-m', 'gpt-6-luna', '-s', 'read-only', '--skip-git-repo-check', '-'],
     { input: promptText, encoding: 'utf8', maxBuffer: 20 * 1024 * 1024, timeout: ENGINE_TIMEOUT_MS });
   if (res.status !== 0 || res.error || !res.stdout?.trim()) {
     throw new Error(`codex CLI ${res.error?.code ?? 'exit ' + res.status}: ${((res.stderr || '') + (res.stdout || '')).slice(0, 160)}`);
@@ -107,7 +107,7 @@ export async function runEngineChain(promptText, { engineArg, onStage, stateDir 
     ? [{ name: 'gemini', run: async (p) => askGemini(p) }]
     : [
         { name: 'claude/haiku', run: (p) => askClaude(p) },
-        { name: 'codex/luna', run: (p) => askCodex(p) },
+        { name: 'codex/gpt-6-luna', run: (p) => askCodex(p) },
         { name: 'vibe/mistral-medium-3.5', run: (p) => askVibe(p, stateDir) },
       ];
   let lastError = null;

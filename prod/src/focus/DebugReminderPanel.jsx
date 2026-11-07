@@ -12,6 +12,7 @@
 import { useState } from "react";
 import { LocalNotifications } from "@capacitor/local-notifications";
 import { runReminderCheck, REMINDER_STORAGE_KEY } from "./reminderRunner.js";
+import { localDateKey } from "./remind.js";
 
 // Speicher für den Test: localStorage-Adapter mit der Runner-Schnittstelle
 // ({ get, set }). Die echte Einstellungs-UI (Stufe-0-Ausbau) entscheidet später
@@ -28,10 +29,14 @@ const STATUS_TEXT = {
   error: "Fehler (Plugin-/Speicherfehler)",
 };
 
+// Der Runner fasst alle Skip-Gründe zu 'skipped' zusammen; ist heute schon gemerkt,
+// kennt das Panel den Grund und zeigt den klaren Zweitlauf-Wortlaut.
+const isRemindedToday = () => localStorage.getItem(REMINDER_STORAGE_KEY) === localDateKey(new Date());
+
 export default function FocusDebugPanel() {
   const [minimumLogMet, setMinimumLogMet] = useState(false);
-  const [status, setStatus] = useState("bereit");
-  const [lastRemindedOn, setLastRemindedOn] = useState(() => storage.get(REMINDER_STORAGE_KEY));
+  const [status, setStatus] = useState(() => (isRemindedToday() ? "übersprungen — heute schon erinnert" : "bereit"));
+  const [lastRemindedOn, setLastRemindedOn] = useState(() => localStorage.getItem(REMINDER_STORAGE_KEY));
 
   function refreshStorage() { setLastRemindedOn(localStorage.getItem(REMINDER_STORAGE_KEY)); }
 
@@ -54,7 +59,7 @@ export default function FocusDebugPanel() {
       settings: { remindHour: 0 },
     });
     refreshStorage();
-    setStatus(`Berechtigung: ${display} · Ergebnis: ${result} — ${STATUS_TEXT[result] ?? result}`);
+    setStatus(`Berechtigung: ${display} · Ergebnis: ${result} — ${result === "skipped" && isRemindedToday() ? "übersprungen — heute schon erinnert" : STATUS_TEXT[result] ?? result}`);
   }
 
   return (

@@ -67,42 +67,52 @@ Pflichten.
 ## Produkt-Functions (Smart-Log-Komposition)
 
 Der Produkt-Functions-Deploy nach `vitalos-prod` besteht aus zwei getrennten,
-beide fail-closed gepolten Codebases:
+beide fail-closed gepolten Codebases. Owner-Entscheid 2026-11-07: Die
+paarigen Journal-Functions (`analyzeSmartLog`, `getSmartLogQuota`,
+`googleLink*`) sind aus dem Produkt-Deploy-Workflow GENOMMEN und bis
+Operate (Phase 06) zurueckgestellt — vitalos-prod hatte nie einen
+Functions-Deploy und bleibt bewusst dabei:
 
 - **`vitalos`-Codebase** (`prod/firebase.json`, Source `prod/functions`):
   bewusst eigenständige Push-Reminder-Implementierung mit eigenem
   `package-lock.json` (Firebase-Deploy-Standard). Dass `prod/functions/index.js`
   nur Reminders enthält, ist korrekt, keine Lücke: Smart-Log gehört nicht in
-  die Shell-Codebase.
-- **`journal`-Codebase** (`prod/firebase.product-journal.json`, Source
-  `../journal-app/functions`): deployt direkt aus dem gemeinsamen Submodule —
-  keine Kopie, kein zweiter Pin. Damit gelangen `analyzeSmartLog` und
-  `getSmartLogQuota` (`smart-log.js`: Quota, Entitlement observe/operate,
-  `observeWeeklyLimit ?? 1`, requestId-Dedup, uid-Check) in den Produkt-Deploy;
-  im selben Whole-Codebase-Deploy liegen auch die `googleLink*`-Callables und
-  die geplanten Journal-/Door-Reminder.
+  die Shell-Codebase. Von der Zurueckstellung UNBERUEHRT.
+- **`journal`-Codebase** (`prod/firebase.product-journal.json`): seit PR #28
+  (`e6e3170`) enthaelt das journal-app-Submodule KEINE Functions-Quellen mehr
+  (`functions/` nur noch `MIGRATED.md`, Lockfiles, .env-Referenz); Quellen-SOT
+  fuer die Journal-Callables ist `~/dev/backend/functions/journal`. Die
+  Journal-Functions laufen NUR im privaten Projekt (laufende Deploys der
+  privaten Linie aus dem Backend-SOT, inkl. Tagesbudget `213d5c9`). Die
+  Konfiguration bleibt als Operate-Vorausarbeitung im Repo (Vermerk:
+  „Functions-Deploy zurueckgestellt bis Operate“), ebenso die Predeploy-Guards;
+  bei Nicht-Deploy werden sie nicht ausgefuehrt — ein journal-app-Gitlink-Bump
+  bricht dadurch nichts. Die Kompositionsfrage fuer die spaetere
+  Operate-Aufnahme (vos-backend-Submodule o. ae.) ist als Blocker aufgeloest
+  und als spaetere Entscheidung in die Phase-06-Liste gewandert.
 
-Predeploy-Guards (`prod/scripts/`): `check-product-journal.mjs` fordert
-`GCLOUD_PROJECT=vitalos-prod`, Journal-Checkout exakt gleich dem committeten
-Gitlink, sauberen getrackten Worktree, den geprüften Vorläufer-Commit
-`a1018cf` als Vorfahren und die geforderten Callables im Export;
-`check-product-ai-access.mjs` prüft über gcloud-Metadaten, dass direkte
-Firebase-AI-Zugriffe gesperrt und API-Key-Einschränkungen gesetzt sind
-(`VOS_GEMINI_SERVER_KEY_ID`). Preview-Push-Deploys laufen über
-`prod/firebase.push.json` mit denselben drei Quellen (vitalos, fitness,
-journal).
+Predeploy-Guards (`prod/scripts/`, mit gleichem Vermerk versehen):
+`check-product-journal.mjs` fordert `GCLOUD_PROJECT=vitalos-prod`,
+Journal-Checkout exakt gleich dem committeten Gitlink, sauberen getrackten
+Worktree, den geprueften Vorlaeufer-Commit `a1018cf` als Vorfahren und die
+geforderten Callables im Export — lauffaehig erst wieder nach Rueckfuehrung
+der Functions in den journal-App-Pin (Operate); `check-product-ai-access.mjs`
+prueft ueber gcloud-Metadaten, dass direkte Firebase-AI-Zugriffe gesperrt und
+API-Key-Einschraenkungen gesetzt sind (`VOS_GEMINI_SERVER_KEY_ID`).
+Preview-Push-Deploys laufen ueber `prod/firebase.push.json`.
 
-Vor einem echten Deploy fehlen Secrets/Parameter in `vitalos-prod`
+Vor einem spaeteren echten Deploy fehlen Secrets/Parameter in `vitalos-prod`
 (`GEMINI_API_KEY`, `GOOGLE_OAUTH_CLIENT_SECRET`, `GOOGLE_OAUTH_CLIENT_ID`).
-Kein Deploy wurde durchgeführt. Die Entscheidung, ob der Whole-Codebase-Deploy
-alle Journal-Functions ausbringt oder Callables gezielt ausgewählt werden
-(`prod/docs/FIREBASE.md`), bleibt Owner-Entscheidung. Der
+Kein Deploy wurde durchgefuehrt; die Deploy-Freigabe bleibt Owner-Gate
+(`prod/docs/FIREBASE.md` beschreibt den Zielweg). Der
 Smart-Log-Quota/Entitlement-Entwurf des Observe v1-Scopes liegt in
 `prod/docs/SCOPE-OBSERVE-V1.md`; das dort beschlossene Tagesbudget
 (1 KI-Analyse/Tag, `observeDailyLimit`) ist in der Backend-Quelle
-(`~/dev/backend`, Commit `213d5c9`) umgesetzt — der journal-app-Gitlink
-publiziert es erst mit dem nächsten Journal-Release, bis dahin führt der
-Meta-Pin noch die Wochen-Zählung.
+(`~/dev/backend`, Commit `213d5c9`) umgesetzt und im privaten Projekt
+live. Das Produkt (vitalos-prod) hat entsprechend der Zurueckstellung
+keine KI-Analysen — die Journal-v2-UI verhaelt sich dort fail-closed
+(Disclosure bleibt, Analyse-Aktion scheitert kontrolliert); dieses
+Verhalten ist Emulator-Abnahme-Punkt statt eines funktionalen Tests.
 
 ## Pinning und Veröffentlichung
 

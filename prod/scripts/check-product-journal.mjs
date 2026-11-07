@@ -1,3 +1,10 @@
+// Functions-Deploy zurueckgestellt bis Operate (Phase 06, Owner-Entscheid
+// 2026-11-07): Die paarigen Journal-Functions laufen nur im privaten Projekt
+// aus dem Backend-SOT; vitalos-prod hatte nie einen Functions-Deploy. Dieser
+// Guard bleibt als Operate-Vorausarbeitung im Repo und wird bei Nicht-Deploy
+// nicht ausgefuehrt — ein journal-app-Gitlink-Bump bricht nichts. Lauffaehig
+// erst wieder nach Rueckfuehrung der Functions in den journal-App-Pin
+// (Quelle seit journal-dev PR #28 / e6e3170 nicht mehr im Submodule).
 import { execFileSync } from 'node:child_process';
 import { readFileSync } from 'node:fs';
 import { dirname, resolve } from 'node:path';
