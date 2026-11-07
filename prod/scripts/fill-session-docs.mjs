@@ -5,18 +5,21 @@
  * Pendant zu Claudes PreCompact-Hook (~/.claude/hooks/pre-compact-docs.sh):
  * Vibe hat KEIN Compact-Hook-Event (Stand 3.1.0, nur post_agent/pre_tool/
  * post_tool), deshalb trägt der tägliche Dienst nach: Er liest die.de SESSIONS
- * aus ~/.vibe/logs/session/unified/ (journal/*.jsonl als Transcript), deren
- * Arbeits-Repo die Doku-Konvention hat (RESULTS.md oder NEXT.md im Root),
- * und lässt die Engine-Kette (auto-doc-engines.mjs) je Repo:
+ * aus ~/.vibe/logs/session/unified/ (journal/*.jsonl als Transcript) und füllt
+ * AUSSCHLIESSLICH die Submodule-Checkouts des VitalOS-Meta-Repos (dieselben
+ * Docs, die thin-results.mjs ausdünnt). Meta-Root-Sessions werden per
+ * Transcript-Nennungen dem dominanten Submodule zugeordnet; alle anderen
+ * Arbeitsordner (Home, dev- und Fremd-Repos) werden mit Grund geskippt.
+ * Je Repo läuft die Engine-Kette (auto-doc-engines.mjs):
  *   - RESULTS.md: neuen Eintrag ganz oben im bestehenden Format anfügen
  *   - NEXT.md: offene Punkte als Bullets oben ergänzen (nur was wirklich
  *     offen blieb — nie Erledigtes duplizieren)
  * Commit NUR dieser Dateien (--no-verify), KEIN Push.
  *
  * Guards: nur Sessions mit echtem Arbeitsumfang (Journal-Bytes über
- * MIN_JOURNAL_BYTES), nur Konventions-Repos, Lock via flock, Model-/Parse-
- * Fehler lässt das Repo unverändert.=tmp nur Sessions seit dem letzten
- * Lauf gefüllt werden.
+ * MIN_JOURNAL_BYTES), nur Ziel-Repos nach resolveDocTarget, Lock via flock,
+ * Model-/Parse-Fehler lässt das Repo unverändert. State sorgt dafür, dass
+ * nur Sessions seit dem letzten Lauf gefüllt werden.
  *
  * Aufruf:
  *   node fill-session-docs.mjs [--dry-run] [--status] [--hours N]
@@ -27,10 +30,14 @@
 import { execFileSync } from 'node:child_process';
 import { existsSync, mkdirSync, readFileSync, readdirSync, statSync, writeFileSync, openSync } from 'node:fs';
 import { homedir } from 'node:os';
-import { join, resolve } from 'node:path';
+import { isAbsolute, join, relative, resolve, dirname } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { runEngineChain } from './auto-doc-engines.mjs';
 
 const SESSIONS_DIR = resolve(homedir(), '.vibe/logs/session/unified');
+// Einziges legitimes Fill-Ziel: Submodule-Checkouts des VitalOS-Meta-Repos —
+// exakt die Docs, die thin-results.mjs auch liest (dort passiert das Ausdünnen).
+const META = resolve(dirname(fileURLToPath(import.meta.url)), '..', '..');
 const STATE_DIR = resolve(homedir(), '.local/state/vitalos-thin-results');
 const STATE_FILE = join(STATE_DIR, 'fill-last-run.json');
 const MIN_JOURNAL_BYTES = 6_000;
@@ -61,6 +68,56 @@ function saveLastRun() {
 
 function hasConvention(repoPath) {
   return existsSync(join(repoPath, 'RESULTS.md')) || existsSync(join(repoPath, 'NEXT.md'));
+}
+
+/** Submodule-Pfade aus .gitmodules eines Checkouts (null, wenn kein Meta-Layout). */
+function metaSubmodules(root) {
+  const gm = join(root, '.gitmodules');
+  if (!existsSync(gm)) return null;
+  const names = [...readFileSync(gm, 'utf8').matchAll(/^\s*path\s*=\s*(\S+)\s*$/gm)].map((m) => m[1]);
+  return names.length ? names : null;
+}
+
+const skippedSessions = [];
+
+/**
+ * Ziel-Doc-Auflösung (CTO 2026-11-07): Nur die VitalOS-Submodule-Checkouts
+ * werden gefüllt — dasselbe Set, das thin-results.mjs liest.
+ *  - Arbeit direkt im Submodule-Checkout des Haupt-Meta-Repos → dorthin.
+ *  - Arbeit in einem Meta-Checkout-Root (oft der Session-Startordner) →
+ *    Zuordnung per Transcript-Nennungen zum dominanten Submodule (>= 8),
+ *    sonst Skip mit Grund.
+ *  - Alles andere (Home, dev-*-/Fremd-Repos, abermalige Meta-Checkouts mit
+ *    eigener Konvention) → Skip mit Grund, keine Doc-Verschmutzung mehr.
+ */
+function resolveDocTarget(wd, transcript) {
+  const subsHere = metaSubmodules(wd);
+  if (subsHere) {
+    let best = null;
+    let bestScore = 0;
+    let secondScore = 0;
+    for (const name of subsHere) {
+      const score = (transcript.match(new RegExp(`/${name}[/\\s"']`, 'g')) || []).length;
+      if (score > bestScore) { secondScore = bestScore; best = name; bestScore = score; }
+      else if (score > secondScore) secondScore = score;
+    }
+    const target = best ? join(wd, best) : null;
+    // Schwelle 8 UND klare Dominanz (2x Zweitplatzierter) — sonst kein Eintrag
+    // in ein evtl. falsches Submodule-Doc (Beleg: Android-Session, nur 11 flüchtige
+    // Nennungen eines Submodules, reale Arbeit woanders im Meta-Checkout).
+    if (target && bestScore >= 8 && bestScore >= 2 * secondScore && hasConvention(target)) {
+      return { repo: target, note: `Meta-Checkout → Submodule "${best}" (${bestScore} Transcript-Nennungen)` };
+    }
+    skippedSessions.push(`${wd}: Meta-Checkout ohne klare Submodule-Zuordnung (best "${best}"=${bestScore})`);
+    return null;
+  }
+  const metaSubs = metaSubmodules(META);
+  const rel = relative(META, wd);
+  if (metaSubs && rel && !rel.startsWith('..') && !isAbsolute(rel) && metaSubs.includes(rel) && hasConvention(wd)) {
+    return { repo: wd, note: null };
+  }
+  skippedSessions.push(`${wd}: kein VitalOS-Submodule — RESULTS/NEXT dort ist nicht Ziel der Fill-Kette`);
+  return null;
 }
 
 function collectSession(repoPath, sessionDir) {
@@ -105,7 +162,9 @@ function findSessions(since) {
     if (!hasConvention(wd)) continue;
     const transcript = collectSession(wd, join(SESSIONS_DIR, entry.name));
     if (!transcript) continue;
-    found.push({ repo: wd, sessionId: meta.session_id ?? entry.name, title: meta.title ?? '', transcript, bumped });
+    const target = resolveDocTarget(wd, transcript);
+    if (!target) continue;
+    found.push({ repo: target.repo, wd, note: target.note, sessionId: meta.session_id ?? entry.name, title: meta.title ?? '', transcript, bumped });
   }
   // Pro Repo nur die neueste Session füllen, ältere kürzen.
   const byRepo = new Map();
@@ -166,9 +225,10 @@ async function main() {
     : new Date(Math.max(loadLastRun().getTime(), Date.now() - 48 * 3600 * 1000));
   console.log(`Scanne Vibe-Sessions seit ${since.toISOString()} …`);
   const sessions = findSessions(since);
-  if (!sessions.length) { console.log('Keine qualifizierten Sessions (Konventions-Repo + Arbeitsumfang).'); return; }
+  for (const skip of skippedSessions) console.log(`- SKIP ${skip}`);
+  if (!sessions.length) { console.log('Keine qualifizierten Sessions (VitalOS-Submodule + Arbeitsumfang).'); return; }
   for (const s of sessions) {
-    console.log(`- ${s.repo} (Session "${s.title}", ${s.sessionId}, ${(s.transcript.length / 1000).toFixed(0)}k Transcript)`);
+    console.log(`- ${s.repo} (Session "${s.title}", ${s.sessionId}, ${(s.transcript.length / 1000).toFixed(0)}k Transcript${s.note ? `, ${s.note}` : ''})`);
   }
   if (statusOnly) return;
 
