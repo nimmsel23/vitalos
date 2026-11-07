@@ -3,9 +3,11 @@
 ## Aktuelle Quelle
 
 `~/vitalos/prod` ist der getrackte Produktbereich des Meta-Repos `~/vitalos`.
-Die gemeinsame Struktur wurde auf `dev-product` integriert. Das frühere
-`~/vitalos-prod` bleibt als Alt-Checkout mit lokalen Änderungen, Konfiguration
-und Artefakten erhalten; neue Produkt-Builds beziehen ihre Apps aus dem Parent.
+Die gemeinsame Struktur wurde auf `dev-product` integriert. Der frühere
+Checkout `~/vitalos-prod` wurde lokal als `~/vitalos-prod-legacy-2026-11-07`
+archiviert; `~/vitalos-prod` ist jetzt ein Symlink auf `~/vitalos/prod`.
+Der Archiv-Checkout bewahrt lokale Änderungen, Konfiguration,
+Artefakte und Worktrees; neue Produkt-Builds beziehen ihre Apps aus dem Parent.
 Observe und Operate verwenden denselben Produkt-Unterbau.
 
 | Bereich | Nachgewiesener Stand der Übernahme |
@@ -60,6 +62,7 @@ authentifizierte Nutzung oder Store-Freigabe.
 - [Produkt-Firebase](FIREBASE.md)
 - [Native Artefakte und Store-Release](STORE-PUBLISHING-PLAN.md)
 - [Historischer Produktstand vor der Zusammenführung](archive/PRODUCT-CHECKOUT-BEFORE-UNIFICATION-2026-11-06.md)
+- [Übernommene Dokumente aus dem alten Checkout](archive/vitalos-prod-legacy-2026-11-07/README.md)
 
 Die Historie enthält datierte Hosting-, Auth-, Rules- und Android-Befunde sowie
 ältere, teils überholte Aussagen. Sie wird bewahrt, aber nicht als aktueller

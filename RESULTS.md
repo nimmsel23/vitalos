@@ -511,3 +511,8 @@ an Zugriffsregeln, Submodule-Pointern oder App-Code.
 - Deckungsbeitrag, Codex-Upgrade und Vollkostenprofit getrennt beschrieben.
 - HTML-Fassung aktualisiert. Keine Preisfestlegung, Zahlung, Store-Aktion,
   Build oder Release. V1.2.1 bleibt bis Owner-Abnahme maßgeblich.
+## 2026-11-07 — Produktdokumente abgeglichen und Alt-Checkout archiviert
+
+Nach der gestrigen Kopie nach `vitalos/prod` wurden die weitergeschriebenen Produktdokumente ergänzt: Migrationsbericht, fokusspezifische Notizen und datierte Archivkopien abweichender Firebase-, Checkout- und Store-Runbooks. Interne CEO/CTO- und Abteilungskoordination blieb im privaten Checkout. `/home/alpha/vitalos-prod` ist jetzt ein Symlink auf `/home/alpha/vitalos/prod`; der frühere 1,6-GB-Checkout samt lokalen Änderungen und Worktree wurde vollständig nach `/home/alpha/vitalos-prod-legacy-2026-11-07` verschoben. Der separate `dev-product`→`master` Merge wurde lokal in einem isolierten Worktree vorbereitet und in dessen lokalen `master` integriert; nicht gepusht.
+
+---

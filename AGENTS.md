@@ -13,10 +13,11 @@ private Produktionsbranch. Der ältere lokale `dev`-Strang und weitere Worktrees
 sind separate Arbeitsstände und dürfen nicht zurückgesetzt oder pauschal
 übernommen werden. Branch und Status vor jeder Änderung tatsächlich prüfen.
 
-`~/vitalos-prod` bleibt bis zur abgeschlossenen Ablösung erhalten. Dort können
-exklusive lokale Änderungen, Konfiguration und native Artefakte liegen.
-Das GitHub-Repo gleichen Namens kann als späteres Release-Ziel erhalten bleiben.
-Die geteilte Produktquelle ist jetzt `~/vitalos/prod`.
+`~/vitalos/prod` ist die kanonische Produktquelle. Der frühere lokale Checkout
+ist unter `~/vitalos-prod-legacy-2026-11-07` archiviert; lokale Änderungen,
+Konfiguration, native Artefakte und Worktrees bleiben dort erhalten.
+`~/vitalos-prod` ist ein lokaler Symlink auf `~/vitalos/prod`. Das private
+GitHub-Repo gleichen Namens bleibt ein separates mögliches Release-Ziel.
 
 Einstieg: `README.md`, `docs/UNIFIED-PRODUCT.md`,
 `prod/docs/PRODUCT-CHECKOUT.md`, `prod/docs/FIREBASE.md` und
