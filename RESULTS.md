@@ -1,3 +1,13 @@
+## 2026-11-08 — AL-Lauf vitalos: Doku-Hygiene RESULTS.md/NEXT.md konsolidiert (+hit)
+
+Auftrag war die CEO-freigegebene Doku-Hygiene (Aufgabe 6 des Abteilungsleiter-Guides): Veraltete Einträge in RESULTS.md/NEXT.md im ~/vitalos-Root konsolidieren, Chronologie bereinigen, fehlende Meilensteine von dev-product bis 226b799 (Fokus Stufe 0/1 Feuer-Nachweis, Shell-Integration Journal v2, Observe/Operate-Architektur) nachpflegen und die offizielle thin-results-Grenze etablieren.
+
+- **RESULTS.md:** Chronologische Reihung wiederhergestellt (die am Dateiende angehängten 2026-11-07-Einträge korrekt einsortiert); doppelten Dateikopf bereinigt; Meilensteine Fokus Stufe 0/1 (Notification Record, Shade-Screenshot, fail-closed Smart-Log) und Observe/Operate dokumentiert. Offizielle Dünne-Grenze (thin-results-Grenze) gemäß Org-Regel 2026-11-07 eingezogen.
+- **NEXT.md:** Historische Gemini-Reviews und veraltete Vorwochen-Aufgaben konsolidiert; aktive Arbeitsliste auf die aktuellen Org-Hits fokussiert (c3315277 M2 APK-Vorbereitung für Simon & Matthias, 378427eb GitHub Pages erfassen/bewerten).
+- **Protokoll & Guide:** Guide prod/docs/product-dev/abteilungen/vitalos.md Aufgabe 6 / CEO-Freigabe 2 abgehakt, AL-LOG.md und ABTEILUNG.md aktualisiert. Alles in einem Commit auf dev-product. Kein Push.
+
+---
+
 ## 2026-11-08 — AL-Lauf vitalos: +hit-Worktree-Bereinigung verifiziert (beide /dev/shm-Einträge bereits entfallen)
 
 Auftrag war die CEO-freigegebene Bereinigung GENAU der zwei prunable /dev/shm-Focus-Worktrees (wt-focus a199fc4, wt-focus1 e11379b). Ergebnis: beide sind bei Laufstart bereits nicht mehr registriert — keine Admin-Einträge unter `.git/worktrees/`, keine Verzeichnisse in `/dev/shm`; die Entfernung erfolgte nach dem Erstlauf (02:45 UTC, dort noch 7 registrierte) durch eine unbekannte Linie, Boot war 2026-11-06 19:48. `git worktree prune` als Freigabe-Schritt ausgeführt: no-op (rc=0), 5 registrierte Worktrees unverändert, Branches `focus-stufe-0-1` (a199fc4) und `focus-stufe-1` (e11379b) wie freigegeben unberührt. Kein Push, kein Branch-/Tag-/Gitlink-Touch.
@@ -5,6 +15,46 @@ Auftrag war die CEO-freigegebene Bereinigung GENAU der zwei prunable /dev/shm-Fo
 - **Inventur:** dev-product Spitze `1b9601b`; Branchabstand `origin/master...dev-product` 18/7 (nur dokumentiert, NICHT angeglichen). Submodule: genau 1 Drift-Marker (`+ journal-app` 9502f2b, heads/vitalos, fremde Ausführungslinie — nur gemeldet), sonst sauber.
 - **Nur gemeldet, kein mv/rm:** uncommittet fremd `prod/migration/unified-product/coordination/CTO.md` (`M`), `D vitalos.html`; unversioniert `20`, `docs/Index.html`, `ABTEILUNG.md` (CEO-Datei), `AL-LOG.md` (dieser Lauf committet ihn).
 - **Protokoll:** Guide-Abhaken `prod/docs/product-dev/abteilungen/vitalos.md`, AL-LOG 2026-11-08 gefüllt, NEXT.md-Folgetasks — alles in einem Commit auf dev-product. Guide-Referenzen `README.md`/`WOCHENPLAN.md` unter `docs/product-dev/` fehlen nach der Symlink-Konsolidierung (gemeldet an CEO/CTO).
+
+---
+
+## 2026-11-07 — Fokus Stufe 0/1: Feuer-Nachweis erbracht, Shell-Journal-v2-Wrap und Observe/Operate
+
+Ergebnisse der Produktlinie dev-product bis 226b799 (Fokus Stufe 0/1, Journal-v2-Integration):
+- **Feuer-Nachweis Fokus Stufe 0 (226b799):** Benachrichtigungs-Feuer belegt (dumpsys NotificationRecord id 41001, Shade-Screenshot, ERPY-Ergebniszeile scheduled/skipped; Belege unter ~/dev/emulator-abnahme-20261106). Sign-in per E-Mail/Passwort (Testaccount), Journal v2 nach Shell-Fixes (d6a5e72/cc2582e: QueryClientProvider + Modus-Zustand), Woche/Suche funktional, Smart-Log fail-closed (Kontingent-Hinweis statt Absturz, Ohne-KI-Fallback speichert).
+- **Observe/Operate Architektur-Prototyp (fbb13e9, cc19f0f):** Observe Free Product Prototype eingebunden, Observe-Operate-Architekturdokumentation gemappt (docs/OBSERVE-OPERATE-ARCHITECTURE.md).
+- **Smart-Log & Mobile Store Readiness (f8e8c4e, cb816b4, 7c1c6ee, 4c2d8ff):** Smart-Log Recovery Milestone, Adapter/Planner-Kalender, native Firebase-Registrierungen und offizielle Store-Anforderungen für Android-Roadmap erfasst.
+
+---
+
+## 2026-11-07 — CEO-Entwurf V1.3.0: Problemlöser-Portfolio und Gewinnschwelle
+
+- Strategieentwurf verdichtet: täglicher Freitext statt umständlicher
+  Logger; je ein Deposit in Body, Business, Balance und Being. Der
+  Habit-Tracker bleibt für feste Gewohnheiten verfügbar.
+- Repo-Prüfung: Smart Log verarbeitet Ernährung, Fitness, Relax, Habits und
+  Aufgaben; ein fertig sichtbarer Vier-Deposit-Ablauf ist im aktuellen
+  Journalcode nicht belegt. Als M1-RC-Abnahmepunkt aufgenommen.
+- Die beabsichtigte Veränderung von Gewohnheiten, Fokus und Zielerreichung
+  soll sich durch die Nutzung zeigen. Langfristige KI-Musteranalyse bleibt
+  als Ausbauhypothese markiert.
+- Preisanker 6,90 Euro aus älterer Testannahme aufgenommen und als
+  unbestätigt markiert; 6,90/9,90-Euro-Preisinteresse ist ein Vorschlag.
+  Smart-Log-Funktion nutzt Gemini 2.5 Flash, aber speichert keine
+  Provider-Tokenmetrik; echte Analyse- und Storekosten bleiben offen.
+- 90-Tage-Sequenz für Journal-Kern, M2-Pilot, Preisgespräche und einen
+  anschließenden Premium-Start ergänzt. Vorhandene Fach-Apps als fokussierte
+  Einzel-Einstiege geordnet; keine parallelen App-Builds oder bezahlte
+  Akquise vor positivem variablem Deckungsbeitrag.
+- Deckungsbeitrag, Codex-Upgrade und Vollkostenprofit getrennt beschrieben.
+- HTML-Fassung aktualisiert. Keine Preisfestlegung, Zahlung, Store-Aktion,
+  Build oder Release. V1.2.1 bleibt bis Owner-Abnahme maßgeblich.
+
+---
+
+## 2026-11-07 — Produktdokumente abgeglichen und Alt-Checkout archiviert
+
+Nach der gestrigen Kopie nach `vitalos/prod` wurden die weitergeschriebenen Produktdokumente ergänzt: Migrationsbericht, fokusspezifische Notizen und datierte Archivkopien abweichender Firebase-, Checkout- und Store-Runbooks. Interne CEO/CTO- und Abteilungskoordination blieb im privaten Checkout. `/home/alpha/vitalos-prod` ist jetzt ein Symlink auf `/home/alpha/vitalos/prod`; der frühere 1,6-GB-Checkout samt lokalen Änderungen und Worktree wurde vollständig nach `/home/alpha/vitalos-prod-legacy-2026-11-07` verschoben. Der separate `dev-product`→`master` Merge wurde lokal in einem isolierten Worktree vorbereitet und in dessen lokalen `master` integriert; nicht gepusht.
 
 ---
 
@@ -122,6 +172,38 @@ Aus einer Session in `~/dev/fitness-dev` (Muskel-Coverage-Upgrades, Katalog, dan
 
 ---
 
+## 2026-11-01 — Coach standalone ausgeliefert
+
+`vos-ship coach --yes` ergänzt und erfolgreich ausgeführt. Coach source `7f53c4392ef0ef6e5e189d2f3a1fc8e036ab63e2` liegt auf origin/dev; veröffentlichter Plan-Pin `9bb748408ee69ab9d9a8d667c444d04255e749ac`. Standalone-Installation mit frozen lockfile und Build ohne initialisiertes VitalOS-Submodule erfolgreich. VitalOS-Workspace-Aliases und fremde Tailwind-Scans entfernt; lokaler veränderter VitalOS-Kontext blieb erhalten.
+
+Coach owns firestore.rules.part; zentral importiert mit Quellcommit-Provenienz. Zusammengesetztes Ruleset in VitalOS `83452cc3fcb6d01e53c1136fce920d07801bcdb9` enthält Coach-Kommunikation und Plan-Feedback. Gemeinsamer Rules-/Indexes-Deploy erfolgreich: https://github.com/nimmsel23/vitalos/actions/runs/41319760105 .
+
+Coach Preview erfolgreich: https://github.com/nimmsel23/coach-dev/actions/runs/41319665695 . Coach Live erfolgreich: https://github.com/nimmsel23/coach-dev/actions/runs/41319851129 . Live https://vos-coach.web.app/release.json meldet exakt den ausgelieferten Coach-SHA. Der durch den VitalOS-Push ausgelöste Shell-Deploy war ebenfalls erfolgreich: https://github.com/nimmsel23/vitalos/actions/runs/41319727104 . Keine echten Klientennachrichten als Test versendet; Geräte-/Account-Abnahme bleibt getrennt vom verifizierten Deployment.
+
+---
+
+## 2026-11-01 — Coach-Ungelesen-Index
+
+Zentralen Collection-Index für `messages` (`senderRole ASC`, `createdAt DESC`)
+für die Ungelesen-Abfragen beider Apps ergänzt. Vor Live-Übernahme der
+Coach-Erweiterungen deployen und Index-Bereitschaft prüfen. Keine Änderung
+an Zugriffsregeln, Submodule-Pointern oder App-Code.
+
+---
+
+## 2026-11-01 — `gh-run-check` und `vos-ship --functions`
+
+- Ergänzt einen wiederverwendbaren GitHub-Actions-Run-Checker (ID/URL oder letzter Workflow-Run) und integriert ihn in `vos-ship` für Live-Deploys. `vos-ship <modul> --functions` verfolgt zusätzlich den app-spezifischen Push-Functions-Deploy.
+- Verifiziert: Shell-Syntax; `gh-run-check` gibt sowohl für einen erfolgreichen als auch für einen fehlgeschlagenen echten Run den Abschluss korrekt aus. Beim aktuellen Journal-Deploy bestand der Isolationstest; Firebase brach anschließend mangels `secretmanager.secrets.get` für `GOOGLE_OAUTH_CLIENT_SECRET` ab. Die lokale Identität `nimmdaniel@gmail.com` darf die Secret-IAM-Policy nicht lesen; keine IAM-Berechtigung geändert.
+
+---
+
+## 2026-11-01 — Push-Functions-Isolationstest
+
+- Der Test-Mock bildet jetzt `runWith()` für die Journal-Callable-Functions ab und erkennt sowohl explizite als auch standardisierte App-Payload-Marker. `node scripts/test-push-function-isolation.mjs` mit den veröffentlichten Fitness-/Journal-Checkouts bestanden; dabei wurden keine Nachrichten gesendet.
+
+---
+
 ## 2026-10-31 — Shell-Release für Door v2 offline-first/Google Tasks: Importkonflikt in journal-app, `door-/game-/tent-release`-Shims
 
 Aus einer Session in `~/journal-dev` (Door v2: Google-Tasks-Anbindung, Offline-first-Umbau, Autosave). Hier dokumentiert ist nur, was das Meta-Repo betrifft: Die Standalone-Seiten (`vos-door`, `vos-game`, `vos-tent`) liefen nach dem Release in `journal-dev` schon live, die Shell brauchte noch ihren eigenen Release. Dabei fand der Preflight von `vos-release` einen Konflikt, und für Door/Game/Tent gab es keine eigenen `*-release`-Befehle. Der Release lief anschließend durch (`091d366..9526677`).
@@ -131,6 +213,29 @@ Aus einer Session in `~/journal-dev` (Door v2: Google-Tasks-Anbindung, Offline-f
 - **Release `door-release --yes` (Pointer `journal-app`, `9526677` „bump journal after release“):** `deploy-shell.yml` (Run 41180328104) grün. Live geprüft: `vitalos.web.app/sw.js` um 07:23:41 UTC neu ausgeliefert (`cache-control: no-cache`), der Autosave-Code (`draft:v1:`) steckt im ausgelieferten Shell-Bundle `index-C7XBUecB.js`; `vos-door`, `vos-game`, `vos-tent` stehen auf dem Stand des Autosave-Releases (07:06:46 UTC).
 - **Geprüft, nicht geändert:** Der Workflow `deploy-push-functions.yml` deployt nur `functions:journal:scheduledJournalPushReminders` und lässt die neuen Google-Functions und `scheduledDoorReminders` unberührt (löscht sie nicht); er kennt sie nur nicht. Die Functions selbst wurden aus `journal-dev` deployt (fünf Stück in `fitness-aos`), nicht aus diesem Repo.
 - **Nicht getestet:** Der Shell-Build lief nur in der CI, lokal wurde er nicht gebaut; im Browser bzw. auf dem Handy wurde die Shell nicht angesehen.
+
+---
+
+## 2026-10-31 — Dependabot
+
+Enabled Dependabot alerts and security updates. Configured weekly GitHub Actions and npm/pnpm updates; version updates target `master`. Minor/patch updates are grouped; vendored mini-app-shell copies stay maintained at their source. Validated YAML, repository manifest paths and update targets.
+
+---
+
+## 2026-10-31 — Dev-Projekte unter ~/dev
+
+Lokale Entwicklungspfade und betroffene Verknüpfungen auf `~/dev/*-dev` umgestellt. Runtime-Daten, Branches und Release-Checkouts behalten ihre Zuständigkeit. Keine Pushes oder Releases. Gesamter Umzug und Prüfungen: `~/RESULTS.md`.
+
+---
+
+## 2026-10-30 — Fuel-Fotoscanner: Shell-Messaging-Vertrag repariert
+
+- Fuel-Release `746e3ac` mit Pointer-Commit `17db6ae` übernommen. Erster Shell-CI-Lauf `41051151490` scheiterte beim Build: Fuel `DailyChecklist.jsx` importiert `messaging`, der gemeinsame Shell-Firebase-Layer exportierte nur den asynchronen Getter. Es wurde dadurch kein neuer Shell-Stand veröffentlicht.
+- Gemeinsamen Firebase-Layer um den kompatiblen Live-Export `messaging` ergänzt. Die bestehende asynchrone `isSupported()`-Prüfung bleibt vor der FCM-Initialisierung; unterstützte Browser teilen dieselbe Instanz mit dem Getter, fehlende Unterstützung oder fehlschlagende Support-Erkennung werfen nicht beim App-Start. Explizite Getter-Aufrufe können Fehler weiterhin melden.
+- Neuer ausführbarer Regressionstest `scripts/test-firebase-messaging.mjs` prüft unterstützte, nicht unterstützte und fehlschlagende Support-Erkennung am tatsächlichen Firebase-Modul. Test läuft zusätzlich in `deploy-shell.yml`.
+- Validiert: neuer Messaging-Test, bestehender 6Pack-Shell-Auth-Test, `git diff --check` und vollständiger `pnpm run build:firebase` einschließlich generierter KB-Daten, Service Worker und Splash erfolgreich. Build im sichtbaren Kitty-Tab ausgeführt; bekannte Chunk-Größenwarnung.
+
+- Veröffentlichung erfolgreich: Fix `2e69ba3` gepusht, Shell-CI `41051683942` grün (`https://github.com/nimmsel23/vitalos/actions/runs/41051683942`). `https://vitalos.web.app` antwortet mit 200; tatsächliches App-Bundle `/assets/index-DKFGd6dq.js` enthält Fuel-Foto-Warteliste, Etikett-Modus und Katalogübernahme. Service Worker zuletzt geändert: 2026-10-30 11:57:46 UTC. Frischer isolierter Browser ohne Login rendert Fuel und Shell ohne unbehandelte JavaScript-Fehler. Kein authentifizierter Kamera-/App-Check-Test und keine Nutzerdaten geändert.
 
 ---
 
@@ -190,6 +295,20 @@ Aus einer Shell-Session (Fortsetzung des Hub-Sheet-Eintrags vom 2026-10-28): Der
 - **Release:** `git push origin master`; ein `dev`-Branch existiert im Meta-Repo nicht (nur in den Sub-Repos), deshalb kein Merge nach `dev`.
 
 ---
+
+## 2026-10-29 — Shell-Wrapper für 6Pack und Skills
+
+- `src/shell/SixPackApp.jsx` bindet 6Pack mit dem Shell-Login, Firestore-Programm, Push und Session-Logging ein.
+- `src/shell/SkillsApp.jsx` stellt Original, Iron Room, Gravity Map und Riso Climb inklusive gemeinsamem Progress-/Sync-Status in VitalOS bereit. `#skills` und die Shell-Navigation öffnen diesen Wrapper; `#fitness/skills` behält den bisherigen Session-Subtab.
+
+---
+
+## 2026-10-29 — Shell-App-Auswahl aus App.jsx herausgezogen
+
+- Home-Hub-Menü-Apps werden zentral in `src/shell/ShellAppRouter.jsx` an ihre eigenen Wrapper übergeben. `App.jsx` hält Shell-Zustand und Navigation; Settings und Home-Gates besitzen eigene Shell-Komponenten.
+
+--------------------------------------------------------------------------
+<!-- thin-results-Grenze 2026-11-08: BIS HIERHER AUSGEDÜNNT — Destillat in den Doku-Dateien des Repos. Neue Einträge immer ÜBER diese Grenze. -->
 
 ## 2026-10-28 — Hub-Sheet im Desktop: volle Breite, Fuel zweispaltig, Dev-Proxy-Fix
 
@@ -254,11 +373,15 @@ Live verifiziert: CI-Lauf 39722742884 veröffentlicht Journal erfolgreich; Lauf 
 
 Abschluss: VitalOS-Index READY. Reguläre Läufe von Journal (04:36 UTC), Fitness (04:41 UTC) und VitalOS (04:44 UTC) jeweils Status ok, ohne manuelle Testnachrichten.
 
+---
+
 ## 2026-10-21 — Universeller Changelog in allen Apps
 
 Gemeinsamen Vite-Plugin in Fitness, Fuel, Journal, Learn, Relax, Plan und Skills eingebunden; Habits/6Pack auf den aktuellen gemeinsamen Stand gebracht. Skills verwendet keine separate React-UpdateNotes-/Fetch-Lösung mehr. Mini-Apps erhalten eigene IDs/Namen. VOS Fitness verwendet die Release-Metadaten des tatsächlichen Fitness-Checkouts. Die Shell behält genau einen gebündelten Dialog mit allen eingebetteten App-Versionen. CI-Deploys umfassen auch Training/Atlas, vier Fuel-Mini-Apps und alle sechs Journal-Targets.
 
 Stand vor Veröffentlichung: neun App-Builds erfolgreich; Journal origin/dev-Divergenz mit eigenständigem Build integriert und erneut geprüft. Browserprüfung bei 320px/390px bestätigt Standalone-Anzeige, Unterdrückung eingebetteter Dialoge, genau einen Shell-Dialog, gemeinsame Bestätigung, sicheren Text und Fokus. Fitness generiert auch die vom neuen Plan-Submodul benötigten KB-Daten; Learn findet dev- und app-Checkouts. Journal vendort die gemeinsamen Kontextmenüs für seinen eigenständigen Build.
+
+---
 
 ## 2026-10-21 — Ein gemeinsamer Shell-Changelog
 
@@ -276,6 +399,8 @@ Vendor-Parität. Browser bei 320/390px: ein Dialog, App-Links, gemeinsame
 Bestätigung, Unterdrückung vor/nach Schließen und Standalone-Verhalten.
 Kein Push/Deployment oder Pointer-Bump; bestehender 6pack-app-Stand erhalten.
 
+---
+
 ## 2026-10-21 — Gemeinsamer VitalOS-Changelog
 
 6Pack-Pilot in drei wiederverwendbare Module überführt: vos-changelog-screen.mjs,
@@ -292,15 +417,35 @@ Version, Bestätigung, Escape, Fokus, Links, Layout und blockierter localStorage
 Keine Veröffentlichung, keine Submodule-Pointer geändert; vorhandene Änderung
 an 6pack-app unberührt.
 
+---
+
 ## 2026-10-21 — Hub Fuel-Einstiege und App-Kontextmenüs
 
 Fuel Tap Board, Shutter und Tagesfaden sind unter den Fuel-Karten im Home-Hub eingebettet; Klassisch öffnet Fuel. Der gemeinsame Hub-QueryClient aktualisiert Dashboard und Durchschnitte nach Logs. Die vier App-Buttons bieten ihre Unterbereiche per Rechtsklick, Long Tap, Menütaste oder Shift+F10 an. Gemeinsame Menü-/Tastaturbausteine in `packages/mini-app-shell/react/` werden auch von journal-dev v1 genutzt. Direkte Fitness-Ziele umgehen die Hub-Auswahl; Stärke führt zu Lernen. Pfeiltasten, Pos1/Ende, Buchstabensuche, Escape und Fokusrückgabe sind geprüft.
 
 Validierung: VitalOS- und Journal-Firebase-Build erfolgreich; isolierte Browserprüfung bei exakt 320px und 390px für Rechtsklick, Tastatur, Long Tap, Scroll-Abbruch, Menüränder und alle drei Journal-Buttons bestanden. Kein Push/Deploy; journal-dev ist noch nicht in journal-app integriert. Bestehende 6Pack-Änderung bleibt unberührt.
 
+---
+
 ## 2026-10-20 — Coach owns the client Shell
 
 Removed direct `coach-app` gitlink, workspace/lockfile importer and Coach deployment workflow. Removed Coach from VitalOS release/pointer/overview inventories; compatibility `coach-release` delegates to Coach. Branch `coach` starts from this cleaned Shell. Existing unrelated submodule changes are excluded. Old Coach checkout retained locally under `~/coach-dev/.worktrees/legacy-vitalos-coach`. No push or deploy.
+
+---
+
+## 2026-10-19 — VitalOS-eigener Push-Worker
+
+VitalOS registriert `/vitalos-messaging-sw.js` auf `/vitalos-push/` und nutzt
+`apps.vitalos` für Geräte-Tokens und Einstellungen. VitalOS-Funktionen senden
+mit `app: "vitalos"`; sein Worker ignoriert Nachrichten anderer Apps.
+Aktivierte Altgeräte migrieren beim nächsten Öffnen automatisch in die eigene
+Token-Lane. Fitness verwendet parallel die Fitness-Lane und den separaten
+Worker/Scope.
+
+Statische Syntax-, JSON- und Diff-Prüfungen erfolgreich. Kein Produktions-
+Deploy; der lokale VitalOS-Stand enthält außerdem Änderungen im Habit-Submodul.
+
+---
 
 ## 2026-10-18 — Journal-v2-Rules, CI-Reparaturen und coach-Submodul-Fix
 
@@ -338,9 +483,13 @@ Der Ordner `fitness-vos/` baute nicht mehr; er wurde repariert, in `vos-fitness/
 
 Skills bleibt privat. Nach ausdrücklicher Nutzerfreigabe liest VitalOS-CI das neue verschachtelte Submodule über einen separaten Nur-Lese-Deploy-Key (SKILLS_DEPLOY_KEY). Die gemeinsame Composite-Action konfiguriert ausschließlich den Skills-Repository-SSH-Pfad; Hostkeys stammen aus GitHubs HTTPS-Metadaten. Alle 12 rekursiven Checkout-Jobs verwenden sie vor dem Submodule-Update. YAML, Shell-Syntax und Schritt-Reihenfolge geprüft. Der Firebase-Service-Account unter ~/.env/firebase-fitness.json gehört zum Projekt fitness-aos; der vorhandene CI-Service-Account wird weiterverwendet.
 
+---
+
 ## 2026-10-17 — Skills-Videos und gemeinsame Release-Quelle
 
 Fitness/Skills ist ein direktes skills-dev-Submodule auf Branch fitness. Der neue Production-Workflow deploy-skills.yml baut denselben gepinnten verschachtelten Checkout separat nach vos-skills.web.app; deploy-fitness.yml baut den Host. Tailwind der VitalOS-Shell erfasst die Skills-Root-UI-Dateien. Keine parallele UI-Kopie mehr.
+
+---
 
 ## 2026-10-17 — Gemeinsames Profil + Geräteliste in der Shell, Pointer-Bump fuel-app/fitness-app deployt
 
@@ -361,6 +510,8 @@ Fitness/Skills ist ein direktes skills-dev-Submodule auf Branch fitness. Der neu
 - Speicher: `sixpackSelfies/{uid}/photos/{photoId}`, nur Eigentümer; normaler Sync benötigt keinen Laptop-Dienst. Dokumentation und Abnahme ebenfalls in 6pack README/RESULTS und Fitness docs/6pack-integration.md/RESULTS festgehalten.
 - Die Nutzerbestätigung deckt keine zusätzlichen Offline-/Altbestand-/HEIC-Gerätetests ab. Persönliche Fotos oder Tokens wurden nicht für die Dokumentation ausgelesen.
 
+---
+
 ## 2026-10-17 — 6pack übernimmt den VitalOS-Login
 
 - Ursache: Der eigenständige Shell-Tab importierte noch 6pack-app b3e070b und übergab keine UID. Der bereits veröffentlichte Fitness-Release nutzte dagegen den neuen 6pack-Stand. Deshalb zeigte die Shell trotz Anmeldung die alte Login-Sperre.
@@ -369,10 +520,12 @@ Fitness/Skills ist ein direktes skills-dev-Submodule auf Branch fitness. Der neu
 - Firebase-Shell-Build erfolgreich; Auth-Regression läuft zusätzlich in Production-/PR-Preview-CI.
 - Regressionstest führt den tatsächlichen Shell-Views-Code und den Photo-Auth-Adapter aus: UID für zwei Konten/abgemeldet, Remount-Key, Navigation und bestehende Firebase-Sitzung ohne zweite initializeApp. Cloud-/Import-Regression ebenfalls grün.
 
-# RESULTS.md
+---
 
-Session-Log mit datierten Ergebnis-Bullets (vitalos Meta-Repo). Wird vom globalen PreCompact-Hook
-(`~/.claude/hooks/pre-compact-docs.sh`) fortgeschrieben, wenn eine Session hier gearbeitet hat.
+## 2026-10-17 — Offline-Cache bei Updates
+Gemeinsame mini-app-shell erweitert bzw. aktualisiert: versionsunabhängiger öffentlicher API-Cache mit Migration, Asset-Precache standardmäßig aktiv, fehlgeschlagene Installation ersetzt bestehenden Worker nicht. IndexedDB/localStorage bleiben unverändert. Geprüft: 13 Shell-/Update-Tests, Private-Request-Test, Vendor-Parität. Kein Push/Release; kein physischer Geräte-Test.
+
+---
 
 ## 2026-10-16: Fuel-Mini-Apps im Meta-Repo nachgezogen
 
@@ -414,6 +567,7 @@ Das anschließende Coach-Upgrade liegt separat als geprüfter Entwicklungscommit
 `af1f4cd` in coach-dev (gemeinsamer Plan-Editor und Klientenablauf). Es ist nicht
 Teil dieses bereits ausgeführten Plan-/Fitness-Releases.
 
+---
 
 ## 2026-10-16: Coach Strong-Workflow veröffentlicht
 
@@ -433,96 +587,3 @@ Preview `38965346842` erfolgreich. Produktions-CI Coach `38964936285` und
 `38965094966` sowie Shell `38964936288` und `38965094970` erfolgreich.
 Der abschließende Parent-Sync übernimmt ausschließlich die weiteren CI- und
 Dokumentationskorrekturen; die veröffentlichte Produktfunktion bleibt gleich.
-
-## 2026-10-17 — Offline-Cache bei Updates
-Gemeinsame mini-app-shell erweitert bzw. aktualisiert: versionsunabhängiger öffentlicher API-Cache mit Migration, Asset-Precache standardmäßig aktiv, fehlgeschlagene Installation ersetzt bestehenden Worker nicht. IndexedDB/localStorage bleiben unverändert. Geprüft: 13 Shell-/Update-Tests, Private-Request-Test, Vendor-Parität. Kein Push/Release; kein physischer Geräte-Test.
-## 2026-10-19 — VitalOS-eigener Push-Worker
-
-VitalOS registriert `/vitalos-messaging-sw.js` auf `/vitalos-push/` und nutzt
-`apps.vitalos` für Geräte-Tokens und Einstellungen. VitalOS-Funktionen senden
-mit `app: "vitalos"`; sein Worker ignoriert Nachrichten anderer Apps.
-Aktivierte Altgeräte migrieren beim nächsten Öffnen automatisch in die eigene
-Token-Lane. Fitness verwendet parallel die Fitness-Lane und den separaten
-Worker/Scope.
-
-Statische Syntax-, JSON- und Diff-Prüfungen erfolgreich. Kein Produktions-
-Deploy; der lokale VitalOS-Stand enthält außerdem Änderungen im Habit-Submodul.
-
-
-## 2026-10-29 — Shell-Wrapper für 6Pack und Skills
-
-- `src/shell/SixPackApp.jsx` bindet 6Pack mit dem Shell-Login, Firestore-Programm, Push und Session-Logging ein.
-- `src/shell/SkillsApp.jsx` stellt Original, Iron Room, Gravity Map und Riso Climb inklusive gemeinsamem Progress-/Sync-Status in VitalOS bereit. `#skills` und die Shell-Navigation öffnen diesen Wrapper; `#fitness/skills` behält den bisherigen Session-Subtab.
-
-## 2026-10-29 — Shell-App-Auswahl aus App.jsx herausgezogen
-
-- Home-Hub-Menü-Apps werden zentral in `src/shell/ShellAppRouter.jsx` an ihre eigenen Wrapper übergeben. `App.jsx` hält Shell-Zustand und Navigation; Settings und Home-Gates besitzen eigene Shell-Komponenten.
-
-
-## 2026-10-30 — Fuel-Fotoscanner: Shell-Messaging-Vertrag repariert
-
-- Fuel-Release `746e3ac` mit Pointer-Commit `17db6ae` übernommen. Erster Shell-CI-Lauf `41051151490` scheiterte beim Build: Fuel `DailyChecklist.jsx` importiert `messaging`, der gemeinsame Shell-Firebase-Layer exportierte nur den asynchronen Getter. Es wurde dadurch kein neuer Shell-Stand veröffentlicht.
-- Gemeinsamen Firebase-Layer um den kompatiblen Live-Export `messaging` ergänzt. Die bestehende asynchrone `isSupported()`-Prüfung bleibt vor der FCM-Initialisierung; unterstützte Browser teilen dieselbe Instanz mit dem Getter, fehlende Unterstützung oder fehlschlagende Support-Erkennung werfen nicht beim App-Start. Explizite Getter-Aufrufe können Fehler weiterhin melden.
-- Neuer ausführbarer Regressionstest `scripts/test-firebase-messaging.mjs` prüft unterstützte, nicht unterstützte und fehlschlagende Support-Erkennung am tatsächlichen Firebase-Modul. Test läuft zusätzlich in `deploy-shell.yml`.
-- Validiert: neuer Messaging-Test, bestehender 6Pack-Shell-Auth-Test, `git diff --check` und vollständiger `pnpm run build:firebase` einschließlich generierter KB-Daten, Service Worker und Splash erfolgreich. Build im sichtbaren Kitty-Tab ausgeführt; bekannte Chunk-Größenwarnung.
-
-- Veröffentlichung erfolgreich: Fix `2e69ba3` gepusht, Shell-CI `41051683942` grün (`https://github.com/nimmsel23/vitalos/actions/runs/41051683942`). `https://vitalos.web.app` antwortet mit 200; tatsächliches App-Bundle `/assets/index-DKFGd6dq.js` enthält Fuel-Foto-Warteliste, Etikett-Modus und Katalogübernahme. Service Worker zuletzt geändert: 2026-10-30 11:57:46 UTC. Frischer isolierter Browser ohne Login rendert Fuel und Shell ohne unbehandelte JavaScript-Fehler. Kein authentifizierter Kamera-/App-Check-Test und keine Nutzerdaten geändert.
-
-## 2026-10-31 — Dependabot
-
-Enabled Dependabot alerts and security updates. Configured weekly GitHub Actions and npm/pnpm updates; version updates target `master`. Minor/patch updates are grouped; vendored mini-app-shell copies stay maintained at their source. Validated YAML, repository manifest paths and update targets.
-
-
-## 2026-10-31 — Dev-Projekte unter ~/dev
-
-Lokale Entwicklungspfade und betroffene Verknüpfungen auf `~/dev/*-dev` umgestellt. Runtime-Daten, Branches und Release-Checkouts behalten ihre Zuständigkeit. Keine Pushes oder Releases. Gesamter Umzug und Prüfungen: `~/RESULTS.md`.
-
-## 2026-11-01 — Push-Functions-Isolationstest
-
-- Der Test-Mock bildet jetzt `runWith()` für die Journal-Callable-Functions ab und erkennt sowohl explizite als auch standardisierte App-Payload-Marker. `node scripts/test-push-function-isolation.mjs` mit den veröffentlichten Fitness-/Journal-Checkouts bestanden; dabei wurden keine Nachrichten gesendet.
-## 2026-11-01 — `gh-run-check` und `vos-ship --functions`
-
-- Ergänzt einen wiederverwendbaren GitHub-Actions-Run-Checker (ID/URL oder letzter Workflow-Run) und integriert ihn in `vos-ship` für Live-Deploys. `vos-ship <modul> --functions` verfolgt zusätzlich den app-spezifischen Push-Functions-Deploy.
-- Verifiziert: Shell-Syntax; `gh-run-check` gibt sowohl für einen erfolgreichen als auch für einen fehlgeschlagenen echten Run den Abschluss korrekt aus. Beim aktuellen Journal-Deploy bestand der Isolationstest; Firebase brach anschließend mangels `secretmanager.secrets.get` für `GOOGLE_OAUTH_CLIENT_SECRET` ab. Die lokale Identität `nimmdaniel@gmail.com` darf die Secret-IAM-Policy nicht lesen; keine IAM-Berechtigung geändert.
-
-## 2026-11-01 — Coach standalone ausgeliefert
-
-`vos-ship coach --yes` ergänzt und erfolgreich ausgeführt. Coach source `7f53c4392ef0ef6e5e189d2f3a1fc8e036ab63e2` liegt auf origin/dev; veröffentlichter Plan-Pin `9bb748408ee69ab9d9a8d667c444d04255e749ac`. Standalone-Installation mit frozen lockfile und Build ohne initialisiertes VitalOS-Submodule erfolgreich. VitalOS-Workspace-Aliases und fremde Tailwind-Scans entfernt; lokaler veränderter VitalOS-Kontext blieb erhalten.
-
-Coach owns firestore.rules.part; zentral importiert mit Quellcommit-Provenienz. Zusammengesetztes Ruleset in VitalOS `83452cc3fcb6d01e53c1136fce920d07801bcdb9` enthält Coach-Kommunikation und Plan-Feedback. Gemeinsamer Rules-/Indexes-Deploy erfolgreich: https://github.com/nimmsel23/vitalos/actions/runs/41319760105 .
-
-Coach Preview erfolgreich: https://github.com/nimmsel23/coach-dev/actions/runs/41319665695 . Coach Live erfolgreich: https://github.com/nimmsel23/coach-dev/actions/runs/41319851129 . Live https://vos-coach.web.app/release.json meldet exakt den ausgelieferten Coach-SHA. Der durch den VitalOS-Push ausgelöste Shell-Deploy war ebenfalls erfolgreich: https://github.com/nimmsel23/vitalos/actions/runs/41319727104 . Keine echten Klientennachrichten als Test versendet; Geräte-/Account-Abnahme bleibt getrennt vom verifizierten Deployment.
-
-## 2026-11-01 — Coach-Ungelesen-Index
-
-Zentralen Collection-Index für `messages` (`senderRole ASC`, `createdAt DESC`)
-für die Ungelesen-Abfragen beider Apps ergänzt. Vor Live-Übernahme der
-Coach-Erweiterungen deployen und Index-Bereitschaft prüfen. Keine Änderung
-an Zugriffsregeln, Submodule-Pointern oder App-Code.
-## 2026-11-07 — CEO-Entwurf V1.3.0: Problemlöser-Portfolio und Gewinnschwelle
-
-- Strategieentwurf verdichtet: täglicher Freitext statt umständlicher
-  Logger; je ein Deposit in Body, Business, Balance und Being. Der
-  Habit-Tracker bleibt für feste Gewohnheiten verfügbar.
-- Repo-Prüfung: Smart Log verarbeitet Ernährung, Fitness, Relax, Habits und
-  Aufgaben; ein fertig sichtbarer Vier-Deposit-Ablauf ist im aktuellen
-  Journalcode nicht belegt. Als M1-RC-Abnahmepunkt aufgenommen.
-- Die beabsichtigte Veränderung von Gewohnheiten, Fokus und Zielerreichung
-  soll sich durch die Nutzung zeigen. Langfristige KI-Musteranalyse bleibt
-  als Ausbauhypothese markiert.
-- Preisanker 6,90 Euro aus älterer Testannahme aufgenommen und als
-  unbestätigt markiert; 6,90/9,90-Euro-Preisinteresse ist ein Vorschlag.
-  Smart-Log-Funktion nutzt Gemini 2.5 Flash, aber speichert keine
-  Provider-Tokenmetrik; echte Analyse- und Storekosten bleiben offen.
-- 90-Tage-Sequenz für Journal-Kern, M2-Pilot, Preisgespräche und einen
-  anschließenden Premium-Start ergänzt. Vorhandene Fach-Apps als fokussierte
-  Einzel-Einstiege geordnet; keine parallelen App-Builds oder bezahlte
-  Akquise vor positivem variablem Deckungsbeitrag.
-- Deckungsbeitrag, Codex-Upgrade und Vollkostenprofit getrennt beschrieben.
-- HTML-Fassung aktualisiert. Keine Preisfestlegung, Zahlung, Store-Aktion,
-  Build oder Release. V1.2.1 bleibt bis Owner-Abnahme maßgeblich.
-## 2026-11-07 — Produktdokumente abgeglichen und Alt-Checkout archiviert
-
-Nach der gestrigen Kopie nach `vitalos/prod` wurden die weitergeschriebenen Produktdokumente ergänzt: Migrationsbericht, fokusspezifische Notizen und datierte Archivkopien abweichender Firebase-, Checkout- und Store-Runbooks. Interne CEO/CTO- und Abteilungskoordination blieb im privaten Checkout. `/home/alpha/vitalos-prod` ist jetzt ein Symlink auf `/home/alpha/vitalos/prod`; der frühere 1,6-GB-Checkout samt lokalen Änderungen und Worktree wurde vollständig nach `/home/alpha/vitalos-prod-legacy-2026-11-07` verschoben. Der separate `dev-product`→`master` Merge wurde lokal in einem isolierten Worktree vorbereitet und in dessen lokalen `master` integriert; nicht gepusht.
-
----

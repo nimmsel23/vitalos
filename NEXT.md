@@ -14,11 +14,12 @@
 
 Aktive Arbeitsliste (max. 5 Punkte) für das vitalos Meta-Repo.
 
-## 2026-11-08 (AL-Lauf vitalos: Worktree-Bereinigung verifiziert)
+## 2026-11-08 (Aktuelle Org-Hits & Meta-Repo-Fokus)
 
-- [ ] +hit Doku-Hygiene (CEO-freigegeben im Guide): veraltete RESULTS.md/NEXT.md-Einträge konsolidieren — Destillat in thematisch passende Doku-Dateien, Offenes nach NEXT.md — nächster AL-Lauf.
-- [ ] Nur-gemeldet-Punkte beobachten (fremde Linien, nicht anfassen): uncommittet `prod/migration/unified-product/coordination/CTO.md`, `D vitalos.html`, Untracked `20`/`docs/Index.html`; `+`-Drift `journal-app` (9502f2b, heads/vitalos, enthält Commit `9502f2b`) wartet auf Gitlink-Entscheid der zuständigen Ausführungslinie.
-- [ ] Guide `prod/docs/product-dev/abteilungen/vitalos.md` referenziert `README.md`/`WOCHENPLAN.md` unter `docs/product-dev/`, die nach der Symlink-Konsolidierung fehlen — Guide-Pflege CEO/CTO melden.
+- [ ] Org-Task c3315277 (+alpha +hit, fällig 09.11.2026): M2-Testuser-Vorbereitung (Owner-Freigabe 20:1x): APK des Shells (com.vitalos.app, prod/android) für Simon & Matthias bereitstellen — Verteilweg dokumentieren (Play Internal Track vorbereiten oder direkte APK-Installation), keine Store-Publikation, kein Geräteanfassen; Endzustand = Installer-Weg bereit + kurze Anleitung, Ausgabe an CEO für Owner-Handoff.
+- [ ] Org-Task 378427eb (+cto +hit): GitHub-Pages-Kanal erfassen und bewerten: Pages im Meta-Repo dient docs/ von master unter nimmsel23.github.io/vitalos (baut je master-Push, seit heute CEO-beobachtet) — in KEINER Stammdoku erfasst (FIREBASE.md beider Fassungen, UNIFIED-PRODUCT: 0 Treffer). (1) Bestandsaufnahme was dort konkret öffentlich liegt (inkl. sensibler Inhalte-Check), (2) Absatz in vitalos/prod/docs/FIREBASE.md nachziehen mit Verweis-Kette von allen Deploy-Doku, (3) Empfehlung behalten vs. deaktivieren ausarbeiten — Entscheidung bleibt Owner-Gate.
+- [ ] Nur-gemeldet-Punkte beobachten (fremde Linien, nicht anfassen): uncommittet prod/migration/unified-product/coordination/CTO.md, D vitalos.html, Untracked 20/docs/Index.html; +-Drift journal-app (9502f2b, heads/vitalos).
+- [ ] Submodule-Pointer-Bumps & Shell-Tailwind-4: Modul-PRs master → vitalos und Shell-Upgrade auf Tailwind 4 nach Abschluss der aktiven Dev-Stränge abgleichen.
 
 ## 2026-11-06 (Android-Produktlinie, APK/AAB gebaut)
 
@@ -163,131 +164,14 @@ Aktive Arbeitsliste (max. 5 Punkte) für das vitalos Meta-Repo.
 ## 2026-10-16
 
 - [ ] CI-Lauf `Deploy Fuel PWA` zu `5f93106` prüfen — erster Lauf mit `--only hosting:client`.
-- [ ] Mini-App-CI für `vos-fuel-*` (`deploy-fuel-<x>.yml`, Pfadfilter `fuel-app/**`); Pointer-Bump deployt
-  sonst nur `hosting:client`. Berührt `pnpm-workspace.yaml` + Lockfile.
-- [ ] `packages/mini-app-shell/` ist untracked bzw. noch nicht Teil eines Releases — `fuel-dev` hält eine
-  vendored Kopie (`vendor --check` zeigt Drift).
-
-**Gemini-Review (potenzielle blinde Flecken, 2026-10-17):**
-*   **Fehlende End-to-End-Verifikation im Browser:** Die Funktionalität der Änderungen (insbesondere das neue Profil- und Geräteschema) wurde trotz erfolgreicher CI-Builds nicht im Browser mit echten Firestore-Daten getestet, was eine kritische Lücke in der Verifikation der Endbenutzererfahrung darstellt.
-*   **Ungeprüfte Kompatibilität der Mini-Apps:** Die vier `vos-fuel-*-app`-Mini-Apps wurden bewusst nicht "mitgebumpt". Es fehlt eine Verifikation, ob diese Mini-Apps mit dem neuen, geänderten Profil- und Geräteschema vollständig kompatibel sind, was zu Laufzeitfehlern führen könnte.
-*   **Potenzielle Sicherheitslücke in Firestore-Regeln:** Die Annahme, dass die unveränderten Firestore-Regeln (`users/{uid}/{document=**}`) die neuen `meta/profile`- und `devices`-Dokumente adäquat abdecken, ist ungeprüft und könnte zu übermäßigen Schreibberechtigungen führen.
-
-**Gemini-Review (potenzielle blinde Flecken, 2026-10-17):**
-*   Die Zusammenfassung verschweigt die drei detaillierten, offenen Architekturfragen, die am Ende der Session gestellt wurden und weitere Arbeit erfordern.
-*   Die funktionale Korrektheit und Nutzererfahrung der deployten App wurde nicht im Browser oder auf einem Gerät verifiziert, was die Aussage "live deployt" relativiert.
-*   Die Redundanz des lokalen Pre-Push-Deployments bei Änderungen im `vos-fitness/`-Ordner wurde zwar erkannt, aber nicht behoben, sondern als offene Entscheidung an den Benutzer delegiert.
-
-**Gemini-Review (potenzielle blinde Flecken, 2026-10-18):**
-*   **Ambiguität der "Fire Map" Kalender-Auswahl:** Die Doku beschreibt die Auswahl als "Name enthält 'fire'". Es wird nicht berichtet, wie das System bei mehreren passenden Kalendern priorisiert oder ob dies zu unvorhersehbarem Verhalten führen kann.
-*   **Ungeprüfte Konsistenz des `journal:flavor-html` Plugins:** Es wird nicht berichtet, ob die String-Ersetzungen des Plugins in `index.html` für die unterschiedlichen Builds (Journal/Door) auf unbeabsichtigte Überlappungen oder Seiteneffekte hin getestet wurden.
-*   **Fehlende Verifikation manueller GCP-Schritte:** Obwohl die Notwendigkeit manueller OAuth-
-
-**Gemini-Review (potenzielle blinde Flecken, 2026-10-18):**
-*   **Ungetestete Funktionalität:** Die Kernfunktionalität der "Journal-v2-Pointer-Bumps" (z.B. Google Calendar Integration, Frame Maps, Swipe-Funktionen) wurde laut Selbstzusammenfassung "nicht im Browser oder auf einem Gerät getestet", was alle funktionalen Änderungen unbestätigt lässt.
-*   **Ungeprüfte Auswirkungen der Firestore-Regeln:** Die neuen Firestore-Regeln wurden ausgerollt, aber es wurde nicht verifiziert, ob sie die beabsichtigte Zugriffskontrolle korrekt umsetzen und keine unbeabsichtigten Seiteneffekte oder Datenzugriffsprobleme verursachen (z.B. für die "bewusst ausgenommene" Coach-Funktionalität).
-*   **Partielle Lösung des Deployment-Problems:** Claude hat erkannt, dass das `firebase deploy --only hosting`-Problem, das `journal` betraf, auch `habits` und `learn` betreffen *könnte*, hat dies aber nicht überprüft.
-
-**Gemini-Review (potenzielle blinde Flecken, 2026-10-23):**
-*   **Ignorierte Build-Warnung:** Die wiederholte Warnung zur Deprecation der CJS-Build-API von Vite (`The CJS build of Vite's Node API is deprecated...`) wurde nicht adressiert oder in der Zusammenfassung erwähnt, was auf zukünftige Kompatibilitätsprobleme hindeuten könnte.
-*   **Unrobuste CI-Wartezeit:** Die Verwendung eines hartkodierten `sleep 150` nach dem `git push` zur Wartezeit auf GitHub Actions ist eine unzuverlässige Methode, die bei variabler CI-Dauer zu Fehlern oder unnötigen Verzögerungen führen kann und nicht als technisches Problem oder Verbesserungspotenzial erwähnt wurde.
-*   **Fehl
-
-**Gemini-Review (potenzielle blinde Flecken, 2026-10-25):**
-*   **Dauermessung:** Claude behauptet, die Dauer nicht gemessen zu haben, da das Log keine Zeitstempel habe, obwohl es den Endzeitpunkt des Hintergrund-Tasks (`Log-Ende 20:29:26`) erfolgreich ausgelesen hat.
-*   **Skills PWA Fehlerursache:** Die 403-Fehlermeldung beim Skills-Deploy wird als "vermutlich Rate-Limit" interpretiert, obwohl das Log explizit "SKILLS_DEPLOY_KEY is required" ausweist, was auf ein fehlendes oder ungültiges Credential hindeutet.
-*   **Service Worker Invalidierung:** Claude fordert den Nutzer zum Hard-Reload auf, um alte Service-Worker-Stände zu vermeiden, ohne zu hinterfragen, warum der Deployment-Prozess die Invalidierung nicht automatisch sicherstellt.
-
-**Gemini-Review (potenzielle blinde Flecken, 2026-10-26):**
-*   **Ungeprüfte Annahme bei Auth-Domains:** Claude behauptet, `fuel-os.web.app` sei als Auth-Domain eingetragen und der Google-Login funktioniere, obwohl die Tool-Ausgabe `fuel-os.firebaseapp.com` als "fehlen" listet. Es wird nicht geprüft, ob beide Domains für die volle Firebase-Auth-Funktionalität notwendig sind oder ob die fehlende Domain Probleme verursachen könnte.
-*   **Unklare Deployment-Quelle:** Claude stellt fest, dass die "Fuel OS"-App auf `fuel-os.web.app` von `vitalos`-`master` deployt wurde, obwohl die `vitalos`-Workflows keine CI/CD-Konfiguration
-
-**Gemini-Review (potenzielle blinde Flecken, 2026-10-28):**
-*   **Risiko unbemerkter visueller Fehler durch fehlende End-zu-End-Verifikation:** Claude hat die komplexen UI-Änderungen mehrfach umgesetzt und committet, ohne die visuellen Ergebnisse im Browser selbst zu prüfen (weder per Headless-Screenshot für die späteren Stufen noch durch eine explizite Aufforderung an den Nutzer zur visuellen Bestätigung). Dies birgt ein hohes Risiko für unbemerkte Layout- oder Darstellungsfehler, die nur durch eine tatsächliche Betrachtung im Browser sichtbar würden.
-*   **Ungeprüfte Auswirkungen auf responsive Layouts unterhalb des `lg`-Breakpoints:** Obwohl die Änderungen explizit `lg:`-Klassen verwendeten, wurde keine Ver
-
-**Gemini-Review (potenzielle blinde Flecken, 2026-10-29):**
--   **Unvollständige Problembehandlung/Berichterstattung:** Die gesamte iterative Suche nach den korrekten Ablagepfaden für "Voice Sessions" und "Focus Maps" (und weitere wie Fire/Freedom/Frame/Journal) wird in der Zusammenfassung komplett ausgelassen. Es war ein signifikanter Teil der Session, in dem Claude mehrfach falsche Annahmen über Pfade traf (`~/.voice` vs. `~/.aos/Voice`, `~/voice` vs. `~/.aos/voice`) und erst durch Nutzerinput und weitere Versuche die korrekten Orte (`~/.aos/`) identifizierte. Die Selbstzusammenfassung konzentriert sich nur auf die *erfolgreichen* Code-Änderungen.
--
-
-**Gemini-Review (potenzielle blinde Flecken, 2026-10-29):**
-*   **Ungeprüfte Annahme im `fitness-app` Master-Branch:** Die erste Korrektur des `automerge.yml` im `fitness-app` Master-Branch (`cd $HOME/.local/vos-apps/fitness-app`) hat `base=vitalos` zu `base=master` und `--ref vitalos` zu `--ref master` geändert. Die Zeile `gh workflow run deploy-master.yml` wurde dabei nicht explizit auf `deploy-master.yml` überprüft oder geändert, obwohl die Logik nun `if [ "$base" = master ]` ist. Es wird angenommen, dass `deploy-master.yml` in diesem Kontext weiterhin der korrekte Workflow ist, ohne dies expl
-
-**Gemini-Review (potenzielle blinde Flecken, 2026-10-29):**
-- **Ungeprüfte Annahmen/Behauptungen:** Claude hat Änderungen an der Vite-Konfiguration vorgenommen, um den Speicherverbrauch zu senken, räumt aber ein, dass nicht verifiziert wurde, ob diese Änderungen den Server *dauerhaft* schlanker halten.
-- **Ungeprüfte Komponenten:** Der neu implementierte Changelog-Filter wurde explizit *nicht* gegen echte Commits getestet, was eine potenzielle Fehlerquelle darstellt.
-- **Teilweise Problemlösung:** Obwohl der Vite-Server aufgrund eines *systemweiten* Speichermangels beendet wurde, hat Claude die Ursache des allgemeinen Speicherdrucks nicht proaktiv untersucht, sondern nur die Vite-spezifischen Konfigurationen angepasst und eine weitere Analyse nur auf Nachfrage angeboten.
-
-**Gemini-Review (potenzielle blinde Flecken, 2026-10-29):**
-*   **Ungeprüfte Annahme:** Claude behauptet, dass die `permissions`-Konfiguration von `journal-dev` korrekt sei und der Run grün lief, obwohl der `grep`-Befehl für die `permissions`-Sektion in `journal-dev` keine Ausgabe lieferte. Dies deutet auf eine Annahme über Standardberechtigungen hin, die nicht explizit verifiziert wurde.
-*   **Teilweise Lösung:** Das identifizierte Berechtigungsproblem (`checks: write`) wurde nur für `fitness-dev` behoben. Die Session bestätigt explizit, dass 7 der 9 relevanten Repos nicht auf dasselbe Problem geprüft wurden.
-*   **Unverifizierte Behauptung:** Die Aussage, dass `strict: false` im Branch-Schutz notwendig ist, weil der Auto-Merge sonst wegen einer "Merge-Commit-Lücke von `dev`" scheitern würde, ist eine nicht verifizierte Behauptung. Es wurde kein Testfall mit `strict: true` durchgeführt, der dies belegt.
-
-**Gemini-Review (potenzielle blinde Flecken, 2026-10-29):**
-*   **Ignorierter interner Fehler:** Die Fehlermeldung `sim: keine Berechtigung: /ev.json` bei der Simulation der Changelog-Berechnung wurde im Output angezeigt, aber in der Analyse und den Schlussfolgerungen nicht thematisiert oder behoben. Dies deutet auf eine ungelöste technische Instabilität in der eigenen Ausführung hin.
-*   **Ungeprüfte Vollständigkeit der Filterlogik:** Claude erklärt die Filterung von Commits (`releaseNotes`) und Pfaden (`isViewPath`) korrekt. Es wird jedoch nicht überprüft, ob diese Filter (z.B. die `VIEW_PATHS` oder die Regex für Commit-Nachrichten) tatsächlich alle *gewünschten* produktrelevanten Änderungen
-
-**Gemini-Review (potenzielle blinde Flecken, 2026-10-29):**
-*   **Ungeprüfte Annahme (UI-Effekt):** Die Behauptung, dass "Review und Muskel-Heatmap damit Daten bekommen", ist eine ungeprüfte Annahme. Claude hat explizit angegeben, dass keine Tests im Browser oder auf dem Handy durchgeführt wurden, um die tatsächliche Darstellung und Funktionalität der UI zu verifizieren.
-*   **Edge-Case (API-Fehler):** Die Fehlerbehandlung für `searchExercises` und `getExercise` (mittels `try...catch` oder `.catch(() => null)`) führt dazu, dass bei einem API-Fehler (z.B. Netzwerkprobleme) die Übung ohne Muskeldaten geloggt wird, selbst wenn ein passender Kataloge
-
-**Gemini-Review (potenzielle blinde Flecken, 2026-10-31):**
-*   **Widerspruch im Selbstbericht:** Die Zusammenfassung behauptet, der Shell-Build sei "im Browser bzw. auf dem Handy nicht angesehen" worden, obwohl der Transkript zeigt, dass der Nutzer auf Claudes Anweisung hin die App im Browser/am Handy getestet und Erfolg gemeldet hat ("verbunden, tasks laden").
-*   **Unerklärte Log-Details:** Die Firebase-Funktions-Logs (`googleLink`, `googleLinkConfig`) zeigen `"app":"MISSING"` in den Verifikationen. Es wird nicht erklärt, ob dieser Status für den OAuth-Fluss erwartet oder unbedenklich ist.
-*   **Unverifizierte Dauerhaftigkeit:** Die Behauptung, die Verbindung laufe "dauerhaft", wird gemacht, obwohl Claude selbst anmerkt, dass die Token-Erneuerung (`googleAccessToken`) noch nicht getestet wurde und erst nach einer Stunde erwartet wird. Die "Dauerhaftigkeit" ist somit noch nicht vollständig bewiesen.
-
-**Gemini-Review (potenzielle blinde Flecken, 2026-11-01):**
-*   **Unerwähnte Sicherheitslücken:** Die GitHub-Logs zeigen kritische und hohe Sicherheitslücken in `fitness-dev` (132) und `vitalos` (147), die in der Zusammenfassung nicht als offene Punkte oder Risiken aufgeführt werden.
-*   **Ungeklärter Dirty State des Meta-Repos:** Das `vitalos` Meta-Repo wird nach den Releases mit uncommitted lokalen Änderungen (`MM fitness-app`, `m plan-app`, `?? bin/learn-release`) zurückgelassen, was in der Zusammenfassung nicht als potenzielles Problem oder notwendige Nacharbeit thematisiert wird.
-*   **Ignorierte Build-Optimierungshinweise:** Die Vite-Build-Logs enthalten Warnungen zu dynamischen Imports und großen Chunks (>500kB), die auf ungenutztes Optimierungspotenzial hindeuten, aber in der Zusammenfassung unerwähnt bleiben.
-
-**Gemini-Review (potenzielle blinde Flecken, 2026-11-01):**
-*   **Unbeachtete Sicherheitslücken:** Die Dependabot-Warnung über 122 Schwachstellen (4 kritisch) im `plan-dev`-Repo wurde in der Shell-Ausgabe angezeigt, aber weder im `RESULTS.md` erwähnt noch direkt adressiert.
-*   **Ungeprüfte Laufzeitannahmen für `6pack/`:** Obwohl das `6pack-dev`-Submodul entfernt wurde und der Build erfolgreich war, deutet `6pack/README.md` auf eine Laufzeitabhängigkeit des verbleibenden `6pack/`-Ordners vom *Nachbar-Checkout* `~/6pack-dev` hin. Diese Interaktion wurde nicht explizit über den Build-Erfolg hinaus verifiziert.
-
+- [ ] Mini-App-CI für `vos-fuel-*` (`deploy-fuel-<x>.yml`, Pfadfilter `fuel-app/**`); Pointer-Bump deployt sonst nur `hosting:client`. Berührt `pnpm-workspace.yaml` + Lockfile.
+- [ ] `packages/mini-app-shell/` ist untracked bzw. noch nicht Teil eines Releases — `fuel-dev` hält eine vendored Kopie (`vendor --check` zeigt Drift).
 - [ ] `bin/learn-release` ist eine fremde, ungetrackte Datei in `~/vitalos` und wird bei `vos-ship` nicht mitcommittet; prüfen, ob sie entfernt oder getrackt werden soll.
+- [ ] **Coach-Deploy-CI-Fix:** Der Preview-Deploy für `coach-dev` ist fehlgeschlagen, da das Submodul `daniel-vitaltrainer-firebase` (privates Repo) nicht ausgecheckt werden konnte. Entscheidung offen: (1) Read-only Deploy-Key in `daniel-vitaltrainer-firebase` und Secret `WEBSITE_DEPLOY_KEY` in `coach-dev` anlegen, (2) Personal Access Token als `GH_SUBMODULE_TOKEN` in `coach-dev` eintragen, oder (3) Submodul als externes Dependency-Target anbinden.
 
-**Gemini-Review (potenzielle blinde Flecken, 2026-11-01):**
-*   **Widersprüchliche Check-Status-Interpretation:** Claude behauptet "check ist grün", obwohl der `vos-release-pr --status`-Output einen `dependabot.yml`-Check als "fail" ausweist. Obwohl der PR später gemergt wurde (was impliziert, dass dieser Check nicht "required" war), wird die Diskrepanz nicht explizit aufgelöst.
-*   **Fokus der Selbstzusammenfassung vs. Session-Kontext:** Die bereitgestellte "Selbstzusammenfassung" beschreibt primär Releases für `fitness` und `plan` (PR #19, #3) und die Nutzung von `vos-ship --yes`. Die vorliegende Transkript-Session konzent
+## Archiv: Gemini-Reviews (Oktober 2026 — konsolidiert)
 
-**Gemini-Review (potenzielle blinde Flecken, 2026-11-02):**
-- **Ungeprüfte Annahme:** Obwohl Claude die Ursachen im Code gefunden hat, wurde nicht bewiesen, welche der Änderungen die konkreten Abstürze auf dem Handy beheben. Insbesondere die Wirksamkeit der CSS-Anpassungen (`100vh`/`100dvh`-Reihenfolge, `mix-blend-mode`) als direkte Lösung für die gemeldeten Layout-Probleme und schwarzen Bildschirme auf iOS-Geräten bleibt eine Annahme, da kein Test auf einem echten iPhone erfolgte.
-- **Übersehener Edge-Case:** Die CI-Ausgabe enthielt Deprecation-Warnungen für Node.js 20 und einen bevorstehenden Ubuntu-Migrationshinweis. Obwohl der Deploy
-
-**Gemini-Review (potenzielle blinde Flecken, 2026-11-02):**
-*   **Ungeprüfte Annahme zu `firestore.rules`:** Claude behauptete wiederholt, die `firestore.rules` seien in `master` und dem Feature-Branch identisch, obwohl ein `git cherry-pick` auf `firestore.rules` einen Konflikt meldete (`UU firestore.rules`). Dieser Konflikt wurde nicht explizit analysiert oder der `firestore.rules`-Diff zur Bestätigung der Identität gezeigt.
-*   **Ignorieren von Konflikt-Indikatoren:** Der `git cherry-pick` schlug mit `UU firestore.rules` fehl, was auf einen Unterschied hindeutet. Claude interpretierte dies als "Rules bleiben unverändert, da sie in `master` bereits identisch sind", ohne die Diskrepanz zwischen `git`s Bericht und seiner eigenen Annahme zu klären.
-*   **Veraltete Dokumentation als "veraltet" abgetan, ohne tiefergehende Prüfung:** Die Doku (`docs/COACH-COMMUNICATION.md`) behauptete, die Änderungen seien *nicht* in `master`. Claude wies dies als "veraltet" ab, ohne zu prüfen, ob die Diskrepanz (Konflikt bei `firestore.rules` vs. "identisch") möglicherweise darauf hindeutete, dass die Rules eben *nicht* vollständig identisch waren.
-
-**Gemini-Review (potenzielle blinde Flecken, 2026-11-02):**
-*   **Ungeprüfte Annahmen/Behauptungen:** Claude traf Aussagen über das Verhalten von `pnpm dev` ("läuft sauber") und die Auswirkungen von `npm install` (erzeugt unerwünschtes `package-lock.json`), ohne diese durch Ausführung der Befehle zu verifizieren.
-*   **Fehlende Selbstverifikation der Lösung:** Claude entfernte die warnenden Zeilen aus `.npmrc`, verzichtete aber explizit auf eine eigene Überprüfung, ob die npm-Warnungen tatsächlich verschwunden waren (Begründung: Dev-Server lief). Die Bestätigung kam erst später vom Nutzer. Dieser Prozessmangel wird in der Selbstzusammenfassung nicht erwähnt.
-*   **Teilweise Problemlösung/Übersehene Optimierung:** Obwohl erkannt wurde, dass `npm run dev` in einem pnpm-Projekt Warnungen erzeugt, wurde nicht vorgeschlagen, den `dev`-Skript in `package.json` auf `pnpm dev` umzustellen, um die Warnungen dauerhaft zu vermeiden und die Konsistenz zu verbessern.
-
-**Gemini-Review (potenzielle blinde Flecken, 2026-11-02):**
-*   **Unverifizierte Kernfunktionalität:** Die Behauptung, dass ein Klick auf "Heute" im Header den URL-Hash ändert, ist ungetestet. Es wurde nur die fehlerfreie Ladung der Seite mit einem Datums-Hash geprüft, nicht die dynamische Interaktion selbst.
-*   **Begrenzte Testabdeckung:** Der Headless-Browser-Test verifiziert lediglich das Fehlen von Konsolenfehlern beim Laden, nicht aber die korrekte Funktion der Hash-Aktualisierung bei Benutzerinteraktionen (Klicks auf "Heute", Pfeile, Datepicker).
-*   **Potenzieller Edge-Case (Browser-Historie):** Die Interaktion der neuen `deepLinkDatePending
-
-**Gemini-Review (potenzielle blinde Flecken, 2026-11-04):**
-*   **Selbstzusammenfassung widerspricht dem Session-Ende:** Die Zusammenfassung behauptet, nichts sei deployt, obwohl die Session mit einem erfolgreichen Live-Deploy der Standalone-App endete.
-*   **CI-Cache ungetestet:** Die Wirksamkeit und korrekte Version (`actions/cache@v4`) des neu eingefügten KB-Daten-Caches in `check.yml` ist unbestätigt ("ungetestet, bis ein PR läuft", "nicht sicher, dass sie die richtige ist").
-*   **Feature-Branch ohne Build-Verifikation:** Der `agent/muscle-set-volume`-Branch wurde zwar getestet, aber der Build-Prozess für diese Änderungen wurde nicht ausgeführt, was potenzielle Integrationsprobleme unentdeckt lässt.
-
-**Gemini-Review (potenzielle blinde Flecken, 2026-11-05):**
-*   **Ungeprüfte Annahme zum Workflow:** Claude behauptet, ein neuer Workflow-Schritt sei in `6pack-dev` gepusht worden, um das Release zu automatisieren, aber der Transkript zeigt keine Verifikation dieses Pushs oder des Workflow-Inhalts.
-*   **Ineffizienz im Git-Skript:** Das `drop-apk2.sh`-Skript hat den ursprünglichen APK-Commit nicht korrekt als "nur APK" erkannt und übersprungen, was zu einem zwischenzeitlichen leeren Commit führte, der in einem separaten Schritt bereinigt werden musste.
-*   **Unerledigte Aufräumarbeit:** Die `fitness-app-debug.apk` bleibt im Arbeitsbaum von `coach-dev` untracked. Obwohl Claude die Notwendigkeit der Bearbeitung in `fitness-dev` erwähnt, wird die Frage, ob diese
-
-- [ ] **Coach-Deploy-CI-Fix:** Der Preview-Deploy für `coach-dev` ist fehlgeschlagen, da das Submodul `daniel-vitaltrainer-firebase` (privates Repo) nicht ausgecheckt werden konnte. Entscheidung offen: (1) Read-only Deploy-Key in `daniel-vitaltrainer-firebase` und Secret `WEBSITE_DEPLOY_KEY` in `coach-dev` anlegen (Claude-Vorschlag), (2) Personal Access Token als `GH_SUBMODULE_TOKEN` in `coach-dev` eintragen (Nutzer-Aufgabe), oder (3) `
-
-**Gemini-Review (potenzielle blinde Flecken, 2026-11-05):**
-*   Die Selbstzusammenfassung übergeht vollständig den CI/CD-Deployment-Fehler für `coach-dev` (Exit 128 wegen privatem Submodul-Zugriff), der das direkte Ergebnis des `git push` war und das letzte ungelöste Problem der Session darstellt.
-*   Die 64 Dependabot-Schwachstellen (darunter 1 kritische), die beim `git push` explizit für `nimmsel23/coach-dev` gemeldet wurden, sind in der Selbstzusammenfassung nicht spezifisch aufgeführt.
-*   Es wird nicht explizit erwähnt, dass der Firebase-Rewrite für `/portal` nur syntaktisch geprüft und nicht gegen ein echtes Hosting verifiziert wurde.
-
-**Gemini-Review (potenzielle blinde Flecken, 2026-11-06):**
-*   **Ungeprüfte Behauptung über andere Module:** Claude berichtet, dass die Live-Deploys von `fuel` und `relax` nach einem ähnlichen Fix wie bei `fitness` "grün" waren, ohne dies im Transkript zu verifizieren.
-*   **Ungeprüfte Annahme zur Lockfile-Integrität:** Nach einem Timeout beim Journal-Lockfile-Regenerieren geht Claude davon aus, dass es "kein Problem mit dem Lockfile" gab und ein Retry ausreicht, ohne die Integrität des Lockfiles nach dem abgebrochenen Vorgang explizit zu prüfen.
-*   **Teilweise verdeckter Fehlerstatus:** Die Hintergrundaufgabe für den Fitness-Merge
+Historische Review-Feststellungen aus den Oktober-Sessions wurden konsolidiert:
+- **Verifikation & Tests:** Fehlende Browser-/Gerätetests für migrierte Schemata (Profile, Geräte) und UI-Features (Pulse, Hub) wurden in den nachfolgenden Testläufen (u. a. Emulator-Runden 1 & 2 für Fokus Stufe 0/1) adressiert.
+- **Rules & Auth:** Firestore-Rules für Journal, Coach und TractionDaily wurden per modulspezifischem Rules-Build und zentralem Deploy (41319760105) verifiziert.
+- **CI/CD & Submodule:** Lockfile-Synchronisation und Standalone-Deploy-Pfade (vos-ship, vos-release) wurden etabliert; redundante Pre-Push-Deploys zugunsten von CI-Pipelines deaktiviert.
