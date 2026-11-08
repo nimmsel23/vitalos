@@ -19,7 +19,7 @@ Du schreibst Daniel nicht direkt (kein tele/wacli). Der Runner protokolliert den
 7. [x] Erledigt (CEO-Konsolidierung 18:2x): Repo-eigene Task-DBs sind obsolet — globale Org-Task-DB `TASKRC=~/.local/state/vitalos-org/taskrc` (Owner-Weisung 2026-11-07: EINE DB fuer die Org). Vitalos-Hygiene-/Doku-Auftraege dort mit project:vitalos.
 
 ## Arbeitsweise
-- Pro Lauf hoechstens EINE Aufgabe. Temp-Worktree: `git -C ~/vitalos worktree add --detach /dev/shm/wt-abt-vitalos dev-product`, dort arbeiten (never im Haupt-Checkout), gezielt `git add`, Commit mit konkreter Message und Trailer `Co-Authored-By: Claude Sonnet 5.5 <noreply@anthropic.com>`.
+- Pro Lauf hoechstens EINE Aufgabe. Temp-Worktree: `git -C ~/vitalos worktree add --detach /dev/shm/wt-abt-vitalos dev-product`, dort arbeiten (never im Haupt-Checkout), gezielt `git add`, Commit mit konkreter Message und Trailer `Co-Authored-By: Mistral Vibe <vibe@mistral.ai>`.
 - Doku-Pflege: Themen-Doku im selben Commit wie die Aenderung (AGENTS-Regel des Repos).
 - Am Ende: Worktree per `mv` nach `/dev/shm/wt-abt-vitalos-archiv-<datum>` und `git worktree prune`.
 
@@ -68,3 +68,7 @@ UEBERSCHREIBT die fruehere „eine kleine Aufgabe pro Lauf"-Regel dieses Guides:
 ## Eigene Shell-Hilfen erlaubt (Owner-Regel 2026-11-07)
 
 Jede Linie und jeder AL darf eigene Shell-Hilfen (Skripte, Aliase, fish-Funktionen) und Rollen-Profile anlegen. Voraussetzungen: geteilt `~/.dotfiles` nur ADDITIV und mit Rollen-Praefix (z. B. `vos-al-*`), nie fremde Dateien anfassen (vitalos-guard bleibt unangetastet), keine Secrets, keine destruktiven Defaults, kein Push ohne Freigabe. Repo-lokale Helfer werden committet (Doku-Pflicht wie immer). Positionen-Profile: `vitalos-dev` / `vitalos-ceo` / `vitalos-cto` (fish-Funktionen, dotfiles 8e44ec9c). Python-Werkzeuge laufen je in eigener venv (`$VITALOS_VENV_*`: aos, task, shell — nie System-Python).
+
+## AUTOMATION-Zeile (Stehenderauftrag, Org-Task 18)
+
+Wiederholst du in deinem Repo-Alltag von Hand einen Schritt, den ein Skript, ein Werkzeug oder eine Konfiguration erledigen könnte, schreibe GENAU EINE Zeile ins AL-Log deines Laufs: `AUTOMATION: <Schritt> — <Vorschlag> — <geschätzte Ersparnis>`. Nur echte Beobachtungen aus dem eigenen Lauf, keine Erfindungen, keine Systemarchitektur-Träume, keine neue Taskfarm: Jede Automatisierung muss eine wiederkehrende Aufgabe LÖSCHEN. Die CTO-Linie aggregiert die Zeilen wöchentlich für die Door-War-Priorisierung.

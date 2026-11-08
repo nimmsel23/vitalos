@@ -16,7 +16,7 @@ Du schreibst Daniel nicht direkt (kein tele/wacli). Der Runner protokolliert den
 4. [ ] Wenn du gearbeitet hast: RESULTS.md (Session-Protokoll) und NEXT.md (Folgetasks) aktualisieren, Aufgabe hier abhaken.
 
 ## Arbeitsweise
-- Temp-Worktree: `git -C ~/dev/fitness-dev worktree add --detach /dev/shm/wt-abt-fitness origin/dev` (nie im Checkout arbeiten), gezielt `git add`, Commit mit konkreter Message und Trailer `Co-Authored-By: Claude Sonnet 5.5 <noreply@anthropic.com>`.
+- Temp-Worktree: `git -C ~/dev/fitness-dev worktree add --detach /dev/shm/wt-abt-fitness origin/dev` (nie im Checkout arbeiten), gezielt `git add`, Commit mit konkreter Message und Trailer `Co-Authored-By: Mistral Vibe <vibe@mistral.ai>`.
 - Syntaxcheck analog journal-Guide (esbuild im Repo, falls node_modules vorhanden), Tests nur `node --test` — kein Voll-Install, kein Build.
 - Push NUR auf ausdrueckliche Aufgabe mit Freigabe-Vermerk in DIESEM Guide (Standard: lokal committen, Stand im Log, CEO/Manager entscheidet Release).
 - **Veroeffentlichung:** Nach einem autorisierten Commit auf `dev` den vorgesehenen Dev-Push ausfuehren und Check/Auto-Promote/Live-Deploy im AL-Tageslog belegen. Kein Zwischen-PR fuer `dev->master`, wenn Auto-Promote aktiv ist. Offene Endlevel-PRs nach `CI.md` behandeln und nicht ohne Owner/naechste Aktion liegen lassen. Nie `master` direkt pushen.
@@ -45,3 +45,7 @@ UEBERSCHREIBT die fruehere „eine kleine Aufgabe pro Lauf"-Regel dieses Guides:
 ## Eigene Shell-Hilfen erlaubt (Owner-Regel 2026-11-07)
 
 Jede Linie und jeder AL darf eigene Shell-Hilfen (Skripte, Aliase, fish-Funktionen) und Rollen-Profile anlegen. Voraussetzungen: geteilt `~/.dotfiles` nur ADDITIV und mit Rollen-Praefix (z. B. `vos-al-*`), nie fremde Dateien anfassen (vitalos-guard bleibt unangetastet), keine Secrets, keine destruktiven Defaults, kein Push ohne Freigabe. Repo-lokale Helfer werden committet (Doku-Pflicht wie immer). Positionen-Profile: `vitalos-dev` / `vitalos-ceo` / `vitalos-cto` (fish-Funktionen, dotfiles 8e44ec9c). Python-Werkzeuge laufen je in eigener venv (`$VITALOS_VENV_*`: aos, task, shell — nie System-Python).
+
+## AUTOMATION-Zeile (Stehenderauftrag, Org-Task 18)
+
+Wiederholst du in deinem Repo-Alltag von Hand einen Schritt, den ein Skript, ein Werkzeug oder eine Konfiguration erledigen könnte, schreibe GENAU EINE Zeile ins AL-Log deines Laufs: `AUTOMATION: <Schritt> — <Vorschlag> — <geschätzte Ersparnis>`. Nur echte Beobachtungen aus dem eigenen Lauf, keine Erfindungen, keine Systemarchitektur-Träume, keine neue Taskfarm: Jede Automatisierung muss eine wiederkehrende Aufgabe LÖSCHEN. Die CTO-Linie aggregiert die Zeilen wöchentlich für die Door-War-Priorisierung.

@@ -16,10 +16,10 @@ Du schreibst Daniel nicht direkt. Produktauftraege koennen vom PM kommen, aber f
 4. [ ] `JournalForm.jsx` Zuklapp-Logik (fragil, siehe FRONTEND-REVIEWS.md Review 1): nur Vorschlag mit Test schreiben, nicht umbauen.
 
 ## Arbeitsweise
-- Pro Lauf höchstens EINE Aufgabe. Temp-Worktree: `git -C ~/dev/journal-dev worktree add --detach /dev/shm/wt-abt-journal origin/dev`, dort arbeiten (nie im Checkout `~/dev/journal-dev`), gezielt `git add`, Commit mit konkreter Message und Trailer `Co-Authored-By: Claude Sonnet 5.5 <noreply@anthropic.com>`.
+- Pro Lauf höchstens EINE Aufgabe. Temp-Worktree: `git -C ~/dev/journal-dev worktree add --detach /dev/shm/wt-abt-journal origin/dev`, dort arbeiten (nie im Checkout `~/dev/journal-dev`), gezielt `git add`, Commit mit konkreter Message und Trailer `Co-Authored-By: Mistral Vibe <vibe@mistral.ai>`.
 - Syntaxcheck: `~/dev/journal-dev/node_modules/.bin/esbuild <datei> --loader:.jsx=jsx --outfile=/dev/shm/chk.js`; Tests: `node --test tests/<datei>.test.mjs`. Kein Voll-Install.
 - Vor dem Push `git fetch origin`; bei Divergenz `git rebase origin/dev`. Push NUR `git push origin HEAD:refs/heads/dev`. Danach CI prüfen (`gh run list -R nimmsel23/journal-dev --branch dev --limit 3`) und Ergebnis im Log festhalten.
-- Aufgabe in dieser Datei abhaken (Datum, Commit) und committen in `~/vitalos-prod` (nur `docs/product-dev/`, `git push origin dev`).
+- Aufgabe in dieser Datei abhaken (Datum, Commit) und committen im Meta-Checkout `~/vitalos-prod` (= `~/vitalos/prod`, Meta-Repo auf `dev-product`); dabei NUR `prod/docs/product-dev/` anfassen. KEIN `git push` im Meta-Repo: `origin` ist der öffentliche Mirror — Veröffentlichung macht die CTO-Linie.
 - Am Ende: Worktree per `mv` nach `/dev/shm/wt-abt-journal-archiv-<datum>` und `git worktree prune`.
 
 ## Grenzen (hart)
@@ -45,3 +45,7 @@ UEBERSCHREIBT die fruehere „eine kleine Aufgabe pro Lauf"-Regel dieses Guides:
 ## Eigene Shell-Hilfen erlaubt (Owner-Regel 2026-11-07)
 
 Jede Linie und jeder AL darf eigene Shell-Hilfen (Skripte, Aliase, fish-Funktionen) und Rollen-Profile anlegen. Voraussetzungen: geteilt `~/.dotfiles` nur ADDITIV und mit Rollen-Praefix (z. B. `vos-al-*`), nie fremde Dateien anfassen (vitalos-guard bleibt unangetastet), keine Secrets, keine destruktiven Defaults, kein Push ohne Freigabe. Repo-lokale Helfer werden committet (Doku-Pflicht wie immer). Positionen-Profile: `vitalos-dev` / `vitalos-ceo` / `vitalos-cto` (fish-Funktionen, dotfiles 8e44ec9c). Python-Werkzeuge laufen je in eigener venv (`$VITALOS_VENV_*`: aos, task, shell — nie System-Python).
+
+## AUTOMATION-Zeile (Stehenderauftrag, Org-Task 18)
+
+Wiederholst du in deinem Repo-Alltag von Hand einen Schritt, den ein Skript, ein Werkzeug oder eine Konfiguration erledigen könnte, schreibe GENAU EINE Zeile ins AL-Log deines Laufs: `AUTOMATION: <Schritt> — <Vorschlag> — <geschätzte Ersparnis>`. Nur echte Beobachtungen aus dem eigenen Lauf, keine Erfindungen, keine Systemarchitektur-Träume, keine neue Taskfarm: Jede Automatisierung muss eine wiederkehrende Aufgabe LÖSCHEN. Die CTO-Linie aggregiert die Zeilen wöchentlich für die Door-War-Priorisierung.

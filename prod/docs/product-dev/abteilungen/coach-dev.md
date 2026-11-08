@@ -20,7 +20,7 @@ Lesen, berichten, Aufgaben in der GLOBALEN Org-Task-DB führen (`TASKDATA`/`TASK
 
 ## Arbeitsweise
 - Pro Lauf höchstens EINE inhaltliche Aufgabe aus der Liste (Punkt 0 ist Pflicht und zählt nicht).
-- Gearbeitet wird nie im Haupt-Checkout `~/dev/coach-dev`. Falls (mit `+hit`) etwas zu bauen oder zu ändern ist: `git -C ~/dev/coach-dev worktree add --detach /dev/shm/wt-abt-coach-dev origin/dev`, gezielt `git add`, Commit mit konkreter Message und Trailer `Co-Authored-By: Claude Sonnet 5.5 <noreply@anthropic.com>`. Am Ende Worktree per `mv` nach `/dev/shm/wt-abt-coach-dev-archiv-<datum>` und `git worktree prune`.
+- Gearbeitet wird nie im Haupt-Checkout `~/dev/coach-dev`. Falls (mit `+hit`) etwas zu bauen oder zu ändern ist: `git -C ~/dev/coach-dev worktree add --detach /dev/shm/wt-abt-coach-dev origin/dev`, gezielt `git add`, Commit mit konkreter Message und Trailer `Co-Authored-By: Mistral Vibe <vibe@mistral.ai>`. Am Ende Worktree per `mv` nach `/dev/shm/wt-abt-coach-dev-archiv-<datum>` und `git worktree prune`.
 - Checks: `pnpm lint`, `pnpm build` (pnpm, nicht npm; gezielt). Kein Voll-Install.
 - Protokoll: Session in `RESULTS.md` und Folgepunkte in `NEXT.md` des Repos NUR im Temp-Worktree und NUR mit `+hit`. Ohne `+hit` stehen Folgepunkte als Tasks in der Task-DB und in deinem Bericht.
 - Am Ende `ABTEILUNG.md` im Repo-Wurzelverzeichnis um einen „Letzter Lauf“-Abschnitt ergänzen (additiv, nichts oben ändern, kein Rohprotokoll).
@@ -63,3 +63,7 @@ Jede Linie und jeder AL darf eigene Shell-Hilfen (Skripte, Aliase, fish-Funktion
 
 Dein Lauf startet bis auf Weiteres als persistente interaktive Session im kitty (Tab „AL coach-dev (Kitty-Pilot)") statt headless: gleiche Anleitung, gleiche Auftraege — danach bleibst du in der Session fuer Rueckfragen verfuegbar, bis das Fenster geschlossen wird. Headless bleibt der Fallback (kein kitty-Socket oder Launch-Fehler → Standardlauf). Bewertung nach ca. zwei Laeufen durch CEO/CTO.
 
+
+## AUTOMATION-Zeile (Stehenderauftrag, Org-Task 18)
+
+Wiederholst du in deinem Repo-Alltag von Hand einen Schritt, den ein Skript, ein Werkzeug oder eine Konfiguration erledigen könnte, schreibe GENAU EINE Zeile ins AL-Log deines Laufs: `AUTOMATION: <Schritt> — <Vorschlag> — <geschätzte Ersparnis>`. Nur echte Beobachtungen aus dem eigenen Lauf, keine Erfindungen, keine Systemarchitektur-Träume, keine neue Taskfarm: Jede Automatisierung muss eine wiederkehrende Aufgabe LÖSCHEN. Die CTO-Linie aggregiert die Zeilen wöchentlich für die Door-War-Priorisierung.

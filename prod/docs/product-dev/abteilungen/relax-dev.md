@@ -14,10 +14,10 @@ Du schreibst Daniel nicht direkt. Produktauftraege koennen vom PM kommen, aber f
 2. [x] Persistenz (`localStorage`-Zugriffe) in der View zählen und einen Vorschlag für einen Store in das Log schreiben, nicht umbauen. — erledigt 2026-11-08: 19 Zugriffe in `src/views/Ausbildung.jsx` (8 getItem / 8 setItem / 3 removeItem auf 8 Schluessel; +1 Leser in `lib/training/moduleBackup.js`), Store-Vorschlag (Variante A usePersistentState-Hook, Schluessel/JSON-Formate unveraendert) im Tageslog `~/.local/state/abteilung/relax-dev.log` (Lauf 2), kein Umbau; AL-LOG-Commit 46fbc13 auf dev, CI gruen (42437491653).
 
 ## Arbeitsweise
-- Pro Lauf höchstens EINE Aufgabe. Temp-Worktree aus origin/dev (`git -C ~/dev/relax-dev worktree add --detach /dev/shm/wt-abt-relax origin/dev`), nie im Checkout arbeiten, gezielt `git add`, Commit mit konkreter Message und Trailer `Co-Authored-By: Claude Sonnet 5.5 <noreply@anthropic.com>`.
+- Pro Lauf höchstens EINE Aufgabe. Temp-Worktree aus origin/dev (`git -C ~/dev/relax-dev worktree add --detach /dev/shm/wt-abt-relax origin/dev`), nie im Checkout arbeiten, gezielt `git add`, Commit mit konkreter Message und Trailer `Co-Authored-By: Mistral Vibe <vibe@mistral.ai>`.
 - Syntaxcheck: `~/dev/journal-dev/node_modules/.bin/esbuild <datei> --loader:.jsx=jsx --outfile=/dev/shm/chk.js`; Tests `node --test tests/<datei>.test.mjs`. Kein Voll-Install.
 - Vor dem Push `git fetch origin`, bei Divergenz rebase. Push NUR `git push origin HEAD:refs/heads/dev`, danach CI prüfen (`gh run list -R nimmsel23/relax-dev --branch dev --limit 3`) und im Log festhalten.
-- Aufgabe hier abhaken (Datum, Commit), committen in ~/vitalos-prod (nur docs/product-dev/, `git push origin dev`). Worktree am Ende per `mv` nach /dev/shm/wt-abt-relax-archiv-<datum>, `git worktree prune`.
+- Aufgabe hier abhaken (Datum, Commit) und committen im Meta-Checkout `~/vitalos-prod` (= `~/vitalos/prod`, Meta-Repo auf `dev-product`); dabei NUR `prod/docs/product-dev/` anfassen. KEIN `git push` im Meta-Repo: `origin` ist der öffentliche Mirror — Veröffentlichung macht die CTO-Linie. Worktree am Ende per `mv` nach /dev/shm/wt-abt-relax-archiv-<datum>, `git worktree prune`.
 
 ## Grenzen (hart)
 Nie master pushen/mergen, kein --force, kein Deploy, kein Store, keine Emulator-Starts, nie rm (nur mv), kein sudo, kein Push von ~/vitalos (öffentlich), nichts in ~/vitalos-prod außer docs/product-dev/. Keine Freigaben und keine Entscheidungen anstelle des CEO. Bei Unklarheit oder rotem CI: Befund ins Log, nichts raten, Lauf beenden. Gib am Ende 3 Zeilen aus: erledigt / rot / braucht CEO.
@@ -42,3 +42,7 @@ UEBERSCHREIBT die fruehere „eine kleine Aufgabe pro Lauf"-Regel dieses Guides:
 ## Eigene Shell-Hilfen erlaubt (Owner-Regel 2026-11-07)
 
 Jede Linie und jeder AL darf eigene Shell-Hilfen (Skripte, Aliase, fish-Funktionen) und Rollen-Profile anlegen. Voraussetzungen: geteilt `~/.dotfiles` nur ADDITIV und mit Rollen-Praefix (z. B. `vos-al-*`), nie fremde Dateien anfassen (vitalos-guard bleibt unangetastet), keine Secrets, keine destruktiven Defaults, kein Push ohne Freigabe. Repo-lokale Helfer werden committet (Doku-Pflicht wie immer). Positionen-Profile: `vitalos-dev` / `vitalos-ceo` / `vitalos-cto` (fish-Funktionen, dotfiles 8e44ec9c). Python-Werkzeuge laufen je in eigener venv (`$VITALOS_VENV_*`: aos, task, shell — nie System-Python).
+
+## AUTOMATION-Zeile (Stehenderauftrag, Org-Task 18)
+
+Wiederholst du in deinem Repo-Alltag von Hand einen Schritt, den ein Skript, ein Werkzeug oder eine Konfiguration erledigen könnte, schreibe GENAU EINE Zeile ins AL-Log deines Laufs: `AUTOMATION: <Schritt> — <Vorschlag> — <geschätzte Ersparnis>`. Nur echte Beobachtungen aus dem eigenen Lauf, keine Erfindungen, keine Systemarchitektur-Träume, keine neue Taskfarm: Jede Automatisierung muss eine wiederkehrende Aufgabe LÖSCHEN. Die CTO-Linie aggregiert die Zeilen wöchentlich für die Door-War-Priorisierung.
