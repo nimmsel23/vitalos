@@ -21,11 +21,12 @@ GitHub-Repo gleichen Namens bleibt ein separates mögliches Release-Ziel.
 
 Einstieg: `README.md`, `docs/UNIFIED-PRODUCT.md`,
 `prod/docs/PRODUCT-CHECKOUT.md`, `prod/docs/FIREBASE.md` und
-`prod/docs/STORE-PUBLISHING-PLAN.md`. Freigegebene Strategie: `VitalOS-Produktstrategie-V1.2.1.md`;
-der CEO-Entwurf `VitalOS-Produktstrategie-V1.3.0.md` schlägt eine Familie
-einzelner Problemlöser vor (HTML-Export daneben) und ersetzt die Freigabe
-erst nach Owner-Abnahme.
-V1.2.0 bleibt als historische Fassung samt HTML-Export erhalten;
+`prod/docs/STORE-PUBLISHING-PLAN.md`. Freigegebene Strategie:
+`VitalOS-Produktstrategie-V1.3.0.md` (Owner-Abnahme 2026-11-08, E1 Ja).
+V1.2.1 und V1.2.0 bleiben als historische Fassungen samt HTML-Export erhalten;
+Feature-Freeze Fitness/Fuel/Relax/Plan/6Pack bis 2027-02-07 (E2 Ja): Wartung
+nur bei Nutzerbezug, keine neuen Features. Coaching/Patreon als zweite
+Umsatzspur parallel freigegeben (E3 Ja) — Start bleibt Owner-Ausführung.
 die Android-Roadmap unter
 `~/dev/coach-dev/public-coach/vitalos-android-roadmap.html`
 ist Planung, kein Nachweis eines Builds oder Releases.

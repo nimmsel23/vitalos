@@ -3,6 +3,9 @@
 Vertiefung: UNIFIED-PRODUCT.md (Meta-Repo docs/), prod/docs/SCOPE-OBSERVE-V1.md,
 prod/docs/PRODUCT-CHECKOUT.md, STORE-PUBLISHING-PLAN.md. APPS.md-Prinzip: Diese
 Tabelle IST die Apps-Liste — jede Zeile verifiziert am .gitmodules-Kopf.
+Strategie-SOT: `VitalOS-Produktstrategie-V1.3.0.md` (Owner E1 Ja, 2026-11-08).
+Feature-Freeze bis 2027-02-07 (E2): fitness/fuel/relax/plan/6pack nur Wartung
+mit Nutzerbezug. Coaching/Patreon parallel freigegeben (E3), Ausfuehrung Owner.
 
 ## Produkt (eine Shell, 9 Apps, Meta-Repo ~/vitalos)
 Shell: Web/Firebase (vitalos.web.app) + Android (prod/android, Capacitor,

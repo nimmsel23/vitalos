@@ -19,7 +19,8 @@
 - **Quellen (nur SOT lesen, nie erfinden):** CEO-ROADMAP-STATUS.md,
   CEO-SCOPE-OBSERVE-V1.md, CEO-STRATEGY-DELTA.md, TODO.md (CEO-Sektionen
   unten zuerst), STATUS.md REPORTs,
-  /home/alpha/vitalos/VitalOS-Produktstrategie-V1.2.1.md,
+  /home/alpha/vitalos/VitalOS-Produktstrategie-V1.3.0.md (SOT ab 2026-11-08;
+  V1.2.1 historisch),
   roadmap.html (~/dev/coach-dev/public-coach/vitalos-android-roadmap.html,
   Stand-Spiegelung durch vitalos-roadmap.service wenn aktiv),
   HOTLIST (task status:pending +hot, produktrelevante).

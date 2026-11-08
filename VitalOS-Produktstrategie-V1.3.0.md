@@ -1,10 +1,10 @@
 # VitalOS V1.3.0 · Produkt- und Erlösstrategie
 
-Stand 7. November 2026 · Strategieentwurf
+Stand 7. November 2026 · Owner-Abnahme 8. November 2026 (Chat: E1 Ja)
 
-> **Status:** Empfehlung zur Prüfung. V1.2.1 bleibt bis zur Owner-Abnahme
-> die freigegebene Produkt-SOT. Dieser Entwurf ändert weder Produktcode noch
-> Store-Veröffentlichung, Zahlungen oder Ausgaben.
+> **Status:** Freigegebene Produkt-SOT seit 2026-11-08. V1.2.1 bleibt als
+> historische Fassung erhalten. Store-Uploads, Zahlungen und Ausgaben bleiben
+> separate Owner-Gates und folgen nicht allein aus dieser Abnahme.
 
 ## Produktidee
 

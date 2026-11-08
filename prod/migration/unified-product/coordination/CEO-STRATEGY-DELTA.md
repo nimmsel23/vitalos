@@ -1,9 +1,15 @@
 # CEO-Strategie-Delta: V1.2.0 (03.11.) vs. entschiedene Produktrealität (06.11.)
 
-**AKTUELL (06.11., nach 19:30 UTC): Alle 5 Widersprueche sind in
+**AKTUELL (08.11. 22:3x): Owner-Chat E1/E2/E3 = Ja Ja Ja.**
+V1.3.0 ist freigegebene Produkt-SOT. Feature-Freeze
+fitness/fuel/relax/plan/6pack bis 2027-02-07. Coaching/Patreon parallel
+freigegeben (Ausfuehrung Owner). V1.2.1 bleibt historisch. Dieses Delta-
+Dokument bleibt Entscheidungs-Nachweis.
+
+**Zuvor (06.11., nach 19:30 UTC): Alle 5 Widersprueche sind in
 `VitalOS-Produktstrategie-V1.2.1.md` (Meta-Repo, Commit `6b46430`)
-eingearbeitet.** Dieses Dokument bleibt als Entscheidungs-Nachweis
-bestehen; die Tabellen unten dokumentieren die Herkunft der Aenderungen.
+eingearbeitet.** Die Tabellen unten dokumentieren die Herkunft der
+Aenderungen bis V1.2.1.
 
 Zweck: Nachvollziehbare Abweichungsliste zwischen der schriftlichen
 Produktstrategie (`/home/alpha/vitalos/VitalOS-Produktstrategie-V1.2.0.md`,
