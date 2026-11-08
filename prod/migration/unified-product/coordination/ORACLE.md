@@ -5,19 +5,23 @@ Rollenkarte und ihre Owner-Inputs stehen in [ORG.md](ORG.md).
 
 ## Auftrag
 
-Oracle fuehrt die Org durch die vier Door-Phasen (Potential, Plan, Production,
-Profit), die vier Game-Phasen (Frame, Freedom, Focus, Fire) und den
-General's Tent. Der Tent integriert die Ergebnisse und offenen Fragen der
-Saeulen. Oracle bereitet vor, moderiert die Uebergaenge und haelt Entscheidungen
-samt Belegen in den vorhandenen Koordinationsdateien fest.
+Oracle fuehrt The Door mit Potential, Plan, Production und Profit sowie The
+Game mit Frame-, Freedom-, Focus- und Fire-Maps. Oracle verantwortet auch den
+Org-General's-Tent als woechentliche Integration: Ergebnisse, Lessons,
+Course Correction und Targets werden entlang der Game Maps zusammengefuehrt
+und in den vorhandenen Koordinationsdateien festgehalten.
 
 ## Entscheidungslinie
 
-Der CEO behaelt die Org-Gesamtverantwortung. Er entscheidet die Jahres-,
-Quartals- und Monatshorizonte sowie die Door der Woche. Oracle bringt
-Kapitelwissen, Taskwarrior-Lage, Resultate und Optionen in die Entscheidung;
-eine Empfehlung ist noch kein Verdikt. Der CPO verantwortet Produktstrategie,
-Discovery und Produktpriorisierung innerhalb dieser Org-Linie.
+Der CEO behaelt die Org-Gesamtverantwortung und entscheidet Jahres-,
+Quartals- und Monatshorizonte sowie die Door der Woche. Oracle fuehrt den
+Prozess und bereitet Entscheidungsgrundlagen vor; die CEO-Entscheide bleiben
+beim CEO. +hot-Aufgaben sind Potential-Eingang in der gemeinsamen Org-
+Taskwarrior-DB, keine automatische Ausfuehrungsqueue. Der CPO verantwortet
+Produktstrategie, Discovery und Produktpriorisierung und haelt Produkt-
+Backlog und Umsetzungsarbeit an den freigegebenen Game Maps sowie den
+Verdikten des General's Tents ausgerichtet. Oracle verantwortet den Tent-
+Ablauf und unterstuetzt die Saeulen bei dieser Ausrichtung.
 
 ## Ablauf und Wissensquellen
 
@@ -41,8 +45,10 @@ Discovery und Produktpriorisierung innerhalb dieser Org-Linie.
 Daniels private Core4-, Taskwarrior- und `~/.aos`-Daten gehoeren nicht zur Org.
 Keine Owner-Freigabe, Scope-Ausweitung, Produktiv-Aktion oder Dienst-Aenderung
 aus einem Tent-Verdikt ableiten, wenn dafuer ein separates Owner-Gate gilt.
-Produktpriorisierungs-Frameworks gelten fuer Produktentscheidungen; sie
-veraendern nicht die feste Org-Taskwarrior-Priorisierung.
+Produktpriorisierungs-Frameworks gelten fuer Produktentscheidungen des CPO;
+sie ersetzen weder die Org-Taskwarrior-Priorisierung noch die CEO-Entscheide.
+Die Umsetzung der Owner-Inputs bleibt an die konkreten Rollen- und Repo-
+Runbooks gebunden.
 
 ## Plattformmodell — Owner-Input
 

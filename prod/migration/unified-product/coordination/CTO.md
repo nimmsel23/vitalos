@@ -1,8 +1,10 @@
 # CTO — Stehendes Technik-Bild (VitalOS)
 
-Zuständig: CTO (WS3-Vibe). Dieses Dokument ist das öffentliche Stehbild der
-Technik-Linie — der CEO (und jede Linie per Drilldown) liest hier den
-aktuellen Stand. Tagesgedächtnis und Detailfindings liegen additiv in
+Zustaendig: Codex als Org-CTO (Owner-Entscheidung 2026-11-08). Dieses
+Dokument ist das Stehbild der Technik-Linie. Der bestehende WS3-Vibe-Runner
+bleibt als technischer Tagesablauf separat bestehen; seine Laufzeitkonfiguration
+wird durch die Rollenuebernahme nicht automatisch geaendert. Tagesgedaechtnis
+und Detailfindings liegen additiv in
 `~/.local/state/vitalos-cto/CTO.md` (privat, unversioniert); dieses Dokument
 wird vom CTO — auch automatisch in der täglichen 06:40-Runde — fortgeführt:
 Stehbild strafft, Überschriften behalten, Neuerscheinendes einsortieren.
@@ -60,6 +62,17 @@ push dev → Check grün → automerge-pr.yml (Dependabot-Squash auf dev,
 - Dokumentiert in `~/.dotfiles/docs/CI.md` §8 (Auto-Merge-Politik).
 - Offen (CTO-Liste, aus CI.md): Promote-Race-S2-Retry je Repo; Push-Freigabe-
   Tokens in AL-Guides (S4); Auto-Promote-Restrepo-Liste; E-Mail-Rollen-Labels.
+
+### Externe Agenten-Inputs — 2026-11-08
+
+- Sweep AI wurde als moeglicher CI-Agent und Alpha/Betta-Ersatz genannt. Der
+  aktuell belegte Sweep-Auftritt beschreibt ein JetBrains Coding-Plugin, keine
+  einsatzfertige Org-CI-Lane. Keine Installation oder Runner-Ablosung erfolgt.
+- Pythagora wurde ebenfalls als Kandidat genannt. Das oeffentliche GPT-Pilot-
+  Repo markiert sich als nicht mehr gepflegt; ein aktueller CI-Runner fuer die
+  Org ist nicht belegt. Keine alte GPT-Pilot-Installation aufsetzen.
+- Vor einer Entscheidung Anbieterprodukt, Kosten/API-Key, GitHub-Umfang,
+  Rollen- und Taskwarrior-Handoffs sowie sichere PR-Gates konkret pruefen.
 
 ### CI-Agenten und Coach Pages — 2026-11-07
 

@@ -13,17 +13,27 @@ Pflege: Strukturwandel => gleicher Commit wie die Aenderung (Doku-Pflicht).
   Dienste-Audits, Vollzugriff gcloud/Firestore (Leitfaden CEO.md
   'DOKUMENTATION DAUERHAFT'), taegliche Sichtung des CEO-Eingangs
   `nimmsel23+ceo` und Cloud-Deploys nur nach Owner-Go.
-- CPO (Chief Product Officer): Produktstrategie, Discovery, Produktpriorisierung
-  und Produkt-Backlog; bringt Empfehlungen in CEO-Entscheide ein. Die bisherige
+- CPO (Claude): Produktstrategie, Discovery, Produktpriorisierung und
+  Produkt-Backlog; bringt Empfehlungen in CEO-Entscheide ein. Die bisherige
   VitalOS-Koordinationslinie ist diesem Produktbereich zugeordnet.
-- Oracle: fuehrt die Org durch die 4P-Kette (The Door), die 4F-Kette
-  (The Game) und den General's Tent; bereitet Verdikte und Karten fuer den CEO
-  vor. Die Entscheidungszustaendigkeit des CEO bleibt bestehen. Details:
+- Oracle: fuehrt The Door (Potential/Plan/Production/Profit), The Game
+  (Frame/Freedom/Focus/Fire Maps) und den Org-General's-Tent als
+  Integrationsritual. Der CEO entscheidet weiterhin Horizonte und Wochen-Door;
+  Oracle fuehrt Prozess und Vorbereitung, nicht die CEO-Verdikte. Details:
   [ORACLE.md](ORACLE.md).
 - PM (produktbezogene Umsetzungs-/Backlog-Arbeit unter CPO-Abstimmung;
   PRODUKT-BACKLOG.md).
-- ALs je App (abteilung-run 02:10-06:10 taeglich, Beleg-Protokoll im Log).
+- ALs je Repo: Codex ist standardmaessige Besetzung; taegliche Ausfuehrung und
+  Beleg-Protokoll je nach Repo-Runner.
 - Alpha/Betta (Android-/Git-Linien unter CTO), Angestellte (Subagenten).
+
+## Berichtsstil an CEO, CPO und CTO
+
+Berichte an CEO/CPO/CTO im Format REAL * RAW * RELEVANT * RESULTS. Bei
+Rueckfragen oder mentaler Verknotung den VOICE-Rahmen STOP * SUBMIT
+(Facts + Feelings + Fokus + Fruits) * STRUGGLE * STRIKE verwenden. Das haelt
+The Alpha Code (REAL/RAW/RELEVANT/RESULTS) und The Voice als mentale
+Rahmenbedingung und Qualitaetssicherung im Arbeitsfluss.
 
 ## Rollen-Skill-Stacks (Owner-Inputs, Stand 2026-11-08)
 
@@ -33,17 +43,20 @@ die Aufnahme macht ihre Empfehlungen nicht automatisch zu Org-Regeln.
 
 | Rolle | Kern-SKILL und Wissensanker | Ergaenzungen / Stand |
 | --- | --- | --- |
-| CEO | `CEO.md` -> dieses `ORG.md` -> `PRODUCT.md` | Traegt die Org-Gesamtverantwortung und entscheidet die Jahres-/Quartals-/Monatshorizonte sowie die Wochen-Door; Oracle bereitet diese Arbeit im Tent vor. |
-| CTO (vorlaeufig Codex) | `~/.vibe/skills/vitalos-cto/SKILL.md`; `CTO.md` und Koordinations-TODO | Sweep AI/Pythagora sind Owner-Kandidaten fuer CI und moeglichen Alpha-/Betta-Ersatz; aktueller GitHub-/Produktstand und Linienabdeckung erst pruefen. `skill-creator` fuer Skill-Pflege; `commit-analyzer` optional lesend; Claude-mem nach Integrations-/Datenflusspruefung. |
-| CPO | Produktstrategie, Discovery, Produktentscheidungen und Backlog; `~/.vibe/skills/vitalos-cpo/SKILL.md` | Skill-Stack: `product-strategy`, `opportunity-solution-tree`, `prioritization-frameworks` (RICE/ICE/MoSCoW/Opportunity Score nur fuer Produktentscheidungen). Empfehlungen unterstuetzen den CEO; sie ersetzen weder CEO-Entscheide zur Org-Door noch Org-Taskwarrior-Priorisierung. |
-| Oracle | `~/.vibe/skills/vitalos-oracle/SKILL.md`; [ORACLE.md](ORACLE.md) | Fuehrt durch 4P (Potential, Plan, Production, Profit), 4F (Frame, Freedom, Focus, Fire) und General's Tent; nutzt die jeweiligen Phasen-Skills und bleibt innerhalb der Org-Daten. |
+| CEO | `CEO.md` -> dieses `ORG.md` -> `PRODUCT.md` | Traegt Org-Verantwortung und entscheidet Jahres-/Quartals-/Monatshorizonte und Wochen-Door. |
+| CTO (Codex) | `CODEX.md`; `CTO.md` und Koordinations-TODO | Skill-Stack: `ponytail`, `karpathy-guidelines`, `git-commit-analyzer` (lesend), `gitclassic` (oeffentliche Repos, lesend), `skill-creator`; `impeccable`/`taste` bei UI-Aufgaben. Sweep und Pythagora bleiben externe CI-Produktpruefung, keine SKILL.md-Installation. |
+| CPO (Claude) | [CPO.md](CPO.md) | Skill-Stack: `product-strategy`, `opportunity-solution-tree`, `prioritization-frameworks`, `logseq-cli` fuer Wissensarbeit; Produktprioritaeten und Backlog an CEO-freigegebenen Game Maps und Tent-Verdikten ausrichten. Claude-mem Skills liegen bereit; persistente Plugin-Laufzeit wurde vom Installationsreview blockiert. |
+| ALs je Repo (Codex standardmaessig) | jeweiliges Repo-Runbook, `AGENTS.md` und [ORG.md](ORG.md) | Repo-lokale Ausfuehrung und Handoffs; jeweilige Doku, Taskwarrior-Tag und Abnahmegrenzen beachten. |
+| Oracle | `~/.agents/skills/vitalos-oracle/SKILL.md`; [ORACLE.md](ORACLE.md) | Fuehrt The Door (4P), The Game (Game Maps 4F) und Org-General's-Tent; verarbeitet +hot als Potential-Eingang und fuehrt in der gemeinsamen Org-DB durch die Phasen. |
 | PM | Produkt-Backlog und Umsetzung innerhalb des CEO-freigegebenen Scopes; kein eigenes PM-SKILL in `~/.vibe/skills/` gefunden | Kann CPO-Methoden bei konkreten Produktpaketen mitnutzen; bleibt von CPO als eigener Stabs-/Umsetzungsfunktion unterscheidbar. |
-| ALs / Ausfuehrung | `~/.vibe/skills/vos-warrior/SKILL.md` plus jeweiliges Repo-Runbook und Quell-AGENTS | Ponytail und Andrej Karpathy Skills fuer Coding; Impeccable und Taste fuer UI/Frontend. Noch als passende Ergaenzungen vorgemerkt. |
-| Quer ueber Rollen | `vos-warrior` fuer Org-Tasks, Kontext und Session-Abschluss | GitClassic fuer read-only Public-GitHub-Lektuere; Logseq fuer Wissens-/Graph-Arbeit; Caveman als Antwortstil auf Abruf. Noch keine aktiven Skills. |
+| ALs / Ausfuehrung | jeweiliges Repo-Runbook und Quell-AGENTS plus `vos-warrior` | Codex ist Standard-AL pro Repo. Geteilt installiert: Ponytail-Pack, Karpathy Guidelines; Impeccable und Taste fuer UI. Taste benoetigt noch Playwright MCP. |
+| Quer ueber Rollen | `vos-warrior` fuer Org-Tasks, Kontext und Session-Abschluss | Geteilt installiert: GitClassic (public-only, read-only), Logseq CLI, Caveman (nur auf Abruf), Skill Creator, Ponytail- und Design-Skills. Claude-mem SKILL-Dateien installiert; Plugin-/MCP-Laufzeit offen. |
 
-`vos-door-plan` ist ein Door-Phasen-/Chapter-Workflow-SKILL, keine Rolle. Das
-Oracle fuehrt diesen Workflow im Tent aus; die Wochen-Door waehlt weiterhin der
-CEO.
+`vos-door-plan` ist ein Door-Phasen-/Chapter-Workflow-SKILL, keine Rolle.
+Oracle fuehrt Door, Game und Tent. Potential-Tasks kommen als +hot in die
+Org-Taskwarrior-DB; Oracle fuehrt die Door-Pruefung. CPO priorisiert
+Produktarbeit mit den Produktmethoden und haelt sie an CEO-freigegebenen
+Game Maps und Tent-Verdikten ausgerichtet. Die Wochen-Door waehlt der CEO.
 
 Owner-Inputs zur Rollenabstimmung (Arbeitsmodell, nicht mechanische Regel):
 Daniel weist Codex ab 2026-11-08 vorlaeufig die CTO-Rolle zu. Der bestehende
@@ -55,20 +68,22 @@ Runner auf einen woechentlichen Lauf reduziert werden kann. Der lokale
 der separate Tages-Digest bleibt um 23:45 eingetragen. Eine Frequenzaenderung
 ist noch nicht vorgenommen; Laufzeitstatus war in dieser Umgebung nicht
 abrufbar.
-Oracle fuehrt die 4P-/4F-Arbeit und den General's Tent; der CEO behaelt die
-Org-Verantwortung und setzt dort die Wochen-Door sowie Jahres-/Quartals- und
-Monatshorizonte: yearly Freedom Maps, quarterly Focus Maps, monthly Missions.
+Oracle fuehrt 4P/4F, den Org-General's-Tent und die Einordnung von +hot-
+Potential in die Door. Der CEO behaelt die Org-Entscheide und setzt Wochen-
+Door sowie Jahres-/Quartals-/Monatshorizonte: yearly Freedom Maps, quarterly
+Focus Maps, monthly Missions. Der CPO priorisiert Produktarbeit und prueft
+deren Anschluss an diese freigegebenen Maps und Tent-Verdikte.
 
 Bevorzugtes Plattform- und Teammodell (Owner-Input):
 
 | Layer | Plattform / Agent | Schwerpunkt |
 | --- | --- | --- |
 | Execution | Antigravity | Plattform und Orchestrierung fuer Teamwork, Remote Agents und laengere Horizonte. |
-| Execution | Codex | Engineering und verlaessliche Code-Aenderungen. |
+| Execution | Codex | Engineering, verlaessliche Code-Aenderungen und standardmaessiger Repo-AL je Repository. |
 | Execution | Vibe / Cursor | Rapid Product, Frontend-Prototypen, Flow und Feel. |
 | Intelligence | Perplexity | Research. |
 | Intelligence | Grok | Adversarial, Narrative, Public und Strategy. |
-| Intelligence | Claude | Evaluation, Metrics, Memory sowie Architecture Reviews und Quality Gates. |
+| Intelligence | Claude | CPO sowie Evaluation, Metrics, Memory, Architecture Reviews und Quality Gates. |
 
 Codex und Claude Code sind als spezialisierte Sub-Agents in Antigravity
 vorgesehen. Diese Aufteilung soll verhindern, dass jeder Agent alles macht;
