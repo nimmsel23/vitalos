@@ -65,6 +65,20 @@ moegliche Arbeitsteilung: Perplexity fuer Research, Vibe/Cursor fuer Rapid
 Prototyping sowie Grok und Claude als High-Level-Decision-Layer. Dies bleibt
 ein adaptierbarer Architektur-Input, keine bereits vollzogene Integration.
 
+Vorgeschlagene Ergaenzungen kritischer Verantwortungsbereiche:
+
+| Rollen-Vorschlag | Vorgeschlagene Besetzung | Zweck / erwarteter Beitrag |
+| --- | --- | --- |
+| Red Team / Adversarial | Grok + Claude gemeinsam | Plaene, Annahmen und Code regelmaessig angreifen, um blinde Flecken und Fehler frueh offenzulegen. |
+| Head of Evaluation & Metrics | Claude | Messen, ob Qualitaet und Teamleistung tatsaechlich steigen, statt sich nur besser anzufuehlen. |
+| Knowledge & Memory Manager | Perplexity + Claude | Langfristiges Firmenwissen, Entscheidungslog und Lessons Learned pflegen. |
+| Growth / Narrative / Public | Grok | Kommunikation nach aussen, Storytelling und Real-Time-Sentiment (z. B. X) beobachten. |
+| Security & Reliability | Codex + Claude | Production-Code und Agenten-Sicherheit absichern. |
+
+Diese Rollen-/Besetzungsmodelle sind Owner-Inputs zur Org-Entwicklung; sie
+definieren fuer sich allein noch keine laufenden Agenten, Systemd-Timer,
+Zugriffsrechte oder Rollen-Tags.
+
 Fuer die uebrigen Rollen bildet die Menge der Taskwarrior-Aufgaben mit der
 hoechsten Urgency die Fire-Map-Ausfuehrungssicht. Jede Rolle kennzeichnet ihre
 Aufgaben in der gemeinsamen Org-DB mit einem Rollen-Tag (`+ceo`, `+cpo`, `+cto`,
