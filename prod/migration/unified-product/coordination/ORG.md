@@ -59,20 +59,30 @@ Oracle fuehrt die 4P-/4F-Arbeit und den General's Tent; der CEO behaelt die
 Org-Verantwortung und setzt dort die Wochen-Door sowie Jahres-/Quartals- und
 Monatshorizonte: yearly Freedom Maps, quarterly Focus Maps, monthly Missions.
 
-Plattform-Input zur weiteren Org-Architektur: Antigravity als zentrale
-Multi-Agent-Plattform und Orchestrator fuer Teamwork, Remote Agents und lange
-Horizonte; Codex und Claude Code als spezialisierte Sub-Agents darin. Als
-moegliche Arbeitsteilung: Perplexity fuer Research, Vibe/Cursor fuer Rapid
-Prototyping sowie Grok und Claude als High-Level-Decision-Layer. Dies bleibt
-ein adaptierbarer Architektur-Input, keine bereits vollzogene Integration.
+Bevorzugtes Plattform- und Teammodell (Owner-Input):
+
+| Layer | Plattform / Agent | Schwerpunkt |
+| --- | --- | --- |
+| Execution | Antigravity | Plattform und Orchestrierung fuer Teamwork, Remote Agents und laengere Horizonte. |
+| Execution | Codex | Engineering und verlaessliche Code-Aenderungen. |
+| Execution | Vibe / Cursor | Rapid Product, Frontend-Prototypen, Flow und Feel. |
+| Intelligence | Perplexity | Research. |
+| Intelligence | Grok | Adversarial, Narrative, Public und Strategy. |
+| Intelligence | Claude | Evaluation, Metrics, Memory sowie Architecture Reviews und Quality Gates. |
+
+Codex und Claude Code sind als spezialisierte Sub-Agents in Antigravity
+vorgesehen. Diese Aufteilung soll verhindern, dass jeder Agent alles macht;
+die gewuenschten Effekte sind klare Spannungsfelder, besseres Langzeitgedaechtnis
+und eine echte Multi-Agent-Infrastruktur. Das Modell bleibt ein anpassbarer
+Org-Input; die technische Integration ist damit nicht bestaetigt.
 
 Vorgeschlagene Ergaenzungen kritischer Verantwortungsbereiche:
 
 | Rollen-Vorschlag | Vorgeschlagene Besetzung | Zweck / erwarteter Beitrag |
 | --- | --- | --- |
-| Red Team / Adversarial | Grok + Claude gemeinsam | Plaene, Annahmen und Code regelmaessig angreifen, um blinde Flecken und Fehler frueh offenzulegen. |
+| Red Team / Adversarial | Grok | Plaene, Annahmen und Code regelmaessig angreifen, um blinde Flecken und Fehler frueh offenzulegen. |
 | Head of Evaluation & Metrics | Claude | Messen, ob Qualitaet und Teamleistung tatsaechlich steigen, statt sich nur besser anzufuehlen. |
-| Knowledge & Memory Manager | Perplexity + Claude | Langfristiges Firmenwissen, Entscheidungslog und Lessons Learned pflegen. |
+| Knowledge & Memory Manager | Claude | Langfristiges Firmenwissen, Entscheidungslog und Lessons Learned pflegen. |
 | Growth / Narrative / Public | Grok | Kommunikation nach aussen, Storytelling und Real-Time-Sentiment (z. B. X) beobachten. |
 | Security & Reliability | Codex + Claude | Production-Code und Agenten-Sicherheit absichern. |
 
@@ -80,16 +90,7 @@ Diese Rollen-/Besetzungsmodelle sind Owner-Inputs zur Org-Entwicklung; sie
 definieren fuer sich allein noch keine laufenden Agenten, Systemd-Timer,
 Zugriffsrechte oder Rollen-Tags.
 
-Leichte Verschiebung der Modell-/Werkzeug-Gewichtung (Owner-Input):
-
-| Modell / Werkzeug | Schwerpunkt |
-| --- | --- |
-| Codex | Staerkste reine Coding-Engine, besonders fuer zuverlaessige Code-Aenderungen. |
-| Vibe / Cursor | Flow und Geschwindigkeit, besonders Frontend, Prototypen und visuelles Feel. |
-| Claude | Mehr Gewicht bei Architecture Reviews und Quality Gates. |
-| Grok | Mehr Gewicht bei Strategy, Public und Red-Teaming; weniger reines Coding. |
-
-Die Gewichtung ist eine Orientierung nach Aufgabenart und kann sich mit
+Die Modellgewichtung ist eine Orientierung nach Aufgabenart und kann sich mit
 Verfuegbarkeit und konkreter Evidenz weiterentwickeln.
 
 Fuer die uebrigen Rollen bildet die Menge der Taskwarrior-Aufgaben mit der
