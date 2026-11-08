@@ -9,7 +9,8 @@ Pflege: Strukturwandel => gleicher Commit wie die Aenderung (Doku-Pflicht).
 - CEO (Skill vitalos-ceo; Live WS1 + ceo-run Timer + ceo-digest 23:45):
   verkoerpert den Org-Tent, priorisiert/nimmt ab; setzt annual Freedom Maps,
   quarterly Focus Maps, monthly Missions und die woechentliche Org-Door.
-- CTO (vitalos-cto; systemd 06:40 nach AL-Nacht): Technik/Infra,
+- CTO (Codex uebernimmt die Rolle auf Owner-Wunsch ab 2026-11-08;
+  bisheriger vitalos-cto-Runner bleibt separat bestehen): Technik/Infra,
   Dienste-Audits, Vollzugriff gcloud/Firestore (Leitfaden CEO.md
   'DOKUMENTATION DAUERHAFT'), Cloud-Deploys nur nach Owner-Go.
 - CPO (Chief Product Officer): Produktstrategie, Discovery, Produktpriorisierung
@@ -29,7 +30,7 @@ die Aufnahme macht ihre Empfehlungen nicht automatisch zu Org-Regeln.
 | Rolle | Kern-SKILL und Wissensanker | Ergaenzungen / Stand |
 | --- | --- | --- |
 | CEO | `~/.vibe/skills/vitalos-ceo/SKILL.md`; `CEO.md` -> dieses `ORG.md` -> `PRODUCT.md` | Verkoerpert den Org-Tent; setzt yearly Freedom Maps, quarterly Focus Maps, monthly Missions und die Wochen-Door. Skills: `vitalos-ceo`; Produktmethoden koennen mit dem CPO-Stack abgestimmt eingesetzt werden. |
-| CTO | `~/.vibe/skills/vitalos-cto/SKILL.md`; `CTO.md` und Koordinations-TODO | Sweep AI/Pythagora sind Owner-Kandidaten fuer CI und moeglichen Alpha-/Betta-Ersatz; aktueller GitHub-/Produktstand und Linienabdeckung erst pruefen. `skill-creator` fuer Skill-Pflege; `commit-analyzer` optional lesend; Claude-mem nach Integrations-/Datenflusspruefung. |
+| CTO (vorlaeufig Codex) | `~/.vibe/skills/vitalos-cto/SKILL.md`; `CTO.md` und Koordinations-TODO | Sweep AI/Pythagora sind Owner-Kandidaten fuer CI und moeglichen Alpha-/Betta-Ersatz; aktueller GitHub-/Produktstand und Linienabdeckung erst pruefen. `skill-creator` fuer Skill-Pflege; `commit-analyzer` optional lesend; Claude-mem nach Integrations-/Datenflusspruefung. |
 | CPO | Produktstrategie, Discovery, Produktentscheidungen und Backlog; noch kein eigenes CPO-SKILL in `~/.vibe/skills/` gefunden | Skill-Stack: `product-strategy`, `opportunity-solution-tree`, `prioritization-frameworks` (RICE/ICE/MoSCoW/Opportunity Score nur fuer Produktentscheidungen). Empfehlungen unterstuetzen den CEO; sie ersetzen weder CEO-Entscheide zur Org-Door noch Org-Taskwarrior-Priorisierung. |
 | PM | Produkt-Backlog und Umsetzung innerhalb des CEO-freigegebenen Scopes; kein eigenes PM-SKILL in `~/.vibe/skills/` gefunden | Kann CPO-Methoden bei konkreten Produktpaketen mitnutzen; bleibt von CPO als eigener Stabs-/Umsetzungsfunktion unterscheidbar. |
 | ALs / Ausfuehrung | `~/.vibe/skills/vos-warrior/SKILL.md` plus jeweiliges Repo-Runbook und Quell-AGENTS | Ponytail und Andrej Karpathy Skills fuer Coding; Impeccable und Taste fuer UI/Frontend. Noch als passende Ergaenzungen vorgemerkt. |
@@ -40,6 +41,15 @@ unterstuetzt CEO-Arbeit an der Door; die Rolle, die die Org-Wochentuer waehlt,
 ist CEO.
 
 Owner-Inputs zur Rollenabstimmung (Arbeitsmodell, nicht mechanische Regel):
+Daniel weist Codex ab 2026-11-08 vorlaeufig die CTO-Rolle zu. Der bestehende
+Vibe-CTO-Runner um 06:40 ist davon als vorhandener technischer Ablauf
+unterschieden; seine Konfiguration wurde hier nicht geaendert.
+Als zusaetzlicher Owner-Input soll geprueft werden, ob der stuendliche CEO-
+Runner auf einen woechentlichen Lauf reduziert werden kann. Der lokale
+`vitalos-ceo.timer` ist derzeit auf `OnCalendar=*-*-* *:05:00` konfiguriert;
+der separate Tages-Digest bleibt um 23:45 eingetragen. Eine Frequenzaenderung
+ist noch nicht vorgenommen; Laufzeitstatus war in dieser Umgebung nicht
+abrufbar.
 Der CEO verkoerpert den Org-General's Tent (Kapitel 41) und setzt dort die
 Wochen-Door. Die CEO-Rolle traegt auch die Jahres-/Quartals-/Monatshorizonte:
 yearly Freedom Maps, quarterly Focus Maps, monthly Missions.
@@ -71,7 +81,8 @@ nach Inhalt zuordnen; nicht mechanisch alle Runbook-Inhalte verschieben.
 
 ## Maschinen und Kanaele
 - Timer: AL-Nacht 02:10-06:10, CTO 06:40, roadmap 07:45, thin-results,
-  emulator-test 13:00 (RAM-Gate 2500MB), ceo-digest 23:45 (herzschlag-
+  emulator-test 13:00 (RAM-Gate 2500MB), CEO-Runner stuendlich (Reduktion
+  auf woechentlich als Owner-Input vorgemerkt), ceo-digest 23:45 (herzschlag-
   UNABHAENGIG, idempotent via ceo-digest.log), ci-scan 20-Min.
 - Globale Org-Task-DB: TASKRC=~/.local/state/vitalos-org/taskrc — Rollen
   als Tags (+ceo/+cto/+al/...), project = Repo; ONLY UUID, nie ID.
