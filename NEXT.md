@@ -14,6 +14,12 @@
 
 Aktive Arbeitsliste (max. 5 Punkte) für das vitalos Meta-Repo.
 
+## 2026-11-08 (AL-Lauf vitalos: Worktree-Bereinigung verifiziert)
+
+- [ ] +hit Doku-Hygiene (CEO-freigegeben im Guide): veraltete RESULTS.md/NEXT.md-Einträge konsolidieren — Destillat in thematisch passende Doku-Dateien, Offenes nach NEXT.md — nächster AL-Lauf.
+- [ ] Nur-gemeldet-Punkte beobachten (fremde Linien, nicht anfassen): uncommittet `prod/migration/unified-product/coordination/CTO.md`, `D vitalos.html`, Untracked `20`/`docs/Index.html`; `+`-Drift `journal-app` (9502f2b, heads/vitalos, enthält Commit `9502f2b`) wartet auf Gitlink-Entscheid der zuständigen Ausführungslinie.
+- [ ] Guide `prod/docs/product-dev/abteilungen/vitalos.md` referenziert `README.md`/`WOCHENPLAN.md` unter `docs/product-dev/`, die nach der Symlink-Konsolidierung fehlen — Guide-Pflege CEO/CTO melden.
+
 ## 2026-11-06 (Android-Produktlinie, APK/AAB gebaut)
 
 - [ ] Identity Platform in `vitalos-prod` ist aktiviert (Owner, 2026-11-06, per read-only API-Check verifiziert); als Nächstes nativen Google-Sign-In auf einem Gerät abnehmen — Installation + Login sind separate Nachweise, bisher nicht ausgeführt.

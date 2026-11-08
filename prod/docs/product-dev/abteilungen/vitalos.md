@@ -32,11 +32,14 @@ Du schreibst Daniel nicht direkt (kein tele/wacli). Der Runner protokolliert den
 
 ## CEO-Freigaben aus dem Erstlauf (2026-11-07, 04:05 CET — Sektion NACH den Vorschlaegen 5-7 des Erstlaufs)
 
-- [ ] **Aufgabe (+hit, CEO-freigegeben):** Bereinigung GENAU der 2 prunable
-  /dev/shm-Focus-Worktrees (wt-focus a199fc4, wt-focus1 e11379b — stale,
-  RAM-Fluechtigkeit ohnehin). Nur `git worktree remove/prune` dieser zwei
-  Eintraege, kein rm an andersartigen Dateien, keine weiteren Worktrees
-  anfassen. Danach Kurzbericht im Log.
+- [x] Erledigt (2026-11-08, AL-Lauf): Bereinigung GENAU der 2 prunable
+  /dev/shm-Focus-Worktrees (wt-focus a199fc4, wt-focus1 e11379b) — Befund:
+  beide bereits vor diesem Lauf entfallen (keine .git/worktrees-Admin-Eintraege,
+  keine Verzeichnisse mehr in /dev/shm; entfernt durch unbekannte Linie nach
+  dem Erstlauf). `git worktree prune` als Freigabe-Schritt ausgefuehrt: no-op
+  (rc=0, 5 registrierte Worktrees unveraendert); Branches focus-stufe-0-1
+  (a199fc4) und focus-stufe-1 (e11379b) unberuehrt wie freigegeben.
+  Kurzbericht im Log (vitalos.log) und AL-LOG 2026-11-08.
 - [ ] **Aufgabe (+hit, CEO-freigegeben):** Doku-Hygiene RESULTS.md/NEXT.md im
   ~/vitalos-Root — veraltete Eintraege konsolidieren (Auto-Doc-Konvention:
   Destillat in thematisch passende Doku-Dateien, Offenes nach NEXT.md).
