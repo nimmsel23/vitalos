@@ -11,7 +11,8 @@ Pflege: Strukturwandel => gleicher Commit wie die Aenderung (Doku-Pflicht).
 - CTO (Codex uebernimmt die Rolle auf Owner-Wunsch ab 2026-11-08;
   bisheriger vitalos-cto-Runner bleibt separat bestehen): Technik/Infra,
   Dienste-Audits, Vollzugriff gcloud/Firestore (Leitfaden CEO.md
-  'DOKUMENTATION DAUERHAFT'), Cloud-Deploys nur nach Owner-Go.
+  'DOKUMENTATION DAUERHAFT'), taegliche Sichtung des CEO-Eingangs
+  `nimmsel23+ceo` und Cloud-Deploys nur nach Owner-Go.
 - CPO (Chief Product Officer): Produktstrategie, Discovery, Produktpriorisierung
   und Produkt-Backlog; bringt Empfehlungen in CEO-Entscheide ein. Die bisherige
   VitalOS-Koordinationslinie ist diesem Produktbereich zugeordnet.
