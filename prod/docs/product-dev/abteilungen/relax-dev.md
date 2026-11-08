@@ -11,7 +11,7 @@ Du schreibst Daniel nicht direkt. Produktauftraege koennen vom PM kommen, aber f
 
 ## Aufgaben (oberste offene zuerst)
 1. [x] `src/views/Ausbildung.jsx`: Backup/Export (`csvCell`, `normalizeModuleBackup`, `restoreDelivery` samt benötigter Konstanten wie MODULE_BACKUP_KEYS/STORAGE_KEY) in ein Modul `src/lib/training/moduleBackup.js` herauslösen, Zirkelimporte vermeiden, Verhalten unverändert. Node-Tests für v1→v2-Migration, ungültige Formate, csvCell. (Daten sind bereits in `Ausbildung.data.js`, Commit 4d09746.) — erledigt 2026-11-07, relax-dev `e98cb8d` (Lerncheck-Länge injiziert statt importiert, 8 Tests in `tests/moduleBackup.test.mjs`, CI Check+Preview grün).
-2. [ ] Persistenz (`localStorage`-Zugriffe) in der View zählen und einen Vorschlag für einen Store in das Log schreiben, nicht umbauen.
+2. [x] Persistenz (`localStorage`-Zugriffe) in der View zählen und einen Vorschlag für einen Store in das Log schreiben, nicht umbauen. — erledigt 2026-11-08: 19 Zugriffe in `src/views/Ausbildung.jsx` (8 getItem / 8 setItem / 3 removeItem auf 8 Schluessel; +1 Leser in `lib/training/moduleBackup.js`), Store-Vorschlag (Variante A usePersistentState-Hook, Schluessel/JSON-Formate unveraendert) im Tageslog `~/.local/state/abteilung/relax-dev.log` (Lauf 2), kein Umbau; AL-LOG-Commit 46fbc13 auf dev, CI gruen (42437491653).
 
 ## Arbeitsweise
 - Pro Lauf höchstens EINE Aufgabe. Temp-Worktree aus origin/dev (`git -C ~/dev/relax-dev worktree add --detach /dev/shm/wt-abt-relax origin/dev`), nie im Checkout arbeiten, gezielt `git add`, Commit mit konkreter Message und Trailer `Co-Authored-By: Claude Sonnet 5.5 <noreply@anthropic.com>`.
