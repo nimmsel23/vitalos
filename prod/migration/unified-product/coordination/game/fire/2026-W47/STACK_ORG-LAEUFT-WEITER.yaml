@@ -1,0 +1,65 @@
+author: CEO (Vibe, WS1)
+created: 2026-11-08
+week: 2026-W47
+status: built
+title: ORG-LAEUFT-WEITER — die Org arbeitet weiter, wenn der Laptop 2-3 Tage aus ist
+transfer: 'Door- und Hit-Tasks via warstack-import in die Org-Task-DB (Quell-Task: Cloud-CTO-Potential);
+  SSOT bleibt diese YAML.'
+taskwarrior_anchor: Org-DB, project dotfiles (Infrastruktur- und CI-Thema; Bau bei der CTO-Linie, Cloud-Freigaben
+  bleiben Owner-Gates).
+hit_uuids: []
+inquiry:
+  domain: Production
+  subdomain: Systems
+  domino_door: Die VitalOS-Org erledigt auch bei 2-3 Tagen Laptop-aus die taeglichen Runden, nimmt Berichte
+    entgegen und priorisiert sichtbar — sonst faellt mit dem Laptop die ganze Org in Stille, und die Agenten-Meldungen
+    stapeln sich ungehoert (der 2-Tage-WhatsApp-Stillstand des CEO war die Vorwarnung).
+  trigger: 'Owner-Bedarf 2026-11-07: „Ich brauche ein System das weiter arbeitet wenn ich meinen Laptop
+    mal 2-3 Tage nicht aktiviere". Ebenen 1 (Live-CEO bei Bedarf) und 2 (systemd-Linien) laufen und sind
+    bewiesen; die CI- Ebene existiert nur als Design-Vorlage. Beweisstueck W46: 9/9 AL-Nacht autonom,
+    Dienste liefen, Digest-Luecke (Konvention ohne Maschine) trat zutage und wurde maschinell gefixt.'
+  narrative: 'Vermeidungsgeschichte: „Die Dienste laufen doch schon, CI ist Doppelmoral." Ehrliche Fassung:
+    Ohne Cloud-Instanz stoppen AL-Laeufe auf dem Laptop, der CI-CEO-Digest existiert nur im Design, und
+    echte Rotausfaelle in der Nacht bleiben 12+ h unbemerkt. Die Org spielt ihre Autonomie nur auf einem
+    Instrument.'
+  validation: Notwendig, weil systemd-Timer physisch am Laptop haengen; weil der Digest-Vorfall zeigte,
+    dass Conventions ohne Maschinen still aus- fallen; und weil die Design-Vorlage (DESIGN-CLOUD-CTO.md)
+    alle harten Grenzen bereits geprueft hat (State-Carve-Out, Heartbeat-Gate, Allowlist, eigener Minimal-Token).
+  impact_opening: 'Die Door oeffnet echte Produkt-Unabhaengigkeit: Daniel kann 3 Tage weg, die Org berichtet
+    in sein Postfach/Bot, Majors und Reparaturen laufen in CI, und der CEO gewinnt Zeit fuer Produkt und
+    Kunden statt Laptop-Bewachung.'
+  consequences: 'Ohne die Tuer bleibt jede Reise des Owners ein Org-Aus: keine Runden, keine Digests,
+    keine Fehler-Lauefe — und der naechste Abend auf der Couch vorm Laptop ist vorprogrammiert.'
+  insights: '2 Tage Digest-Stille waren keine Schlamperei sondern Struktur: ein Systempunkt, der als Konvention
+    im Kopf des CEO lebte, existiert als Maschine erst seit heute. Autonomie braucht Maschinen, nicht
+    Absicht.'
+  lessons: 'Anti-Fraktal-Regel hielt: Der Bau startet nur als berichtender Watcher mit hartem Grenzset
+    — alle darueber hinausgehenden Ideen (eigene Entscheidungen, Cloud-Deployment) bleiben dem naechsten
+    Door War vorbehalten.'
+hits:
+- fact: 'Design steht vollstaendig (DESIGN-CLOUD-CTO.md: State-Carve-Out, Runner-Ableitung cto-run-ci,
+    Heartbeat-Gate, Kosten ~3 EUR/Monat LLM + Free-Tier-Runner).'
+  obstacle: 'Zwei Builder-Gates haengen am Owner: Mistral-API-Key als GitHub-Secret im State-Repo und
+    der erste State-Repo-Push.'
+  strike: CI-CTO-Berichtslauf (cron, taeglich 06:10, heartbeat-gegate) mit genau EINEM Erstlauf als reinem
+    Bericht — keine Schreibrechte ausser State-Repo-Commit; Beleg = erster 3-Zeilen-Bericht aus der Cloud.
+  responsibility: CTO-Linie (Bau + Betrieb), CEO (Beleg-Abnahme), Owner (beide Builder-Gates).
+- fact: Die Lesestoffe des CTO-Takts liegen verstreut (CEO.md, AL-Logs, Koordination); ein Cloud-Lauf
+    braucht ein exportierbares Abbild.
+  obstacle: Daniels Privat-DB und echte Runner-Rohlogs duerfen die Cloud nie sehen (Task-DBs, Secrets,
+    heartbeat-Rohdaten).
+  strike: 'Privates State-Repo org-state anlegen: CTO.md-Tagesabschnitt + kuratierte AL-Log-Tails (~40
+    Zeilen, im Lauf angehaengt) + 3-Zeilen-Berichte; alles andere bleibt lokal.'
+  responsibility: CTO-Linie (Push-Skript + Carve-Out-Waechter), CEO (Scoping-Abnahme).
+- fact: Bei Laptop-aus gibt es weder systemd-Digest noch Live-CEO — der Owner ist blind, und das Memory-of-Record
+    (Digest) entfaellt.
+  obstacle: Keine Messaging-Secrets in der Cloud ohne Owner-Freigabe.
+  strike: 'Schlanker CI-CEO-Digest: taegliche 3-Zeilen-Zusammenfassung als Commit ins State-Repo (und
+    als Issue im Koordinations-Repo), sichtbar ohne Laptop.'
+  responsibility: CTO-Linie (Bau), CEO (Formulierungsvorlage), Owner (Messaging-Kanal-Freigabe erst spaeter).
+- fact: 'Ausfuehrende +hit-Auftraege enden heute am Laptop: AL-Runner und Subagenten brauchen den Rechner.'
+  obstacle: Jede Cloud-Schreibflaeche ist Angriffsflaeche (Gitlinks, Deploy, Store).
+  strike: 'Ausfuehrende CI-Schicht nur fuer klar geschnittene +hit mit hartem Grenzset: Allowlist nur
+    Repo-under-Work, eigener Token minimaler Scope, PR statt Direct-Push, kein Deploy/Store/Gitlink; Beleg
+    = erster automatisierter PR aus der Cloud mit gruenem Check.'
+  responsibility: CTO-Linie (Mechanik), CEO (+hit-Auswahl je Runde), Owner (Token-Anlage).

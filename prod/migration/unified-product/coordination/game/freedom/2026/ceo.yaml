@@ -1,0 +1,52 @@
+domain: CEO
+domain_key: ceo
+year: 2026
+updated: '2026-11-07'
+period: '2026-2027'
+type: freedom-map
+kind: annual-freedom-goal
+status: active
+cadence: quarterly
+horizon: 1-year
+quarter: Q4-2026
+ipw_10_year: 'VitalOS als selbst tragendes Produkt: Abos finanzieren den Betrieb freihändig, der CEO führt eine Agenten-Organisation, die ohne Mikromanagement produziert.'
+single_freedom_goal: 'Bis 2027-11-07: VitalOS-Abos decken die Betriebskosten inkl. Claude-Max-Abo UND fahren Überschuss ein (Owner-Annual-Game).'
+direction: 'Jede Monats-Mission = EIN Arbeitspaket, das Monatsende fällig ist; jede Quartals-Stufe baut das Fundament für die nächste; nichts zählt außer Bewegungs-fronten in Richtung Abo-Deckung.'
+freedom_game:
+  deadline: '2027-11-07'
+  net: 'Abos ≥ Betriebskosten (Server, Store, Claude-Max-Abo) — danach ist alles darueber Ueberschuss.'
+taskwarrior_anchor:
+  project: vitalos-prod  # Projekt = jeweils betroffenes Repo; Rolle im +ceo-Tag
+  tasks: 'Org-DB 1-7 (+freedom +fokus +fire +br +go); Jar-Ordnung (Owner-Weisung, s. aos/door "29 - Production"): +br Big Rocks > +lr Little Rocks > +s Sand-Routine (immer zuletzt, Zeitverschwendung wenn zuerst); Verwaltung bleibt beim CEO, hier nur Anker-Verlinkung'
+milestones:
+  annual: 'Org-Task 1 — Freedom-Goal 2027: VitalOS-Abos decken Betriebskosten inkl. Claude-Max-Abo und fahren Ueberschuss ein'
+  missions:
+    '2026-11': 'Nov-Mission (Org-Task 3): M1-RC steht (Invoker-Binding, Emulator gruen) UND M2-Testuser-Woche ist vorbereitet — faellig 2026-11-29'
+    '2026-12': 'Dez-Mission (Org-Task 4): VitalOS Premium-Subscription live fuer Nicht-LLM-Nutzer (KI-Vorteile ohne LLM-Kontakt, Messenger-Abo-Weg) — faellig 2026-12-23'
+  quarters:
+    q4_2026: 'Org-Task 2 — Q4/2026 Fokus: M1-RC + M2-Testuser-Woche + Premium-Fundament (Observe free, Premium = KI-Layer)'
+  weekly_doors: 'Naechste Ebene: Domino Door je Woche (s. ../fire/), aktuell 2026-W45/46: Org-Task 5 — M1-RC Kaskade (Invoker-Binding-Weiter, Emulator gruen, RC-Ruf)'
+  standards: 'Org-Task 6 — Org-Standard-Engine: Vibe (Europa/DSGVO), Claude/Codex nur als Ausnahme (CTO setzt um, CEO entscheidet Ausnahmen) — Rahmen fuer alle Missionen'
+source_refs:
+  chapter: Game Chapter 33 - Freedom
+  frame: game/frame/2026/ceo.yaml
+  game_run: game/GAME-RUN-2026-W45.md
+body_markdown: |-
+  # CEO — Freedom Map (Annual Freedom Game)
+
+  Single Freedom Goal (bis **2027-11-07**): VitalOS-Abos decken die Betriebskosten inkl. Claude-Max-Abo und fahren **Überschuss** ein.
+  Kaskade (jede Ebene bricht die obere auf, nichts existiert parallel):
+
+  | Ebene | Periode | Inhalt | Taskwarrior-Anker |
+  | --- | --- | --- | --- |
+  | Annual Freedom Game | bis 2027-11-07 | Abos ≥ Betriebskosten + Überschuss | Org-Task 1 (+freedom) |
+  | Quartals-Fokus | Q4/2026 | M1-RC, M2-Testuser-Woche, Premium-Fundament | Org-Task 2 (+fokus) |
+  | Monthly Mission | Nov / Dez | Nov: M1-RC steht + M2-Vorbereitung · Dez: Premium-Subscription live für Nicht-LLM-Nutzer | Org-Tasks 3/4 (+fire, +s) |
+  | Weekly Doors | jede Woche So 12:00 | Domino Door + max. 2 Neben-Türen (War Stack s. ../fire/) | Org-Task 5 (+br) |
+
+  Rahmen-Standard anch (Org-Task 6): Vibe als Org-Standard-Engine (Europa/DSGVO),
+  Claude/Codex nur als Ausnahme — CTO setzt um, CEO entscheidet Ausnahmen.
+
+  *Das Freedom-Ziel wird nicht delegiert und nicht terminiert — es wird bewegt,
+  jede Ebene in ihrem Takt: GAME-Runde So 12:00 (Doors) → Monatsultimo
+  (Mission) → Quartalsende (Fokus) → bis 2027-11-07 (Freedom).*

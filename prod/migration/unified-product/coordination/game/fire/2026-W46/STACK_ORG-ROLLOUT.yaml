@@ -1,0 +1,74 @@
+# STACK_ORG-ROLLOUT — War Stack (Chapter 28) fuer die Door der Woche 2026-W46
+# Felder kanonisch nach Chapter 28 (WARSTACK_STEPS); importierbar per
+# `aos door plan warstack-import` (Owner-Regel: Chapter waehlt die Felder).
+# Auf Owner-Weisung 2026-11-07 gebaut ("gib den Auftrag nach taskwarrior —
+# oder erstelle mal einen War Stack dazu"): erster echter Import-Lauf.
+author: CEO (Vibe, WS1)
+created: 2026-11-07
+week: 2026-W46
+status: built
+title: 'Org-ROLLOUT — AlphaOS-Betriebsregeln in die Flaeche (Repo-DBs, Guards, Guides)'
+transfer: 'Door- und Hit-Tasks via warstack-import in die Org-Task-DB; SSOT bleibt diese YAML.'
+taskwarrior_anchor: 'Org-DB, project aos (org-weiter Auftrag: alle 9 App-Repos + dotfiles betroffen — Begruendung: einheitliche Tag-/Urgency-Semantik ist Vorbedingung dafuer, dass jede Repo-DB dieselbe Jar-Ordnung erzwingt). Kaskade: Q4-Fokus (Org-Task 2) -> Nov-Mission (Org-Task 3); domino: forthcoming Tent-Wahl W46.'
+hit_uuids: []
+inquiry:
+  domain: Production
+  subdomain: Systems
+  domino_door: 'Die heute beschlossenen AlphaOS-Betriebsregeln (+hit=+br Tier, +hot=Potential, +go abgeschafft, Jar-Koeffizienten, War-Stack-UDAs, Org-Env ~/.org) erreichen jede der 9 Repo-Task-DBs und jede AL-Runde — sonst gilt die Philosophie nur auf dem Papier der Zentrale.'
+  trigger: >-
+    2026-11-07 hat der Owner die AlphaOS-Disziplin zur internen
+    Firmenphilosophie erklaert und die Tag-Semantik mehrfach nach-
+    geschärft (+hit=+br, +hot=Potential, +go abgeschafft). Die
+    Org-taskrc steht — aber die 9 Repo-DBs der AL-Linien rechnen
+    noch ohne Koeffizienten und ohne UDA-Deklaration, und ihr
+    taskwarrior-Default faellt bei Fehlkonfiguration stillschweigend
+    auf Daniels Privat-DB zurueck (Oracles Verifikationsfund,
+    182 private Tasks lesbar). Die AL-Runden laufen jede Nacht.
+  narrative: >-
+    Vermeidungsgeschichte: "Die Regeln gelten ja schon zentral, der
+    Rollout kann warten." Ehrliche Fassung: Eine Philosophie, die nur
+    im HQ rechnet, wird in den Naechten von 9 Linien ignoriert oder
+    falsch angewandt — und der naechste Berichts-Stau entsteht dort,
+    wo niemand hingeht. Der Rollout ist keine Deko, er ist die
+    Vertragsunterzeichnung der Flaeche.
+  validation: >-
+    Notwendig, weil jede AL-Runde ohne Koeffizienten die Jar-Ordnung
+    nur erraet und +go-Auftraege weiter vergeben kann; weil ohne
+    UDA-Deklaration taskwarrior 3.5 War-Stack-Felder stillschweigend
+    verwirft (Oracles Wegwerf-DB-Nachweis); und weil ohne Guard jede
+    verschobene TASKRC-Variableprivate Daten der Flaeche expose.
+  impact_opening: >-
+    Der Rollout oeffnet die echte Dezentralisierung: AL-Linien und
+    CTO koennen Doors/Hits/Quadranten lokal gegen ihre eigene DB
+    rechnen, die Sonntagswahl bekommt 9 glaubwuerdige Quadranten-
+    Sichten statt einer Zentral-Sicht — und das Tent kann Auftraege
+    direkt in die Repo-DBs stellen (CEO-Last sinkt).
+  consequences: >-
+    Ohne Rollout driftet die Flaeche: +go lebt in alten Guides
+    weiter, Hot-Feuer wird falsch ausgefuehrt, War-Stack-Felder
+    verschwinden lautlos in Repo-DBs — und der erste harte
+    Datenqualitaetsfall in einer AL-Runde trifft eine Org, die
+    geglaubt hat, die Regeln seien bereits verankert.
+  insights: ''
+  lessons: ''
+hits:
+  - hit_number: '1'
+    fact: 'Alle 9 Repo-taskrcs tragen die Koeffizienten (+hit 8.0, +br 8.0, +lr 2.0, +hot 1.0, +s -1.0) und die War-Stack-UDA-Deklarationen (Muster: Org-taskrc).'
+    obstacle: 'Repo-taskrcs sind individueller Standard je AL-Einrichtung — ein Blindauffrischen kann laufende AL-Filters oder Kontexte brechen.'
+    strike: 'Muster-Block vorgeben (Org-taskrc-Anhang), je Repo einmalig durch die CTO-Linie anwenden, danach quadrants --json als Gegenprobe je DB.'
+    responsibility: 'CTO-Linie (Ausfuehrung je Repo) + CEO (Muster + Abnahme)'
+  - hit_number: '2'
+    fact: 'fleet-weiter Fallback-Guard: task-/taskpy-Wrapper verweigern den Lauf, wenn die angesprochene Repo-DB nicht per TASKRC erreichbar ist (Muster: vitalos.fish-Guard von Oracle, Funktionstest geliefert).'
+    obstacle: 'Fisher conf.d kann Shell nicht via exit abbrechen — der Guard muss auf Wrapper-Ebene greifen, nicht auf Konfigurationsebene.'
+    strike: 'Guard-Muster als dotfiles-Baustein, in orgsh + Rollen-Profilen aktiv; je Repo ein Negativ-Test (fehlerhaftes TASKRC -> Verweigerung).'
+    responsibility: 'CTO-Linie (Ausfuehrung) + Oracle (Muster) + CEO (Abnahme)'
+  - hit_number: '3'
+    fact: 'AL-Guides und Rollen-Skills sind auf Stand: +go als Prio-Marker entfernt, +hit/+br-Tier und +hot=Potential beschrieben, Verweise auf ~/.org und die vos-* Skills vorhanden.'
+    obstacle: '9 Guides + diversen Rollen-Dateien — Teilmenge kann uebersehen werden; Guides stehen in Repons, die AL-Linien jede Nacht lesen.'
+    strike: 'Art je Repo gegenchecken (grep +go in AL-Guides), Nacherhebung als kleine Doku-Auftraege an die CTO-Linie ins Rolloutpaket legen.'
+    responsibility: 'CTO-Linie (Anarbeitung) + CEO (Sichtpruefer)'
+  - hit_number: '4'
+    fact: 'Beweis je Repo: quadrants --json klassifiziert eine Testaufgabe korrekt nach der neuen Semantik, Negativfall (Guard) verweigert — eine REPORT-Zeile je Repo mit Belegen im STATUS.md.'
+    obstacle: 'Zeitfenster: AL-Runden laufen 02:10-06:10 — Gegenproben ausserhalb der Rundenfenster legen, sonst Leerlaufrisiko.'
+    strike: 'Sammelverifikation einmalig nach Rollout (nicht je Runde), Ergebnisse gebuendelt im Tent-Sonntag vorweisen.'
+    responsibility: 'CTO-Linie (Lauf) + CEO (Abnahme im Tent)'
