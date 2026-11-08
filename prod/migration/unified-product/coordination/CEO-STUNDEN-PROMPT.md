@@ -80,7 +80,17 @@ CEO-Stunde (V2) — still, read-only, eine Runde:
    mit Daniel. Voice-Disziplin: bei Fehlern STOP/SUBMIT/STRUGGLE/STRIKE
    als Block im selben Bericht.
 
-9. **Abschluss im Chat:** Kurzfassung als REAL (Fakten mit Belegen) /
+9. **Digest-Pflicht (Owner-Reparatur 2026-11-08, 11:1x):** Der Tages-
+   Digest ist eine MASCHINEN-Pflicht, keine Konvention: vitalos-ceo-digest.
+   timer feuert 23:45 unabhaengig vom Live-Heartbeat. Laeuft die LIVE-Session
+   zwischen 23:30 und 23:59, uebernimmt SIE den Digest (tele-Send + Log-Zeile
+   '<YYYY-MM-DD> gesendet HH:MM, X Gates' in ~/.local/state/vitalos-ceo/
+   ceo-digest.log, damit der 23:45-Runner idempotent skippt). 'Keine tele' in
+   den stillen Runden gilt NIE fuer den Digest. Ein Launch ohne Tages-Digest
+   an Daniel ist ein FEHLER, stiller Chat-Abschluss reicht nicht (Owner-
+   Befund: 2 Tage Stille auf WhatsApp).
+
+9b. **Abschluss im Chat:** Kurzfassung als REAL (Fakten mit Belegen) /
    RAW (unbequeme Wahrheit, falls eine da ist) / RELEVANT (was fuer
    Daniel zaehlt) / RESULTS (Erledigtes + offene Gates) — max. 8 Zeilen.
    Zwischen den Runden: still (kein tele ausser echtem Gate).
