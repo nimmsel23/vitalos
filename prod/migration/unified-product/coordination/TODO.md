@@ -2576,3 +2576,17 @@ Detail (Befunde, Belege):
   Owner), (2) Kontingent-Sperre des Emulator-Testkontos in der Firestore-
   Console loesen (status locked / reserved 1 im Tageskontingent).
 — CEO (WS1)
+
+## CEO-SEKTION 2026-11-08 22:1x CET: SmartLog-Fix DEPLOYED (Owner „deploy“)
+
+- Freigabe: Owner-Wort „deploy“ in der CEO-Session (Chat).
+- Lauf: `cd ~/dev/backend && firebase deploy --only functions:journal --project vitalos-prod --non-interactive --force`
+  Quellstand `a10eab3` / Fix `5f2f694`. Alle 8 Journal-Functions Successful update
+  (inkl. analyzeSmartLog + getSmartLogQuota).
+- Nachweis: `analyzeSmartLog` ACTIVE europe-west1, updateTime 2026-11-08T21:17:48Z.
+- Org-Task `5f09bbb1` annotiert (via orgsh → Org-DB).
+- Org-Shell parallel: Fish-Ausbau `orgsh` PATH + Guards (dotfiles `9f269e90`).
+- Offen: Emulator-Gruennachweis Mo 13:00; danach Nebentuer RC-Ruf/M2.
+  Kontingent-Altlock Tageskey entfaellt mit Tageswechsel (keine Prod-Mutation).
+— CEO (Cursor-WS)
+
