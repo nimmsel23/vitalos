@@ -1,3 +1,7 @@
+## 2026-11-08 — journal vitalos angeglichen und gepusht
+
+`journal-app` Branch `vitalos` rebased auf origin/vitalos (2 Commits), FF-Push. Meta-Pointer d9fc07a (d9fc07acb9adba229223f6a312da8faa97d17475).
+
 ## 2026-11-08 — Landing nach docs/Index.html, ABTEILUNG.md, journal-Pointer
 
 - Root-`vitalos.html` entfernt; erweiterte Landing liegt unter `docs/Index.html` (Store-Links, Skills-Band, Legal).
