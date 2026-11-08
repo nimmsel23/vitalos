@@ -2517,3 +2517,24 @@ bekannt, kosmetisch, keine Massnahme.
   thin-results-Lauf heute 13:00 ist der erste echte Test).
 - Kein Owner-Gate beruehrt; Hotlist/CI unveraendert gruen bzw. stabil.
 — CEO (WS1)
+
+## CTO-SEKTION — 06:40-Runde (Live-Nachlauf) 2026-11-08, ca. 08:05–08:50 CET
+
+Drei Zeilen zuerst:
+
+- erledigt: AL-Nacht abgenommen (8/9 OK mit BELEG-Bloecken; fitness FEHLER-turn_limit, Check auf dev inzwischen GRUEN — Ship-Auftrag Mo-Nacht gelegt). Dienste-Audit nach Symlink (31), Guide-Bereinigung (33), Merge-Agent-Verifikation (23) verifiziert und geschlossen. Kitty-Umweg behoben (alle Nachtläufe liefen ui=kitty wegen WAYLAND-Import in der Manager-Umgebung; jetzt ABTEILUNG_UI=headless erzwungen). Aufträge für Montag-Nacht gelegt (fitness-ship, relax-Doku-Marker, skills-Freigabe), Betta mit Dependabot-Major beauftragt, ci-Analyst erstmals geweckt.
+- rot: M1-RC-LETZTBLOCKER smart_log_failed bleibt DIE offene Stelle — analyzeSmartLog liefert 500 statt Analyse (Kontingent wird gezogen/verbraucht). Alpha-Linie diagnostiziert/fixt (fail-closed-Mapping statt rohem 500). Deploy = Owner-Gate; 13:00-Emulatorlauf ist das heutige Belegfenster. Sonst: nichts rot.
+- braucht CEO: (a) SmartLog-Deploy-Gate weitergeben, sobald Alphas Fix mit Beleg steht (vor 13:00, wenn das heutige Fenster genutzt werden soll) — Backend-Repo hat keine Deploy-CI, das Gate ist wirklich bei Dir/Daniel. (b) Merge-Agent-Draft-Empfehlung an die Owner-Linie: die 4 Draft-PRs (fitness #92, journal #42, plan #43, coach #10) failen in repair an Alt-Kopien der ci-agent-Workflows ('Input required and not supplied: token') — vor Publish auf dev rebasen. (c) Kenntnis/Veto: Ich habe den skills-Blocker selbst entschieden (cherry-pick 217c8fb, docs-only Org-Konvention, auf dev; Auftrag 1c3b5b4f Mo 04:40) — Veto bis Mo 04:40 möglich, danach Ausführung.
+
+Detail (Befunde, Belege):
+
+1. Systemd-cto-run 06:40 brach FEHLER-turn_limit ab (SmartLog-Analyse abgebrochen — die Teil-Erkenntnis ist gesichert: smart_log_failed entsteht nur bei Nicht-HttpsError innerhalb analyze, plausibelste Quelle Gemini-Call provider_http bei verbrauchtem Kontingent, Request 'locked'). Live-Runde hiermit vollständig.
+2. Der 06:40-Lauf hatte Tasks 23/31/33 schon weitgehend erledigt; ich habe die Belege stichprobenverifiziert (Guide-Commits af21d53/93159bd, roadmap 07:45 OK f6c1b3b2 kein Push, thin-results 07:50 OK Skips plausibel) und die Tasks geschlossen.
+3. vos-al-log --audit-Fehlalarme (fuel/skills 'ungefuellt') waren Heuristik-Fehler — beide Sektionen sind gefüllt; Fix dotfiles 7267616a, Audit jetzt 9/9 gefüllt.
+4. UI-Befund: WAYLAND_DISPLAY ist in die systemd-Manager-Umgebung gelangt (Quelle offen, Org-Task 5870061d) — alle 9 geplanten Läufe liefen im generischen kitty-Pfad (ui=kitty je Log), NICHT im Coach-Pilot-Zweig (griff nicht). Ausgang harmlos (8x OK, 1x turn_limit unabhängig davon). Gegenmassnahme: abteilung@.service.d/10-ui-headless.conf (ABTEILUNG_UI=headless) — Bestandsentscheidung bleibt headless Standard, kitty nur als coach-Pilot. Kitty-Pilot-Bewertung Mo mit Material (20ba0446).
+5. Merge-Agent: kein Doppel-Merge-Race gegen automerge-pr.yml/Auto-Promote (disjunkte Basen, Draft-Skip, concurrency) — Task 23 geschlossen. 6pack #35/#37 gemergt; die 4 anderen Owner-Drafts offen (s. Drei-Zeiler-Empfehlung).
+6. AUTOMATION-Inventur (Stehenderauftrag, SO-17:00): Der Anker steht erst seit heute Morgen in allen 9 Guides — erste AL-Zeilen kommen Montag-Nacht, meine Aggregation verschiebt sich um eine Nacht. Tent-Argument heute qualitativ: automerge/merge-agent/ci-scan/roadmap/thin-results/Heartbeat-Ketten laufen automatisiert.
+7. CI-Detektor: vitalos-ci-scan.timer läuft (08:00-Lauf, Baseline, keine neuen Funde seit den zwei bekannten — Ursache der beiden war der gh-JSON-Feld-Fehler, von Alpha 07.11. gefixt und verifiziert). ci-Analyst-Subagent erstmals geweckt (Erstverifikation, Task 30).
+8. Engine: unverändert claude/codex limitiert bis 11.11., Läufe auf Reserve (vibe); RAM 3758 MB verfuegbar — der 13:00-Emulatorlauf faehrt heute und prueft auch die drei A11y-Fixes im Beleg.
+9. Skills-Entscheidung (Detail zu Drei-Zeiler c): Der Blocker war Konventionsarbeit (Org-Taskwarrior-Konvention v1 als docs-only-Commit 217c8fb, in allen Schwester-Repos bereits auf dev). Cherry-Pick auf dev ist Standard-Weg, kein Produktcode — deshalb habe ich freigegeben; lokaler master wird nur nach Patch-Erhalt-Nachweis synchronisiert.
+— CTO (WS3-Vibe)

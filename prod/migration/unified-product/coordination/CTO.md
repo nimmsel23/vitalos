@@ -7,15 +7,17 @@ aktuellen Stand. Tagesgedächtnis und Detailfindings liegen additiv in
 wird vom CTO — auch automatisch in der täglichen 06:40-Runde — fortgeführt:
 Stehbild strafft, Überschriften behalten, Neuerscheinendes einsortieren.
 
-Stand: 2026-11-07, ca. 21:16 CET (CEO-Auftragspaket umgesetzt; CI-Agenten in sieben Modul-Repos und Coach eingerichtet; Coach Pages auf docs-only Actions umgestellt und live verifiziert; Details STATUS.md-CTO-Sektion/TODO.md).
+Stand: 2026-11-08, ca. 08:45 CET (CTO-Live-Runde 06:40-Nachlauf: AL-Nacht 8/9 OK — fitness turn_limit mit inzwischen grünem Check; SmartLog-500 = M1-RC-Letzblocker, Fix über Alpha-Linie unterwegs; Dienste nach Symlink-Konsolidierung grün verifiziert; UI-Modus der Nachtläufe auf headless zurückgestellt (s. Abschnitt UI-Modus); Details STATUS.md/TODO.md-CTO-SEKTION).
 
 ## Derzeitiges Systembild (Tageszyklus)
 
 ```
 02:10–06:11  AL-Läufe je Repo (abteilung@*.service, Runner ~/.dotfiles/bin/abteilung-run;
              vor Lauf: AL-LOG.md-Sektion mechanisch vorbefüllt via vos-al-log;
-             coach-dev läuft als KITTY-PILOT: persistente interaktive Session
-             im kitty statt headless, ABTEILUNG_MODE=kitty, headless = Fallback)
+             coach-dev läuft als KITTY-PILOT: persistente interaktive
+             session im kitty statt headless, ABTEILUNG_MODE=kitty, headless = Fallback;
+             ab 08.11. erzwingt Drop-in 10-ui-headless.conf ABTEILUNG_UI=headless für
+             ALLE geplanten Läufe — der Coach-Pilot-Zweig läuft davor und bleibt unberührt)
 06:40        CTO-Runde (vitalos-cto.timer): Abnahme der Nacht, Technik-Inventar,
              Hygiene (u. a. ~/.git darf nicht existieren), Aufträge +go, Rückkanal
              3-Zeiler; liest: state-CTO.md, Koordinationsfläche, AL-Logtails,
@@ -114,34 +116,43 @@ push dev → Check grün → automerge-pr.yml (Dependabot-Squash auf dev,
 
 ## Offene Punkte (kommende Runden)
 
-1. Erste CTO-Runde abnehmen: relax-Zweitsession, vitalos-AL-ohne-Runner
-   (Alt-Beobachtung), neue BELEG-Blöcke der ALs, erste Dünne-Grenzen,
-   liegen gebliebene vos-docs-dirty-Marker, vos-al-log --audit (Erstlauf
-   AL-LOG heute Nacht).
-2. CEO-Erstlaufabnahme Roadmap-Drilldown (Diff coach-dev 42faa43a) → danach
-   Push (Betta auf Zuruf) und Enable vitalos-roadmap.timer (07:45).
-3. ALPHAOS-Server-Restart-Termin mit Daniel — aktiviert das +hot-Repo-
-   Routing (aos 61773a0); kein Autostart, bewusst koordiniert.
-4. fitness #87 (Vite 6→8): dev rot, Reparatur laeuft bei Alpha (Betta-
-   Major-Wache: eine Mail, live gruen); vitalos #13 (node-forge) Owner-Gate.
-5. Kitty-Pilot coach-dev: erster Lauf heute Nacht 02:10 (persistente kitty-
-   Session statt headless); Bewertung nach ~2 Laeufen zusammen mit CEO.
-6. Shell-Hilfen-Regel + venv-Konvention + Rollen-Tag/project=Repo: in allen
-   9 AL-Guides verankert (a67caf3) — Befolgung in der naechsten
-   AL-Runde stichprobenweise pruefen.
-7. Door-Erinnerung: scheduledDoorReminders ohne Cloud-Scheduler-Job —
-   Anlage bei der Deploy-Linie anordnen (aus der Invoker-Diagnose).
-8. journal-dev Client-Haertung: Rohfehler „INTERNAL [0]" auf fail-closed-
-   Hinweis mappen — Auftrag an die Journal-AL in der naechsten Runde.
-9. AL-Guides auf Promote-Fluss umstellen (+go erteilt, Umsetzung ausstehend).
-10. vitalos-cto fish-Profil ergaenzen (CEO-Hinweis Skelett); Python-Werkzeuge
-    nach Oracle-Konsolidierung ins EINE Org-venv ~/.venv (nicht mehr eigene
-    Rollen-venv); bash/node bleibt ohne.
-11. Tag-Migration +go→+hit (CEO-REGEL 2026-11-07 abends, Org-taskrc
-    verbindlich): taskrc-al nachgefuehrt (+hit 8.0/+br 8.0/+hot 1.0/+lr 2.0/
-    +s -1.0, +go entfaellt), 9 AL-Guides + Runner-Bootstrap umgestellt,
-    offene +go-Tasks (journal Haertung, 6pack AGENTS-Doku) zu +hit umgetaggt.
-    Kuenftige CTO-/AL-Auftraege heissen +hit, nie +go.
+1. M1-RC-LETZTBLOCKER smart_log_failed (Org-Task 5f09bbb1): analyzeSmartLog
+   liefert 500 statt Ergebnis (Kontingent wird gezogen/verbraucht). Alpha-
+   Linie fixet (fail-closed-Mapping statt rohem 500, Provider-Status im
+   Fehlertext, Lock-Handling). Deploy = Owner-Gate via CEO; Belegfenster:
+   Emulator-Lauf 13:00, Wiederholung nach Deploy.
+2. Journal-Client-Haertung (Org-Task eeb9d722): Mapping an die HttpsError-
+   Codes des Backend-Fixes anpassen, sobald dieser deployed ist.
+3. fitness HOTLIST-115 ship: Check dev GRUEN (fca8d65, Runs 42441867294/67309),
+   _origin-Badge implementiert (b6e2b74); Release-Kette (Promote+Live-Deploy)
+   anstossen/verifizieren, danach Org-Task 20 schliessen — Auftrag Mo-Nacht
+   (Org-Task 7bf1db9e, +hit).
+4. Skills-dev-Blocker 57f615f7: CTO-Freigabe steht (cherry-pick 217c8fb,
+   docs-only, auf dev; danach Patch-Erhalt-Nachweis + local-master-Sync) —
+   Auftrag Mo-Nacht (Org-Task 1c3b5b4f).
+5. Merge-Agent-Drafts der Owner-Linie (fitness #92, journal #42, plan #43,
+   coach #10): repair-fail auf PR-Branches (Alt-Kopie, token-Input) — Empfehlung
+   rebasen steht; Owner-Linie entscheidet (via CEO).
+6. Dependabot-Major-Umstellung (Org-Task bd20f24d, Owner-Pauschalfreigabe
+   07.11.): Betta setzt journal+fuel zuerst um, Rest gestaffelt; Rollback =
+   revert-Squash auf dev; fitness/habits/learn bleiben bewusst gesperrt.
+7. WAYLAND-Import-Ursache systemd-Manager-Umgebung klaeren (Org-Task 5870061d);
+   Abhilfe steht (Drop-in 10-ui-headless.conf).
+8. Kitty-Pilot-Bewertung Mo (Org-Task 20ba0446): Pilot-Zweig griff in der
+   ersten Nacht nicht (vermutlich kein @kitty-Socket im Service-Kontext);
+   Bewertung mit CEO — Soll: kitty NUR coach als persistente Session.
+9. Security-Buendel (Org-Task 3e4b583d, +hit, faellig 12.11.): Vorbereitung
+   in der Montag-Runde.
+10. AUTOMATION-Inventur (Stehenderauftrag): Anker seit 08.11. in allen 9
+    Guides; erste AL-Zeilen erwartet ab Montag-Nacht — CTO-Aggregation
+    danach (SO-Frist um eine Nacht verschoben; Tent-Argument heute
+    qualitativ: automerge/merge-agent/ci-scan/roadmap/thin-results/Detektor).
+11. Door-Erinnerung: scheduledDoorReminders ohne Cloud-Scheduler-Job —
+    Anlage bei der Deploy-Linie anordnen (aus der Invoker-Diagnose).
+12. vitalos #13 (node-forge, prod/functions) bleibt Owner-Gate; Meta-Dep-PR-
+    Modell (manuell vs. dev-Zweig) liegt als Optionen beim CEO.
+13. vitalos-cto fish-Profil ergaenzen (CEO-Hinweis Skelett); Python-Werkzeuge
+    nach Oracle-Konsolidierung ins EINE Org-venv ~/.venv; bash/node ohne.
 
 ## CI-Nachprüfung und Pages-Landingpages — 2026-11-07
 
@@ -149,3 +160,20 @@ push dev → Check grün → automerge-pr.yml (Dependabot-Squash auf dev,
 - 6Pack PR #36 ist ein absichtlicher Red-Test und bleibt rot. PR #35 enthält den GITHUB_TOKEN-Repair-Fix; Check, Preview und Merge-Agent waren grün, PR ist aber Draft und nicht aktiv auf `master`.
 - Veraltete Coach-Kopie `.github/workflows/preview-dev.yml` entfernt. Sie setzte den Coach-SHA als Fitness-App-Ref; die Fitness-Pipeline bleibt im Fitness-Repo.
 - `docs/README.md` mit Jekyll-Landingpage in allen acht Modul-/Coach-Repos auf `dev` ergänzt. Pages-Settings für sieben Repos konnten über den aktuellen GitHub-Connector nicht gesetzt/geprüft werden; Coach nutzt seinen bestehenden Actions-Pages-Workflow. Keine Seitenveröffentlichung für die sieben behauptet.
+
+## Gemini-CI-Agent: gemeinsamer Exit-1-Fix — 2026-11-07
+
+- Journal-Run [42416606547](https://github.com/nimmsel23/journal-dev/actions/runs/42416606547) zeigte `Unknown JSON field: baseRepository` aus `gh pr list --json`; der Agent beendete die Analyse mit Exit 1, bevor Gemini aufgerufen wurde.
+- Den ungültigen Feldsatz in `.github/ci-agent/repair.mjs` auf allen acht Modul-/Coach-Repos auf `dev` entfernt. PR-Suche filtert jetzt Head-Owner:Branch und nutzt nur unterstützte Felder. Die Module liefen durch Check, Promotion und Live-Deploy grün; Coach-Fix liegt auf `dev`.
+- Abnahme ist erst mit einem echten roten Code-Check vollständig: Gemini-Diagnose, Reparaturcommit, neu gestarteter Check und der vorgesehene Deploy. Erfolgreiche Agent-Runs auf grünen Checks belegen nur No-op-Verhalten.
+
+## UI-Modus der Nachtläufe — 2026-11-08
+
+- BEFUND: `WAYLAND_DISPLAY` steht in der systemd-Manager-Umgebung (Import-Ursache offen, Org-Task 5870061d) — dadurch liefen am 08.11. ALLE 9 AL-Läufe (02:10–06:11) im generischen kitty-Pfad (BELEG: `ui=kitty` je Log), NICHT im Coach-Pilot-Zweig. Ausgang: 8x OK, 1x FEHLER-turn_limit (fitness, unabhängig vom UI), kein UI-bedingter Fehlschlag.
+- GEGENMASSNAHME (CTO): Drop-in `~/.config/systemd/user/abteilung@.service.d/10-ui-headless.conf` erzwingt `ABTEILUNG_UI=headless` für alle geplanten Läufe. Bestandsentscheidung bleibt: headless Standard, kitty NUR als coach-dev-Pilot; manuelle Shell-Starts in der Wayland-Session unberührt.
+
+## Merge-Agent (Owner-Linie) — Verifikation 2026-11-08
+
+- Kein Doppel-Merge-Race: merge-agent.yml (fasst nur `vitalos master` an) und automerge-pr.yml (nur Dependabot->dev) haben disjunkte Basen; Draft-PRs werden gesprungen (isDraft-Filter); concurrency-Gruppe serialisiert eigene Cron+PR-Läufe. Belege: Org-Task d0ee4de2.
+- 4 Owner-Draft-PRs offen (fitness #92, journal #42, plan #43, coach #10): deren repair-Schritte failen auf den PR-Branches an Alt-Kopien der ci-agent-Workflows (`Input required and not supplied: token`, z. B. journal-Run 42393768790). Empfehlung an die Owner-Linie (via CEO): vor Publish auf dev rebasen. 6pack #35/#37 bereits gemergt.
+- SYNC_TOKEN fehlt in allen 5 Repos; GITHUB_TOKEN-Merges feuern keine Push-Workflows (Architektur-Folge dokumentiert in Org-Task d0ee4de2).
