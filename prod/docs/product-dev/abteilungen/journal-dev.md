@@ -11,7 +11,7 @@ Du schreibst Daniel nicht direkt. Produktauftraege koennen vom PM kommen, aber f
 
 ## Aufgabenliste (oberste offene zuerst; erledigte hier mit Datum + Commit abhaken)
 1. [x] Aufgabe 0 (erledigt 2026-11-07, Commit `a0071cd` auf dev, CI Check+Preview grün): `collectMinimumLogInputs(rawEntries, rawHabitCompletions)` in `src/lib/focus/inputs.js` (Adapter für Journal-Snapshot-Docs inkl. Alt-Format und Habit-Records mit Doc-ID `habitId_date`) + 8 Node-Tests, Fassade `src/lib/focus/index.js` re-exportiert minimumLog/inputs/dailyFour.
-2. [ ] `src/components/Journal/JournalEntry.jsx` und `JournalModal.jsx`: Icon-Buttons ohne `aria-label` benennen, Trefferfläche <44 px per `relative after:absolute after:-inset-2.5 after:content-['']` erweitern (Muster: Commit a3bb65c).
+2. [x] Aufgabe 2 (erledigt 2026-11-07, Commit `7b85c7f` auf dev, Muster `a3bb65c`; im Lauf 2026-11-08 verifiziert: alle Icon-Buttons in Entry/Modal benannt bzw. >=44px, CI Check dev gruen): `src/components/Journal/JournalEntry.jsx` und `JournalModal.jsx`: Icon-Buttons ohne `aria-label` benennen, Trefferfläche <44 px per `relative after:absolute after:-inset-2.5 after:content-['']` erweitern (Muster: Commit a3bb65c).
 3. [ ] Dependabot-PRs: `gh pr list -R nimmsel23/journal-dev --state open` — NUR auswerten und im Log berichten (welche sind unkritisch, welche brechen CI); nichts mergen.
 4. [ ] `JournalForm.jsx` Zuklapp-Logik (fragil, siehe FRONTEND-REVIEWS.md Review 1): nur Vorschlag mit Test schreiben, nicht umbauen.
 
