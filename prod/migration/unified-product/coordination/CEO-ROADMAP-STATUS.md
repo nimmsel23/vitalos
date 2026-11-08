@@ -289,3 +289,18 @@ Persistenz).
 | SmartLog-Grueennachweis | LETZTER M1-RC-Rest — SO 13:00 RAM-Fenster (Invoker-Bindings stehen, Erwartung gruen) |
 | Debug-Signin (Spiegelstrategie) | Owner bestaetigt erledigt; Bestaetigung im selben 13:00-Lauf |
 | CI-Agenten | Gemini-Reparatur-Agenten in 8 Repos aktiv (No-op auf gruen); Coach-Pages gruen auf Actions-Basis |
+
+## Update 2026-11-08 02:00 CET — Emulator-Nachtlauf 01:14:Client-Kette KOMPLETT GRUEN, ein Server-Restblocker
+
+| Pruefpunkt | Ergebnis 01:14 CET |
+| --- | --- |
+| Start/Debug-Signin | GRUEN (Spiegelstrategie bestätigt, kein 403) |
+| Voice (#game/voice) | GRUEN |
+| SmartLog-Kontingent-UI | GRUEN (1/1, Verbrauch sichtbar — Invoker-Bindings wirksam) |
+| Persistenz/Zweitlauf | GRUEN (Key ueberlebt Neustart; "uebersprungen" = A11y-Fix verifiziert) |
+| SmartLog-Analyse | ROT: Function 500 (smart_log_failed), kein 403 mehr — LETZTBLOCKER |
+| Fallback speichern | GRUEN |
+
+- Org-Task 5f09bbb1 (+cto +hit, project:backend, due heute): Ursache/Fix der
+  analyzeSmartLog-500 mit Beleg nach Emulator-Wiederholung. M1-RC steht und
+  faellt MIT diesem Fix — danach RC-Ruf.
