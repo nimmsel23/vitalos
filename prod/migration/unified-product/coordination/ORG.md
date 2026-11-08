@@ -24,7 +24,7 @@ die Aufnahme macht ihre Empfehlungen nicht automatisch zu Org-Regeln.
 | Rolle | Kern-SKILL und Wissensanker | Ergaenzungen / Stand |
 | --- | --- | --- |
 | CEO | `~/.vibe/skills/vitalos-ceo/SKILL.md`; `CEO.md` -> dieses `ORG.md` -> `PRODUCT.md` | `product-strategy` und `opportunity-solution-tree` sind in `~/.vibe/skills/` aufgenommen. Nur als Methodenhilfe. |
-| CTO | `~/.vibe/skills/vitalos-cto/SKILL.md`; `CTO.md` und Koordinations-TODO | Sweep AI/Pythagora bleiben CI-Kandidaten; `commit-analyzer` ist optionaler lesender Aktivitaets-Kandidat; Claude-mem ist Kandidat fuer sitzungsuebergreifendes Org-Gedaechtnis, nach Datenfluss-/Integrationspruefung. |
+| CTO | `~/.vibe/skills/vitalos-cto/SKILL.md`; `CTO.md` und Koordinations-TODO | Sweep AI/Pythagora bleiben CI-Kandidaten; `commit-analyzer` optional lesend; Claude-mem nach Datenfluss-/Integrationspruefung; Codex-System-Skill `skill-creator` als Methodenhilfe fuer Pflege/Erstellung von Org-Skills. CEO bestimmt die benoetigte Rollenfaehigkeit. |
 | PM | Produkt-Backlog und CEO-freigegebener Scope; kein eigenes PM-SKILL in `~/.vibe/skills/` gefunden | `product-strategy` und `opportunity-solution-tree` koennen bei passenden Produktpaketen zusaetzlich dienen. |
 | Door Plan | `~/.vibe/skills/vos-door-plan/SKILL.md`; Chapter 27/28/31 | `prioritization-frameworks` ist fuer Door-War-Abwaegungen aufgenommen; ergaenzt das Verdikt und Taskwarrior, ersetzt keines davon. |
 | ALs / Ausfuehrung | `~/.vibe/skills/vos-warrior/SKILL.md` plus das Repo-Runbook und die Quell-AGENTS | Ponytail/Karpathy sind Coding-Stil-Kandidaten; Impeccable/Taste sind UI-Kandidaten. Noch nicht als globale Skills aktiviert. |
