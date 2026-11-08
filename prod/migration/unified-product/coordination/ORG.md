@@ -28,7 +28,7 @@ die Aufnahme macht ihre Empfehlungen nicht automatisch zu Org-Regeln.
 | PM | Produkt-Backlog und CEO-freigegebener Scope; kein eigenes PM-SKILL in `~/.vibe/skills/` gefunden | `product-strategy` und `opportunity-solution-tree` koennen bei passenden Produktpaketen zusaetzlich dienen. |
 | Door Plan | `~/.vibe/skills/vos-door-plan/SKILL.md`; Chapter 27/28/31 | `prioritization-frameworks` ist fuer Door-War-Abwaegungen aufgenommen; ergaenzt das Verdikt und Taskwarrior, ersetzt keines davon. |
 | ALs / Ausfuehrung | `~/.vibe/skills/vos-warrior/SKILL.md` plus das Repo-Runbook und die Quell-AGENTS | Ponytail/Karpathy sind Coding-Stil-Kandidaten; Impeccable/Taste sind UI-Kandidaten. Noch nicht als globale Skills aktiviert. |
-| Quer ueber Rollen | `vos-warrior` fuer Org-Tasks, Kontext und Session-Abschluss | GitClassic bleibt Kandidat fuer read-only Public-GitHub-Lektuere; die Live-Quelle war bei der Aufnahme nicht erreichbar. |
+| Quer ueber Rollen | `vos-warrior` fuer Org-Tasks, Kontext und Session-Abschluss | GitClassic bleibt Kandidat fuer read-only Public-GitHub-Lektuere; Logseq-CLI aus `logseq/logseq/.agents/skills/logseq-cli/SKILL.md` als Wissens-/Graph-Kandidat vorgemerkt. `logseq` ist aktuell nicht im PATH; beides noch nicht als aktive Org-Skills bestaetigt. |
 
 Owner-Inputs zur Rollenabstimmung: Daniel sieht den CEO als die Rolle, die die
 woechentliche Org-Door waehlt; andere Rollen sollen sich danach weitgehend an
