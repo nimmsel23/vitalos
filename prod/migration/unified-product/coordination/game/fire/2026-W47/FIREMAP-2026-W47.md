@@ -1,5 +1,6 @@
-# FIREMAP W47 (10.-16.11.) — aus dem CEO-Gesamtplan (Tent 2026-W46)
+# FIREMAP W47 (10.-16.11.) — aus Tent W46 CLOSED (2026-11-08 22:55)
 
+Haupttuer: ORG-LAEUFT-WEITER (`9de18e01`, Hits H1-H4). Rang: `FIRE-RANKS-after-tent.md`.
 Mission Nov weiter: M1-RC abgeben, M2-Tester-Woche eroeffnen.
 
 - Mo: RC-Ruf (falls SO 13:00 gruen) + M2-APK-Handoff vorbereitet (Task c3315277),

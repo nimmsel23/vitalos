@@ -1,3 +1,7 @@
+- CTO: Shell-CI Lockfile `767c02ad` + SmartLog `5f09bbb1`
+- CTO: ORG-LAEUFT H1-H4 starten (Owner-Gates Mistral/State-Repo)
+- AL: Feature-Freeze Guides `b0ed4e47`
+
 # NEXT.md
 - [ ] CEO-Entwurf `VitalOS-Produktstrategie-V1.3.0.md` mit Owner abnehmen;
   im M1-RC prüfen, ob ein Freitext-Tag alle vier Deposits (Body, Business,

@@ -2611,3 +2611,8 @@ Detail (Befunde, Belege):
 - DISPATCH #001 und Kickoff-Mail werden nach diesem Commit geackt.
 — CEO (Cursor)
 
+
+
+## 2026-11-08 — Tent W46 CLOSED + Door War ORG-LAEUFT-WEITER
+
+Oracle-Facilitation nach CEO Return-ok. Haupttuer W47: ORG-LAEUFT-WEITER (`9de18e01`, H1-H4). Potential Prio gesetzt (kein Auto-Exec). Fire-Ranks unter `game/fire/2026-W47/`. Shell-CI `767c02ad` + SmartLog `5f09bbb1` bleiben Missions-/CTO-Hits.

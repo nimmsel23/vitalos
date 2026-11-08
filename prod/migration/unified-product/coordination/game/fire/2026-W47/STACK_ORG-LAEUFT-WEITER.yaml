@@ -7,7 +7,13 @@ transfer: 'Door- und Hit-Tasks via warstack-import in die Org-Task-DB (Quell-Tas
   SSOT bleibt diese YAML.'
 taskwarrior_anchor: Org-DB, project dotfiles (Infrastruktur- und CI-Thema; Bau bei der CTO-Linie, Cloud-Freigaben
   bleiben Owner-Gates).
-hit_uuids: []
+hit_uuids:
+  - c63fad5d-d114-44ac-8486-fdaea8b6e69b  # H1 CI-CTO-Berichtslauf
+  - ee2fb0de-0854-4fb4-88bf-eaf62fcbe48a  # H2 org-state
+  - 8929c32b-1386-44e5-a01d-95bac3e9ff44  # H3 CI-CEO-Digest
+  - 0a771e65-2a02-4f17-8145-c9a95cbbfa95  # H4 CI +hit→PR-Schicht
+door_uuid: 9de18e01-ca2f-42d1-81f9-a27f738a1645
+# Door depends on the four hits (Org-DB).
 inquiry:
   domain: Production
   subdomain: Systems
