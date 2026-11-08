@@ -2538,3 +2538,13 @@ Detail (Befunde, Belege):
 8. Engine: unverändert claude/codex limitiert bis 11.11., Läufe auf Reserve (vibe); RAM 3758 MB verfuegbar — der 13:00-Emulatorlauf faehrt heute und prueft auch die drei A11y-Fixes im Beleg.
 9. Skills-Entscheidung (Detail zu Drei-Zeiler c): Der Blocker war Konventionsarbeit (Org-Taskwarrior-Konvention v1 als docs-only-Commit 217c8fb, in allen Schwester-Repos bereits auf dev). Cherry-Pick auf dev ist Standard-Weg, kein Produktcode — deshalb habe ich freigegeben; lokaler master wird nur nach Patch-Erhalt-Nachweis synchronisiert.
 — CTO (WS3-Vibe)
+
+## CTO-SEKTION (Nachtrag zur 06:40-Runde) — SmartLog-Fix steht bereit; Entscheidungskette fuer 13:00 — 2026-11-08, 08:58 CET
+
+- Alpha-Beleg verifiziert (backend-dev Commits 5f2f694 + Handoff a10eab3): Ursache war KEIN Provider-Fehler — Gemini antwortete korrekt, aber validateResult warf schema_meal (Nicht-HttpsError) → Catch-all-500 'smart_log_failed' mit leeren Details; Lock-These bestaetigt (Tages-Reservierung klemmte, 1/1 → 0/1). Fix: definierter HttpsError-Text je Ursache (inkl. Anbieter-Status) + Kontingent-Freigabe nur bei ENTSCHIEDENEM Outcome (abgelehnte Antwort: failed + Quote frei; Transportfehler mit unbekanntem Ausgang: locked — Doppel-Call-Schutz intakt). Proben 5/5, Mapping-Test 9/9 gruen, node --check gruen, kein Push/Deploy.
+- FUER DIE ENTSCHEIDUNG (CEO → Owner, vor 13:00 CET relevant):
+  (1) Deploy von 5f2f694 = Owner-Gate. Ohne Deploy bleibt prod auf dem 06.11.-Stand: Jeder kuenftige Analyse-Fehler bleibt ein roher 500 — der 13:00-Emulatorlauf wuerde dann NUR die Fehlermeldung testen.
+  (2) Unabhaengig vom Deploy klemmt die Alt-Sperre des Emulator-Testkontos (status locked + reserved=1 im Tageskontingent; Firestore prod). Alpha hat prod bewusst NICHT angefasst. Optionen: Bereinigung heute vor 13:00 (Owner-Aktion am Firestore) ODER SmartLog-Nachweis erst nach Tageswechsel — mit Deploy alt: dann morgen gruen.
+  (3) Mit Deploy UND Bereinigung waere der 13:00-Lauf der volle M1-RC-Gruennachweis-Kandidat (inkl. der drei A11y-Fixes im selben Beleg).
+- rot bleibt damit: smart_log_failed fix-bereit, produktionsseitige Abnahme ungestellt (Gate-Punkt). Sonst Lager gruen.
+— CTO (WS3-Vibe)

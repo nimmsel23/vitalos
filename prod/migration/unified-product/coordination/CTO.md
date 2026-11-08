@@ -116,11 +116,13 @@ push dev → Check grün → automerge-pr.yml (Dependabot-Squash auf dev,
 
 ## Offene Punkte (kommende Runden)
 
-1. M1-RC-LETZTBLOCKER smart_log_failed (Org-Task 5f09bbb1): analyzeSmartLog
-   liefert 500 statt Ergebnis (Kontingent wird gezogen/verbraucht). Alpha-
-   Linie fixet (fail-closed-Mapping statt rohem 500, Provider-Status im
-   Fehlertext, Lock-Handling). Deploy = Owner-Gate via CEO; Belegfenster:
-   Emulator-Lauf 13:00, Wiederholung nach Deploy.
+1. M1-RC-LETZTBLOCKER smart_log_failed (Org-Task 5f09bbb1): Ursache verifiziert
+   — Gemini antwortete, validateResult warf schema_meal (Nicht-HttpsError) →
+   Catch-all-500 + klemmender Tages-Lock; KEIN Provider-Fehler. Fix steht:
+   backend-dev 5f2f694 (fail-closed-Mapper + Kontingent-Freigabe bei
+   entschiedenem Outcome; Proben 5/5). Deploy = Owner-Gate via CEO; zudem
+   Alt-Sperre des Emulator-Testkontos klären (Owner-Aktion oder Nachweis nach
+   Tageswechsel). Belegfenster: Emulator-Lauf 13:00.
 2. Journal-Client-Haertung (Org-Task eeb9d722): Mapping an die HttpsError-
    Codes des Backend-Fixes anpassen, sobald dieser deployed ist.
 3. fitness HOTLIST-115 ship: Check dev GRUEN (fca8d65, Runs 42441867294/67309),
