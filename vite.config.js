@@ -1,7 +1,7 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 import { vosChangelog } from './packages/mini-app-shell/vos-changelog-vite.mjs'
-import tailwindcss from 'tailwindcss'
+import tailwindcssPostcss from '@tailwindcss/postcss'
 import { resolve, dirname, relative, isAbsolute, sep } from 'path'
 import { existsSync, statSync } from 'fs'
 import { fileURLToPath } from 'url'
@@ -196,7 +196,8 @@ export default defineConfig(({ mode }) => {
     },
     css: {
       postcss: {
-        plugins: [tailwindcss({ config: resolve(__dirname, 'tailwind.config.cjs') })],
+        // Tailwind 4: Konfiguration per @config in src/styles.css (kein Plugin-Parameter mehr)
+        plugins: [tailwindcssPostcss()],
       },
     },
     // Dep-Scan nur ab index.html – sonst crawlt Vite jede .html der Submodule
