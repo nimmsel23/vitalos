@@ -1,3 +1,10 @@
+## 2026-11-08 — Landing nach docs/Index.html, ABTEILUNG.md, journal-Pointer
+
+- Root-`vitalos.html` entfernt; erweiterte Landing liegt unter `docs/Index.html` (Store-Links, Skills-Band, Legal).
+- `ABTEILUNG.md` (AL-Laufzustand Meta-Repo) versioniert.
+- Leere Artefakt-Datei `20` mit aufgenommen (war untracked).
+- journal-app-Pointer auf `9502f2b` (aria-pressed Fire-Map-Fix). Hinweis: Commit ist lokal auf Branch vitalos (2 ahead / 37 behind origin/vitalos) — Meta-Push erst nach veroeffentlichtem journal-Commit.
+
 ## 2026-11-08 — AL-Lauf vitalos: Doku-Hygiene RESULTS.md/NEXT.md konsolidiert (+hit)
 
 Auftrag war die CEO-freigegebene Doku-Hygiene (Aufgabe 6 des Abteilungsleiter-Guides): Veraltete Einträge in RESULTS.md/NEXT.md im ~/vitalos-Root konsolidieren, Chronologie bereinigen, fehlende Meilensteine von dev-product bis 226b799 (Fokus Stufe 0/1 Feuer-Nachweis, Shell-Integration Journal v2, Observe/Operate-Architektur) nachpflegen und die offizielle thin-results-Grenze etablieren.

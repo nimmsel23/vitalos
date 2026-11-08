@@ -1,0 +1,128 @@
+# ABTEILUNG.md — Abteilungsleiter vitalos (Meta-Repo)
+
+Bootstrap: 2026-11-06 durch den CEO-Agenten; entschlackt 2026-11-07 nach
+Owner-Hinweis (Repo-Regeln gehoeren in die AGENTS.md, nicht hier). Diese
+Datei ist NUR Laufzustand + AL-Etikette. Jeder Lauf liest sie komplett und
+schreibt unten additiv fort (nichts oben ueberschreiben, kein Rohprotokoll).
+
+## Regelquellen (in dieser Reihenfolge massgeblich)
+
+1. `/home/alpha/vitalos/AGENTS.md` — Repo-Regeln dieses Repos (Architektur,
+   Edit-Orte, Commit-/Gitlink-Regeln, Push-Gate inkl. oeffentlichem origin
+   und getrackter google-services.json, Paketmanager, Releases).
+2. `~/ABTEILUNGEN.md` — Organisationsebene (Vertrag: Ebenen, Rechte,
+   Taskwarrior `vos.*`, Inbox, Guards, CEO-Kanal).
+3. Koordinationsordner
+   `/home/alpha/vitalos-prod/migration/unified-product/coordination/TODO.md`
+   — nur Abschnitte mit vitalos-Bezug (Kontextquelle, keine Auftraege fuer
+   dich daraus ableiten; deine Auftraege kommen aus Taskwarrior oder der
+   Inbox).
+
+Widerspricht etwas hier einer Regelquelle: Regelquelle gewinnt + in der
+Inbox melden.
+
+## AL-Etikette (nicht in den Regelquellen enthalten)
+
+- Du arbeitest fuer den CEO, nicht fuer Daniel. KEIN Direktkontakt zu
+  Daniel: kein tele, kein wacli, keine Benachrichtigungen an den User —
+  Berichte ausschliesslich in die CEO-Inbox:
+  `~/.local/state/abteilungen/inbox/vitalos-<JJJJ-MM-DD>.md` (mkdir -p,
+  falls fehlt). Braucht etwas Daniels Entscheidung: `+ceo` markieren —
+  der CEO relayt.
+- Takt: TAEGLICH (Owner-Vorgabe 2026-11-07), volle Session (Subagents
+  erlaubt), kitty/foot wenn Wayland laeuft, sonst headless. Zeitlich von
+  anderen AL-Laeufen und vom thin-results-Fenster (07:30) entzerrt.
+- Rechte: lesen, berichten, Aufgaben in der repo-eigenen Task-DB fuehren.
+  Code aendern nur mit CEO-`+go` — und im Meta-Repo gilt: `prod/`-Code und
+  Submodule gehoeren den Ausfuehrungslinien, Strategie-Dateien dem CEO.
+  Deine Normalarbeit: Beobachtung, Bericht, Dokumentations-/Hygiene-
+  Auftraege mit `+go`.
+
+## Lauf-Checkliste (jeder Lauf, in dieser Reihenfolge)
+
+1. Diese Datei und die Regelquellen (AGENTS.md vollstaendig; Vertrag und
+   Koordinations-TODO nur relevant) lesen.
+2. **Eingang aus der repo-eigenen Task-DB** (Taskwarrior mit
+   `TASKDATA=<repo>/.task`, untracked): offene/pending Tasks abarbeiten —
+   selbst uebernehmen (Doku-/Hygiene-Standard) oder Angestellten-
+   Subagenten spawnen (groessere Arbeit, ggf. pro Tab). Code-Aenderungen
+   nur mit CEO-`+go`.
+3. **Bot-Eingang importieren:** Repo-`TODO.md` (Telegram-TO-do-Bot des
+   Owners) sichten, neue Eintraege als Tasks in die Task-DB uebernehmen,
+   abgearbeitete markieren; NEXT.md als Protokoll der Folgetasks
+   mitfuehren.
+4. Ist-Stand selbst pruefen (glauben nie): `git status --short`,
+   `git log --oneline -5 dev-product`, `git submodule status` (Marker
+   zaehlen, keine Diff-Fluten); Inventur: Gitlink-Drift, Branchabstand
+   dev-product vs. master (nur dokumentieren, NIEMALS angleichen —
+   Release-Auftrag), unversionierte Artefakte im Root (nur melden, kein
+   rm), Worktree-Parallellage (master-flow, vos-editions: fremde Agency,
+   nie anfassen; Inbox-Ruecklauf `vitalos-*` der letzten 2 Laeufe lesen).
+5. **Ausgang (immer, im selben Lauf):** Session in `RESULTS.md`
+   aufzeichnen (Konventionsformat), Folgetasks nach `NEXT.md` — beides
+   PROTOKOLL (thin-results destilliert taeglich); fuehrend fuer Aufgaben
+   ist die Task-DB. Erledigtes dort als done mit Ergebnis-Annotation.
+6. Bericht in die CEO-Inbox: Zusammenfassung 2-3 Saetze, +ceo-Punkte.
+7. Unten fortschreiben: neuen „Letzter Lauf"-Abschnitt anhaengen.
+
+## Offene Produktlinien im Umfeld (Kontext, nicht deine Auftraege)
+
+- Journal-Release freigegeben, wartet auf die Kompositions-Entscheidung
+  (vos-backend als Submodule a/b/c) — Owner.
+- p2-weekly ist aktiver Funktionsauftrag des Haupt-Vibes (journal-dev-Seite).
+- Emulator-Abnahme wartet auf Owner-Signal (Android-Linie).
+- Strategie massgeblich: `VitalOS-Produktstrategie-V1.2.1.md` (+ .html).
+
+## Letzter Lauf
+
+- (Bootstrap durch CEO, 2026-11-06 — erster Abteilungsleiter-Lauf steht aus.)
+
+## Letzter Lauf — 2026-11-07 (~02:45 UTC, Erstlauf; manuell angestossen, nicht vom Runner)
+
+- Regelquellen gelesen (AGENTS.md vollstaendig, ~/ABTEILUNGEN.md inkl.
+  Nachtrag 2026-11-07, Guide vitalos.md). Logsdauer: Der Lauf diente der
+  Tagesinventur (Guide-Aufgabe 1) — read-only, kein Worktree, kein Commit
+  im Meta-Repo (~justify TESTLAUF-Konvention: nur Logeintrag).
+- Inventur: `git status --short` nur `?? ABTEILUNG.md` (CEO-Datei, nur
+  gemeldet, nicht bewegt). `dev-product` Spitze `226b799` (Feuer-Nachweis
+  Fokus Stufe 0, Emulator-Runde 2). Neun Submodule sauber: 0 Drift-Marker
+  (+/-), 0 dirty. Branchabstand `origin/master...dev-product` = 13/15
+  (nur dokumentiert, NICHT angeglichen — Release-Auftrag). Unversionierte
+  Root-Dateien: keine ausser ABTEILUNG.md.
+- Worktree-Parallellage: 7 registrierte; fremde Linien unberuehrt
+  (master-flow 4b2f0bf, vos-editions f6243f6, vitalos-master-Flow etc.).
+  Befund: 2 prunable Eintraege auf /dev/shm (wt-focus a199fc4,
+  wt-focus1 e11379b, Focus-Linie) — gemeldet, nicht gepullt, nicht
+  bereinigt.
+- Eingang: Task-DB (`~/.vitalos/.task`) leer — keine offenen Tasks.
+  TODO.md: alle Punkte [x], keine neuen Bot-Zeilen. NEXT.md: offener
+  Punkt Coach-Deploy-CI-Fix betrifft coach-dev (nicht vitalos-Repo) —
+  dem CEO ueberlassen. Koordinations-TODO nur als Kontext gelesen.
+- Von den Vorschlaegen aus der Inventur drei neue nummerierte Zeilen
+  (5-7) an den Guide angehaengt (vitalos-prod `59cfd5c`, kein Push):
+  Focus-Worktree-Bereinigung (fremde Linie, nur mit +go), veraltete
+  RESULTS.md/NEXT.md im Root (Doku-Auftrag, nur mit +go), leere Task-DB.
+- RESULTS.md/NEXT.md im Meta-Repo NICHT aktualisiert — nichts im
+  vitalos-Repo bearbeitet (reine Inventur); abweichend zur Checklist nur
+  logiert, kein Repo-Dirt im Haupt-Checkout.
+- Kein Push, kein Fetch, kein Submodule/Tag/Master-Touch, kein rm/mv,
+  kein tele. Ende: 3 Zeilen an den Log (~/.local/state/abteilung/
+  vitalos.log, neu angelegt).
+
+## Letzter Lauf — 2026-11-08 (manuell angestossen; EINE Aufgabe: +hit-Worktree-Bereinigung)
+
+- Regelquellen komplett gelesen (Guide, AGENTS.md, ABTEILUNG.md, Log-Tail). Guide-Referenzen `~/vitalos-prod/docs/product-dev/README.md`/`WOCHENPLAN.md` existieren nach der Symlink-Konsolidierung nicht mehr (dort liegen nur `abteilungen/`, `legacy/`, `FOKUS-STUFE-0-1-UMSETZUNG.md`) — gemeldet, Lauf ohne sie fortgesetzt.
+- DIE EINE Aufgabe (+hit, CEO-freigegeben): Bereinigung GENAU der 2 prunable /dev/shm-Focus-Worktrees verifiziert — wt-focus (a199fc4) und wt-focus1 (e11379b) waren bei Laufstart bereits entfallen (keine `.git/worktrees/`-Admin-Eintraege, keine Verzeichnisse in /dev/shm; Boot 2026-11-06, Erstlauf sah sie noch → Entfernung durch unbekannte dritte Linie). `git worktree prune` als Freigabe-Schritt: no-op (rc=0, 5 registrierte Worktrees unverändert); Branches focus-stufe-0-1 (a199fc4) / focus-stufe-1 (e11379b) unberuehrt — Freigabe-Scope nicht verlassen. Guide-Aufgabe abgehakt.
+- Inventur: dev-product Spitze `1b9601b` (vor Lauf) → `b471707` (Lauf-Commit); Branchabstand `origin/master...dev-product` 18/7 (nur dokumentiert, NICHT angeglichen); Submodule 1 Drift-Marker (`+ journal-app` 9502f2b, heads/vitalos, fremde Linie — nur gemeldet), 0 dirty. Nur gemeldet, kein mv/rm: `M prod/migration/unified-product/coordination/CTO.md` (fremd, uncommittet), `D vitalos.html`, Untracked `20`, `docs/Index.html`.
+- Protokoll-Commit `b471707` auf dev-product (AL-LOG.md 2026-11-08 gefuellt, RESULTS.md-Session, NEXT.md-Folgetasks, Guide-Abhaken) — selective Staging direkt im Haupt-Checkout: der Temp-Worktree-Flow haette den Protokoll-Commit dangling hinterlassen, und Schwester-ALs committen ihre Guide-Abhakungen ebenfalls direkt auf dev-product. ABTEILUNG.md bleibt untracked (CEO-Datei, nur gemeldet).
+- Trailer-Abweichung: Commits dieses Laufs tragen Mistral-Vibe-Co-Author statt der Claude-Signatur der Guide-Vorlage (ausfuehrender Agent ist Mistral Vibe). Kein Push, kein Fetch, kein Master/Tag/Gitlink/Submodule-Touch, kein tele. Bericht in der CEO-Inbox `~/.local/state/abteilungen/inbox/vitalos-2026-11-08.md`.
+
+## Letzter Lauf — 2026-11-08 (Abteilungsleiter-Lauf; EINE Aufgabe: +hit Doku-Hygiene RESULTS.md/NEXT.md)
+
+- **Stand & Regelquellen:** Regelquellen geprüft (AGENTS.md, vitalos.md, ABTEILUNG.md, Einstieg via `abteilungsleiter brief vitalos`). Dev-product HEAD: `6034504`. Submodule: 1 Drift-Marker (`+ journal-app` 9502f2b, heads/vitalos — fremde Ausführungslinie, nur gemeldet, nicht angefasst). Fremde uncommittete/unversionierte Pfade unverändert nur gemeldet: `D vitalos.html`, `?? 20`, `?? docs/Index.html`, `?? ABTEILUNG.md` (untracked CEO-Datei).
+- **Ausgeführte Aufgabe (+hit, CEO-freigegeben):** Doku-Hygiene in `RESULTS.md` und `NEXT.md` im Meta-Repo-Root durchgeführt:
+  - `RESULTS.md`: Chronologie bereinigt (nach unten gerutschte 2026-11-07- und 2026-11-01-Einträge sauber einsortiert), Meilenstein-Dokumentation dev-product bis `226b799` (Fokus Stufe 0/1 Feuer-Nachweis, Shell-Journal-v2-Wrap, Observe/Operate-Architektur) nachgepflegt, doppelten Dateikopf `# RESULTS.md` bereinigt, offizielle Dünne-Grenze (`thin-results-Grenze`) gemäß Org-Regel 2026-11-07 gesetzt.
+  - `NEXT.md`: Rohe Gemini-Reviews (Oktober) in Archiv-Zusammenfassung konsolidiert; aktive Arbeitsliste auf die aktuellen Org-Hits (M2-Testuser APK-Vorbereitung c3315277, GitHub-Pages-Bewertung 378427eb) und offene Meta-Repo-Beobachtungen ausgerichtet.
+  - Guide `prod/docs/product-dev/abteilungen/vitalos.md`: Aufgabe 6 / CEO-Freigabe 2 abgehakt.
+- **Offene Punkte & Blocker:** Blocker: keine. Offen: Org-Hits c3315277 (+alpha, M2 APK-Vorbereitung für Simon & Matthias) und 378427eb (+cto, GitHub Pages erfassen/bewerten); fremde Dateistände unberührt.
+- **Commit & Abschluss:** Commit auf `dev-product` (RESULTS.md, NEXT.md, AL-LOG.md, vitalos.md). Kein Push, kein Gitlink-/Submodule-Touch.
