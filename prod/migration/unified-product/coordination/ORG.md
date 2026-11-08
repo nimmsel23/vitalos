@@ -15,6 +15,34 @@ Pflege: Strukturwandel => gleicher Commit wie die Aenderung (Doku-Pflicht).
 - ALs je App (abteilung-run 02:10-06:10 taeglich, Beleg-Protokoll im Log).
 - Alpha/Betta (Android-/Git-Linien unter CTO), Oracle/Angestellte (Subagenten).
 
+## Rollen-Skill-Stacks (Owner-Inputs, Stand 2026-11-08)
+
+Arbeitsmodell: Rolle = Kern-SKILL + passende Methoden-SKILLs + die aktuellen
+Projekt- und Koordinationsdokumente. Externe Skills ergaenzen diese Quellen;
+die Aufnahme macht ihre Empfehlungen nicht automatisch zu Org-Regeln.
+
+| Rolle | Kern-SKILL und Wissensanker | Ergaenzungen / Stand |
+| --- | --- | --- |
+| CEO | `~/.vibe/skills/vitalos-ceo/SKILL.md`; `CEO.md` -> dieses `ORG.md` -> `PRODUCT.md` | `product-strategy` und `opportunity-solution-tree` sind in `~/.vibe/skills/` aufgenommen. Nur als Methodenhilfe. |
+| CTO | `~/.vibe/skills/vitalos-cto/SKILL.md`; `CTO.md` und Koordinations-TODO | Sweep AI und Pythagora sind Owner-Kandidaten fuer CI-Agenten; aktuelle Produktpruefung bestaetigte keine GitHub-Actions-Integration. |
+| PM | Produkt-Backlog und CEO-freigegebener Scope; kein eigenes PM-SKILL in `~/.vibe/skills/` gefunden | `product-strategy` und `opportunity-solution-tree` koennen bei passenden Produktpaketen zusaetzlich dienen. |
+| Door Plan | `~/.vibe/skills/vos-door-plan/SKILL.md`; Chapter 27/28/31 | `prioritization-frameworks` ist fuer Door-War-Abwaegungen aufgenommen; ergaenzt das Verdikt und Taskwarrior, ersetzt keines davon. |
+| ALs / Ausfuehrung | `~/.vibe/skills/vos-warrior/SKILL.md` plus das Repo-Runbook und die Quell-AGENTS | Ponytail/Karpathy sind Coding-Stil-Kandidaten; Impeccable/Taste sind UI-Kandidaten. Noch nicht als globale Skills aktiviert. |
+| Quer ueber Rollen | `vos-warrior` fuer Org-Tasks, Kontext und Session-Abschluss | GitClassic bleibt Kandidat fuer read-only Public-GitHub-Lektuere; die Live-Quelle war bei der Aufnahme nicht erreichbar. |
+
+Owner-Inputs zur Rollenabstimmung: Daniel sieht den CEO als die Rolle, die die
+woechentliche Org-Door waehlt; andere Rollen sollen sich danach weitgehend an
+Taskwarrior orientieren. Das ist eine anpassbare Arbeitsrichtung. Daniels
+persoenlicher General's Tent und Core4-Score sind nicht der Org-Tent oder
+Org-Score.
+
+Dokumentations-Input: Die `docs/product-dev/abteilungen/*.md` enthalten
+derzeit Runbook-, Aufgaben- und Workflow-Anteile. Daniel weist darauf hin,
+dass viel dauerhaftes Repo-Wissen eher in die passende `AGENTS.md`,
+`ARCHITECTURE.md`, `BACKEND.md`, `FRONTEND.md`, `DEPLOY.md`, `README.md` oder
+ein anderes thematisches Projektdokument gehoert. Bei einer spaeteren Sichtung
+nach Inhalt zuordnen; nicht mechanisch alle Runbook-Inhalte verschieben.
+
 ## Repo-Landschaft (Namen sind KEINE Auskunft — AGENTS.md Kopf lesen!)
 - Meta-Repo ~/vitalos (Branches dev-product/master; Symlink ~/vitalos-prod
   -> vitalos/prod seit 2026-11-08; Altstand-Schnappschuss: ~/vitalos-prod-legacy-*)
