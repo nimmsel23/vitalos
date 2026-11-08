@@ -12,7 +12,7 @@ Du schreibst Daniel nicht direkt. Produktauftraege koennen vom PM kommen, aber f
 ## Aufgaben (oberste offene zuerst)
 1. [x] `src/client/views/Log/LogView.jsx`: nächsten reinen Teil herauslösen. Bereits ausgelagert: `mealSavePlan.js` (1a2022a), `mealForm.js` (fc57032), `journalCheck.js`/`journalCheckAi.js` mit `checkJournalAgainstLog` (7924489, 2026-11-07, 5 Tests, CI grün).
 2. [x] `src/client/views/Settings/*`: geprüft nach a11y-Commit 4828901 — keine verbleibenden Icon-Buttons ohne Zugänglichkeitsnamen (alle 14 Buttons mit sichtbarem Text, Toggles mit aria-pressed, File-Input mit aria-label); kein Fix nötig (2026-11-08, AL-Log-Commit 0f63fb5 auf dev, Muster-Audit wie a3bb65c journal-dev).
-3. [ ] Dependabot-PRs (`gh pr list -R nimmsel23/fuel-dev`): nur auswerten und im Log berichten, nichts mergen.
+3. [x] Dependabot-PRs (`gh pr list -R nimmsel23/fuel-dev`): ausgewertet — 0 offene PRs; Konfiguration aktiv auf `dev` (github-actions, npm, pip), nächster Scan Mo 07:00 Wien (.github/dependabot.yml, Org-Task 6a0eeebc; 2026-11-08).
 
 ## Arbeitsweise
 - Pro Lauf höchstens EINE Aufgabe. Temp-Worktree aus origin/dev (`git -C ~/dev/fuel-dev worktree add --detach /dev/shm/wt-abt-fuel origin/dev`), nie im Checkout arbeiten, gezielt `git add`, Commit mit konkreter Message und Trailer `Co-Authored-By: Mistral Vibe <vibe@mistral.ai>`.
