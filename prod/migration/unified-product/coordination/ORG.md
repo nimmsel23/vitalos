@@ -80,6 +80,18 @@ Diese Rollen-/Besetzungsmodelle sind Owner-Inputs zur Org-Entwicklung; sie
 definieren fuer sich allein noch keine laufenden Agenten, Systemd-Timer,
 Zugriffsrechte oder Rollen-Tags.
 
+Leichte Verschiebung der Modell-/Werkzeug-Gewichtung (Owner-Input):
+
+| Modell / Werkzeug | Schwerpunkt |
+| --- | --- |
+| Codex | Staerkste reine Coding-Engine, besonders fuer zuverlaessige Code-Aenderungen. |
+| Vibe / Cursor | Flow und Geschwindigkeit, besonders Frontend, Prototypen und visuelles Feel. |
+| Claude | Mehr Gewicht bei Architecture Reviews und Quality Gates. |
+| Grok | Mehr Gewicht bei Strategy, Public und Red-Teaming; weniger reines Coding. |
+
+Die Gewichtung ist eine Orientierung nach Aufgabenart und kann sich mit
+Verfuegbarkeit und konkreter Evidenz weiterentwickeln.
+
 Fuer die uebrigen Rollen bildet die Menge der Taskwarrior-Aufgaben mit der
 hoechsten Urgency die Fire-Map-Ausfuehrungssicht. Jede Rolle kennzeichnet ihre
 Aufgaben in der gemeinsamen Org-DB mit einem Rollen-Tag (`+ceo`, `+cpo`, `+cto`,
