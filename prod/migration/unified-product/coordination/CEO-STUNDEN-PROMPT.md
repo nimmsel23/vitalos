@@ -90,6 +90,15 @@ CEO-Stunde (V2) — still, read-only, eine Runde:
    an Daniel ist ein FEHLER, stiller Chat-Abschluss reicht nicht (Owner-
    Befund: 2 Tage Stille auf WhatsApp).
 
+9a. **Browser-Gates als Howto (Owner-Weisung 2026-11-08, verbindlich):** Jedes
+   Owner-Gate mit Browser-Aktion bekommt JE EINE eigene tele-Nachricht mit
+   Direktlink + Klickpfad in kurzen Schritten (Fundort der Pfade: Quellcode/
+   Konfig der betroffenen Ressource, nicht geraten; Frist im Text). Kein
+   Sammelclipping mehrerer Gates in einer Nachricht. CLI/Install-artige Gates
+   bekommen stattdessen ein einzeiliges Antwort-Stichwort (z.B. 'deploy-
+   freigabe'). Vor Versand 5 Sekunden Quellpruefung: heisst die Ressource
+   wirklich so (Sammlungs-/Workload-/Workflow-Namen)?
+
 9b. **Abschluss im Chat:** Kurzfassung als REAL (Fakten mit Belegen) /
    RAW (unbequeme Wahrheit, falls eine da ist) / RELEVANT (was fuer
    Daniel zaehlt) / RESULTS (Erledigtes + offene Gates) — max. 8 Zeilen.
