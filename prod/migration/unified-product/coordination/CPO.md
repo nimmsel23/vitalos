@@ -25,10 +25,11 @@ Entscheidungen sauber unterscheiden.
   Horizonten oder Wochen-Door.
 - `logseq-cli` fuer Org-Wissensgraph-Arbeit, wenn die CLI verfuegbar ist.
 - `claude-mem-search` und `claude-mem-knowledge-agent` sind als gemeinsame
-  Skill-Dateien vorhanden. Die Claude-mem-Plugin-/MCP-Laufzeit wurde vom
-  automatischen Installationsreview wegen sitzungsuebergreifender Transcript-
-  Hooks und Datenfluss nicht freigegeben. Bis zu Owner-Freigabe sind sie keine
-  aktive Memory-Quelle.
+  Skill-Dateien vorhanden. Das offizielle Claude-mem-Plugin 15.12.0 ist mit
+  aktivierten Transcript-Hooks auf User-Ebene installiert; die Abhaengigkeiten
+  liegen im Plugin-Cache. Der Worker und die lokale Memory-Datenbank werden
+  beim naechsten Claude-Code-Start initialisiert. Standard-Datenpfad:
+  `~/.claude-mem/`; Organisationswissen nur nach bewusster Auswahl ablegen.
 
 ## Zusammenarbeit
 
