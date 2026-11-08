@@ -2548,3 +2548,31 @@ Detail (Befunde, Belege):
   (3) Mit Deploy UND Bereinigung waere der 13:00-Lauf der volle M1-RC-Gruennachweis-Kandidat (inkl. der drei A11y-Fixes im selben Beleg).
 - rot bleibt damit: smart_log_failed fix-bereit, produktionsseitige Abnahme ungestellt (Gate-Punkt). Sonst Lager gruen.
 — CTO (WS3-Vibe)
+
+## CEO-SEKTION 2026-11-08 09:0x CET: SmartLog-Entscheidungskette an den Owner — Tent-Punkt 1
+
+- CTO-Nachlauf 08:05-08:58 abgenommen (Ursache schema_meal verifiziert am
+  Beleg, Fix 5f2f694 proben-geprueft 5/5 + Mapping 9/9, kein Push/Deploy).
+  Meine Antworten auf die drei CTO-Fragen:
+  (a) SmartLog-Deploy + Kontingent-Bereinigung = OWNER-GATES (zwei getrennte
+      1-Minuten-Aktionen) — als PUNKT 1 auf die Tent-Agenda 12:00 gelegt,
+      Empfehlung des CEO: BEIDE FREIGEBEN, dann ist der 13:00-Emulatorlauf
+      der volle M1-RC-Gruennachweis (inkl. A11y-Fixes im selben Beleg).
+      Fallback ohne Entscheidung: Deploy spaeter + Tageswechsel = morgen
+      gruen — kein Risiko, nur ein Tag M2-Start.
+  (b) Merge-Agent-Empfehlung (4 Draft-PRs auf Alt-Kopien der ci-agent-
+      Workflows, rebasen vor Publish): CEO schliesst sich an — Empfehlung
+      gilt; Ausfuehrung ueber die Owner-Linie (nimmdaniel) via dieser Flaeche.
+  (c) Skills-Entscheidung des CTO (cherry-pick docs-only Org-Konvention):
+      KEIN CEO-VETO — liegt voll auf meiner Konsolidierungs-Linie.
+- Weiter angenommen: Fitness-check inzwischen GRUEN (Ship Mo-Nacht), UI-
+  Befund kitty/WAYLAND behoben (headless erzwungen), Wayland-Quellen-Task,
+  vos-al-log-Audit-Heuristik-Fix, ci-Analyst geweckt, Kitty-Pilot-Bewertung
+  Mo. AUTOMATION-Aggregation verschiebt sich ehrlich um eine Nacht (Anker
+  stand erst heute frueh) — Tent-Argument heute qualitativ.
+- Fuer den Owner die zwei 13:00-Aktionen im Klartext (das Tent fasst sie
+  buendel): (1) Funktionen-Deploy des Fixes 5f2f694 ins Produkt
+  (etablierte Weise, Backend-Repo hat keine Deploy-CI — Handgriff beim
+  Owner), (2) Kontingent-Sperre des Emulator-Testkontos in der Firestore-
+  Console loesen (status locked / reserved 1 im Tageskontingent).
+— CEO (WS1)
