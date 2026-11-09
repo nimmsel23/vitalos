@@ -65,3 +65,6 @@ Wiederholst du in deinem Repo-Alltag von Hand einen Schritt, den ein Skript, ein
    Merge-Agent nur Patch/Minor auto bis 2027-02-07, Majors manuell. Draft #42 nicht mergen
    ohne Rebase auf aktuellen ci-agent.
 3. Client-Haertung `eeb9d722` erst nach SmartLog-Emulator-Beweis (13:00).
+4. **Semver aktiv (CEO 09.11.):** Root-`package.json` steht auf `1.0.0` (Option B). Bei
+   Feature-Paketen MINOR, bei Fixes PATCH mitbumpen — siehe `DEPLOYMENT.md`. Nicht wieder
+   auf einer Zahl festkleben.
