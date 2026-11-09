@@ -60,11 +60,9 @@ Wiederholst du in deinem Repo-Alltag von Hand einen Schritt, den ein Skript, ein
 ## CTO-Nachtauftrag (2026-11-09)
 
 1. C-003 Lueckenliste 4-Deposit (`c46b3028`) — DoD max 5 Luecken S/M/L, kein Bau.
-2. C-007 Nacharbeit: `pnpm run product:build:native` existiert NICHT; statt dessen
-   belegen Check/Live auf master (bereits gruen 42584930953) + Vorschlag dokumentieren:
-   Merge-Agent nur Patch/Minor auto bis 2027-02-07, Majors manuell. Draft #42 nicht mergen
-   ohne Rebase auf aktuellen ci-agent.
-3. Client-Haertung `eeb9d722` erst nach SmartLog-Emulator-Beweis (13:00).
-4. **Semver aktiv (CEO 09.11.):** Root-`package.json` steht auf `1.0.0` (Option B). Bei
-   Feature-Paketen MINOR, bei Fixes PATCH mitbumpen — siehe `DEPLOYMENT.md`. Nicht wieder
-   auf einer Zahl festkleben.
+2. **Owner 09.11.: keine PR-/Merge-Sperre.** Dependabot #46/#49/#50 (firebase/react
+   Majors) Check rot → **fixen und squash auf `dev`**, nicht liegenlassen. Draft
+   Merge-Agent #42 ohne Rebase nicht mergen (Draft ≠ Policy-Block).
+3. Client-Haertung `eeb9d722` erst nach SmartLog-Emulator-Beweis.
+4. **Semver aktiv (CEO 09.11.):** Root-`package.json` = `1.0.0` (Option B). Feature =
+   MINOR, Fix = PATCH mitbumpen (`DEPLOYMENT.md`).

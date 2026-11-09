@@ -2728,3 +2728,17 @@ Owner/CEO gemeldet:
 C-001 `c09e4d5c` DONE. Naechster Store-Schritt = Closed testing in der Console
 finden/anlegen (kein Publish).
 — CTO (orgsh)
+
+## CTO-SEKTION — Owner: keine Merge-/PR-Sperre (2026-11-09 ~18:58 CET)
+
+Owner: „Keine Merges oder PRs werden blockiert — ich mach das dev ja nicht umsonst.“
+
+Umsetzung CTO:
+- C-007 Patch/Minor-only-Vorschlag **abgelehnt/done** (`4b2781de`).
+- CI.md §9.1 bekräftigt; Falle dokumentiert: Dependabot manchmal base=master,
+  AutoMerge filtert nur `--base dev`.
+- Sofort: fitness #103, 6pack #44, skills #18 retarget→dev + AutoMerge;
+  coach #11 squash-merged (kein automerge-pr im Repo).
+- Offen: journal #46/#49/#50 Check **rot** → AL fix+merge (Hit); Automerges
+  retarget-Logik (Hit dotfiles); coach dependabot target-branch+automerge (Hit).
+— CTO (orgsh)
