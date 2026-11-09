@@ -1,3 +1,7 @@
+## 2026-11-09 — AL-Guides: Hits = PM-Scope, AL waehlt dringendsten project-Task
+
+- `ABTEILUNGEN.md` + 9 Abteilungs-Guides: kein `+hit`-Gate fuer ALs; PM haelt Hits; AL nimmt maximal naechsten dringendsten Task der eigenen Abteilung.
+
 ## 2026-11-09 — AL-Lauf vitalos: GitHub-Pages-Kanal erfasst (Org-Hit 378427eb)
 
 Eine Aufgabe aus NEXT/Org-Queue (FIRE/TODO leer): Pages-Bestand + Sensibles-Check + Doku-Absatz + Empfehlung.

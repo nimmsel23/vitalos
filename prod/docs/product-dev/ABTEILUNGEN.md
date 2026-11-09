@@ -216,7 +216,8 @@ Gewinnt bei Widerspruch zu aelteren Saetzen („Code nur mit CEO-`+hit`/`+go`“
 - **Kein Freigabe-Gate vor AL-App-Arbeit:** Der CEO legt dem Abteilungsleiter
   keine `+hit`/`+go`-Sperre vor Repo-Arbeit auf. AL braucht keinen
   Einzelauftrag vom CEO, um im eigenen app-dev-Repo Code zu aendern und
-  auf `dev` zu committen/pushen.
+  auf `dev` zu committen/pushen. **`+hit` ist PM-Scope** (Door/hoehere Etage);
+  AL waehlt nur den naechsten dringendsten Task der eigenen Abteilung.
 - **Repo-Queues (Prioritaet):** `FIRE.md` (dringend, Wochen-Hits) **vor**
   `TODO.md` (Rest-Queue). `HOT.md` = spontane Einfälle/Ideen (Potential) —
   AL baut daraus **nichts automatisch**; erst nach Heben nach Fire/TODO.
@@ -243,6 +244,10 @@ ALs bekommen Arbeit **primaer** ueber:
 2. Repo-`TODO.md` / `NEXT.md`,
 3. spontan im Live-Terminal.
 
-Die globale Org-Taskwarrior-DB liefert Rang und Beleg (`+hit`/`project:`), ersetzt
-aber nicht den MD-/Live-Intake. Bericht nach oben: 3 Zeilen AL-LOG → CEO-Digest
-(kein eigener Owner-Kanal, keine Status-Loops mit anderen ALs).
+**Hits (`+hit`) sind PM-Scope** (hoehere Etage / Door / War-Stack) — nicht die
+AL-Arbeitsschicht. Der PM haelt sich an Hits; ALs brauchen kein `+hit`-Gate und
+waehlen maximal den naechsten dringendsten Task **ihrer** Abteilung
+(`project:<repo>`), aus Guide → FIRE.md → TODO.md → NEXT.md.
+Die globale Org-Taskwarrior-DB liefert dort nur Rang/Beleg innerhalb des
+Projekts, ersetzt aber nicht den MD-/Live-Intake. Bericht nach oben: 3 Zeilen
+AL-LOG → CEO-Digest (kein eigener Owner-Kanal, keine Status-Loops mit anderen ALs).
