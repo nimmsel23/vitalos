@@ -173,10 +173,13 @@ nach Inhalt zuordnen; nicht mechanisch alle Runbook-Inhalte verschieben.
   Skill-Verwaltung der Agenten.
 
 ## Maschinen und Kanaele
-- Timer: AL-Nacht 02:10-06:10, CTO 06:40, roadmap 07:45, thin-results,
-  emulator-test 13:00 (RAM-Gate 2500MB), CEO-Runner stuendlich (Reduktion
-  auf woechentlich als Owner-Input vorgemerkt), ceo-digest 23:45 (herzschlag-
-  UNABHAENGIG, idempotent via ceo-digest.log), ci-scan 20-Min.
+- Timer-Rhythmus (Owner 2026-11-09): ALs **zweimal taeglich** per systemd
+  (`OnCalendar` Nacht+Nachmittag, z.B. journal 02:10/14:10 … coach 06:10/
+  18:10). COO 06:25 (nach AL-Morgenwelle). Perplexity-CEO-Digest **08:00**.
+  CTO 08:15 (nach Digest). roadmap 07:45, thin-results, emulator-test 13:00
+  (RAM-Gate 2500MB). Lokaler CEO-Runner stuendlich :05 (Live-Heartbeat
+  pausiert; Reduktion auf woechentlich als Owner-Input vorgemerkt).
+  ceo-digest 23:45 lokal (herzschlag-UNABHAENGIG), ci-scan 20-Min.
 - Globale Org-Task-DB: TASKRC=~/.local/state/vitalos-org/taskrc — Rollen
   als Tags (+ceo/+cpo/+cto/+oracle/+pm/+al/...), project = Repo; ONLY UUID, nie ID.
 - Gates: Browser-Gate -> tele + ceo-mailgate (Label +ceo); Stichwort-Gates
