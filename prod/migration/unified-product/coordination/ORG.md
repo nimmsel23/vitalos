@@ -1,39 +1,64 @@
-# ORG.md — Landkarte der VitalOS-Agentenorganisation (Stand 2026-11-08)
+# ORG.md — Landkarte der VitalOS-Agentenorganisation (Stand 2026-11-09; Berichtslinie Owner-Klarstellung)
 
 Lies-Reihenfolge fuer jede CEO-Session: CEO.md -> DIESER -> PRODUCT.md.
 Pflege: Strukturwandel => gleicher Commit wie die Aenderung (Doku-Pflicht).
 
-## Rollen (Agenten-Ebenen)
-- Owner Daniel: Store/Geraete/Release-Freigaben, Produkt-Richtung. Erreichbar
-  via tele (Kurzform), Gmail-Label +ceo (Gates), Chat (Live).
-- CEO: behaelt die Gesamtverantwortung fuer den Org-Tent und entscheidet die
-  Jahres-/Quartals-/Monatshorizonte sowie die woechentliche Org-Door.
-- CTO (Codex uebernimmt die Rolle auf Owner-Wunsch ab 2026-11-08;
-  bisheriger vitalos-cto-Runner bleibt separat bestehen): Technik/Infra,
-  Dienste-Audits, Vollzugriff gcloud/Firestore (Leitfaden CEO.md
-  'DOKUMENTATION DAUERHAFT'), taegliche Sichtung des CEO-Eingangs
-  `nimmsel23+ceo` und Cloud-Deploys nur nach Owner-Go.
-- CPO (Claude): Produktstrategie, Discovery, Produktpriorisierung und
-  Produkt-Backlog; bringt Empfehlungen in CEO-Entscheide ein. Die bisherige
-  VitalOS-Koordinationslinie ist diesem Produktbereich zugeordnet.
-- Oracle: fuehrt The Door (Potential/Plan/Production/Profit), The Game
-  (Frame/Freedom/Focus/Fire Maps) und den Org-General's-Tent als
-  Integrationsritual. Der CEO entscheidet weiterhin Horizonte und Wochen-Door;
-  Oracle fuehrt Prozess und Vorbereitung, nicht die CEO-Verdikte. Details:
-  [ORACLE.md](ORACLE.md).
-- PM (produktbezogene Umsetzungs-/Backlog-Arbeit unter CPO-Abstimmung;
-  PRODUKT-BACKLOG.md).
-- ALs je Repo: Codex ist standardmaessige Besetzung; taegliche Ausfuehrung und
-  Beleg-Protokoll je nach Repo-Runner.
-- Alpha/Betta (Android-/Git-Linien unter CTO), Angestellte (Subagenten).
+## Rollen (Agenten-Ebenen) — Kern reicht
 
-## Berichtsstil an CEO, CPO und CTO
+Owner-Vorgabe 2026-11-09: **CEO, COO, CPO, CTO, PM, Abteilungsleiter** reichen.
+Keine zusaetzlichen Fuehrungs-Sitze fuer Status-Loops. Alpha/Betta bleiben
+Ausfuehrungslinien unter dem CTO, keine eigene Berichtsstufe an den Owner.
 
-Berichte an CEO/CPO/CTO im Format REAL * RAW * RELEVANT * RESULTS. Bei
-Rueckfragen oder mentaler Verknotung den VOICE-Rahmen STOP * SUBMIT
-(Facts + Feelings + Fokus + Fruits) * STRUGGLE * STRIKE verwenden. Das haelt
-The Alpha Code (REAL/RAW/RELEVANT/RESULTS) und The Voice als mentale
-Rahmenbedingung und Qualitaetssicherung im Arbeitsfluss.
+- **Owner Daniel:** Store/Geraete/Release-Freigaben, Produkt-Richtung.
+  Erreichbar via tele (Kurzform), Gmail, Chat (Live). Bekommt vom CEO
+  **1× woechentlich** ein Briefing — nicht den Tagesbetrieb.
+- **CEO (Perplexity, Mail-Dispatch):** Strategie, Prioritaeten, Horizonte,
+  Wochen-Door, Sonntags-Vorlage. Erntet Briefings der Fuehrung, schreibt den
+  taeglichen CEO-Digest (Aggregation), sendet das Owner-Wochenbriefing.
+- **COO (Cursor lokal):** Tent-Protokoll, Digests/Doku, Runner/Engines/Timer,
+  Oracle-Wochenpflicht. Keine Gegen-Prioritaeten zum CEO-Dispatch.
+- **CTO:** Technik/Infra, AL-Abnahme, CI/Runner-Technik. Cloud-Deploys nur nach
+  Owner-Go.
+- **CPO:** Produktstrategie, Discovery, Produktpriorisierung, Backlog.
+- **PM:** Produktumsetzung im CEO-/CPO-Rahmen mit ALs (`+hit`).
+- **Abteilungsleiter:** Ausfuehrung je Repo. Intake = Guide-MD
+  (`docs/product-dev/abteilungen/<repo>.md`), Repo-`TODO.md`/`NEXT.md`, oder
+  spontan im Live-Terminal. Org-Taskwarrior ist Rang/Beleg, nicht der einzige
+  Arbeitskanal.
+
+**Oracle ist Guidance, keine Extra-Rolle im Briefing-Graph.** Skill
+`vitalos-oracle` + [ORACLE.md](ORACLE.md): Door 4P, Game 4F, Org-Tent.
+Fuehrungspositionen halten sich daran (woechentlich Kurs/Tent). Fire Maps und
+Repo-TODOs entstehen aus der Arbeit; zaehlend ist AlphaOS-Guidance via Oracle.
+
+## Berichtslinie (anti-loop) — Owner 2026-11-09
+
+```
+AL / PM / CPO / CTO / COO  --Briefing-->  CEO  --1×/Woche-->  Owner (Daniel)
+                              |
+                         CEO-Digest (taeglich, intern)
+```
+
+1. **Nach oben zum CEO:** Jede Kernrolle liefert taeglich (oder stuendlich bei
+   Hot-Lage) EIN knappes Briefing an den CEO — Format REAL/RAW/RELEVANT/RESULTS,
+   Belege statt Loops. Kanäle: AL-LOG 3 Zeilen + `abteilung/*.log`; CTO-/COO-Mail
+   bzw. `CTO.md`/`COO.md`; CPO/PM als kurze STATUS/TODO-Sektion oder Mail an
+   `nimmdaniel+ceo` / Dispatch-Antwort. **Kein Ping-Pong** Rolle↔Rolle nur um
+   Status zu spiegeln; Rueckfragen sind Auftraege, keine Report-Ketten.
+2. **CEO-Digest taeglich:** Der CEO aggregiert die Briefings zu einem internen
+   Tagesbild (Datei/Log fuer die Org). Das ist **kein** automatischer Owner-
+   Spam-Kanal.
+3. **Owner-Briefing 1×/Woche:** Nur der CEO schreibt Daniel (tele/Mail) — Soll
+   Sonntag nach Tent/Oracle-Kurs. Inhalt: Kurs, Entscheide, was Owner tun muss.
+4. **Parallel woechentlich:** Oracle-Session / General's Tent mindestens
+   einhalten; Org-Taskwarrior und/oder Koordinations-MD anhand `vitalos-oracle`
+   aktualisieren (`ORG-ORACLE-WOCHE`).
+
+## Berichtsstil
+
+Berichte an den CEO im Format REAL * RAW * RELEVANT * RESULTS. Bei mentaler
+Verknotung VOICE: STOP * SUBMIT * STRUGGLE * STRIKE. Das haelt The Alpha Code
+und The Voice als Qualitaetssicherung — nicht als Extra-Berichtsschicht.
 
 ## Rollen-Skill-Stacks (Owner-Inputs, Stand 2026-11-08)
 

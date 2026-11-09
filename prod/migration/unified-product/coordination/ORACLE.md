@@ -12,6 +12,15 @@ Course Correction und Targets werden entlang der Game Maps zusammengefuehrt
 und in den vorhandenen Koordinationsdateien festgehalten.
 
 
+
+## Fuehrung und Briefings
+
+Oracle ist **keine** zusaetzliche Status-Berichtsstufe. Die Kernrollen
+(CEO/COO/CPO/CTO/PM/AL) briefen den CEO; der CEO briefet den Owner woechentlich.
+Oracle/Tent sichert AlphaOS-Kurs (4P/4F/Tent). Fire Maps und Repo-TODOs
+entstehen aus der Arbeit; die Fuehrung folgt dem Oracle-Skill fuer Guidance.
+Siehe Berichtslinie in [ORG.md](ORG.md).
+
 ## Woechentliche Kurs-Session (Owner 2026-11-09)
 
 Mindestens einmal pro Woche muss sich jemand mit Skill `vitalos-oracle`

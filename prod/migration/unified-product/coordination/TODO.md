@@ -2635,3 +2635,7 @@ Owner: irgendjemand 1×/Woche mit `vitalos-oracle` auf Kurs. Verdrahtung:
 recurring `ORG-ORACLE-WOCHE` (`37d9ed10` / Template `a075b456`), Skills COO+Oracle,
 `ORACLE.md`. Naechste Faelligkeit So 2026-11-15.
 
+## 2026-11-09 09:38 — COO: Berichtslinie Owner-Klarstellung
+
+ORG.md: Kernrollen + anti-loop Briefings → CEO; interner Tagesdigest; Owner nur
+1×/Woche (So 20:00). Oracle/Tent parallel. AL-Intake = MD/Live.
