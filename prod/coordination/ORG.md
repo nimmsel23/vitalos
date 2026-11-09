@@ -15,18 +15,21 @@ Ausfuehrungslinien unter dem CTO, keine eigene Berichtsstufe an den Owner.
 - **Owner Daniel:** Store/Geraete/Release-Freigaben, Produkt-Richtung.
   Erreichbar via tele (Kurzform), Gmail, Chat (Live). Bekommt vom CEO
   **1× woechentlich** ein Briefing — nicht den Tagesbetrieb.
-- **CEO (Perplexity, Mail-Dispatch):** Strategie, Prioritaeten, Horizonte,
-  Wochen-Door, Sonntags-Vorlage. Erntet Briefings der Fuehrung, schreibt den
-  taeglichen CEO-Digest (Aggregation), sendet das Owner-Wochenbriefing.
-  **Nicht** zustaendig fuer Pfad-/Ordner-Hygiene, Runner-Verdrahtung,
-  Koordinations-Schema oder die lokale Inbox `nimmsel23+ceo@gmail.com` — das
-  ist COO.
-- **COO (Cursor lokal):** Betrieb + Org-Strukturhygiene + **Inbox
-  `nimmsel23+ceo@gmail.com`**. Tent-Protokoll, Digests/Doku, Runner/Engines/
-  Timer, Oracle-Wochenpflicht; Pfad-/Schema-Korrekturen; eingehende Mails via
-  `ceo-mail pending`/`ack` triagieren, ausfuehren oder an CTO/PM/AL routen —
-  autonom. Keine Gegen-Prioritaeten zum Perplexity-CEO-Dispatch (Inhalt der
-  Dispatches bleibt Strategie-SOT; Bearbeitung der Inbox ist COO).
+- **CEO (Perplexity, Mail-Dispatch + lokale Praesenz):** Strategie, Prioritaeten,
+  Horizonte, Wochen-Door, Sonntags-Vorlage. Erntet Briefings der Fuehrung,
+  schreibt den taeglichen CEO-Digest (Aggregation), sendet das Owner-
+  Wochenbriefing. Perplexity fuehrt per Dispatch; **am localhost gilt die
+  Live-Cursor-Session weiterhin als CEO-Praesenz** (Heartbeat, Stundenrunde).
+  Pfad-/Ordner-Hygiene, Runner-Verdrahtung, Schema und Inbox-Triage bleiben
+  beim COO als verlaengertem Arm.
+- **COO (Cursor lokal) = verlaengerter Arm des CEO:** Betrieb + Org-
+  Strukturhygiene + Inbox `nimmsel23+ceo@gmail.com` + lokale CEO-Maschine.
+  Tent-Protokoll, Digests/Doku, Runner/Engines/Timer, Oracle-Wochenpflicht;
+  Pfad-/Schema-Korrekturen; Mails via `ceo-mail pending`/`ack`. **Darf und
+  soll als CEO reagieren** (Abnahme, Rang, Gates einordnen, CEO-Stundenrunde).
+  Bei frischem Live-Heartbeat uebernimmt die Cursor-Session die `ceo-run`-
+  Arbeit (System-`vitalos-ceo.timer` pausiert wie frueher beim Live-Vibe).
+  Keine Gegen-Prioritaeten zum Perplexity-Dispatch.
 - **CTO:** Technik/Infra, AL-Abnahme, CI/Runner-Technik. Cloud-Deploys nur nach
   Owner-Go.
 - **CPO:** Produktstrategie, Discovery, Produktpriorisierung, Backlog.
@@ -78,7 +81,8 @@ die Aufnahme macht ihre Empfehlungen nicht automatisch zu Org-Regeln.
 
 | Rolle | Kern-SKILL und Wissensanker | Ergaenzungen / Stand |
 | --- | --- | --- |
-| CEO | `CEO.md` -> dieses `ORG.md` -> `PRODUCT.md` | Traegt Org-Verantwortung und entscheidet Jahres-/Quartals-/Monatshorizonte und Wochen-Door. |
+| CEO | `CEO.md` -> dieses `ORG.md` -> `PRODUCT.md`; Skill `vitalos-ceo` | Perplexity-Dispatch + lokale Cursor-Praesenz. Horizonte und Wochen-Door; Live-Heartbeat = lokale CEO-Stunde. |
+| COO (Cursor) | `COO.md`; Skill `vitalos-coo` | Verlaengerter Arm des CEO: Ops, Inbox, Strukturhygiene; darf als CEO reagieren; uebernimmt `ceo-run` bei Live-Heartbeat. |
 | CTO (Codex) | `CODEX.md`; `CTO.md` und Koordinations-TODO | Skill-Stack: `ponytail`, `karpathy-guidelines`, `git-commit-analyzer` (lesend), `gitclassic` (oeffentliche Repos, lesend), `skill-creator`; `impeccable`/`taste` bei UI-Aufgaben. Sweep und Pythagora bleiben externe CI-Produktpruefung, keine SKILL.md-Installation. |
 | CPO (Claude) | [CPO.md](CPO.md) | Skill-Stack: `product-strategy`, `opportunity-solution-tree`, `prioritization-frameworks`, `logseq-cli` fuer Wissensarbeit; Produktprioritaeten und Backlog an CEO-freigegebenen Game Maps und Tent-Verdikten ausrichten. Claude-mem-Plugin 15.12.0 ist userweit aktiviert; Transcript-Hooks starten mit der naechsten Claude-Code-Session, lokale Daten unter `~/.claude-mem/`. |
 | ALs je Repo (Codex standardmaessig) | jeweiliges Repo-Runbook, `AGENTS.md` und [ORG.md](ORG.md) | Repo-lokale Ausfuehrung und Handoffs; jeweilige Doku, Taskwarrior-Tag und Abnahmegrenzen beachten. |
