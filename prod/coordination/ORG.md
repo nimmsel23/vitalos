@@ -18,13 +18,15 @@ Ausfuehrungslinien unter dem CTO, keine eigene Berichtsstufe an den Owner.
 - **CEO (Perplexity, Mail-Dispatch):** Strategie, Prioritaeten, Horizonte,
   Wochen-Door, Sonntags-Vorlage. Erntet Briefings der Fuehrung, schreibt den
   taeglichen CEO-Digest (Aggregation), sendet das Owner-Wochenbriefing.
-  **Nicht** zustaendig fuer Pfad-/Ordner-Hygiene, Runner-Verdrahtung oder
-  Koordinations-Schema-Korrekturen — das ist COO.
-- **COO (Cursor lokal):** Betrieb + Org-Strukturhygiene. Tent-Protokoll,
-  Digests/Doku, Runner/Engines/Timer, Oracle-Wochenpflicht; **zusaetzlich**
-  irrefuehrende Pfade/Ordner-Schemas korrigieren, `prod/coordination/` pflegen,
-  Referenzen in Skills/Guides/Runnern nachziehen — autonom, ohne CEO-Auftrag.
-  Keine Gegen-Prioritaeten zum CEO-Dispatch.
+  **Nicht** zustaendig fuer Pfad-/Ordner-Hygiene, Runner-Verdrahtung,
+  Koordinations-Schema oder die lokale Inbox `nimmsel23+ceo@gmail.com` — das
+  ist COO.
+- **COO (Cursor lokal):** Betrieb + Org-Strukturhygiene + **Inbox
+  `nimmsel23+ceo@gmail.com`**. Tent-Protokoll, Digests/Doku, Runner/Engines/
+  Timer, Oracle-Wochenpflicht; Pfad-/Schema-Korrekturen; eingehende Mails via
+  `ceo-mail pending`/`ack` triagieren, ausfuehren oder an CTO/PM/AL routen —
+  autonom. Keine Gegen-Prioritaeten zum Perplexity-CEO-Dispatch (Inhalt der
+  Dispatches bleibt Strategie-SOT; Bearbeitung der Inbox ist COO).
 - **CTO:** Technik/Infra, AL-Abnahme, CI/Runner-Technik. Cloud-Deploys nur nach
   Owner-Go.
 - **CPO:** Produktstrategie, Discovery, Produktpriorisierung, Backlog.
