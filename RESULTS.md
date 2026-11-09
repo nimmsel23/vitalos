@@ -1,3 +1,9 @@
+## 2026-11-09 — Fleet: CI/AGENTS auf Shell-Pin (origin/master)
+
+In allen Modul-Repos: `deploy-master` ohne vitalos-Vorspulen, Merge-Agent nur
+`master`, PR-Branches `[master,dev]`, AGENTS Release-Weg aktualisiert; auf `dev`
+gepusht (Auto-Promote → master).
+
 ## 2026-11-09 — Shell-Deploy: FITNESS_KB_DIR + relax-Pin
 
 - `deploy-shell.yml`: `FITNESS_KB_DIR=fitness-app/fitness/catalog/kb` für plan-app kb-dir im Meta-Layout.

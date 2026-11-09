@@ -1,5 +1,8 @@
 # CI-Deploy über Pull Requests – ein Weg für alle VitalOS-Module
 
+> **Update 2026-11-09:** Shell-Pin = `origin/master` (kein App-Branch `vitalos` mehr als Ziel). Dieser Bestand beschreibt den früheren PR-Umbau; operative SSOT ist `DEPLOYMENT.md`.
+
+
 Stand: 2026-10-28. Auftrag: der PR-/CI-Weg, den `fitness-dev` und `vitalos` nutzen, soll für alle
 anderen Module gelten. Dieses Dokument hält Befund, Soll-Muster, Reihenfolge und Ausnahmen fest.
 

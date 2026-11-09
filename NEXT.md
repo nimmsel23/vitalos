@@ -16,8 +16,8 @@ Stand CTO-Runde 2026-11-09.
 
 - [x] Meta: `.gitmodules` `branch=master`, Pins auf `origin/master`, Tooling/Doku nachgezogen.
 - [ ] Remote-Branches `vitalos` in Modul-Repos löschen (nach Freeze / Owner-OK).
-- [ ] Modul-CI bereinigen: `origin/vitalos`-Ancestor-Checks in `deploy-master.yml`, `merge-agent` TARGET_BRANCHES.
-- [ ] Pre-Push-Hooks die noch `master → vitalos` formulieren, umbiegen.
+- [x] Modul-CI bereinigen: `origin/vitalos`-Ancestor-Checks in `deploy-master.yml`, `merge-agent` TARGET_BRANCHES.
+- [x] Pre-Push-Hooks die noch `master → vitalos` formulieren, umbiegen.
 
 ## BACKLOG.md-Parkplatz (nichts geloescht; aus Aktiv ausgelagert 2026-11-09 C-005)
 
