@@ -18,6 +18,7 @@ Du schreibst Daniel nicht direkt (kein tele/wacli). Der Runner protokolliert den
 6. [x] Erledigt (2026-11-08, AL-Lauf): RESULTS.md/NEXT.md im ~/vitalos-Root konsolidiert (Doku-Hygiene, Destillat, chronologische Ordnung, thin-results-Grenze gesetzt; Commit auf dev-product).
 7. [x] Erledigt (CEO-Konsolidierung 18:2x): Repo-eigene Task-DBs sind obsolet — globale Org-Task-DB `TASKRC=~/.local/state/vitalos-org/taskrc` (Owner-Weisung 2026-11-07: EINE DB fuer die Org). Vitalos-Hygiene-/Doku-Auftraege dort mit project:vitalos.
 8. [x] Erledigt (2026-11-09, AL-Lauf): Org-Hit 378427eb GitHub-Pages-Kanal erfasst/bewertet — Absatz in `prod/docs/FIREBASE.md`, Verweise in `docs/DEPLOYMENT.md` + `docs/UNIFIED-PRODUCT.md`; Empfehlung deaktivieren/beschneiden (Owner-Gate); keine Console-/Konfigaenderung.
+9. [ ] **C-002** (CEO-DISPATCH #002, Org `3c55e958`, +al +hit): M1-RC Geraeteabnahme — vorhandene AAB/APK aus Workspace auf 1 Android-Geraet: Install, Google-Login, 1 Journal-Eintrag, Sync. DoD: Protokoll Commit-SHA/Geraet/4 Schritte ok|fehler. Kein Store-Upload, kein Emulator-Start im Timer-Lauf. Wenn Geraet nur live/Owner: Befund + Handoff-Notiz ins AL-Log/`NEXT.md`, nicht erzwingen.
 
 ## Arbeitsweise
 - Pro Lauf hoechstens EINE Aufgabe. Temp-Worktree: `git -C ~/vitalos worktree add --detach /dev/shm/wt-abt-vitalos dev-product`, dort arbeiten (never im Haupt-Checkout), gezielt `git add`, Commit mit konkreter Message und Trailer `Co-Authored-By: Mistral Vibe <vibe@mistral.ai>`.

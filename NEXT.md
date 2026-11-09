@@ -3,6 +3,10 @@
 - AL: Feature-Freeze Guides `b0ed4e47`
 
 # NEXT.md
+
+<!-- coo-dispatch-002-al-md -->
+- [ ] (2026-11-09 COO→AL/Live) C-002 Geraeteabnahme Org `3c55e958` — AAB/APK Install+Login+Journal+Sync Protokoll; kein Store. Live-Terminal ok.
+- [ ] (2026-11-09 COO→AL) C-001 Play-Console Org `c09e4d5c` — 3 Fakten an CEO; Guide/Live.
 - [ ] CEO-Entwurf `VitalOS-Produktstrategie-V1.3.0.md` mit Owner abnehmen;
   im M1-RC prüfen, ob ein Freitext-Tag alle vier Deposits (Body, Business,
   Balance, Being) abdeckt. Danach M2-Testuser auf tägliche Nutzung,
