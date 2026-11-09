@@ -1,19 +1,18 @@
-# FIREMAP W47 (10.-16.11.) — aus Tent W46 CLOSED (2026-11-08 22:55)
+# FIREMAP W47 (10.-16.11.) — Course Correction nach CEO-DISPATCH #002 (2026-11-09)
 
-Haupttuer: ORG-LAEUFT-WEITER (`9de18e01`, Hits H1-H4). Rang: `FIRE-RANKS-after-tent.md`.
-Mission Nov weiter: M1-RC abgeben, M2-Tester-Woche eroeffnen.
+Haupttuer: **Closed Test startklar** (E-005 / Task `b1fd75b7`).
+Big Rocks: C-001 Play-Console (`c09e4d5c`) + C-002 Geraeteabnahme (`3c55e958`).
+Wartung (nicht Haupttuer): ORG-LAEUFT-WEITER (`9de18e01`, Hits H1-H4) laeuft parallel weiter.
+Rang: `FIRE-RANKS-after-tent.md` (nachziehen). Mission Nov: M1-RC abgeben, M2-Tester-Woche.
 
-- Mo: RC-Ruf (falls SO 13:00 gruen) + M2-APK-Handoff vorbereitet (Task c3315277),
-  fitness-Ship (AL Mo-Nacht), AUTOMATION-Erstzeilen aus der AL-Nacht,
-  Kitty-Pilot-Bewertung, skills-Ausfuehrung nach Veto-Frist (04:40).
-- Di-Mi: M2-Beobachtung (Simon + Matthias, kraenkheitsbedingte Flexibilitaet),
-  Security-Buendel laeuft (12.11. fallig).
-- Do: Dependabot-Major-Umstellung + CI-Konsolidierung abgenommen,
-  Pages-Bewertungsentscheid beim Owner.
-- Fr: erste ORG-LAEUFT-WEITER-Hits bewertbar (Heartbeat-Gate-Lauf CI-CTO),
-  6pack-Entscheidungsvorlagen (Musik-Modus, master-Divergenz) beim Owner.
-- Sa 12:00: PROFIT-SICHTUNG (vos-door-profit): M1/M2-Ernte, Freedom-Reihe
-  mit 0-Referenz (Runnerkosten vs Einnahmen), AUTOMATION-Topliste.
-- So 12:00: TENT W47 — ORG-LAEUFT-WEITER-Zwischenabnahme, W48-Fire.
+Little Rocks laut Dispatch: (1) Tester-Einladung C-006 Owner-Versand, (2) C-003 Lueckenliste, (3) C-009 Patreon-Entwurf.
 
-Nebentueren parallel wie oben; keine Premium-Bauarbeit vor M2-Abnahme.
+- Mo: Dispatch #002 verarbeitet (COO); RC-Ruf falls Emulator 13:00 gruen (`5f09bbb1`);
+  C-007 Major-Merge-Check journal; C-008 CTO-Timer 08:15 + Runner-Flags.
+- Di-Mi: C-001/C-002 vorantreiben; M2-Beobachtung (Simon + Matthias) flexibel.
+- Do: Dependabot-Major-Regel aus C-007; Security-Buendel.
+- Fr: Closed-Test-Checkliste (Konto + Geraet + Einladung) sichtbar.
+- Sa 12:00: PROFIT-SICHTUNG — Closed-Test-Fortschritt, nicht nur Org-Wartung.
+- So 12:00: TENT W47 — Haupttuer Closed Test Zwischenabnahme, W48-Fire.
+
+ORG-LAEUFT-WEITER bleibt Wartung/Nebentuer. Keine Premium-Bauarbeit vor M2-Abnahme.

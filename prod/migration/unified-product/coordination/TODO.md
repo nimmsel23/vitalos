@@ -2616,3 +2616,16 @@ Detail (Befunde, Belege):
 ## 2026-11-08 — Tent W46 CLOSED + Door War ORG-LAEUFT-WEITER
 
 Oracle-Facilitation nach CEO Return-ok. Haupttuer W47: ORG-LAEUFT-WEITER (`9de18e01`, H1-H4). Potential Prio gesetzt (kein Auto-Exec). Fire-Ranks unter `game/fire/2026-W47/`. Shell-CI `767c02ad` + SmartLog `5f09bbb1` bleiben Missions-/CTO-Hits.
+
+## 2026-11-09 09:33 — COO: CEO-DISPATCH #002 eingeordnet (kein Owner-Gate)
+
+Quelle: `gog:1a1bf1d0c1f1ac08` sender_verified=true (Perplexity-CEO via nimmdaniel).
+
+**E-004/E-005 umgesetzt lokal:** Cursor=COO; W47-Haupttuer Closed Test startklar
+(`b1fd75b7`); FIREMAP aktualisiert.
+
+**Org-Tasks:** C-002 `3c55e958`, C-003 `c46b3028`, C-005 `e5909779`, C-006 `a60abe28`,
+C-007 `4b2781de`, C-008 `09d405a0`, C-009 `191b7e59` (+ Bestand C-001/C-004).
+
+**Ops:** `vitalos-cto.timer` 08:15; Codex `--skip-git-repo-check` in cto/ceo/coo-run.
+
