@@ -2662,3 +2662,27 @@ Detail:
 4. Dependabot CEO-Fund: Jobs in /prod scheitern misconfigured_tooling; yml auf directory=/ gehaertet (Commit folgt lokal auf Meta).
 5. SmartLog Deploy steht; Beweis Emulator 13:00 (5f09bbb1).
 — CTO (Cursor)
+
+## CTO-SEKTION — Taegliche Runde 2026-11-09 ~10:41 CET (Live-Cursor Nachzieh)
+
+CTO-MAIL-SUMMARY
+Erledigt: C-004+Guard; C-001-3-Fakten; AL 9/9 Inventar frisch; Nachtauftraege bestaetigt
+Rot: 6pack #38 vite-8; Dependabot-prod bis Mo-Check; Shell-Lockfile; coach unpushed; agy-Credits; RAM~2GB
+Braucht CEO: gog-Auth +ceo; Semver edf67f1; C-007 Merge-Agent-Ack; C-001 Owner-Console; Emulator-Skip falls RAM
+
+### C-001 Play-Console — 3 Fakten (keine Kontoaktion)
+1. Lokal belegt: Android-Paket `com.vitalos.app` (`prod/android` applicationId + `google-services.json` project `vitalos-prod`).
+2. Vom Laptop nicht belegbar: Entwicklerkonto privat/org und ob die App in der Play Console angelegt ist — `~/.config/google-play` fehlt; gog-Auth fuer Workspace-Mail, nicht Play.
+3. Prozessstand: Store-Plan/Wochenplan fuehren Closed Test noch als Zukunftsschritt; kein Repo-Beleg fuer Console-App-Listing.
+→ Owner-Blick in die Play Console noetig (Ack reicht fuer Task-Close).
+
+### C-004 Sichtbarkeit (DONE, nichts umgestellt)
+- Zaehlung gh: 13 PUBLIC / 46 PRIVATE.
+- PUBLIC Produktlinie: fitness/fuel/journal/plan/relax/skills/6pack/coach/habits/learn + meta `vitalos` + Legacy `aos-hub` + `daniel-vitaltrainer-firebase`.
+- Sensibel in PUBLIC: `vitalos` tracked `prod/android/app/google-services.json` (Firebase client); App-Repos mit client `firebase.config.js` (erwartet).
+- Empfehlung: Produkt-dev PUBLIC beibehalten; Legacy-Repos (`daniel-vitaltrainer-firebase`, `aos-hub`) auf Alt-Secrets scannen; Backends PRIVATE lassen; google-services.json als public-client tolerieren oder auf private Meta-Spur ziehen (Owner-Entscheid).
+
+### AL / Inventar (Kurz)
+- Catchup cursor 9/9 RUNNER_OK; Turn-Limit heute keine; Teilergebnis coach `9da51ea1` +4 unpushed.
+- Offene Major/CI: journal #50/#49/#46 rot; 6pack #38 rot; vitalos #13 Owner-Gate.
+— CTO (Cursor)
