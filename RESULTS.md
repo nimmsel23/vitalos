@@ -1,3 +1,8 @@
+## 2026-11-09 — COO-Owner-Vertrag (Erstgespräch)
+
+- Owner: Wochenkontakt, Abschirmung, Anti-Meta; Rollenmail 1×/Tag dritte Person.
+- CPO/CTO steuern PM; `role-mail` + Wrapper verdrahtet.
+
 ## 2026-11-09 — Inbox nimmsel23+ceo an COO
 
 - Owner: lokale Mail-Triage/ack (`ceo-mail`) = COO, nicht CEO-Stundenlauf.

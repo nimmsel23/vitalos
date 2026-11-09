@@ -13,27 +13,26 @@ Keine zusaetzlichen Fuehrungs-Sitze fuer Status-Loops. Alpha/Betta bleiben
 Ausfuehrungslinien unter dem CTO, keine eigene Berichtsstufe an den Owner.
 
 - **Owner Daniel:** Store/Geraete/Release-Freigaben, Produkt-Richtung.
-  Erreichbar via tele (Kurzform), Gmail, Chat (Live). Bekommt vom CEO
-  **1× woechentlich** ein Briefing — nicht den Tagesbetrieb.
-- **CEO (Perplexity, Mail-Dispatch + lokale Praesenz):** Strategie, Prioritaeten,
-  Horizonte, Wochen-Door, Sonntags-Vorlage. Erntet Briefings der Fuehrung,
-  schreibt den taeglichen CEO-Digest (Aggregation), sendet das Owner-
-  Wochenbriefing. Perplexity fuehrt per Dispatch; **am localhost gilt die
-  Live-Cursor-Session weiterhin als CEO-Praesenz** (Heartbeat, Stundenrunde).
-  Pfad-/Ordner-Hygiene, Runner-Verdrahtung, Schema und Inbox-Triage bleiben
-  beim COO als verlaengertem Arm.
-- **COO (Cursor lokal) = verlaengerter Arm des CEO:** Betrieb + Org-
-  Strukturhygiene + Inbox `nimmsel23+ceo@gmail.com` + lokale CEO-Maschine.
-  Tent-Protokoll, Digests/Doku, Runner/Engines/Timer, Oracle-Wochenpflicht;
-  Pfad-/Schema-Korrekturen; Mails via `ceo-mail pending`/`ack`. **Darf und
-  soll als CEO reagieren** (Abnahme, Rang, Gates einordnen, CEO-Stundenrunde).
-  Bei frischem Live-Heartbeat uebernimmt die Cursor-Session die `ceo-run`-
-  Arbeit (System-`vitalos-ceo.timer` pausiert wie frueher beim Live-Vibe).
-  Keine Gegen-Prioritaeten zum Perplexity-Dispatch.
-- **CTO:** Technik/Infra, AL-Abnahme, CI/Runner-Technik. Cloud-Deploys nur nach
-  Owner-Go.
-- **CPO:** Produktstrategie, Discovery, Produktpriorisierung, Backlog.
-- **PM:** Produktumsetzung im CEO-/CPO-Rahmen mit ALs (`+hit`).
+  Erreichbar via tele (Kurzform), Gmail, Chat (Live). Bekommt **Struktur
+  1×/Woche vom CEO** (Sonntag) — kein Tages-Theater. COO meldet sich beim
+  Owner ebenfalls hoechstens woechentlich; bei echtem Brand greift der COO
+  sofort ein („Wasser holen“). Ziel der Abschirmung: weniger Agenten-Meta,
+  wieder Kapazitaet fuer Klienten und Training.
+- **CEO (Perplexity, Mail-Dispatch):** Strategie, Prioritaeten, Horizonte,
+  Wochen-Door, Sonntags-Vorlage an den Owner. Erntet Briefings der Fuehrung,
+  schreibt den internen CEO-Digest. Kein Noise an Daniel ausser Wochenbriefing
+  und der einen taeglichen +ceo-Rollenmail.
+- **COO (Cursor lokal):** Betrieb, Org-Strukturhygiene, Inbox
+  `nimmsel23+ceo@gmail.com`, Runner/Timer/Catch-ups, Oracle-Wochenpflicht.
+  **Schuetzt den Owner vor Noise; ist hart zur Org.** Keine Gegen-Prioritaeten
+  zum CEO-Dispatch. Kein Owner-Spam.
+- **CTO:** Technik/Infra, AL-Abnahme, CI/Runner-Technik. Darf den **PM**
+  technisch steuern (Scope der Umsetzung, Qualitaets-/CI-Grenzen). Cloud-
+  Deploys nur nach Owner-Go.
+- **CPO:** Produktstrategie, Discovery, Produktpriorisierung, Backlog. Darf
+  den **PM** produktseitig steuern (Was/Reihenfolge im freigegebenen Rahmen).
+- **PM:** Produktumsetzung mit ALs (`+hit`) unter Einfluss von CPO (Was) und
+  CTO (Wie/Guards) im CEO-Rahmen.
 - **Abteilungsleiter:** Ausfuehrung je Repo. Intake = Guide-MD
   (`docs/product-dev/abteilungen/<repo>.md`), Repo-`TODO.md`/`NEXT.md`, oder
   spontan im Live-Terminal. Org-Taskwarrior ist Rang/Beleg, nicht der einzige
@@ -52,20 +51,18 @@ AL / PM / CPO / CTO / COO  --Briefing-->  CEO  --1×/Woche-->  Owner (Daniel)
                          CEO-Digest (taeglich, intern)
 ```
 
-1. **Nach oben zum CEO:** Jede Kernrolle liefert taeglich (oder stuendlich bei
-   Hot-Lage) EIN knappes Briefing an den CEO — Format REAL/RAW/RELEVANT/RESULTS,
-   Belege statt Loops. Kanäle: AL-LOG 3 Zeilen + `abteilung/*.log`; CTO-/COO-Mail
-   bzw. `CTO.md`/`COO.md`; CPO/PM als kurze STATUS/TODO-Sektion oder Mail an
-   `nimmdaniel+ceo` / Dispatch-Antwort. **Kein Ping-Pong** Rolle↔Rolle nur um
-   Status zu spiegeln; Rueckfragen sind Auftraege, keine Report-Ketten.
-2. **CEO-Digest taeglich:** Der CEO aggregiert die Briefings zu einem internen
-   Tagesbild (Datei/Log fuer die Org). Das ist **kein** automatischer Owner-
-   Spam-Kanal.
-3. **Owner-Briefing 1×/Woche:** Nur der CEO schreibt Daniel (tele/Mail) — Soll
-   Sonntag nach Tent/Oracle-Kurs. Inhalt: Kurs, Entscheide, was Owner tun muss.
-4. **Parallel woechentlich:** Oracle-Session / General's Tent mindestens
-   einhalten; Org-Taskwarrior und/oder Koordinations-MD anhand `vitalos-oracle`
-   aktualisieren (`ORG-ORACLE-WOCHE`).
+1. **Nach oben zum CEO:** Jede Kernrolle liefert taeglich EIN knappes Briefing
+   an den CEO — Format REAL/RAW/RELEVANT/RESULTS, Belege statt Loops.
+   **Rollenmail 1×/Tag** ueber `role-mail` / `*-mail`: Absender
+   `nimmsel23+<rolle>@gmail.com`, Empfaenger `nimmdaniel+<rolle>@gmail.com`.
+   Text **immer dritte Person** („Der CTO meldet …“); Identitaet liegt allein
+   am Plus-Alias, nicht an Selbstvorstellung. Max. eine Mail pro Rolle und Tag.
+2. **CEO-Digest taeglich:** Intern in `CEO.md` (kein Owner-Spam).
+3. **Owner-Struktur 1×/Woche:** CEO → Daniel (tele, Sonntag). COO hoechstens
+   ebenfalls woechentlich bzw. bei Brand. Kein Status-Theater.
+4. **Parallel woechentlich:** Oracle/Tent (`ORG-ORACLE-WOCHE`).
+5. **Anti-Meta:** Org darf den Owner nicht mit Entwicklungs-/Agenten-Gequatsche
+   fuellen. Noise killen; Kapazitaet fuer Klienten und Training freikaempfen.
 
 ## Berichtsstil
 
