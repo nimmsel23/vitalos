@@ -440,12 +440,12 @@ Liste (Stand 2026-08-16, teils überholt) in `docs/BEKANNTE-BAUSTELLEN.md`.
   `node packages/mini-app-shell/cli.mjs vendor scripts/mini-app-shell` ins Repo kopiert, `--check` meldet Drift. Bewusste Ausnahme von
   „Kein Doppel-Code“; nicht in `pnpm-workspace.yaml` eintragen (Lockfile-Drift). Doku: `packages/mini-app-shell/README.md`, Stand/Übergabe: `REPORT.md`.
 
-### Branch-Regel für Checkouts (User-Vorgabe 2026-10-16)
+### Branch-Regel für Checkouts (Stand 2026-11-09)
 
-- `~/<m>-dev` stehen **fest auf `dev`**, `~/vitalos/<m>-app` **fest auf `vitalos`** — `vos-release` bricht sonst ab, `vos-overview` meldet Abweichungen als „Regel-Verstoß“.
-- Agent-/Feature-Branches nie im `~/<m>-dev`-Hauptordner auschecken, sondern als **Worktree**: `git -C ~/<m>-dev worktree add .worktrees/<name> <branch>` (Muster existiert in `~/fitness-dev/.worktrees/`). `.worktrees/` stört `vos-release` nicht.
-- Nested Kopien in `~/fitness-dev/{6pack,coach,plan}` stehen auf `master` (= veröffentlichter Pointer), eigene Commits darauf nur in `lokal`.
-- `vos-release` ignoriert für die Sauber-Prüfung: Doku (`*.md`, `docs/`), `.claude/`, Firebase-Cache/-Logs, `.worktrees/`. Nie `vos-release` editieren, solange ein Release läuft (Bash liest Skripte stückweise).
+- `~/dev/<m>-dev` fest auf `dev`; `~/vitalos/<m>-app` = Pin auf `origin/master` (detached ok).
+  `vos-overview` meldet andere Dauer-Branches im `-app` als Regel-Verstoß.
+- Parallel-Branches/Worktrees nur mit Owner-Ausnahme.
+- `vos-release` ignoriert für die Sauber-Prüfung: Doku (`*.md`, `docs/`), `.claude/`, Firebase-Cache/-Logs, `.worktrees/`. Nie `vos-release` editieren, solange ein Release läuft.
 
 ### Shell-Service-Worker + Splash (seit 2026-10-16)
 
