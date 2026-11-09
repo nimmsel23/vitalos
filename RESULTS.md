@@ -1,3 +1,8 @@
+## 2026-11-09 — Strukturhygiene an COO (statt CEO)
+
+- Owner: Pfad-/Schema-Korrekturen = COO-Pflicht, kein CEO-Thema.
+- `ORG.md` + Skills `vitalos-coo`/`vitalos-ceo` nachgezogen.
+
 ## 2026-11-09 — Koordination aus migration/unified-product gezogen
 
 - `prod/migration/unified-product/coordination/` → `prod/coordination/` (git mv).
