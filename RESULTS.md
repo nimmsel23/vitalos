@@ -1,3 +1,7 @@
+## 2026-11-09 — Shell: relax-app Pin auf origin/vitalos + Deploy
+
+- Gitlink `relax-app` feabf4a → 33997ea (minimatch-Override). Übrige *-app-Pins bereits aktuell. Shell-Deploy folgt.
+
 ## 2026-11-09 — Owner: keine Branch-/Worktree-Spielereien ohne Ausnahme
 
 - Regel in AGENTS.md / prod/AGENTS.md / DEPLOYMENT / ORG / Android-Auftrag: Standard = direkt auf `master` (bzw. Modul-`dev`); Extra-Branches/Worktrees nur auf ausdrückliche Owner-Ausnahme.
