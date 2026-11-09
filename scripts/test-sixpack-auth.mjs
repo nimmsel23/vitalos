@@ -1,12 +1,12 @@
 import assert from 'node:assert/strict';
 import { readFile } from 'node:fs/promises';
 import vm from 'node:vm';
-import { transformWithEsbuild } from 'vite';
+import * as esbuild from 'esbuild';
 
 // Render the actual shell Views, so dropping uid at the integration boundary fails.
 const file = new URL('../src/App.jsx', import.meta.url);
 const source = await readFile(file, 'utf8');
-const { code } = await transformWithEsbuild(`${source}\nexport { Views };`, file.pathname, { loader: 'jsx', format: 'cjs', jsxFactory: 'h', jsxFragment: 'Fragment' });
+const { code } = await esbuild.transform(`${source}\nexport { Views };`, { loader: 'jsx', format: 'cjs', jsxFactory: 'h', jsxFragment: 'Fragment' });
 const sixpack = function SixPack() {};
 const module = { exports: {} };
 vm.runInNewContext(code, {
@@ -36,7 +36,7 @@ for (const uid of ['alice', 'bob', null]) {
 // Execute the real photo auth adapter against an existing shell Firebase session.
 const authSource = await readFile(new URL('../6pack-app/photoAuth.js', import.meta.url), 'utf8');
 const stripped = authSource.replace(/^import .*;\n/gm, '');
-const authCode = await transformWithEsbuild(stripped, 'photoAuth.js', { format: 'cjs' });
+const authCode = await esbuild.transform(stripped, { format: 'cjs' });
 const shellApp = { name: '[DEFAULT]', options: { projectId: 'fitness-aos' } };
 const user = { uid: 'alice' };
 const authModule = { exports: {} };
