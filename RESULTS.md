@@ -1,3 +1,7 @@
+## 2026-11-09 — Remote-vitalos gelöscht; Pre-Push umgebogen
+
+In allen 9 Modul-Repos origin/vitalos gelöscht. Pre-Push ohne lokalen vitalos-Deploy; Reminder/Build auf dev. Merge-Agent nur master.
+
 ## 2026-11-09 — Fleet: CI/AGENTS auf Shell-Pin (origin/master)
 
 In allen Modul-Repos: `deploy-master` ohne vitalos-Vorspulen, Merge-Agent nur

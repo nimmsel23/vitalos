@@ -15,7 +15,7 @@ Stand CTO-Runde 2026-11-09.
 ## 2026-11-09 — Branch-Modell (nach Shell-Pin auf master)
 
 - [x] Meta: `.gitmodules` `branch=master`, Pins auf `origin/master`, Tooling/Doku nachgezogen.
-- [ ] Remote-Branches `vitalos` in Modul-Repos löschen (nach Freeze / Owner-OK).
+- [x] Remote-Branches `vitalos` in Modul-Repos gelöscht (2026-11-09).
 - [x] Modul-CI bereinigen: `origin/vitalos`-Ancestor-Checks in `deploy-master.yml`, `merge-agent` TARGET_BRANCHES.
 - [x] Pre-Push-Hooks die noch `master → vitalos` formulieren, umbiegen.
 

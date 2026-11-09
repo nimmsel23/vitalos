@@ -19,9 +19,8 @@ und `docs/DEPLOYMENT.md` folgen dem Pin-Modell.
 
 ## Was bewusst offen bleibt
 
-- Remote-Branches `vitalos` in den Modul-Repos löschen (separater Aufräum-Schritt).
-- CI-Workflows in Modulen, die noch `origin/vitalos` prüfen (`deploy-master.yml`
-  Ancestor-Check, `merge-agent` TARGET_BRANCHES) bereinigen.
+- [x] Remote-Branches `vitalos` in den Modul-Repos gelöscht (2026-11-09).
+- [x] CI-Workflows/merge-agent bereinigt (kein origin/vitalos-Vorspulen).
 - Ob später Variante C (nur noch ein Dauer-Branch) kommt — eigene Entscheidung.
 
 ## Rollback
