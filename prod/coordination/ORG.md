@@ -119,7 +119,9 @@ nach Inhalt zuordnen; nicht mechanisch alle Runbook-Inhalte verschieben.
 ## Repo-Landschaft (Namen sind KEINE Auskunft — AGENTS.md Kopf lesen!)
 - Meta-Repo ~/vitalos (Default/Prod: `master`; früherer Umbau-Zweig
   `dev-product` ist gemergt und entfernt. Symlink ~/vitalos-prod
-  -> vitalos/prod seit 2026-11-08; Altstand-Schnappschuss: ~/vitalos-prod-legacy-*)
+  -> vitalos/prod seit 2026-11-08; Altstand-Schnappschuss: ~/vitalos-prod-legacy-*).
+  Owner 2026-11-09: keine Parallel-Branches/Worktrees ohne ausdrückliche
+  Ausnahme — Git-Historie reicht als Versionierung.
 - App-Entwicklung: ~/dev/<name>-dev (Produkt-App-Quellen, s. PRODUCT.md)
 - Tools/Dienste: ~/.dotfiles (Runner, Units, Skripte), ~/aos (AlphaOS CLI,
   Firmenphilosophie), ~/.org (Org-Zuhause, venv symlink), ~/dev/agent-skills

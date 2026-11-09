@@ -7,12 +7,15 @@
 kein eigenes Git-Repo und keine App-Submodule. Beide Shells verwenden die neun
 App-Submodule im Root und das gemeinsame `pnpm-lock.yaml`.
 
-Der Umbau (früher `dev-product`, integriert 2026-11-06 als `2fe70f3`) liegt auf
-`master`; der Branch `dev-product` ist entfernt. Der Produkt-Importer steht seit
-`e9ec5e9` im gemeinsamen Lockfile. `master` ist Default und private Produktion.
-Der ältere lokale `dev`-Strang und weitere Worktrees sind separate Arbeitsstände
-und dürfen nicht zurückgesetzt oder pauschal übernommen werden. Branch und
-Status vor jeder Änderung tatsächlich prüfen.
+`master` ist Default und private Produktion. Der frühere Umbau-Zweig
+`dev-product` (integriert 2026-11-06 als `2fe70f3`) ist nach `master` gemergt
+und entfernt. Der Produkt-Importer steht seit `e9ec5e9` im gemeinsamen Lockfile.
+
+**Git-Disziplin (Owner 2026-11-09):** Git-Historie reicht als Versionierung.
+Keine Parallel-Branches und keine Extra-Worktrees „zur Sicherheit“ oder für
+Agenten-Isolation — außer der Owner fordert es ausdrücklich oder es ist für
+einen klaren, kurzen Zweck unvermeidlich (dann sofort wieder aufräumen).
+Standard: direkt auf `master` arbeiten, committen, pushen.
 
 `~/vitalos/prod` ist die kanonische Produktquelle. Der frühere lokale Checkout
 ist unter `~/vitalos-prod-legacy-2026-11-07` archiviert; lokale Änderungen,
@@ -35,12 +38,12 @@ ist Planung, kein Nachweis eines Builds oder Releases.
 ## Edit-Orte und Zusammenarbeit
 
 - Private Shell: `~/vitalos/src`; Produkt-Shell und native Produktkonfiguration:
-  `~/vitalos/prod`. Quelländerungen auf Feature-Branches bzw. nach Freigabe auf
-  `master` (Default). Kein Parallel-Umbau-Zweig mehr.
-- App-Quellcode: jeweiliges `~/dev/*-dev`-Repository. Die `*-app`-Ordner sind
+  `~/vitalos/prod`. Quelländerungen standardmäßig auf `master`.
+- App-Quellcode: jeweiliges `~/dev/*-dev`-Repository (dort der jeweilige
+  Integrationsbranch, i. d. R. `dev`). Die `*-app`-Ordner sind
   Merge-/Integrations-Checkouts, keine zweiten Entwicklungsquellen.
-- Andere lokale Branches, Worktrees, vorgemerkte Änderungen und laufende
-  Agent-Arbeit erhalten. Vor Edits Backup anlegen. Nur eigene Pfade committen.
+- Vor Edits Backup anlegen (`cp … .bak`). Nur eigene Pfade committen. Fremde
+  uncommitted Arbeit nicht anfassen — aber dafür keine neuen Worktrees anlegen.
 - Laufende Services nicht killen oder neu starten. Kein sudo. AlphaOS bleibt
   ein eigenständiges Projekt und ist kein Ziel dieses Umbaus.
 

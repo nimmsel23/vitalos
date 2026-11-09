@@ -61,8 +61,8 @@ Git-Arbeiten sind freigegeben.
    Artefaktnachweis) mit Artefaktpfad, Hash, Toolchain und Quellcommit
    ergänzen; ggf. `docs/PRODUCT-CHECKOUT.md`.
 7. Jeden funktionierenden Zwischenstand scoped committen (nur eigene Dateien,
-   Doku im selben Commit). Feature-Branches nach Freigabe nach `master`
-   mergen (kein Parallel-Umbau-Zweig mehr).
+   Doku im selben Commit) direkt auf `master`. Keine Extra-Branches/Worktrees
+   ohne ausdrückliche Owner-Ausnahme.
 
 ## Verbindliche Grenzen
 
