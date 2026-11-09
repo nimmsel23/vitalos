@@ -432,10 +432,9 @@ Liste (Stand 2026-08-16, teils überholt) in `docs/BEKANNTE-BAUSTELLEN.md`.
 
 - **`bin/vos-overview`** (nur lesen): Adlerblick über alle Klone/Pointer/Service Worker + abgeleitete Push-Reihenfolge
   (`--plan`, `--sw`, `--fetch`, `--json`). Ausführen tut `vos-release`. Vor jedem Push/Release zuerst `vos-overview`.
-- **Kanonisch ist `~/<m>-dev` auf `dev`** (hier arbeitet man, hier pusht `vos-release`). `~/vitalos/<m>-app` (Branch `vitalos`) ist der
-  Build-/CI-Checkout. `~/fitness-dev/{6pack,coach,plan}` (nested Submodule) sind **lokale Branches** (`lokal`, kein Upstream; `master` = `origin/master`) — nicht dort
-  arbeiten, nicht pushen. Release-Flow für alle Module einheitlich: `vos-release` = dev pushen → `-dev` nach `-app` (Branch `vitalos`) mergen → Pointer bumpen
-  (Preflight prüft Konflikte vorab; `.githooks/*`-Konflikte gewinnt dev).
+- **Kanonisch ist `~/dev/<m>-dev` auf `dev`**. `~/vitalos/<m>-app` ist der Shell-Pin
+  (detached auf `origin/master`). Nested Kopien in fitness-dev sind Altlast — nicht dort
+  arbeiten. Release: `vos-release` pinnt `origin/master` und bumpt den Meta-Pointer.
 - **`packages/mini-app-shell`** (`@vos/mini-app-shell`): Splash, generischer Service Worker, SW-Register, Stamp-/Vendor-CLI für alle
   Mini-Apps (training/atlas/6pack/plan/coach, später fuel/relax). Consumer bauen standalone (GitHub Actions ohne vitalos) → Paket wird per
   `node packages/mini-app-shell/cli.mjs vendor scripts/mini-app-shell` ins Repo kopiert, `--check` meldet Drift. Bewusste Ausnahme von
