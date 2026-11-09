@@ -65,6 +65,9 @@ jobs:
         run: node scripts/test-firebase-messaging.mjs
 
       - name: Build (firebase mode)
+        env:
+          # plan-app kb-dir: Meta-Layout hat fitness-app, nicht fitness-dev
+          FITNESS_KB_DIR: ${{ github.workspace }}/fitness-app/fitness/catalog/kb
         run: pnpm run build:firebase
 
       # Firestore-Rules werden hier bewusst NICHT deployt. Rules sind

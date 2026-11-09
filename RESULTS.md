@@ -1,3 +1,8 @@
+## 2026-11-09 — Shell-Deploy: FITNESS_KB_DIR + relax-Pin
+
+- `deploy-shell.yml`: `FITNESS_KB_DIR=fitness-app/fitness/catalog/kb` für plan-app kb-dir im Meta-Layout.
+- relax-app Pin bereits auf 33997ea.
+
 ## 2026-11-09 — Shell: relax-app Pin auf origin/vitalos + Deploy
 
 - Gitlink `relax-app` feabf4a → 33997ea (minimatch-Override). Übrige *-app-Pins bereits aktuell. Shell-Deploy folgt.
