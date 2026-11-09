@@ -15,7 +15,7 @@ und Produkt-Firebase sind damit nicht veröffentlicht.
 | APK/AAB, Signing, Store | [Store-Plan](../prod/docs/STORE-PUBLISHING-PLAN.md) |
 | GitHub Pages (`docs/` → `nimmsel23.github.io/vitalos`) | kein Firebase; Bestand/Empfehlung im [Produkt-Runbook § GitHub Pages](../prod/docs/FIREBASE.md#github-pages-meta-repo-kein-firebase-hosting) — Owner-Gate behalten/deaktivieren |
 
-Aktueller Umbau-Strang ist `dev-product`; `master` bleibt private Produktion.
+`master` ist Default und private Produktion (Shell-CI). Der frühere Umbau-Strang `dev-product` ist nach master gemergt und entfernt.
 Ein älterer lokaler `dev`-Strang und weitere Worktrees sind gesondert zu
 erhalten. Keine pauschalen Branch-Wechsel oder Resets aus alten Anleitungen.
 Die Release-Helfer werden parallel weiterentwickelt; ihr tatsächlich

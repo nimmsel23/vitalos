@@ -1,3 +1,7 @@
+## 2026-11-09 — dev-product → master gemergt und Branch entfernt
+
+- Merge-Commit auf `master`; `origin/dev-product` gelöscht. Doku (AGENTS/DEPLOYMENT) auf master-only umgestellt.
+
 ## 2026-11-09 — AL-Lauf vitalos: C-002 Handoff (Org `3c55e958`)
 
 Eine Aufgabe (Guide #9): M1-RC Geräteabnahme — kein physisches Gerät, Emulator laut Guide nicht im Timer-Lauf.

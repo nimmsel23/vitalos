@@ -7,11 +7,12 @@
 kein eigenes Git-Repo und keine App-Submodule. Beide Shells verwenden die neun
 App-Submodule im Root und das gemeinsame `pnpm-lock.yaml`.
 
-Der Umbau wurde am 2026-11-06 auf `dev-product` integriert (`2fe70f3`); der
-Produkt-Importer steht seit `e9ec5e9` im gemeinsamen Lockfile. `master` ist der
-private Produktionsbranch. Der ältere lokale `dev`-Strang und weitere Worktrees
-sind separate Arbeitsstände und dürfen nicht zurückgesetzt oder pauschal
-übernommen werden. Branch und Status vor jeder Änderung tatsächlich prüfen.
+Der Umbau (früher `dev-product`, integriert 2026-11-06 als `2fe70f3`) liegt auf
+`master`; der Branch `dev-product` ist entfernt. Der Produkt-Importer steht seit
+`e9ec5e9` im gemeinsamen Lockfile. `master` ist Default und private Produktion.
+Der ältere lokale `dev`-Strang und weitere Worktrees sind separate Arbeitsstände
+und dürfen nicht zurückgesetzt oder pauschal übernommen werden. Branch und
+Status vor jeder Änderung tatsächlich prüfen.
 
 `~/vitalos/prod` ist die kanonische Produktquelle. Der frühere lokale Checkout
 ist unter `~/vitalos-prod-legacy-2026-11-07` archiviert; lokale Änderungen,
@@ -34,9 +35,8 @@ ist Planung, kein Nachweis eines Builds oder Releases.
 ## Edit-Orte und Zusammenarbeit
 
 - Private Shell: `~/vitalos/src`; Produkt-Shell und native Produktkonfiguration:
-  `~/vitalos/prod`. Quelländerungen auf einem passenden Dev-Strang; derzeit
-  wird der gemeinsame Umbau auf `dev-product` bearbeitet. Kein direktes
-  Quellcode-Editieren auf `master`.
+  `~/vitalos/prod`. Quelländerungen auf Feature-Branches bzw. nach Freigabe auf
+  `master` (Default). Kein Parallel-Umbau-Zweig mehr.
 - App-Quellcode: jeweiliges `~/dev/*-dev`-Repository. Die `*-app`-Ordner sind
   Merge-/Integrations-Checkouts, keine zweiten Entwicklungsquellen.
 - Andere lokale Branches, Worktrees, vorgemerkte Änderungen und laufende

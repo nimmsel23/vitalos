@@ -5,10 +5,11 @@ kein eigenes `.git`, keine `.gitmodules`, keine App-Checkouts und kein zweites
 Lockfile anlegen. Die neun gemeinsamen `../*-app` liefern den Quellstand.
 App-Code wird in den zuständigen `~/dev/*-dev`-Repos bearbeitet.
 
-Produkt-Shell, Wrapper und native Produktquellen werden hier auf dem passenden
-Dev-Strang bearbeitet; für den Umbau ist das `dev-product`. Arbeitsbaum und
-parallele Agents vor Edits prüfen. Funktionierende Stände mit passender Doku
-scoped committen; nicht unbeabsichtigt fremde Dateien oder Pointer aufnehmen.
+Produkt-Shell, Wrapper und native Produktquellen werden hier auf Feature-
+Branches bzw. nach Freigabe auf `master` bearbeitet (`dev-product` ist
+entfernt). Arbeitsbaum und parallele Agents vor Edits prüfen. Funktionierende
+Stände mit passender Doku scoped committen; nicht unbeabsichtigt fremde Dateien
+oder Pointer aufnehmen.
 
 Produktziel ist ausschließlich Firebase `vitalos-prod`. Die Produkt-Build-
 Wrapper setzen den Produktmodus und verlangen eigene Konfiguration. Root-
