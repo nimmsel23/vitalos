@@ -5,10 +5,10 @@ Stand CTO-Runde 2026-11-09.
 
 ## Aktiv (max. 5)
 
-- [ ] C-002 Geraeteabnahme (`3c55e958`): AAB/APK Install+Login+Journal+Sync — Protokoll; kein Store.
+- [ ] C-002 Geraeteabnahme (`3c55e958`): Handoff 2026-11-09 — APK/AAB bereit (`app-debug.apk`/`app-release.aab`, `com.vitalos.app`, Meta `f2075da`); `adb` leer, kein Emulator im Timer. Rest: Live-Install+Login+Journal+Sync.
+- [ ] vos-fitness Subversion baubar (`e83d8daa`, +al +lr): nach C-002 — Web-Build + Debug-APK oder JDK/SDK-Blocker.
 - [ ] C-001 Play-Console (`c09e4d5c`): 3 Fakten an CEO (Konto/App angelegt?); keine Zahlung.
 - [ ] SmartLog-Beweis (`5f09bbb1`): Emulator 13:00 — Deploy 5f2f694 steht; Gruennachweis abwarten.
-- [ ] Shell-CI Lockfile (`767c02ad`): journal-app lucide-react/tailwind-merge Drift vs pnpm-lock — Root-Sync.
 - [ ] M2-APK Simon/Matthias (`c3315277`, +alpha): Verteilweg bereitstellen, kein Store.
 
 ## BACKLOG.md-Parkplatz (nichts geloescht; aus Aktiv ausgelagert 2026-11-09 C-005)
