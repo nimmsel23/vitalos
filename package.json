@@ -23,7 +23,14 @@
     "product:build:native": "pnpm --filter @vitalos/product run build:native",
     "product:manifest": "pnpm --filter @vitalos/product run release:manifest",
     "product:native:sync": "pnpm --filter @vitalos/product run native:sync",
-    "product:build:twa": "pnpm --filter @vitalos/product run build:fitness:twa:web"
+    "product:build:twa": "pnpm --filter @vitalos/product run build:fitness:twa:web",
+    "tooling:biome": "pnpm dlx @biomejs/biome@2.6.6 check --formatter-enabled=true --linter-enabled=false --no-errors-on-unmatched scripts",
+    "tooling:knip": "pnpm dlx knip@6.44.2 --no-progress",
+    "tooling:syncpack": "pnpm dlx syncpack@15.3.3 lint --config tooling/syncpack.config.cjs --dependency-types prod,dev",
+    "tooling:check": "pnpm run tooling:biome && pnpm run tooling:knip && pnpm run tooling:syncpack",
+    "tooling:syncpack:all": "pnpm dlx syncpack@15.3.3 lint --dependency-types prod,dev",
+    "test": "node --test scripts/smoke.test.mjs",
+    "tooling:biome:lint": "pnpm dlx @biomejs/biome@2.6.6 check --formatter-enabled=true --linter-enabled=true --no-errors-on-unmatched scripts"
   },
   "dependencies": {
     "@dnd-kit/accessibility": "^3.1.1",
@@ -96,5 +103,8 @@
     "tailwindcss": "^4.3.3",
     "vite": "^6.4.5",
     "vite-plugin-pwa": "^1.3.0"
+  },
+  "engines": {
+    "node": ">=22.13"
   }
 }

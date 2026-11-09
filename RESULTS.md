@@ -1,3 +1,7 @@
+## 2026-11-09 — Node Tooling SSOT
+
+- `tooling/` + syncpack kritische Pins (`@firebase/util`).
+
 ## 2026-11-09 — Remote-vitalos gelöscht; Pre-Push umgebogen
 
 In allen 9 Modul-Repos origin/vitalos gelöscht. Pre-Push ohne lokalen vitalos-Deploy; Reminder/Build auf dev. Merge-Agent nur master.
