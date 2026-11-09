@@ -4,6 +4,14 @@
 - relax-app Pin bereits auf 33997ea.
 
 
+
+## 2026-11-09 — Aufräumen: Shell-Pin = origin/master (Doku + Tooling)
+
+Nach dem Test-Pin (`00b3e4e`): `vos-release` / `vos-ship` / `vos-overview` auf
+Master-Pin umgestellt (kein Merge in App-`vitalos`). `docs/DEPLOYMENT.md`,
+`AGENTS.md`, `CLAUDE.md`, Design-Doku aktualisiert. Legacy-Branch `vitalos` in
+Modul-Repos bleibt remote vorerst (Löschen = eigener Schritt).
+
 ## 2026-11-09 — Test: Submodule-Pins auf origin/master (branch=master)
 
 `.gitmodules` `branch = vitalos` → `branch = master`. Alle `*-app` auf `origin/master`

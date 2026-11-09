@@ -11,6 +11,14 @@ Stand CTO-Runde 2026-11-09.
 - [ ] SmartLog-Beweis (`5f09bbb1`): Emulator 13:00 — Deploy 5f2f694 steht; Gruennachweis abwarten.
 - [ ] M2-APK Simon/Matthias (`c3315277`, +alpha): Verteilweg bereitstellen, kein Store.
 
+
+## 2026-11-09 — Branch-Modell (nach Shell-Pin auf master)
+
+- [x] Meta: `.gitmodules` `branch=master`, Pins auf `origin/master`, Tooling/Doku nachgezogen.
+- [ ] Remote-Branches `vitalos` in Modul-Repos löschen (nach Freeze / Owner-OK).
+- [ ] Modul-CI bereinigen: `origin/vitalos`-Ancestor-Checks in `deploy-master.yml`, `merge-agent` TARGET_BRANCHES.
+- [ ] Pre-Push-Hooks die noch `master → vitalos` formulieren, umbiegen.
+
 ## BACKLOG.md-Parkplatz (nichts geloescht; aus Aktiv ausgelagert 2026-11-09 C-005)
 
 

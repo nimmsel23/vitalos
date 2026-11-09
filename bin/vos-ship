@@ -1,28 +1,20 @@
 #!/usr/bin/env bash
-# vos-ship — master -> vitalos (PR mit Checks) -> Meta-Repo in EINEM Lauf. master wird vorher direkt gepusht (= Live-Deploy).
+# vos-ship — Standalone-Live auf master prüfen, dann Shell-Pin (vos-release) in EINEM Lauf.
 #
-#   vos-ship fitness                interaktiv (fragt vor dem Start und in vos-release nach)
+#   vos-ship fitness                interaktiv
 #   vos-ship coach --yes           Standalone-Coach-CI + Live-SHA prüfen (kein Shell-Build)
 #   vos-ship fitness --yes          ohne Rückfragen (nur nach ausdrücklicher Freigabe!)
 #   vos-ship journal --functions    Zusätzlich die Journal-Push-Function deployen
 #   vos-ship fitness --dry-run      Preflight + Plan, ändert nichts (ruft vos-release --dry-run)
 #
-# Ablauf (jeder Schritt wartet auf den vorigen):
-#   1. Preflight   dev gepusht? Konflikte dev -> master?
-#   2. PR          dev -> master öffnen oder vorhandenen weiterverwenden
-#   3. Checks      auf die grünen PFLICHT-Checks warten (gh pr checks --required --watch)
-#   4. Merge       auf den Auto-Merge warten (Merge-Commit, nie Squash)
-#   5. Live-Deploy auf den Standalone-Deploy der CI warten
-#   6. vitalos     vos-release <modul>: master -> vitalos, Pointer, Meta-Repo-Push
-#   7. Nachlauf    ist Schritt 5 an ERR_PNPM_OUTDATED_LOCKFILE gescheitert, wird der
-#                  Live-Deploy jetzt (Lockfile ist durch Schritt 6 aktuell) neu gestartet
-#   8. --functions optional gezielt die passende Firebase-Push-Function deployen
+# Ablauf (seit 2026-11-09 — kein master→vitalos-PR mehr):
+#   1. Preflight   origin/master erreichbar? Pin hinter Tip?
+#   2. Live-Deploy auf den Standalone-Deploy der CI warten (falls Run existiert)
+#   3. Shell-Pin   vos-release <modul>: *-app auf origin/master, Pointer, Meta-Push
+#   4. Nachlauf    Live-Deploy bei Lockfile-Fail neu starten; optional --functions
 #
-# Der Fluss geht nur dev -> master -> vitalos. Das Skript ändert nichts an den Quell-Repos
-# außer über vos-release-pr/vos-release und bricht an jedem Fehler mit der nächsten Handlung ab.
-# Lockfile (Option B "Lite"): scheitert vos-release am Lockfile des Meta-Repos, zieht Schritt 6
-# ihn selbst nach und wiederholt vos-release. Der Live-Deploy aus Schritt 5 bleibt in diesem Fall
-# einmal rot und wird in Schritt 7 neu gestartet (siehe AGENTS.md, warum das nicht früher geht).
+# Standalone-Promotion bleibt dev→master (Auto-Promote / vos-release-pr). Dieses Skript
+# ist nur das Shell-Adoptions-Gate (Pointer-Bump).
 set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
@@ -75,100 +67,56 @@ if [[ "$module" == coach ]]; then
 fi
 for tool in gh jq git; do command -v "$tool" >/dev/null || die "$tool fehlt"; done
 
-SRC=master; DST=vitalos; LIVE_BRANCH=master
+LIVE_BRANCH=master
 RELEASE_ARGS=(); YES_HINT=""
 if [[ "$YES" -eq 1 ]]; then RELEASE_ARGS+=(--yes); YES_HINT=" --yes"; fi
 
 # ── 1. Preflight ───────────────────────────────────────────────────────────────
-step "1/7 Preflight ($module: $SRC -> $DST -> Meta-Repo)"
-git -C "$dir" fetch -q origin "$SRC" "$DST"
-# Es zählt nur der Remote-Stand: ausgeliefert wird immer origin/$SRC; der lokale Checkout (Branch, ungepushte Commits) ist egal.
-ahead="$(git -C "$dir" rev-list --count "origin/$DST..origin/$SRC")"
-info "origin/$SRC liegt $ahead Commit(s) vor origin/$DST"
-if [[ "$ahead" -gt 0 ]]; then
-  conflicts="$(git -C "$dir" merge-tree --write-tree --name-only --no-messages "origin/$DST" "origin/$SRC" 2>&1 | tail -n +2 | grep -v '^$' || true)"
-  [[ -z "$conflicts" ]] || die "Konflikte $SRC -> $DST, bitte zuerst lösen:
-$conflicts"
+step "1/4 Preflight ($module: origin/master → Shell-Pin)"
+git -C "$dir" fetch -q origin master
+master_sha="$(git -C "$dir" rev-parse origin/master)"
+info "origin/master=${master_sha:0:7}"
+
+case "$module" in
+  habits) app_dir="$HOME/vitalos/habit-app" ;;
+  6pack) app_dir="$HOME/vitalos/6pack-app" ;;
+  *) app_dir="$HOME/vitalos/${module}-app" ;;
+esac
+if [[ -e "$app_dir/.git" || -f "$app_dir/.git" ]]; then
+  pin_sha="$(git -C "$app_dir" rev-parse HEAD 2>/dev/null || true)"
+  if [[ -n "$pin_sha" && "$pin_sha" == "$master_sha" ]]; then
+    info "Shell-Pin ist schon origin/master"
+  elif [[ -n "$pin_sha" ]]; then
+    ahead="$(git -C "$dir" rev-list --count "${pin_sha}..${master_sha}" 2>/dev/null || echo "?")"
+    info "Shell-Pin ${pin_sha:0:7} → master ${master_sha:0:7} (delta $ahead)"
+  fi
 fi
 
 if [[ "$DRY" -eq 1 ]]; then
   suffix=""
   [[ "$FUNCTIONS" -eq 0 ]] || suffix=" und Push-Function deployen"
-  info "dry-run: würde PR $SRC -> $DST öffnen, auf Checks/Merge/Live-Deploy warten und dann vos-release $module ausführen$suffix."
-  step "6/7 vos-release --dry-run $module"
+  info "dry-run: würde Live-Deploy abwarten und vos-release $module ausführen$suffix."
+  step "3/4 vos-release --dry-run $module"
   exec "$SCRIPT_DIR/vos-release" --dry-run "$module"
 fi
 
 if [[ "$YES" -ne 1 ]]; then
-  printf '[vos-ship] %s Commit(s) werden PROD ausgeliefert (Standalone-Live + vitalos/Shell). Fortfahren? [j/N] ' "$ahead"
+  printf '[vos-ship] Shell-Pin auf origin/master (%s) setzen und Meta pushen? [j/N] ' "${master_sha:0:7}"
   read -r reply
   [[ "$reply" =~ ^[jJyY]$ ]] || die "abgebrochen"
 fi
 
-merged_at=""
-pr_number=""
-
-if [[ "$ahead" -gt 0 ]]; then
-  # ── 2. PR ────────────────────────────────────────────────────────────────────
-  step "2/7 Pull Request $SRC -> $DST"
-  pr_number="$(gh pr list -R "$repo" --base "$DST" --head "$SRC" --state open --json number --jq '.[0].number // empty')"
-  if [[ -n "$pr_number" ]]; then
-    info "vorhandener PR #$pr_number wird verwendet"
-  else
-    log="$(git -C "$dir" log --no-merges --format='- %s (%h)' "origin/$DST..origin/$SRC" | head -30 || true)"
-    body="Release \`$module\`: $ahead Commits von \`$SRC\` nach \`$DST\` (die 30 jüngsten nicht-Merge-Commits):
-
-$log
-
-Nach dem Merge deployt der Live-Deploy per CI. Merge ohne Squash (\`--merge\`).
-
-🤖 Generated with [Claude Code](https://claude.com/claude-code)"
-    url="$(gh pr create -R "$repo" --base "$DST" --head "$SRC" --title "Release $module $(date +%F)" --body "$body")"
-    pr_number="${url##*/}"
-    info "PR geöffnet: $url"
-  fi
-
-  # ── 3. Checks ────────────────────────────────────────────────────────────────
-  step "3/7 CI-Checks von PR #$pr_number"
-  # vitalos ist nicht geschützt, also gibt es keine Pflicht-Checks: gewartet wird auf die Workflows "Check (…)" des PRs
-  # (check.yml, pull_request -> vitalos). Preview-/Dependabot-Meldungen zählen nicht.
-  waited=0
-  while :; do
-    checks="$(gh pr checks "$pr_number" -R "$repo" --json workflow,bucket 2>/dev/null | jq -c '[.[] | select(.workflow | test("^Check"))]' || echo '[]')"
-    total="$(jq 'length' <<<"$checks")"; pending="$(jq '[.[] | select(.bucket == "pending")] | length' <<<"$checks")"
-    failed="$(jq '[.[] | select(.bucket == "fail" or .bucket == "cancel")] | length' <<<"$checks")"
-    [[ "$failed" -gt 0 ]] && { gh pr checks "$pr_number" -R "$repo" 2>&1 | sed 's/^/  /' || true; die "Check rot. Beheben, auf master pushen, dann vos-ship erneut."; }
-    [[ "$total" -gt 0 && "$pending" -eq 0 ]] && break
-    (( waited >= CHECK_TIMEOUT )) && die "Checks nicht fertig nach ${CHECK_TIMEOUT}s (gefunden: $total, offen: $pending): gh pr checks $pr_number -R $repo"
-    sleep 20; waited=$((waited + 20))
-  done
-  info "alle Checks grün"
-
-  # ── 4. Merge ─────────────────────────────────────────────────────────────────
-  step "4/7 Merge (Merge-Commit, kein Squash)"
-  state="$(gh pr view "$pr_number" -R "$repo" --json state --jq .state)"
-  if [[ "$state" == OPEN ]]; then
-    gh pr merge "$pr_number" -R "$repo" --merge >/dev/null || die "Merge von PR #$pr_number fehlgeschlagen: gh pr merge $pr_number -R $repo --merge"
-  fi
-  merged_at="$(gh pr view "$pr_number" -R "$repo" --json mergedAt --jq '.mergedAt // empty')"
-  [[ -n "$merged_at" ]] || die "PR #$pr_number ist nicht gemergt (Status: $(gh pr view "$pr_number" -R "$repo" --json state --jq .state))"
-  info "PR #$pr_number gemergt ($merged_at)"
-else
-  info "origin/$DST enthält schon alles von origin/$SRC — es geht direkt mit dem Pointer im Meta-Repo weiter"
-fi
-
-# ── 5. Live-Deploy ─────────────────────────────────────────────────────────────
+# ── 2. Live-Deploy ─────────────────────────────────────────────────────────────
 LIVE_FAILED_LOCK=0
 LIVE_WORKFLOW=""
-master_sha="$(git -C "$dir" rev-parse "origin/$SRC")"
 if :; then
-  step "5/7 Live-Deploy der CI (Push auf $LIVE_BRANCH, Commit ${master_sha:0:7})"
+  step "2/4 Live-Deploy der CI (Push auf $LIVE_BRANCH, Commit ${master_sha:0:7})"
   run_id=""; waited=0
   while [[ -z "$run_id" ]]; do
     run_id="$(gh run list -R "$repo" --branch "$LIVE_BRANCH" --limit 20 --json databaseId,name,headSha,createdAt \
       --jq "[.[] | select((.name | test(\"Live Deploy|deploy\"; \"i\")) and .headSha == \"$master_sha\")] | sort_by(.createdAt) | last | .databaseId // empty")"
     [[ -n "$run_id" ]] && break
-    (( waited >= DEPLOY_APPEAR_WAIT )) && { info "kein Live-Deploy-Run erschienen (nach ${DEPLOY_APPEAR_WAIT}s) — weiter mit vitalos"; break; }
+    (( waited >= DEPLOY_APPEAR_WAIT )) && { info "kein Live-Deploy-Run erschienen (nach ${DEPLOY_APPEAR_WAIT}s) — weiter mit Shell-Pin"; break; }
     sleep 10; waited=$((waited + 10))
   done
   if [[ -n "$run_id" ]]; then
@@ -187,15 +135,15 @@ if :; then
   fi
 fi
 
-# ── 6. vitalos ─────────────────────────────────────────────────────────────────
+# ── 3. Shell-Pin ────────────────────────────────────────────────────────────────
 # Lockfile des Meta-Repos (Option B, "Lite"): vos-release prüft vor dem Master-Push, ob
 # pnpm-lock.yaml zu den package.json der Module passt, und bricht sonst ab. Hier wird der
 # Lockfile dann automatisch nachgezogen (nur pnpm-lock.yaml, Pathspec-Commit) und vos-release
 # wiederholt — Lockfile UND Pointer gehen so in EINEM Push raus. Das ist Absicht: deploy-shell.yml
-# und deploy-vos-fitness.yml laufen bei jedem Push auf vitalos master mit --frozen-lockfile gegen
+# und deploy-vos-fitness.yml laufen bei jedem Push auf Meta-master mit --frozen-lockfile gegen
 # die gepinnten Submodule; ein früher gepushter Lockfile würde dort rot werden, solange der
 # Pointer noch auf das alte Modul zeigt.
-step "6/7 vos-release $module (master -> vitalos, Pointer, Meta-Repo)"
+step "3/4 vos-release $module (Pin origin/master, Meta-Repo)"
 release_log="$(mktemp)"; trap 'rm -f "$release_log"' EXIT
 run_release() {
   set +e
@@ -226,8 +174,8 @@ Co-Authored-By: Claude Sonnet 5.5 <noreply@anthropic.com>" -- pnpm-lock.yaml
   fi
 fi
 
-# ── 7. Nachlauf ────────────────────────────────────────────────────────────────
-step "7/7 Nachlauf"
+# ── 4. Nachlauf ────────────────────────────────────────────────────────────────
+step "4/4 Nachlauf"
 if [[ "$LIVE_FAILED_LOCK" -eq 1 && -n "$LIVE_WORKFLOW" ]]; then
   info "Live-Deploy war am Lockfile gescheitert — starte \"$LIVE_WORKFLOW\" neu"
   gh workflow run "$LIVE_WORKFLOW" -R "$repo" --ref "$LIVE_BRANCH"
@@ -252,5 +200,5 @@ if [[ "$FUNCTIONS" -eq 1 ]]; then
 else
   info "Functions übersprungen; bei Bedarf mit --functions erneut als gezielten Release starten."
 fi
-info "fertig: $module ist master -> vitalos ausgeliefert (PR mit Checks, Pointer im Meta-Repo)."
+info "fertig: $module Shell-Pin auf origin/master (${master_sha:0:7})."
 info "Run prüfen: gh-run-check --repo nimmsel23/vitalos --latest --workflow deploy-push-functions.yml"

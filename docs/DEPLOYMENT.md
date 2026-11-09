@@ -1,9 +1,10 @@
 # Deployment — private PWA und gemeinsamer Produktquellstand
 
-Stand der gemeinsamen Struktur: 2026-11-06. Die private Shell im Root und das
-Store-Produkt unter `prod/` verwenden dieselben App-Gitlinks. Die Root-App-
-Releases `dev -> master -> vitalos` bleiben ein eigener Weg. Store-Paketierung
-und Produkt-Firebase sind damit nicht veröffentlicht.
+Stand der gemeinsamen Struktur: 2026-11-09. Die private Shell im Root und das
+Store-Produkt unter `prod/` verwenden dieselben App-Gitlinks. App-Releases:
+`dev → master` (Standalone) + Shell-Pin auf `origin/master` (kein `vitalos`-
+Branch mehr als Pin-Ziel). Store-Paketierung und Produkt-Firebase sind damit
+nicht veröffentlicht.
 
 | Aufgabe | Zuständigkeit |
 | --- | --- |
@@ -37,25 +38,25 @@ Stand: 2026-10-30. Löst die Beschreibung in `CLAUDE.md` („Deploy-Flow Gesamtb
 ist die CI im Meta-Repo“) für die App-Repos ab; die Shell bleibt beim Meta-Repo. Historie und Befund des
 PR-Umbaus: `CI-DEPLOY-PR-FLOW.md`.
 
-## Release-Weg: dev → master → vitalos
+## Release-Weg: dev → master (+ Shell-Pin)
 
 ```
-dev ──(PR, vos-release-pr)──▶ master ──(vos-release)──▶ vitalos-Branch + Pointer ──▶ Shell
- │                             │                                                      │
- Edits, Previews              Standalone-Prod (nur CI)                               stable Prod
+dev ──(Auto-Promote / vos-release-pr)──▶ master ──(vos-release / vos-ship)──▶ Meta-Pointer ──▶ Shell
+ │                                        │
+ Edits, Previews                         Standalone-Live (CI) + Pin-Quelle für *-app
 ```
 
 | Branch | Rolle | Lokal? | Deploy |
 |---|---|---|---|
-| `dev` | Edits und Previews | ja (`~/<modul>-dev`, fest auf `dev`) | Push → Preview-Channel `dev` (24 h), PR → PR-Channel; `Check (<App>)` auf PRs |
-| `master` | **Standalone-Prod** der App (z. B. `journal-vos.web.app`) | nein, muss nicht existieren | Push auf `master` → `Live Deploy (<App> master)`, **nur per CI** |
-| `vitalos` | Stand der App **für die Shell** (`~/vitalos/<x>-app` ist darauf ausgecheckt) | als `-app`-Checkout im Meta-Repo | kein eigenes Deploy; der Pointer im Meta-Repo wird von der Shell-CI gebaut |
+| `dev` | Edits und Previews | ja (`~/dev/<modul>-dev`, fest auf `dev`) | Push → Preview-Channel `dev` (24 h), PR → PR-Channel; `Check (<App>)` auf PRs |
+| `master` | **Standalone-Prod** und **Shell-Pin-Quelle** | nein, lokal nicht nötig | Push → `Live Deploy (<App> master)`; Meta pinnt denselben Tip in `*-app` |
+| `vitalos` | **Legacy** (existiert ggf. noch remote) | nicht mehr Pin-Ziel | nicht mehr mergen/pushen für Shell; `.gitmodules` hat `branch = master` |
 
 `master` ist der Default-Branch aller neun Repos (journal, fuel, habits, learn, relax, plan, 6pack, skills, fitness).
 
-Die Standalone-Apps sind gegenüber der Shell **Staging**: `master` darf der `vitalos`-Stand vorauslaufen, die
-Shell kann auf einem älteren Commit stehen, solange sie zuverlässig läuft. Die Shell (`vitalos.web.app`) ist die
-stable Prod — das, was später an Premium-Abonnenten ausgeliefert werden kann.
+Die Shell (`vitalos.web.app`) nimmt `origin/master` erst mit dem bewussten Pointer-Bump auf
+(`vos-release` / `vos-ship`). Standalone darf dem Shell-Pin vorauslaufen — das Adoptions-Gate
+bleibt der Meta-Bump, nicht ein dritter Dauer-Branch.
 
 ## 1. dev → master (Standalone-Prod)
 
@@ -87,23 +88,22 @@ Produktions-Sites (Projekt `fitness-aos`): journal → `journal`, `v2`, `door`, 
 `fitness-aos` (+ Training/Atlas); plan → `vos-plan`; 6pack → `vos-6pack`; skills → `vos-skills`; learn, habits, relax
 je eigene Site. `fuel-os.web.app` hat weiterhin einen eigenen Standalone-Weg.
 
-## 2. master → vitalos (Shell-Promotion)
+## 2. Shell-Promotion (Pin origin/master)
 
 ```bash
-vos-release [modul ...]       # oder --all; --dry-run zeigt nur, was passieren würde; --yes überspringt Rückfragen
+vos-release [modul ...]       # oder --all; --dry-run; --yes
+vos-ship <modul>              # Live-Deploy abwarten + vos-release in einem Lauf
 vos-overview                  # vorher: Klone, Sync, Pointer (nur lesen)
 ```
 
 Pro Modul:
 
-1. Preflight (lesend, `git merge-tree`): lässt sich `origin/master` ohne Konflikt nach `vitalos` mergen? Erlaubte
-   Konflikte: Backup-Dateien, Hooks, Doku (`master` gewinnt). Alles andere bricht ab, **bevor** irgendetwas
-   gepusht wird.
-2. Im `-app`-Checkout (`~/vitalos/<x>-app`, fest auf `vitalos`): `origin/master` holen, nach `vitalos` mergen,
-   `vitalos` pushen. `master` wird nie lokal gebraucht — es reicht der Fetch.
+1. Preflight: `origin/master` im Modul-Repo erreichbar.
+2. Im `-app`-Checkout (`~/vitalos/<x>-app`): `fetch` + `checkout --detach origin/master`
+   (kein Merge, kein Push ins Modul-Repo). Detached Pin ist Absicht.
 3. Am Ende: Lockfile-Check (`pnpm install --frozen-lockfile --lockfile-only`); hat sich `pnpm-lock.yaml`
-   geändert, wird es **mitcommittet**. Dann Pointer-Bump aller geänderten `-app`-Ordner in einem Commit und Push
-   von `master` im Meta-Repo → `deploy-shell.yml` baut die Shell.
+   geändert, wird es **mitcommittet**. Dann Pointer-Bump der geänderten `-app`-Ordner und Push
+   von Meta-`master` → `deploy-shell.yml` baut die Shell.
 
 Das Meta-Repo deployt nur noch: Shell (`deploy-shell.yml`), Firestore-Rules (manuell), Push-Functions,
 `vos-fitness`. Die früheren App-Deploys (`deploy-fitness/fuel/habits/journal/learn/relax/plan/skills.yml`) liegen in
@@ -119,8 +119,8 @@ wie die anderen. Alte verschachtelte Checkouts: `~/.bak-nest-submodules/`.
 
 ## Regeln
 
-- `~/<modul>-dev` stehen fest auf `dev`, `~/vitalos/<x>-app` fest auf `vitalos` (siehe `CLAUDE.md`).
-- Agent-/Feature-Branches als Worktree: `git -C ~/<modul>-dev worktree add .worktrees/<name> <branch>`.
+- `~/dev/<modul>-dev` fest auf `dev`; `~/vitalos/<x>-app` = Pin auf `origin/master` (oft detached).
+- Agent-/Feature-Branches als Worktree nur mit Owner-Ausnahme (sonst auf `dev`/`master` bleiben).
 - Vor jedem Release `vos-overview`. Beim Shell-Release gehen alle lokal unpushed Commits im Meta-Repo mit raus.
 - Firestore-Rules nur aus `~/vitalos` (`deploy-firestore-rules.yml` oder lokal), nie aus einem App-Repo.
 - Fuel-Mini-Apps (`vos-fuel-*`) laufen nie per CI, nur manuell.
@@ -208,8 +208,8 @@ Bundle); die saubere Lösung ist ein shell-taugliches Push-Modul aus `6pack-dev`
 ## Hook-Tipps
 
 Die Pre-Push-Hooks (journal, fuel, habits, fitness, relax) zeigen beim Push von `dev` den Weg: `vos-release-pr <modul>`
-(dev → master) und `<modul>-release` (master → vitalos). Die `*-release`-Wrapper in `~/vitalos/bin` rufen
-`vos-release <modul>` auf, das ist die Shell-Promotion — nicht der Weg nach `master`.
+(dev → master) und `<modul>-release` (Shell-Pin). Die `*-release`-Wrapper in `~/vitalos/bin` rufen
+`vos-release <modul>` auf — Pointer-Bump, nicht der Weg nach `master`.
 
 ## Branch-Schutz (seit 2026-10-29)
 
@@ -218,7 +218,7 @@ Die Pre-Push-Hooks (journal, fuel, habits, fitness, relax) zeigen beim Push von 
   „Branch muss aktuell sein" (`strict` aus) — `dev` liegt durch Merge-Commits immer etwas hinter `master`, mit `strict`
   käme der Auto-Merge nie durch. Kein „Linear history", der Auto-Merge nutzt Merge-Commits.
 - **Meta-Repo `vitalos` `master`:** nur Force-Push und Löschen gesperrt (`vos-release` pusht den Pointer-Bump direkt).
-- **Ohne Schutz:** `dev` und die `vitalos`-Branches der App-Repos (`vos-release` pusht dort direkt).
+- **Ohne Schutz:** `dev`. Der Legacy-Branch `vitalos` in App-Repos wird für die Shell nicht mehr beschrieben/gepusht.
 - Getestet mit skills PR #5: Check grün → Auto-Merge → `Live Deploy (Skills master)` grün.
 - Zurücknehmen: `gh api -X DELETE repos/nimmsel23/<repo>/branches/master/protection`.
 
@@ -228,14 +228,14 @@ Die Pre-Push-Hooks (journal, fuel, habits, fitness, relax) zeigen beim Push von 
 - Weg PR → Auto-Merge → Deploy ist nur mit `skills-dev` durchgespielt (PR #1, 2026-10-29); die anderen Module sind
   gleich aufgebaut, aber ungetestet.
 - `dev` kennt die `master`-Workflows teils noch nicht; sie kommen beim ersten Release-PR über den Merge.
-- Lokale Pre-Push-Hooks einzelner Repos (z. B. `plan-dev`) können beim Push auf `vitalos` lokal deployen — prüfen.
+- Lokale Pre-Push-Hooks einzelner Repos (z. B. `plan-dev`) auf Legacy-`vitalos`-Push prüfen/entschärfen.
 - Stand der Offline-first-Umbauten: nicht im Browser getestet (siehe `~/OFFLINE-FIRST.md`).
 - **Standalone-Deploys auf die eigenen Repos umstellen** (Zielbild oben): Fitness-Workflow ist vorbereitet, Umschaltung von
   `deploy-master.yml` auf `deploy-standalone.yml` steht aus; danach dieselbe Umstellung für die übrigen Module.
 - **`coach-dev`, `habits-dev`:** `@vos/cross-app-aliases` wird wirklich genutzt (19 bzw. 14 Dateien) — Standalone-Install auf
   `master` klären (Paket im Lockfile / Aliase über `siblingDir()`).
 - **`plan-dev`-Release:** Fix liegt auf `dev` (`8097ef5`), `master` fehlt noch; auf `dev` warten 13 Feature-Commits mit.
-- **Option C:** vor dem Push von `vitalos master` prüfen, dass alle App-Importe der Shell am neuen Pointer existieren.
+- **Option C:** vor dem Meta-`master`-Push prüfen, dass alle App-Importe der Shell am neuen Pointer existieren.
 - **6Pack-Push in der Shell:** shell-taugliches Push-Modul aus `6pack-dev` bereitstellen; bis dahin ist `enablePush` in
   `src/shell/SixPackApp.jsx` aus.
 - **`deploy-vos-fitness.yml`** prüfen und ggf. abschalten (Altlast).
@@ -253,7 +253,7 @@ Relax, Plan, Habits, Journal, Fuel und Skills deployen wie Fitness: `deploy-mast
 Repo** (`fetch-depth: 0`, damit der Changelog bei `workflow_dispatch` `git log <parent>..HEAD` lesen kann) und die
 benötigten Nachbarn als `master`-Klone daneben, jeweils mit eigenem Lockfile (`--frozen-lockfile --ignore-scripts`),
 baut und deployt im eigenen Ordner. Das Meta-Repo `vitalos` wird für Standalone-Deploys nicht mehr ausgecheckt;
-Branch `vitalos` und die Submodul-Pfade (`fitness-app`, `plan-app`, …) bleiben unverändert der Shell-Weg.
+Submodul-Pfade (`fitness-app`, `plan-app`, …) bleiben der Shell-Weg; Pin-Quelle ist `origin/master`.
 
 | App | Nachbarn (master) | Besonderheit |
 |---|---|---|

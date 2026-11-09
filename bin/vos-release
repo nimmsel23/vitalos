@@ -13,9 +13,8 @@ NC='\033[0m'
 
 declare -A STANDALONE_DIRS
 declare -A SUBMODULE_DIRS
-# Shell-Promotion: dev -> master (PR, vos-release-pr) -> vitalos (dieses Skript). Quelle ist origin/master der
-# Standalone-Repos (Standalone-Prod); master liegt nur auf GitHub, nie lokal. Ziel ist der Branch vitalos im
-# -app-Checkout, danach der Pointer-Bump im Meta-Repo.
+# Shell-Promotion (seit 2026-11-09): Pin origin/master in den *-app-Checkouts + Meta-Pointer-Bump.
+# Kein Merge mehr in einen vitalos-Branch. Quelle = Standalone-Prod (origin/master).
 declare -A SOURCE_BRANCHES
 declare -A TARGET_BRANCHES
 declare -A NOISE_PATTERNS
@@ -42,7 +41,7 @@ SUBMODULE_DIRS[skills]="/home/alpha/vitalos/skills-app"
 
 # skills, plan und 6pack sind seit 2026-10-29 normale Module: fitness-dev trägt sie nicht mehr als
 # Gitlinks, der Fitness-Build löst sie über die Nachbar-Checkouts auf (plan-app|plan-dev usw.).
-# Ihr Release ist wie bei den anderen dev -> vitalos -> Pointer-Bump im Meta-Repo.
+# Ihr Release: Pin origin/master → Pointer-Bump im Meta-Repo.
 
 SOURCE_BRANCHES[fitness]="master"
 SOURCE_BRANCHES[fuel]="master"
@@ -54,21 +53,16 @@ SOURCE_BRANCHES[6pack]="master"
 SOURCE_BRANCHES[plan]="master"
 SOURCE_BRANCHES[skills]="master"
 
-# Submodule-Master-Branch je Modul — alle Module heissen "vitalos" (Rename,
-# siehe fitness-dev/CLAUDE.md "Main branch"). journal-app/learn-app standen
-# bis 2026-10-13 fälschlich auf "master" ausgecheckt (bzw. gar nicht), obwohl
-# .gitmodules schon branch=vitalos deklarierte — war Checkout-Drift, keine
-# bewusste Ausnahme (alte Doku hier war falsch). Fallback unten in
-# target_branch() falls hier mal ein Modul fehlt.
-TARGET_BRANCHES[fitness]="vitalos"
-TARGET_BRANCHES[fuel]="vitalos"
-TARGET_BRANCHES[habits]="vitalos"
-TARGET_BRANCHES[journal]="vitalos"
-TARGET_BRANCHES[learn]="vitalos"
-TARGET_BRANCHES[relax]="vitalos"
-TARGET_BRANCHES[6pack]="vitalos"
-TARGET_BRANCHES[plan]="vitalos"
-TARGET_BRANCHES[skills]="vitalos"
+# Pin-Ziel = master (.gitmodules branch=master). Checkout darf detached am Tip liegen.
+TARGET_BRANCHES[fitness]="master"
+TARGET_BRANCHES[fuel]="master"
+TARGET_BRANCHES[habits]="master"
+TARGET_BRANCHES[journal]="master"
+TARGET_BRANCHES[learn]="master"
+TARGET_BRANCHES[relax]="master"
+TARGET_BRANCHES[6pack]="master"
+TARGET_BRANCHES[plan]="master"
+TARGET_BRANCHES[skills]="master"
 
 # vos-release deployt für fitness ausschliesslich npm run build:firebase
 # (liest src/** + die KB-*Daten*-YAMLs zur Build-Zeit für die generierten
@@ -117,7 +111,7 @@ AUTO_YES=0
 
 usage() {
     cat <<'EOF'
-vos-release — Shell-Promotion: origin/master der Standalone-Repos nach vitalos mergen, vitalos-Pointer bumpen
+vos-release — Shell-Promotion: *-app auf origin/master pinnen, Meta-Pointer bumpen
 
 Usage:
   vos-release [module ...]
@@ -132,11 +126,9 @@ Modules:
   der Fitness-Build nimmt die Nachbar-Checkouts). Jedes Modul wird einzeln ausgeliefert.
 
 Behavior:
-  - Weg: dev -> master (PR, `vos-release-pr <modul>`, deployt Standalone-Prod per CI) -> vitalos (dieses Skript).
-  - For every module: fetch origin/master der Standalone-Repos (master existiert lokal nicht), merge it into the
-    vitalos branch of the -app checkout, push vitalos.
-  - At the end: stage changed submodule pointers in /home/alpha/vitalos,
-    create one parent commit, and push vitalos master (deployt die Shell).
+  - Weg: dev -> master (Auto-Promote / vos-release-pr, Standalone-Live) -> dieses Skript (Shell-Pin).
+  - Pro Modul: fetch origin/master, *-app detached auf diesen Tip setzen (kein Merge, kein Push ins Modul-Repo).
+  - Am Ende: Submodul-Pointer im Meta-Repo committen und master pushen (deploy-shell.yml).
 
 Interactive:
   - If no module is given and gum is installed, an interactive multi-select opens.
@@ -252,8 +244,9 @@ expect_branch() {
     local label="$3"
     local branch
     branch="$("$REAL_GIT" -C "$repo" branch --show-current)"
-    [[ "$branch" == "$branch_expected" ]] || {
-        error "Expected $label on branch $branch_expected, found $branch"
+    # Shell-Pins dürfen detached am Tip liegen (materialisierter Gitlink).
+    [[ -z "$branch" || "$branch" == "$branch_expected" ]] || {
+        error "Expected $label on branch $branch_expected (oder detached), found $branch"
         exit 1
     }
 }
@@ -366,33 +359,20 @@ resolve_backup_conflicts() {
     done <<< "$unresolved"
 }
 
-# Vorab-Check VOR jedem Push: lässt sich lokales dev sauber nach origin/<target> mergen?
-# Lesend (git merge-tree). Erlaubte Konflikte: Backup-Dateien, Hooks und Doku (dev gewinnt).
+# Vorab: origin/master muss erreichbar sein (Pin-Quelle). Kein Merge-Preflight mehr.
 preflight_merge() {
     local module="$1"
     local checkout="${SUBMODULE_DIRS[$module]}"
     local source_branch="${SOURCE_BRANCHES[$module]}"
-    local target_branch="${TARGET_BRANCHES[$module]:-master}"
-    "$REAL_GIT" -C "$checkout" fetch -q origin "$target_branch" "$source_branch" 2>/dev/null || warn "[$module] fetch origin/$source_branch fehlgeschlagen — Preflight mit altem Stand"
-    local out conflicts blocking
-    out="$("$REAL_GIT" -C "$checkout" merge-tree --write-tree --name-only --no-messages "origin/$target_branch" "origin/$source_branch" 2>&1 || true)"
-    conflicts="$(printf '%s\n' "$out" | tail -n +2 | grep -v '^$' || true)"
-    [[ -n "$conflicts" ]] || { info "[$module] Preflight: $source_branch -> $target_branch mergt konfliktfrei"; return 0; }
-    blocking=""
-    local file
-    while IFS= read -r file; do
-        [[ -n "$file" ]] || continue
-        if [[ "$file" =~ \.bak($|[.]) || "$file" =~ \.baks || "$file" =~ \.mjs\.bak- || "$file" =~ ^(\.githooks|\.claude/hooks)/ ]] || is_doc_path "$file"; then
-            continue
-        fi
-        blocking+="${file}"$'\n'
-    done <<< "$conflicts"
-    if [[ -n "$blocking" ]]; then
-        error "[$module] Preflight: $source_branch -> $target_branch hat Konflikte, die vos-release nicht lösen darf:"
-        printf '%s\n' "$blocking" >&2
+    if ! "$REAL_GIT" -C "$checkout" fetch -q origin "$source_branch" 2>/dev/null; then
+        error "[$module] fetch origin/$source_branch fehlgeschlagen"
         return 1
     fi
-    warn "[$module] Preflight: nur Hook-/Doku-/Backup-Konflikte ($(printf '%s' "$conflicts" | tr '\n' ' ')) — automatisch behandelt"
+    if ! "$REAL_GIT" -C "$checkout" rev-parse --verify -q "origin/$source_branch" >/dev/null; then
+        error "[$module] origin/$source_branch fehlt"
+        return 1
+    fi
+    info "[$module] Preflight: Pin-Quelle origin/$source_branch=$("$REAL_GIT" -C "$checkout" rev-parse --short "origin/$source_branch")"
 }
 
 # Umzug der Checkouts nach ~/dev (2026-10-31): Symlinks in den -app-Worktrees zeigen schon auf die neuen
@@ -416,42 +396,27 @@ restore_symlinks_matching_incoming() {
 
 merge_module() {
     local module="$1"
-    local standalone="${STANDALONE_DIRS[$module]}"
     local submodule="${SUBMODULE_DIRS[$module]}"
     local source_branch="${SOURCE_BRANCHES[$module]}"
     local target_branch="${TARGET_BRANCHES[$module]:-master}"
-    local submodule_name
+    local submodule_name tip
     submodule_name="$(basename "$submodule")"
 
     require_dir "$submodule"
 
-    expect_branch "$submodule" "$target_branch" "$submodule"
+    # Kein Branch-Zwang vor dem Pin: alter vitalos-Checkout wird auf origin/master detached umgelegt.
     restore_symlinks_matching_incoming "$submodule" "$source_branch"
     require_clean_repo "$module" "$submodule" "$submodule" tolerate-lock-link-rewrite
 
-    # Eine reine link:-Umschreibung ist kein Inhalt, wuerde aber den folgenden Merge von master blockieren
-    # ("lokale Aenderungen wuerden ueberschrieben"), sobald master pnpm-lock.yaml selbst aendert. Deshalb
-    # wird genau diese Datei vor dem Merge auf den eingecheckten Stand zurueckgesetzt - nur wenn
-    # lockfile_link_rewrite_only (alle geaenderten Zeilen enthalten link:) zutrifft. REAL_GIT umgeht
-    # bewusst den interaktiven Discard-Guard; alles andere im Worktree bleibt unangetastet.
     if lockfile_link_rewrite_only "$submodule"; then
-        info "[$module] pnpm-lock.yaml: reine link:-Umschreibung im Worktree wird vor dem Merge zurueckgesetzt"
+        info "[$module] pnpm-lock.yaml: reine link:-Umschreibung im Worktree wird vor dem Pin zurückgesetzt"
         run "$REAL_GIT" -C "$submodule" checkout -- pnpm-lock.yaml
     fi
 
-    # Neuer Ablauf (2026-11-06): master -> vitalos läuft als PR mit Checks (vos-ship). Hier wird nur noch gefolgt:
-    # Submodul-Checkout per fast-forward auf origin/$target_branch. Kein eigener Merge, kein Push in das Modul-Repo.
-    run "$REAL_GIT" -C "$submodule" fetch origin "$source_branch" "$target_branch"
-    if ! "$REAL_GIT" -C "$submodule" merge-base --is-ancestor "origin/$source_branch" "origin/$target_branch"; then
-        if [[ "$DRY_RUN" -eq 1 ]]; then
-            warn "[$module] origin/$target_branch enthält origin/$source_branch noch nicht (Dry-Run, Plan unvollständig) — erst PR $source_branch -> $target_branch mit Checks: vos-ship $module"
-        else
-            error "[$module] origin/$target_branch enthält origin/$source_branch noch nicht. Erst den PR $source_branch -> $target_branch mit Checks mergen: vos-ship $module"
-            exit 1
-        fi
-    fi
-    info "[$module] Submodul $target_branch per fast-forward auf origin/$target_branch"
-    run "$REAL_GIT" -C "$submodule" merge --ff-only "origin/$target_branch"
+    run "$REAL_GIT" -C "$submodule" fetch origin "$source_branch"
+    tip="$("$REAL_GIT" -C "$submodule" rev-parse --short "origin/$source_branch")"
+    info "[$module] Pin *-app detached auf origin/$source_branch ($tip)"
+    run "$REAL_GIT" -C "$submodule" checkout --detach "origin/$source_branch"
 
     info "[$module] Initialize nested submodules before release build/push"
     run "$REAL_GIT" -C "$submodule" submodule sync --recursive

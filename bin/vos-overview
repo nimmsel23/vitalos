@@ -2,18 +2,16 @@
 """vos-overview — Adlerblick über VitalOS und seine App-Checkouts (nur lesen, ändert nichts).
 
 Jede VOS-Mini-App existiert mehrfach:
-  standalone  ~/<m>-dev            Arbeitsbranch `dev`, hier arbeitet man und `vos-release` pusht von hier
-  vitalos     ~/vitalos/<m>-app    Submodul auf Branch `vitalos` (Build/CI im Meta-Repo)
-  nested      ~/dev/fitness-dev/<m>    6pack/plan zusätzlich als Submodul INNERHALB von fitness-dev
+  standalone  ~/dev/<m>-dev         Arbeitsbranch `dev`
+  vitalos     ~/vitalos/<m>-app     Submodul-Pin auf origin/master (oft detached; .gitmodules branch=master)
+  nested      ~/dev/fitness-dev/<m> 6pack/plan ggf. zusätzlich nested (Altlast)
 
 Coach ist eigenständig in ~/dev/coach-dev. Dort liegt `vitalos` als Checkout des
 VitalOS-Branches `coach`; dieser Integrationspfad gehört nicht zu vos-release.
 
 Das Skript zeigt je Klon Branch/Stand/Sync/Dirty, ob Pointer auf lokal-only Commits zeigen (CI-Falle
-"fatal: not our ref"), wie dev/vitalos/master gegeneinander stehen, alle Service Worker (inkl. Kopien und
-mini-app-shell-Drift), die letzten VitalOS-Deploy-Workflow-Läufe und leitet daraus die Push-Reihenfolge ab.
-Deploy-Läufe liest es über die GitHub CLI `gh`; dafür muss ein GitHub-Zugriff eingerichtet sein. Ausführen tut
-es nichts — dafür gibt es `vos-release` (der Plan nennt den passenden Aufruf).
+"fatal: not our ref"), wie dev/master und Pin gegeneinander stehen, Service Worker und Deploy-Läufe.
+Ausführen tut es nichts — dafür gibt es `vos-release` / `vos-ship`.
 
 Usage:
     vos-overview                 alles
@@ -136,14 +134,18 @@ def inspect_clone(module: str, role: str, path: Path, fetch: bool, expected_bran
     elif role == "standalone" and module in MODULES and c.branch not in ("dev", "(detached)"):
         c.problems.append(f"Regel-Verstoß: ~/{MODULES[module][0]} gehört fest auf `dev` (steht auf `{c.branch}`) — Agent-/Feature-Branches als Worktree: "
                           f"git -C ~/{MODULES[module][0]} worktree add .worktrees/<name> {c.branch}")
-    if role == "vitalos" and module in MODULES and c.branch not in ("vitalos", "(detached)"):
-        c.problems.append(f"Regel-Verstoß: ~/vitalos/{MODULES[module][1]} gehört fest auf `vitalos` (steht auf `{c.branch}`)")
+    if role == "vitalos" and module in MODULES and c.branch not in ("master", "(detached)"):
+        c.problems.append(
+            f"Regel-Verstoß: ~/vitalos/{MODULES[module][1]} gehört auf `master`/detached Pin "
+            f"(steht auf `{c.branch}`)"
+        )
     local_branch = role == "nested" and c.branch.startswith("lokal")
     if role == "nested" and module in MODULES and not local_branch:
         c.problems.append("Nebenlinie auf `" + c.branch + "` — soll ein lokaler Branch (`lokal`) sein; kanonisch ist ~/" + MODULES[module][0] + " (dev)")
-    if c.unpushed and not local_branch:
+    if c.unpushed and not local_branch and role != "vitalos":
         c.problems.append("HEAD in keinem Remote-Branch (nur lokal)")
-    if c.branch == "(detached)":
+    # Detached am Shell-Pin ist Absicht (materialisierter Gitlink auf origin/master).
+    if c.branch == "(detached)" and role != "vitalos":
         c.problems.append("detached HEAD")
     if not c.upstream and c.branch != "(detached)" and not local_branch:
         c.problems.append("kein Upstream")
@@ -365,27 +367,49 @@ def inspect_pointers(clones: dict[tuple[str, str], Clone]) -> list[Pointer]:
 class BranchRel:
     module: str
     repo: str
-    dev_vs_vitalos: str
-    master_vs_vitalos: str
+    dev_vs_vitalos: str  # legacy name: jetzt Pin vs origin/master im *-app, falls vorhanden
+    master_vs_vitalos: str  # origin/master vs origin/vitalos (Info, Branch darf noch existieren)
     dev_vs_master: str
 
 
 def branch_relations() -> list[BranchRel]:
     out = []
-    for m, (sa, _, _) in MODULES.items():
+    for m, (sa, sub, _) in MODULES.items():
         repo = HOME / "dev" / sa
         if not is_repo(repo):
             continue
+        app = VITALOS / sub
+        pin_vs_master = "?"
+        if is_repo(app):
+            rc, pin = git(app, "rev-parse", "HEAD")
+            rc2, mst = git(repo, "rev-parse", "origin/master")
+            if rc == 0 and rc2 == 0 and pin and mst:
+                pin_vs_master = _pin_rel(repo, pin, mst)
         out.append(
             BranchRel(
                 m,
                 str(repo).replace(str(HOME), "~"),
-                rel(repo, "origin/dev", "origin/vitalos"),
+                pin_vs_master,
                 rel(repo, "origin/master", "origin/vitalos"),
                 rel(repo, "origin/dev", "origin/master"),
             )
         )
     return out
+
+
+def _pin_rel(repo: Path, pin: str, master: str) -> str:
+    """pin gegenüber master: '=' | '+n' (pin voraus) | '-m' (pin hinten) | '+n/-m' | '?'."""
+    rc, out = git(repo, "rev-list", "--left-right", "--count", f"{master}...{pin}")
+    if rc != 0:
+        return "?"
+    behind, ahead = (int(x) for x in out.split())
+    if not ahead and not behind:
+        return "="
+    if ahead and not behind:
+        return f"+{ahead}"
+    if behind and not ahead:
+        return f"-{behind}"
+    return f"+{ahead}/-{behind}"
 
 
 # ---------------------------------------------------------------- Service Worker
@@ -499,16 +523,17 @@ def build_plan(clones: dict[tuple[str, str], Clone], pointers: list[Pointer], re
         add("~/dev/fitness-dev", f"nested Pointer in fitness-dev ({names}) weichen ab — nur relevant, solange 6pack/plan dort Submodule bleiben",
             "Strukturfrage: sind die nested Submodule neben ~/<m>-dev + vitalos/<m>-app überhaupt noch nötig?",
             "Entscheidung nötig; kein Pointer-Commit auf lokal-only Commits (CI: not our ref)")
-    # 4) dev -> vitalos-Branch mergen (macht vos-release)
+    # 4) Shell-Pin hinter origin/master → vos-release
     for m in RELEASE_ORDER:
         r = rel_by.get(m)
-        if r and r.dev_vs_vitalos not in ("=", "?") and r.dev_vs_vitalos.startswith("+"):
-            add(f"~/vitalos/{MODULES[m][1]}", f"{m}: origin/dev ist {r.dev_vs_vitalos} gegenüber origin/vitalos", f"vos-release {m}")
-    # 5) vitalos-Meta: Pointer-Bump
+        # pin_vs_master in Feld dev_vs_vitalos: negativ = Pin hinter master
+        if r and r.dev_vs_vitalos not in ("=", "?") and r.dev_vs_vitalos.startswith("-"):
+            add(f"~/vitalos/{MODULES[m][1]}", f"{m}: Shell-Pin ist {r.dev_vs_vitalos} hinter origin/master", f"vos-release {m}")
+    # 5) Meta: Pointer-Bump
     vs = [p for p in pointers if p.parent == "vitalos" and p.state in ("stale", "local-only")]
     if vs:
         add("~/vitalos", "Meta-Repo: Submodul-Pointer bumpen (macht vos-release am Ende)",
-            "vos-release … (committet + pusht vitalos master) — nie vorher manuell, sonst 'not our ref'",
+            "vos-release … (committet + pusht Meta master) — nie vorher manuell, sonst 'not our ref'",
             "; ".join(f"{p.child}: {p.detail}" for p in vs if p.state == "local-only"))
     v = clones.get(("vitalos-meta", "meta"))
     if v and v.exists and v.ahead:

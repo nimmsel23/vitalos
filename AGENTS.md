@@ -93,11 +93,12 @@ Veröffentlichung sind getrennte Nachweise. Kein erfolgreicher Teil ersetzt die
 
 ## Private App-/Shell-Releases
 
-Der bestehende App-Weg bleibt `dev -> master -> vitalos`; die tatsächlichen
-App-Workflows vor einer Veröffentlichung prüfen. `vos-release-pr`, `vos-ship`
-und `vos-release` gehören zum privaten Release-Weg und sind keine Produkt-
-Store-Veröffentlichung. Ein autorisierter Push von `master` kann die private
-Shell-CI auslösen. Ein App-Push verschiebt den Parent-Gitlink nicht automatisch.
+App-Weg: `dev → master` (Standalone-Live) und Shell-Pin auf `origin/master`
+via `vos-release` / `vos-ship` (kein `vitalos`-Branch als Pin-Ziel; `.gitmodules`
+`branch = master`). `vos-release-pr`, `vos-ship` und `vos-release` gehören zum
+privaten Release-Weg, nicht zur Store-Veröffentlichung. Ein autorisierter Push
+von Meta-`master` löst die Shell-CI aus. Ein App-Push verschiebt den Parent-
+Gitlink nicht automatisch.
 
 Produkt-Releases pinnen den gesamten Meta-Repo-Stand, optional mit `product-*`-
 Tag. Der Remote `product` ist nur eine Verbindung, keine automatische
