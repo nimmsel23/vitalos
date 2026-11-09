@@ -1,3 +1,13 @@
+## 2026-11-09 — AL-Lauf vitalos: C-002 Handoff (Org `3c55e958`)
+
+Eine Aufgabe (Guide #9): M1-RC Geräteabnahme — kein physisches Gerät, Emulator laut Guide nicht im Timer-Lauf.
+
+- Meta HEAD: `f2075da`. Branchabstand `origin/master...HEAD` 0/33 (nur dokumentiert). Submodule-Marker: 0.
+- Artefakte: `prod/android/app/build/outputs/apk/debug/app-debug.apk` (7,9M, 2026-11-06), `…/bundle/release/app-release.aab` (6,0M); `applicationId` `com.vitalos.app`.
+- `adb devices`: leer. AVDs vorhanden (`Medium_Phone_API_37.0`, `Small_Phone_API_37`) — nicht gestartet.
+- 4 Schritte Install/Login/Journal/Sync: nicht ausführbar → Handoff Live-Terminal/Gerät; Task bleibt pending.
+- Guide #9 Handoff-Notiz; NEXT/AL-LOG/ABTEILUNG; Org-Annotation `3c55e958`. Kein Push, kein Install, kein Emulator.
+
 ## 2026-11-09 — Vite-8 Fleet-Nachzug + App-Pin-Bump
 
 - Shell-CI-Skripte `test-sixpack-auth.mjs` / `test-firebase-messaging.mjs`: `transformWithEsbuild` → `esbuild.transform`, Dev-Dep `esbuild ^0.27.7` (Vite-8-Vorbeuge; lokal grün).
