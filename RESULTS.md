@@ -1,3 +1,9 @@
+## 2026-11-09 — Vite-8 Fleet-Nachzug + App-Pin-Bump
+
+- Shell-CI-Skripte `test-sixpack-auth.mjs` / `test-firebase-messaging.mjs`: `transformWithEsbuild` → `esbuild.transform`, Dev-Dep `esbuild ^0.27.7` (Vite-8-Vorbeuge; lokal grün).
+- `betta-vitalos-catchup`: alle Module master→vitalos synced (u. a. 6pack/skills Vite-Fixes).
+- Meta-Gitlinks gebumpt: fitness/fuel/journal/plan/skills/6pack auf aktuellen vitalos-Stand.
+
 ## 2026-11-09 — PM-Steuerung nur CPO
 
 - Owner-Korrektur: CTO hat keinen PM-Hebel.
