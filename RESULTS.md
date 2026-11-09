@@ -1,3 +1,8 @@
+## 2026-11-09 — Inbox nimmsel23+ceo an COO
+
+- Owner: lokale Mail-Triage/ack (`ceo-mail`) = COO, nicht CEO-Stundenlauf.
+- `ORG.md`/Skills/`coo-run`/`ceo-run`; Timer stuendlich *:55.
+
 ## 2026-11-09 — Strukturhygiene an COO (statt CEO)
 
 - Owner: Pfad-/Schema-Korrekturen = COO-Pflicht, kein CEO-Thema.
