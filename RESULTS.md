@@ -1,3 +1,13 @@
+## 2026-11-09 — AL-Lauf vitalos: GitHub-Pages-Kanal erfasst (Org-Hit 378427eb)
+
+Eine Aufgabe aus NEXT/Org-Queue (FIRE/TODO leer): Pages-Bestand + Sensibles-Check + Doku-Absatz + Empfehlung.
+
+- API: Legacy Pages, `master`/`/docs`, `https://nimmsel23.github.io/vitalos/`, last build `a1b762e` built.
+- Live: Root 404; `Index.html` 200; Landing-Assets unter Pages-Pfad fehlend.
+- `docs/` auf master: 17 Dateien (Marketing + Ops-Runbooks). Keine Rohsecrets; SA-Mails/Secret-Namen öffentlich.
+- Empfehlung: deaktivieren/beschneiden — Owner-Gate. Keine Konfigänderung.
+- Doku: `prod/docs/FIREBASE.md` § GitHub Pages; Verweise `docs/DEPLOYMENT.md`, `docs/UNIFIED-PRODUCT.md`; Guide Aufgabe 8 abgehakt; Org-Task 378427eb done.
+
 # 2026-11-08 ~22:55 CET — Tent W46 CLOSED (Oracle)
 
 - Tent versiegelt (Return CEO ok; Lessons/Course/New Targets).
