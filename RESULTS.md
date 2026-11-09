@@ -1,3 +1,9 @@
+## 2026-11-09 — Koordination aus migration/unified-product gezogen
+
+- `prod/migration/unified-product/coordination/` → `prod/coordination/` (git mv).
+- Altpfad bleibt Symlink; `migration/unified-product/README.md` klaert: nur Checkout-Merge-Rest.
+- Runner/Skills/Guides auf `~/vitalos/prod/coordination/` umgebogen.
+
 ## 2026-11-09 — AL-Guides: Hits = PM-Scope, AL waehlt dringendsten project-Task
 
 - `ABTEILUNGEN.md` + 9 Abteilungs-Guides: kein `+hit`-Gate fuer ALs; PM haelt Hits; AL nimmt maximal naechsten dringendsten Task der eigenen Abteilung.
@@ -52,7 +58,7 @@ Auftrag war die CEO-freigegebene Doku-Hygiene (Aufgabe 6 des Abteilungsleiter-Gu
 Auftrag war die CEO-freigegebene Bereinigung GENAU der zwei prunable /dev/shm-Focus-Worktrees (wt-focus a199fc4, wt-focus1 e11379b). Ergebnis: beide sind bei Laufstart bereits nicht mehr registriert — keine Admin-Einträge unter `.git/worktrees/`, keine Verzeichnisse in `/dev/shm`; die Entfernung erfolgte nach dem Erstlauf (02:45 UTC, dort noch 7 registrierte) durch eine unbekannte Linie, Boot war 2026-11-06 19:48. `git worktree prune` als Freigabe-Schritt ausgeführt: no-op (rc=0), 5 registrierte Worktrees unverändert, Branches `focus-stufe-0-1` (a199fc4) und `focus-stufe-1` (e11379b) wie freigegeben unberührt. Kein Push, kein Branch-/Tag-/Gitlink-Touch.
 
 - **Inventur:** dev-product Spitze `1b9601b`; Branchabstand `origin/master...dev-product` 18/7 (nur dokumentiert, NICHT angeglichen). Submodule: genau 1 Drift-Marker (`+ journal-app` 9502f2b, heads/vitalos, fremde Ausführungslinie — nur gemeldet), sonst sauber.
-- **Nur gemeldet, kein mv/rm:** uncommittet fremd `prod/migration/unified-product/coordination/CTO.md` (`M`), `D vitalos.html`; unversioniert `20`, `docs/Index.html`, `ABTEILUNG.md` (CEO-Datei), `AL-LOG.md` (dieser Lauf committet ihn).
+- **Nur gemeldet, kein mv/rm:** uncommittet fremd `prod/coordination/CTO.md` (`M`), `D vitalos.html`; unversioniert `20`, `docs/Index.html`, `ABTEILUNG.md` (CEO-Datei), `AL-LOG.md` (dieser Lauf committet ihn).
 - **Protokoll:** Guide-Abhaken `prod/docs/product-dev/abteilungen/vitalos.md`, AL-LOG 2026-11-08 gefüllt, NEXT.md-Folgetasks — alles in einem Commit auf dev-product. Guide-Referenzen `README.md`/`WOCHENPLAN.md` unter `docs/product-dev/` fehlen nach der Symlink-Konsolidierung (gemeldet an CEO/CTO).
 
 ---
