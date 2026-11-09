@@ -234,3 +234,15 @@ Gewinnt bei Widerspruch zu aelteren Saetzen („Code nur mit CEO-`+hit`/`+go`“
 - **Guides nachziehen:** AL-Anleitungen unter
   `~/vitalos-prod/docs/product-dev/abteilungen/*.md` duerfen die alte
   Inventur-Sperre nicht mehr enthalten; CTO haelt sie deckungsgleich.
+
+
+## Intake Abteilungsleiter (Owner-Klarstellung 2026-11-09)
+
+ALs bekommen Arbeit **primaer** ueber:
+1. Guide-MD `~/vitalos-prod/docs/product-dev/abteilungen/<repo>.md` (Aufgabenliste),
+2. Repo-`TODO.md` / `NEXT.md`,
+3. spontan im Live-Terminal.
+
+Die globale Org-Taskwarrior-DB liefert Rang und Beleg (`+hit`/`project:`), ersetzt
+aber nicht den MD-/Live-Intake. Bericht nach oben: 3 Zeilen AL-LOG → CEO-Digest
+(kein eigener Owner-Kanal, keine Status-Loops mit anderen ALs).
