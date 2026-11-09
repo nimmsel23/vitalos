@@ -1,6 +1,8 @@
 # VitalOS Node Tooling (SSOT)
 
-Vorlagen und Scripts für die `*-dev`-Repos und das Meta-Repo.
+Vorlagen und Scripts für die **aktiven** `*-dev`-Repos und das Meta-Repo.
+
+**Nicht:** `habits-dev` / `learn-dev` (Owner-Freeze 2026-11-07). Habits → `journal-dev` (`apps/habits`), Learn → `fitness-dev`. `habit-app` / `learn-app` in vitalos sind nur noch stale Pins.
 
 | Tool | Zweck | Befehl |
 | --- | --- | --- |

@@ -9,13 +9,13 @@ import { fileURLToPath } from 'node:url'
 
 const TOOLING = dirname(fileURLToPath(import.meta.url))
 const DEV = join(TOOLING, '../../dev')
+// habits-dev / learn-dev absichtlich FEHLEN: Owner-Freeze 2026-11-07.
+// Habits → journal-dev (apps/habits), Learn → fitness-dev. Keine Tooling-Pflege dort.
 const REPOS = [
   'fitness-dev',
   'fuel-dev',
   'journal-dev',
-  'habits-dev',
   'plan-dev',
-  'learn-dev',
   'relax-dev',
   'coach-dev',
   '6pack-dev',
