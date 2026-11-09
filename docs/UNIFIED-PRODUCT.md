@@ -39,6 +39,10 @@ Paketmanager: `pnpm@11.3.0`.
 Web-Assets können bei Bedarf gezielt aus `prod/` mit `pnpm exec cap sync android`
 oder `ios` synchronisiert werden. Synchronisierung ist kein nativer Build.
 Details: [Firebase](../prod/docs/FIREBASE.md) und [Store](../prod/docs/STORE-PUBLISHING-PLAN.md).
+GitHub Pages am Meta-Repo (`master`/`docs` → `https://nimmsel23.github.io/vitalos/`)
+ist **kein** Produkt- oder privates Firebase-Hosting; Erfassung und
+Owner-Empfehlung stehen unter
+[FIREBASE.md § GitHub Pages](../prod/docs/FIREBASE.md#github-pages-meta-repo-kein-firebase-hosting).
 
 ## Wrapper und Lockfiles im Produkt
 

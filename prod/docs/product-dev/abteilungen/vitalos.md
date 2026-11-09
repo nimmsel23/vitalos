@@ -17,6 +17,7 @@ Du schreibst Daniel nicht direkt (kein tele/wacli). Der Runner protokolliert den
 5. [ ] Vorschlag (Erstlauf-Inventur 2026-11-07): Zwei prunable Worktree-Eintraege `/dev/shm/wt-focus` und `/dev/shm/wt-focus1` (Branches focus-stufe-0-1/focus-stufe-1, Vibe-/Focus-Linie) beim CEO zur Freigabe melden; Bereinigung (targeted `git worktree remove`/`prune`) nur nach CEO-`+hit` — fremde Linien nicht selbst anfassen.
 6. [x] Erledigt (2026-11-08, AL-Lauf): RESULTS.md/NEXT.md im ~/vitalos-Root konsolidiert (Doku-Hygiene, Destillat, chronologische Ordnung, thin-results-Grenze gesetzt; Commit auf dev-product).
 7. [x] Erledigt (CEO-Konsolidierung 18:2x): Repo-eigene Task-DBs sind obsolet — globale Org-Task-DB `TASKRC=~/.local/state/vitalos-org/taskrc` (Owner-Weisung 2026-11-07: EINE DB fuer die Org). Vitalos-Hygiene-/Doku-Auftraege dort mit project:vitalos.
+8. [x] Erledigt (2026-11-09, AL-Lauf): Org-Hit 378427eb GitHub-Pages-Kanal erfasst/bewertet — Absatz in `prod/docs/FIREBASE.md`, Verweise in `docs/DEPLOYMENT.md` + `docs/UNIFIED-PRODUCT.md`; Empfehlung deaktivieren/beschneiden (Owner-Gate); keine Console-/Konfigaenderung.
 
 ## Arbeitsweise
 - Pro Lauf hoechstens EINE Aufgabe. Temp-Worktree: `git -C ~/vitalos worktree add --detach /dev/shm/wt-abt-vitalos dev-product`, dort arbeiten (never im Haupt-Checkout), gezielt `git add`, Commit mit konkreter Message und Trailer `Co-Authored-By: Mistral Vibe <vibe@mistral.ai>`.

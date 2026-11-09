@@ -97,3 +97,48 @@ Produkt-Build oder Deploy. Private Root-Deploy-Workflows behalten ihr privates
 Ziel. Im alten Produkt-Repo konfigurierte GitHub-Secrets/Variablen werden nicht
 durch eine lokale Remote-Definition ins neue Quellrepo übertragen.
 Keine alten `master`-Deploy-Workflows des Produkt-Forks ungeprüft aktivieren.
+
+## GitHub Pages (Meta-Repo, kein Firebase-Hosting)
+
+Separater öffentlicher Doku-/Landing-Kanal am Parent-Repo `nimmsel23/vitalos`
+(Stand erfasst 2026-11-09, Org-Task `378427eb`; keine Console-/Konfigänderung
+in diesem Lauf):
+
+| Feld | Ist |
+| --- | --- |
+| URL | `https://nimmsel23.github.io/vitalos/` |
+| Build | Legacy (`build_type=legacy`), Status `built` |
+| Quelle | Branch `master`, Pfad `/docs` — jeder Push auf `master` baut neu |
+| Domain | keine Custom-Domain; HTTPS enforced; `public=true` |
+
+**Bestand unter `docs/` auf `master` (17 Dateien):** Marketing-Landing
+`docs/Index.html` plus Betriebs-/Architektur-Runbooks (`DEPLOYMENT.md`,
+`CI-DEPLOY-PR-FLOW.md`, `UNIFIED-PRODUCT.md`, `FUNCTIONS-*-MIGRATION.md`,
+`PUSH-FUNCTIONS.md`, `STORE-*-*.md`, `SHELL-SERVICE-WORKER.md`,
+`CLI-VLOG-VOS-FIRESTORE.md`, `OBSERVE-OPERATE-ARCHITECTURE.md`, u. a.).
+
+**Live-Check:** Root `…/vitalos/` → HTTP 404 (kein kleingeschriebenes
+`index.html`/`README.md` in `/docs`). `…/vitalos/Index.html` → HTTP 200.
+Die Landing referenziert Root-Assets (`/app.js`, `/consent.js`, Legal-Seiten),
+die unter der Pages-Quelle `/docs` nicht mitgeliefert werden — gebrochene
+Relativpfade.
+
+**Sensibles-Inhalte-Check (ohne Secret-Werte):** Keine Rohschlüssel, keine
+`google-services.json`, keine Kundendaten im veröffentlichten `docs/`-Baum.
+Wohl aber öffentlich lesbare Betriebsdetails: Service-Account-Mails
+(`fitness-pwa-deploy@…`, Compute-Laufzeitkonten), Secret-*Namen*
+(`GEMINI_API_KEY`, `GOOGLE_OAUTH_CLIENT_SECRET`,
+`BACKEND_FUNCTIONS_DEPLOY_KEY`), IAM-/Deploy-Reparaturhinweise, interne
+Release-Abläufe. Das öffentliche Git-Repo legt dieselben Dateien ohnehin offen;
+Pages macht sie zusätzlich als Website browsbar.
+
+**Empfehlung (Entscheidung = Owner-Gate):** Pages **deaktivieren oder stark
+beschneiden**. Ops-Runbooks brauchen keinen Site-Kanal; Produkt-Landing gehört
+auf Produkt-/Marketing-Hosting, nicht neben interne Deploy-Doku. Bis zur
+Owner-Entscheidung: keine Pages-Konfig anfassen. Alternative nur falls Landing
+bewusst bleiben soll: kleingeschriebenes `docs/index.html` + Ops-Markdown aus
+dem Pages-Pfad nehmen (oder Actions-Publish nur für kuratierte Public-Dateien).
+
+Verweiskette: [Deployment](../../docs/DEPLOYMENT.md),
+[UNIFIED-PRODUCT](../../docs/UNIFIED-PRODUCT.md). Verwandter CTO-Hit zur
+Public-Repo-Sichtbarkeit: Org-Task `8e82a31b` (C-004).
