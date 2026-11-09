@@ -26,13 +26,14 @@ Ausfuehrungslinien unter dem CTO, keine eigene Berichtsstufe an den Owner.
   `nimmsel23+ceo@gmail.com`, Runner/Timer/Catch-ups, Oracle-Wochenpflicht.
   **Schuetzt den Owner vor Noise; ist hart zur Org.** Keine Gegen-Prioritaeten
   zum CEO-Dispatch. Kein Owner-Spam.
-- **CTO:** Technik/Infra, AL-Abnahme, CI/Runner-Technik. Darf den **PM**
-  technisch steuern (Scope der Umsetzung, Qualitaets-/CI-Grenzen). Cloud-
-  Deploys nur nach Owner-Go.
-- **CPO:** Produktstrategie, Discovery, Produktpriorisierung, Backlog. Darf
-  den **PM** produktseitig steuern (Was/Reihenfolge im freigegebenen Rahmen).
-- **PM:** Produktumsetzung mit ALs (`+hit`) unter Einfluss von CPO (Was) und
-  CTO (Wie/Guards) im CEO-Rahmen.
+- **CTO:** Technik/Infra, AL-Abnahme, CI/Runner-Technik. Cloud-Deploys nur nach
+  Owner-Go. **Kein direkter Einfluss auf den PM** — Technik-Grenzen laufen
+  ueber CEO/COO oder als Input an den CPO, nicht als PM-Steuerung.
+- **CPO:** Produktstrategie, Discovery, Produktpriorisierung, Backlog.
+  **Einzige Rolle mit Einfluss auf den PM** (Was/Reihenfolge im freigegebenen
+  Rahmen).
+- **PM:** Produktumsetzung mit ALs (`+hit`) unter Einfluss des **CPO**; CTO
+  steuert den PM nicht.
 - **Abteilungsleiter:** Ausfuehrung je Repo. Intake = Guide-MD
   (`docs/product-dev/abteilungen/<repo>.md`), Repo-`TODO.md`/`NEXT.md`, oder
   spontan im Live-Terminal. Org-Taskwarrior ist Rang/Beleg, nicht der einzige
