@@ -639,3 +639,8 @@ Vor Abschluss prüfen:
 * [ ] keine bekannten Legacy-IDs / alten Datenpfade versehentlich reaktiviert
 * [ ] Build erfolgreich
 * [ ] relevante Tests erfolgreich
+
+## Aus NEXT.md ausgelagert — CTO C-005 (2026-11-09 10:33)
+
+Siehe `NEXT.md` Abschnitt „BACKLOG.md-Parkplatz" (voller Altbestand belassen).
+Aktiv oben in NEXT.md auf 5 Punkte gekuerzt.

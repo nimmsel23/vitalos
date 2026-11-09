@@ -56,3 +56,12 @@ Jede Linie und jeder AL darf eigene Shell-Hilfen (Skripte, Aliase, fish-Funktion
 ## AUTOMATION-Zeile (Stehenderauftrag, Org-Task 18)
 
 Wiederholst du in deinem Repo-Alltag von Hand einen Schritt, den ein Skript, ein Werkzeug oder eine Konfiguration erledigen könnte, schreibe GENAU EINE Zeile ins AL-Log deines Laufs: `AUTOMATION: <Schritt> — <Vorschlag> — <geschätzte Ersparnis>`. Nur echte Beobachtungen aus dem eigenen Lauf, keine Erfindungen, keine Systemarchitektur-Träume, keine neue Taskfarm: Jede Automatisierung muss eine wiederkehrende Aufgabe LÖSCHEN. Die CTO-Linie aggregiert die Zeilen wöchentlich für die Door-War-Priorisierung.
+
+## CTO-Nachtauftrag (2026-11-09)
+
+1. C-003 Lueckenliste 4-Deposit (`c46b3028`) — DoD max 5 Luecken S/M/L, kein Bau.
+2. C-007 Nacharbeit: `pnpm run product:build:native` existiert NICHT; statt dessen
+   belegen Check/Live auf master (bereits gruen 42584930953) + Vorschlag dokumentieren:
+   Merge-Agent nur Patch/Minor auto bis 2027-02-07, Majors manuell. Draft #42 nicht mergen
+   ohne Rebase auf aktuellen ci-agent.
+3. Client-Haertung `eeb9d722` erst nach SmartLog-Emulator-Beweis (13:00).

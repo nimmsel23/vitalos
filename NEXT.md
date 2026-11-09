@@ -1,3 +1,21 @@
+# NEXT.md
+
+Aktive Arbeitsliste (max. 5 Punkte) fuer das vitalos Meta-Repo.
+Stand CTO-Runde 2026-11-09.
+
+## Aktiv (max. 5)
+
+- [ ] C-002 Geraeteabnahme (`3c55e958`): AAB/APK Install+Login+Journal+Sync — Protokoll; kein Store.
+- [ ] C-001 Play-Console (`c09e4d5c`): 3 Fakten an CEO (Konto/App angelegt?); keine Zahlung.
+- [ ] SmartLog-Beweis (`5f09bbb1`): Emulator 13:00 — Deploy 5f2f694 steht; Gruennachweis abwarten.
+- [ ] Shell-CI Lockfile (`767c02ad`): journal-app lucide-react/tailwind-merge Drift vs pnpm-lock — Root-Sync.
+- [ ] M2-APK Simon/Matthias (`c3315277`, +alpha): Verteilweg bereitstellen, kein Store.
+
+## BACKLOG.md-Parkplatz (nichts geloescht; aus Aktiv ausgelagert 2026-11-09 C-005)
+
+
+<!-- vorheriger NEXT-Bestand ab hier -->
+
 - CTO: Shell-CI Lockfile `767c02ad` + SmartLog `5f09bbb1`
 - CTO: ORG-LAEUFT H1-H4 starten (Owner-Gates Mistral/State-Repo)
 - AL: Feature-Freeze Guides `b0ed4e47`

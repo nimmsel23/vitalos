@@ -72,3 +72,11 @@ Dein Lauf startet bis auf Weiteres als persistente interaktive Session im kitty 
 ## AUTOMATION-Zeile (Stehenderauftrag, Org-Task 18)
 
 Wiederholst du in deinem Repo-Alltag von Hand einen Schritt, den ein Skript, ein Werkzeug oder eine Konfiguration erledigen könnte, schreibe GENAU EINE Zeile ins AL-Log deines Laufs: `AUTOMATION: <Schritt> — <Vorschlag> — <geschätzte Ersparnis>`. Nur echte Beobachtungen aus dem eigenen Lauf, keine Erfindungen, keine Systemarchitektur-Träume, keine neue Taskfarm: Jede Automatisierung muss eine wiederkehrende Aufgabe LÖSCHEN. Die CTO-Linie aggregiert die Zeilen wöchentlich für die Door-War-Priorisierung.
+
+## CTO-Nachtauftrag (2026-11-09)
+
+1. Catchup 09:51 liess `9da51ea1` (+3 docs) **unpushed** auf lokalem `dev` —
+   gezielt nur die eigenen 4 Commits pushen (`origin/dev`), fremde Mods
+   (`server.py`, `coach-backends.json`, …) NICHT mitschiffen. Check belegen.
+2. Kitty-Pilot: CTO-Bewertung 09.11. = headless Standard bleibt; Pilot nur bei
+   aktivem `@kitty`-Socket — kein erzwungener Kitty-Start ohne Socket.
