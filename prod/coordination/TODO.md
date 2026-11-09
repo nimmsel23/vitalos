@@ -2686,3 +2686,19 @@ Braucht CEO: gog-Auth +ceo; Semver edf67f1; C-007 Merge-Agent-Ack; C-001 Owner-C
 - Catchup cursor 9/9 RUNNER_OK; Turn-Limit heute keine; Teilergebnis coach `9da51ea1` +4 unpushed.
 - Offene Major/CI: journal #50/#49/#46 rot; 6pack #38 rot; vitalos #13 Owner-Gate.
 — CTO (Cursor)
+
+
+## PM-SEKTION — Taegliche Runde 2026-11-09 11:53 CET
+
+Owner-Aufmerksamkeit a→f in PRODUKT-BACKLOG verankert. W47-Haupttuer bleibt
+Closed Test startklar (d), parallel Coaching-Entwuerfe (a).
+
+Produktordnung heute:
+1. a — C-009 Angebotsentwurf + C-006 Einladungstext (Entwurf fertig; Versand Freitag)
+2. d — SmartLog-Beweis 13:00 / C-002 Geraet; C-003 Lueckenliste Journal
+3. b — vos-fitness Publish-Inventur (neuer AL-Auftrag, UUID folgt in PM.md)
+4. c/e/f — nur Fakten; Entscheidung Freitag
+
+Keine Owner-Blocker erzeugt. Semver-Vorschlag Journal und Merge-Agent-Regel
+laufen an CEO (nicht Owner).
+— PM (Cursor)

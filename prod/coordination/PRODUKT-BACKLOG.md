@@ -126,30 +126,48 @@ keine `+go`-Tags als Dringlichkeitsmarker; die Tag-/Urgency-Migration
 bestehender Repo-Tasks liegt beim CTO. Ausfuehrungsfreigaben stehen explizit
 im Task-Auftrag.
 
-# PRODUKTUEBERSICHT — Stand 2026-11-07
+# PRODUKTUEBERSICHT — Stand 2026-11-09
 
-## Richtung und Rangfolge
+## Owner-Aufmerksamkeit a→f (verbindlich ab 2026-11-09)
+
+Aufmerksamkeitsreihenfolge des Owners (kein stiller Scope-Wechsel der
+Wochen-Door; Freitag-Buendel fuer Owner-Fragen):
+
+| # | Fokus | Was der PM daraus macht (ohne Owner-Warten) |
+| --- | --- | --- |
+| a | One2One-Coaching + Gruppentrainings (hypothetisch) als Vital-/Fitnesstrainer Wien | Angebotsentwurf C-009 vorantreiben; Tester-Einladung C-006 textfertig machen — Versand bleibt Owner, Entwurf nicht. |
+| b | Einfache Subversionen der Standalone-Apps publishen (z. B. vos-fitness) | Inventur Publish-Bereitschaft vos-fitness (Fertig-Kriterien, fehlende Artefakte) als AL-Auftrag — kein Store-Upload ohne Freigabe. |
+| c | VitalOS als Ganzes (c1 SaaS / c2 Patreon/Personal Brand) | Entscheidungsvorlage Freitag; unter der Woche nur Fakten sammeln, keine Architekturentscheidung. |
+| d | vitalos-observe = Freitext-KI-Journal + fitness/fuel/relax; operate = Add-on | W47-Haupttuer Closed Test + M1-RC-Beweis (Emulator/Geraet) + C-003 4-Deposit-Lueckenliste — Observe-Kern sichtbar machen. |
+| e | Mini-Apps (z. B. Supplement-Tracker) standalone Play Store | Nach Closed-Test-Startklar; bis dahin keine Bauauftraege. |
+| f | Premium-Login via Personal Brand bewerben | Nach M2/Premium-Fundament; Marketing-Paket erst wenn Login-Pfad belegt. |
+
+**W47-Lieferung bleibt:** Closed Test startklar (E-005 / `b1fd75b7`) mit Big
+Rocks C-001 Play-Console + C-002 Geraeteabnahme. Das bedient vor allem **d**,
+schafft die Basis fuer **b/e**, und laeuft parallel zu **a** (Coaching-Spur).
+
+## Richtung und Rangfolge (Lieferstatus)
 
 M1-RC (Emulator-Runde-3-Checkliste nachweisbar gruen) → M2-Testuser-Woche
 (Simon & Matthias; Verteilungsweg bleibt Owner-Gate). M3 wird erst nach
 CEO-/Delta-Ledger-Freigabe als eigenes Ziel aufgenommen.
 
-Die CEO-Rangfolge bleibt unveraendert: **P0 M1-RC**, **P1 Fuel-iOS**, danach
-**P2 Produktqualitaet**. Repo-Aufgaben werden in der jeweiligen Task-DB nach
-Urgency bearbeitet; Owner-Gates und technische CTO-/Alpha-Auftraege werden
-nicht als App-Aufgaben dupliziert.
+Liefer-Rangfolge unveraendert: **P0 M1-RC**, **P1 Fuel-iOS**, danach
+**P2 Produktqualitaet** — gelesen unter Owner-Aufmerksamkeit a→f. Repo-
+Aufgaben nach Urgency; Owner-Gates und CTO-/Alpha-Technik nicht als
+App-Aufgaben duplizieren.
 
 ## P0 — M1-RC
 
 **Produktziel:** Alle Punkte a–f der Emulator-Runde-3-Checkliste sind in einem
 validierten Lauf gruen. Abnahmebeleg ist das 3-Zeilen-Log des Emulator-Dienstes.
 
-**Stand:** Start/Signin, Voice-Einstieg, Journal v2, Persistenz und Ohne-KI-
-Fallback sind belegt. Das SmartLog-Invoker-Gate ist vom Owner freigegeben und
-technisch gesetzt; der letzte Emulatorlauf wurde wegen des RAM-Gates
-uebersprungen. Offen bleibt der naechste RAM-faehige Lauf mit Kontingent-
-Anzeige und einer echten Analyse sowie die dokumentierten Kosmetik-/A11y-
-Findings. Owner: Alpha-Ausfuehrung, CEO-Abnahme.
+**Stand (2026-11-09):** Start/Signin, Voice-Einstieg, Journal v2, Persistenz und
+Ohne-KI-Fallback sind belegt. SmartLog-Functions-Fix ist auf vitalos-prod live
+(Deploy 08.11.). Offen: Emulator-/Geraete-Beweis heute (C-002 / Task 5f09bbb1)
+mit Kontingent-Anzeige und echter Analyse; danach Client-Haertung eeb9d722.
+Kosmetik-/A11y-Findings bleiben dokumentiert. Abnahme: Emulatordienst oder
+Geraeteprotokoll — kein Owner-Gate fuer den Nachweis selbst.
 
 ## P1 — Fuel-iOS-Login
 
