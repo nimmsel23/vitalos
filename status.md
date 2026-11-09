@@ -1,8 +1,9 @@
 # Status Vibe C — Fokus-Sperre Stufe 0/1 (Worktree `focus-stufe-0-1`)
 
 Lebendes Statusblatt von **Vibe C** für die Arbeit in diesem Worktree
-(`/dev/shm/wt-focus`, Branch `focus-stufe-0-1`, Basis `dev-product`,
-Ausgangs-Commit `fd78eda`). Jede Session von Vibe C haengt hier einen Eintrag an
+(`/dev/shm/wt-focus`, Branch `focus-stufe-0-1`, historisch auf Basis des
+früheren `dev-product` / Ausgangs-Commit `fd78eda`; Meta-Default ist jetzt
+`master`). Jede Session von Vibe C haengt hier einen Eintrag an
 (neueste oben); geloescht wird nichts. Detaildokumentation:
 `prod/docs/product-dev/FOKUS-STUFE-0-1-UMSETZUNG.md`.
 Auftraggeber-Berichte liegen ausserhalb des Repos in
@@ -10,8 +11,8 @@ Auftraggeber-Berichte liegen ausserhalb des Repos in
 
 ## Geltende Regeln (aus dem Auftrag, hier solange der Branch existiert)
 
-- `~/vitalos-prod` nur lesen; `~/vitalos` nicht anfassen (Android-Linie arbeitet
-  dort auf `dev-product`).
+- `~/vitalos-prod` nur lesen; `~/vitalos` nicht anfassen (Android-/Shell-Linie
+  arbeitet dort auf `master`).
 - Kein sudo, kein `rm` (nur `mv`), kein Push, kein Deploy, kein Store-Upload,
   kein `master`, kein Voll-Install ueber die langsame Registry.
 - Modul-/App-Code (journal-app etc.) nicht editieren; nur eigene Pfade committen.
@@ -81,6 +82,6 @@ Telegram-Kurztext. Schnittstellen-Befund: `hasMinimumLogToday` aus journal-dev
 - Kein Android-Build/Gradle-Sync/`cap sync`, kein signierter Release-Build.
 - Kein Geraetetest (Neustart/Doze, Permission-Flow, Digital-Wellbeing-Vergleich).
 - Plugin nicht installiert (Registry-Regel); native Notification ungetestet.
-- `minimumLog` nicht in die App verdrahtet (journal-app enthaelt `9edb12a` auf
-  `dev-product` noch nicht).
+- `minimumLog` nicht in die App verdrahtet (historisch: journal-app enthielt
+  `9edb12a` zum damaligen Meta-Stand noch nicht).
 - Die 36 gruenen Tests pruefen nur reine JS-Module mit injizierten Fakes.

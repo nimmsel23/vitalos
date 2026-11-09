@@ -1,3 +1,7 @@
+## 2026-11-09 — Doku: aktive dev-product-Hinweise auf master umgestellt
+
+- ORG.md, AUFTRAG-ANDROID-LINIE.md, CEO-STUNDEN-PROMPT.md, status.md — kein aktiver Umbau-Zweig mehr.
+
 ## 2026-11-09 — dev-product → master gemergt und Branch entfernt
 
 - Merge-Commit auf `master`; `origin/dev-product` gelöscht. Doku (AGENTS/DEPLOYMENT) auf master-only umgestellt.

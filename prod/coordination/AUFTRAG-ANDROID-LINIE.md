@@ -15,12 +15,10 @@ Git-Arbeiten sind freigegeben.
 
 ## Ist-Stand (verifizieren, nicht neu anfangen)
 
-- Ein Meta-Repo `/home/alpha/vitalos`: Branches `master` == `dev-product`
-  == `cb4a55b` (rein lokal, NICHT gepusht). Master liegt im Worktree
-  `/home/alpha/.worktrees/vitalos-master-flow` (anderer Agent);
-  der Haupt-Checkout `/home/alpha/vitalos` steht auf `dev-product`.
-  Parallele Agents bauen aktiv Branches/Checkouts ab: Arbeitsbäume vor jedem
-  Edit prüfen, fremde Änderungen niemals aufnehmen oder zurücksetzen.
+- Ein Meta-Repo `/home/alpha/vitalos` auf Branch `master` (Default; früherer
+  Umbau-Zweig `dev-product` ist gemergt und entfernt). Parallele Agents bauen
+  ggf. Feature-Branches/Worktrees ab: Arbeitsbäume vor jedem Edit prüfen,
+  fremde Änderungen niemals aufnehmen oder zurücksetzen.
 - `prod/` ist ein normal getrackter Ordner (kein `.git`, keine `.gitmodules`,
   kein zweites Lockfile). Layout-Guard und Release-Manifest laufen grün:
   `node prod/scripts/check-shared-layout.mjs` und
@@ -63,8 +61,8 @@ Git-Arbeiten sind freigegeben.
    Artefaktnachweis) mit Artefaktpfad, Hash, Toolchain und Quellcommit
    ergänzen; ggf. `docs/PRODUCT-CHECKOUT.md`.
 7. Jeden funktionierenden Zwischenstand scoped committen (nur eigene Dateien,
-   Doku im selben Commit). Bevorzugt auf `dev-product`; danach im
-   master-Worktree per `git merge --ff-only dev-product` angleichen.
+   Doku im selben Commit). Feature-Branches nach Freigabe nach `master`
+   mergen (kein Parallel-Umbau-Zweig mehr).
 
 ## Verbindliche Grenzen
 

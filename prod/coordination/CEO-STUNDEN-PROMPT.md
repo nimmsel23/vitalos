@@ -62,7 +62,7 @@ CEO-Stunde (V3) — still, belegbasiert, eine Runde:
      ist ein FEHLER.
 
 7. **Schreiben bei Bedarf:** CEO-SEKTION an TODO.md append-only + scoped
-   Commit (Meta dev-product); ROADMAP/DELTA nur bei echtem Fortschritt;
+   Commit (Meta `master`); ROADMAP/DELTA nur bei echtem Fortschritt;
    CEO.md JEDE Runde. Stille Runden brauchen KEINE Sektion (kein
    Reinigungsrauschen). Hygiene vor JEDEM Commit/tele/mail:
    `grep -nP '[\x{4E00}-\x{9FFF}]' <files>` — kaputte Glyphen fixen,
