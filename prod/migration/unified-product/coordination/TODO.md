@@ -2629,3 +2629,9 @@ C-007 `4b2781de`, C-008 `09d405a0`, C-009 `191b7e59` (+ Bestand C-001/C-004).
 
 **Ops:** `vitalos-cto.timer` 08:15; Codex `--skip-git-repo-check` in cto/ceo/coo-run.
 
+## 2026-11-09 09:35 — COO: Woechentliche Oracle-Session Pflicht
+
+Owner: irgendjemand 1×/Woche mit `vitalos-oracle` auf Kurs. Verdrahtung:
+recurring `ORG-ORACLE-WOCHE` (`37d9ed10` / Template `a075b456`), Skills COO+Oracle,
+`ORACLE.md`. Naechste Faelligkeit So 2026-11-15.
+

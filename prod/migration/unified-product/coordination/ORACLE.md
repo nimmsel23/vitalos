@@ -11,6 +11,16 @@ Org-General's-Tent als woechentliche Integration: Ergebnisse, Lessons,
 Course Correction und Targets werden entlang der Game Maps zusammengefuehrt
 und in den vorhandenen Koordinationsdateien festgehalten.
 
+
+## Woechentliche Kurs-Session (Owner 2026-11-09)
+
+Mindestens einmal pro Woche muss sich jemand mit Skill `vitalos-oracle`
+zusammensetzen (Soll: Sonntag). Die COO-Rolle ist dafuer accountable
+(Org-Task `ORG-ORACLE-WOCHE`, UUID-Instanz je Woche, Template
+`a075b456`). Perplexity-CEO entscheidet Door und Horizonte; Oracle/COO
+bereiten vor und protokollieren. Still ueberspringen ist ein Fehler —
+nur mit Datum deferren.
+
 ## Entscheidungslinie
 
 Der CEO behaelt die Org-Gesamtverantwortung und entscheidet Jahres-,
