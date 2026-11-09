@@ -1767,7 +1767,7 @@ nicht angefasst.
    Linie; du siehst ihn nur als Absender auf der Koordinationsflaeche.
 2. Einlauf-Artefakt existiert bereits — es ist NICHT eine neue PRODUCT.md
    und keine TODO-Sektion, sondern
-   migration/unified-product/coordination/PRODUKT-BACKLOG.md (Mandat +
+   prod/coordination/PRODUKT-BACKLOG.md (Mandat +
    priorisierte Uebersicht, Commits db23115/6a803af). Lies diese Datei in
    deiner Runde mit; keine Zweitpflege, keine Parallelwelt — dein Drift-
    Risiko ist damit gegenstaendlich adressiert: PM-Register = nur

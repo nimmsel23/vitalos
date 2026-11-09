@@ -13,7 +13,7 @@ schreibt unten additiv fort (nichts oben ueberschreiben, kein Rohprotokoll).
 2. `~/ABTEILUNGEN.md` — Organisationsebene (Vertrag: Ebenen, Rechte,
    Taskwarrior `vos.*`, Inbox, Guards, CEO-Kanal).
 3. Koordinationsordner
-   `/home/alpha/vitalos-prod/migration/unified-product/coordination/TODO.md`
+   `/home/alpha/vitalos/prod/coordination/TODO.md`
    — nur Abschnitte mit vitalos-Bezug (Kontextquelle, keine Auftraege fuer
    dich daraus ableiten; deine Auftraege kommen aus Taskwarrior oder der
    Inbox).
@@ -113,7 +113,7 @@ Inbox melden.
 
 - Regelquellen komplett gelesen (Guide, AGENTS.md, ABTEILUNG.md, Log-Tail). Guide-Referenzen `~/vitalos-prod/docs/product-dev/README.md`/`WOCHENPLAN.md` existieren nach der Symlink-Konsolidierung nicht mehr (dort liegen nur `abteilungen/`, `legacy/`, `FOKUS-STUFE-0-1-UMSETZUNG.md`) — gemeldet, Lauf ohne sie fortgesetzt.
 - DIE EINE Aufgabe (+hit, CEO-freigegeben): Bereinigung GENAU der 2 prunable /dev/shm-Focus-Worktrees verifiziert — wt-focus (a199fc4) und wt-focus1 (e11379b) waren bei Laufstart bereits entfallen (keine `.git/worktrees/`-Admin-Eintraege, keine Verzeichnisse in /dev/shm; Boot 2026-11-06, Erstlauf sah sie noch → Entfernung durch unbekannte dritte Linie). `git worktree prune` als Freigabe-Schritt: no-op (rc=0, 5 registrierte Worktrees unverändert); Branches focus-stufe-0-1 (a199fc4) / focus-stufe-1 (e11379b) unberuehrt — Freigabe-Scope nicht verlassen. Guide-Aufgabe abgehakt.
-- Inventur: dev-product Spitze `1b9601b` (vor Lauf) → `b471707` (Lauf-Commit); Branchabstand `origin/master...dev-product` 18/7 (nur dokumentiert, NICHT angeglichen); Submodule 1 Drift-Marker (`+ journal-app` 9502f2b, heads/vitalos, fremde Linie — nur gemeldet), 0 dirty. Nur gemeldet, kein mv/rm: `M prod/migration/unified-product/coordination/CTO.md` (fremd, uncommittet), `D vitalos.html`, Untracked `20`, `docs/Index.html`.
+- Inventur: dev-product Spitze `1b9601b` (vor Lauf) → `b471707` (Lauf-Commit); Branchabstand `origin/master...dev-product` 18/7 (nur dokumentiert, NICHT angeglichen); Submodule 1 Drift-Marker (`+ journal-app` 9502f2b, heads/vitalos, fremde Linie — nur gemeldet), 0 dirty. Nur gemeldet, kein mv/rm: `M prod/coordination/CTO.md` (fremd, uncommittet), `D vitalos.html`, Untracked `20`, `docs/Index.html`.
 - Protokoll-Commit `b471707` auf dev-product (AL-LOG.md 2026-11-08 gefuellt, RESULTS.md-Session, NEXT.md-Folgetasks, Guide-Abhaken) — selective Staging direkt im Haupt-Checkout: der Temp-Worktree-Flow haette den Protokoll-Commit dangling hinterlassen, und Schwester-ALs committen ihre Guide-Abhakungen ebenfalls direkt auf dev-product. ABTEILUNG.md bleibt untracked (CEO-Datei, nur gemeldet).
 - Trailer-Abweichung: Commits dieses Laufs tragen Mistral-Vibe-Co-Author statt der Claude-Signatur der Guide-Vorlage (ausfuehrender Agent ist Mistral Vibe). Kein Push, kein Fetch, kein Master/Tag/Gitlink/Submodule-Touch, kein tele. Bericht in der CEO-Inbox `~/.local/state/abteilungen/inbox/vitalos-2026-11-08.md`.
 

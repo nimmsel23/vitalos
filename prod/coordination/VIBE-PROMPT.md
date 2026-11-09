@@ -134,7 +134,7 @@ Es gibt weitere Worktrees und parallele Agents. Status live prüfen.
 ## Koordination
 
 Gemeinsamer dauerhafter Ordner:
-`/home/alpha/vitalos-prod/migration/unified-product/coordination/`
+`/home/alpha/vitalos/prod/coordination/`
 
 - `TODO.md`: CEO-Anweisungen, zu Beginn und nach jedem wesentlichen Schritt lesen.
   Inhalt nicht eigenmächtig löschen oder ersetzen. CEO ergänzt dort bei Bedarf.

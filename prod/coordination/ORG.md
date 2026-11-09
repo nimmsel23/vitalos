@@ -1,5 +1,8 @@
 # ORG.md — Landkarte der VitalOS-Agentenorganisation (Stand 2026-11-09; Berichtslinie Owner-Klarstellung)
 
+Ort: `~/vitalos/prod/coordination/` (nicht unter `migration/unified-product/` —
+das war nur der Checkout-Merge vitalos-prod → vitalos/prod).
+
 Lies-Reihenfolge fuer jede CEO-Session: CEO.md -> DIESER -> PRODUCT.md.
 Pflege: Strukturwandel => gleicher Commit wie die Aenderung (Doku-Pflicht).
 

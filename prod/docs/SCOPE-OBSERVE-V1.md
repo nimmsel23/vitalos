@@ -1,7 +1,7 @@
 # Observe v1 Release-Scope — Free (Observe) / Premium (Operate)
 
 Status: ENTSCHIEDEN (Daniel, 2026-11-06). Finalisierte Fassung der CEO-Vorlage
-(`migration/unified-product/coordination/CEO-SCOPE-OBSERVE-V1.md`, Stand des
+(`prod/coordination/CEO-SCOPE-OBSERVE-V1.md`, Stand des
 CEO-Reviews 17:35 UTC) einschließlich der Updates 305660f (Tag-Semantik),
 5d295fa (Tagesbudget) und a5c7713 (Gewöhnungs-Grundsatz).
 Grundlagen: Android-Roadmap (p0-scope, p2, p6; Stand 03.11.2026) und

@@ -52,7 +52,7 @@ Angestellte (Subagenten pro Tab/Bereich innerhalb des AL-Laufs,
 ## CEO-Schnittstellen-Anforderungen (Abnahmekriterien fuer das Vertrag)
 
 1. **Auftraege runter:** weiter ueber
-   `/home/alpha/vitalos-prod/migration/unified-product/coordination/TODO.md`
+   `/home/alpha/vitalos/prod/coordination/TODO.md`
    (append-only CEO-Sektionen). Das Vertrag definiert, wie der AL daraus
    seinen Repo-Anteil ableitet (Adressierung: Taskwarrior-Ast plus
    Annotation auf die TODO-Sektion).

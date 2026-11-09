@@ -1,0 +1,19 @@
+# prod/coordination — Org- & Produkt-Koordination
+
+Kanonischer Ort für Rollenlandkarte, CEO/CTO/CPO-Anker, Oracle/Game-Maps,
+Produkt-TODO/STATUS und Backlog.
+
+| Datei / Ordner | Zweck |
+| --- | --- |
+| `ORG.md` | Rollenroster (CEO, COO, CPO, CTO, PM, AL) + Berichtslinie |
+| `ORACLE.md` | AlphaOS-Guidance (Door 4P, Game 4F, Tent) |
+| `PRODUCT.md` | Produktzusammensetzung |
+| `CPO.md` / `CTO.md` | Rollenanker |
+| `TODO.md` / `STATUS.md` | Produkt-/Android-Linien-Lage |
+| `game/` | Frame/Freedom/Focus/Fire + Tent |
+
+Laufzeit-Logs der Runner liegen **nicht** hier, sondern unter
+`~/.local/state/vitalos-<rolle>/`.
+
+Historischer Pfad `prod/migration/unified-product/coordination/` ist nur noch
+ein Symlink hierher (Merge-Rest der Checkout-Konsolidierung Nov 2026).

@@ -26,7 +26,7 @@ Aktive Arbeitsliste (max. 5 Punkte) für das vitalos Meta-Repo.
 
 - [ ] Org-Task c3315277 (+alpha +hit, fällig 09.11.2026): M2-Testuser-Vorbereitung (Owner-Freigabe 20:1x): APK des Shells (com.vitalos.app, prod/android) für Simon & Matthias bereitstellen — Verteilweg dokumentieren (Play Internal Track vorbereiten oder direkte APK-Installation), keine Store-Publikation, kein Geräteanfassen; Endzustand = Installer-Weg bereit + kurze Anleitung, Ausgabe an CEO für Owner-Handoff.
 - [x] Org-Task 378427eb (+cto +hit): GitHub-Pages-Kanal erfasst (2026-11-09 AL): Legacy `master`/`/docs` → `nimmsel23.github.io/vitalos` (Root 404, `Index.html` 200); 17 Dateien inkl. Ops-Runbooks; keine Rohsecrets, wohl SA-Mails/Secret-Namen; Empfehlung deaktivieren/beschneiden — Owner-Gate. Doku: `prod/docs/FIREBASE.md` § GitHub Pages + Verweise in `docs/DEPLOYMENT.md` / `docs/UNIFIED-PRODUCT.md`.
-- [ ] Nur-gemeldet-Punkte beobachten (fremde Linien, nicht anfassen): uncommittet prod/migration/unified-product/coordination/CTO.md, D vitalos.html, Untracked 20/docs/Index.html; +-Drift journal-app (9502f2b, heads/vitalos).
+- [ ] Nur-gemeldet-Punkte beobachten (fremde Linien, nicht anfassen): uncommittet prod/coordination/CTO.md, D vitalos.html, Untracked 20/docs/Index.html; +-Drift journal-app (9502f2b, heads/vitalos).
 - [ ] Submodule-Pointer-Bumps & Shell-Tailwind-4: Modul-PRs master → vitalos und Shell-Upgrade auf Tailwind 4 nach Abschluss der aktiven Dev-Stränge abgleichen.
 
 ## 2026-11-06 (Android-Produktlinie, APK/AAB gebaut)

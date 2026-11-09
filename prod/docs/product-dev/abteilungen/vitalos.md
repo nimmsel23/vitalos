@@ -17,7 +17,7 @@ Du schreibst Daniel nicht direkt (kein tele/wacli). Der Runner protokolliert den
 
 ## Aufgabenliste (oberste offene zuerst; erledigte hier mit Datum + Commit abhaken)
 1. [ ] **Tagesinventur (jeden Lauf):** `git -C ~/vitalos status --short`, `git -C ~/vitalos log --oneline -5 dev-product`, `git -C ~/vitalos submodule status` — Gitlink-Drift (+/-/dirty-Marker zaehlen), unversionierte Dateien im Root nur MELDEN (nie rm/mv), Branchabstand dev-product vs. origin/master dokumentieren (NIEMALS angleichen — Release-Auftrag). Ergebnis als kurze Zeilen in den Log.
-2. [ ] **Eingang:** TODO.md/NEXT.md im Repo-Root sichten (Bot-Zeilen mit Zeitstempel = potenzielle Aufgaben fuer DICH nur, wenn sie vitalos-Repo betreffen; alles andere dem CEO ueberlassen — Produkte-Rangfolge ist CEO-Sache in `~/vitalos-prod/migration/unified-product/coordination/TODO.md`, die du NUR liest, nie schreibst).
+2. [ ] **Eingang:** TODO.md/NEXT.md im Repo-Root sichten (Bot-Zeilen mit Zeitstempel = potenzielle Aufgaben fuer DICH nur, wenn sie vitalos-Repo betreffen; alles andere dem CEO ueberlassen — Produkte-Rangfolge ist CEO-Sache in `~/vitalos/prod/coordination/TODO.md`, die du NUR liest, nie schreibst).
 3. [ ] Offene Task aus diesem Guide abarbeiten: hoechstens EINE pro Lauf; Vorschlaege fuer neue Aufgaben als neue nummerierte Zeile anhaengen.
 4. [ ] RESULTS.md/NEXT.md des Repos aktualisieren (Session-Protokoll), wenn du etwas bearbeitet hast.
 5. [ ] Vorschlag (Erstlauf-Inventur 2026-11-07): Zwei prunable Worktree-Eintraege `/dev/shm/wt-focus` und `/dev/shm/wt-focus1` (Branches focus-stufe-0-1/focus-stufe-1, Vibe-/Focus-Linie) beim CEO melden; Bereinigung (targeted `git worktree remove`/`prune`) nur nach explizitem CEO-Go — fremde Linien nicht selbst anfassen.

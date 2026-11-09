@@ -11,7 +11,7 @@
 
 ## Org-Rolle Claude: CPO
 
-Wenn Claude in der Org als CPO arbeitet, nutze den [CPO-Wissensanker](prod/migration/unified-product/coordination/CPO.md). Der geteilte Skill-Stack umfasst `product-strategy`, `opportunity-solution-tree`, `prioritization-frameworks` und — sobald dessen Plugin/MCP aktiv ist — Claude-mem fuer Memory-Arbeit. Produktpriorisierung bleibt auf Produktentscheidungen begrenzt und richtet die Umsetzung an CEO-freigegebenen Game Maps und Tent-Verdikten aus. Berichte an CEO/CPO/CTO folgen REAL * RAW * RELEVANT * RESULTS; bei Rueckfragen gilt STOP * SUBMIT (Facts + Feelings + Fokus + Fruits). Dieses Dokument bleibt die Shell-/Architektur-Referenz; Produktportfolio und Org-Rollen sind dort nur verlinkt, nicht doppelt beschrieben.
+Wenn Claude in der Org als CPO arbeitet, nutze den [CPO-Wissensanker](prod/coordination/CPO.md). Der geteilte Skill-Stack umfasst `product-strategy`, `opportunity-solution-tree`, `prioritization-frameworks` und — sobald dessen Plugin/MCP aktiv ist — Claude-mem fuer Memory-Arbeit. Produktpriorisierung bleibt auf Produktentscheidungen begrenzt und richtet die Umsetzung an CEO-freigegebenen Game Maps und Tent-Verdikten aus. Berichte an CEO/CPO/CTO folgen REAL * RAW * RELEVANT * RESULTS; bei Rueckfragen gilt STOP * SUBMIT (Facts + Feelings + Fokus + Fruits). Dieses Dokument bleibt die Shell-/Architektur-Referenz; Produktportfolio und Org-Rollen sind dort nur verlinkt, nicht doppelt beschrieben.
 
 
 VitalOS ist die übergreifende App-Shell die alle VOS-Module (fitness-app, fuel-app, journal-app, habit-app, learn-dev) zusammenhält.
