@@ -13,7 +13,7 @@ schreibt unten additiv fort (nichts oben ueberschreiben, kein Rohprotokoll).
 2. `~/ABTEILUNGEN.md` — Organisationsebene (Vertrag: Ebenen, Rechte,
    Taskwarrior `vos.*`, Inbox, Guards, CEO-Kanal).
 3. Koordinationsordner
-   `/home/alpha/vitalos-prod/migration/unified-product/coordination/TODO.md`
+   `/home/alpha/vitalos/prod/coordination/TODO.md`
    — nur Abschnitte mit vitalos-Bezug (Kontextquelle, keine Auftraege fuer
    dich daraus ableiten; deine Auftraege kommen aus Taskwarrior oder der
    Inbox).
@@ -113,7 +113,7 @@ Inbox melden.
 
 - Regelquellen komplett gelesen (Guide, AGENTS.md, ABTEILUNG.md, Log-Tail). Guide-Referenzen `~/vitalos-prod/docs/product-dev/README.md`/`WOCHENPLAN.md` existieren nach der Symlink-Konsolidierung nicht mehr (dort liegen nur `abteilungen/`, `legacy/`, `FOKUS-STUFE-0-1-UMSETZUNG.md`) — gemeldet, Lauf ohne sie fortgesetzt.
 - DIE EINE Aufgabe (+hit, CEO-freigegeben): Bereinigung GENAU der 2 prunable /dev/shm-Focus-Worktrees verifiziert — wt-focus (a199fc4) und wt-focus1 (e11379b) waren bei Laufstart bereits entfallen (keine `.git/worktrees/`-Admin-Eintraege, keine Verzeichnisse in /dev/shm; Boot 2026-11-06, Erstlauf sah sie noch → Entfernung durch unbekannte dritte Linie). `git worktree prune` als Freigabe-Schritt: no-op (rc=0, 5 registrierte Worktrees unverändert); Branches focus-stufe-0-1 (a199fc4) / focus-stufe-1 (e11379b) unberuehrt — Freigabe-Scope nicht verlassen. Guide-Aufgabe abgehakt.
-- Inventur: dev-product Spitze `1b9601b` (vor Lauf) → `b471707` (Lauf-Commit); Branchabstand `origin/master...dev-product` 18/7 (nur dokumentiert, NICHT angeglichen); Submodule 1 Drift-Marker (`+ journal-app` 9502f2b, heads/vitalos, fremde Linie — nur gemeldet), 0 dirty. Nur gemeldet, kein mv/rm: `M prod/migration/unified-product/coordination/CTO.md` (fremd, uncommittet), `D vitalos.html`, Untracked `20`, `docs/Index.html`.
+- Inventur: dev-product Spitze `1b9601b` (vor Lauf) → `b471707` (Lauf-Commit); Branchabstand `origin/master...dev-product` 18/7 (nur dokumentiert, NICHT angeglichen); Submodule 1 Drift-Marker (`+ journal-app` 9502f2b, heads/vitalos, fremde Linie — nur gemeldet), 0 dirty. Nur gemeldet, kein mv/rm: `M prod/coordination/CTO.md` (fremd, uncommittet), `D vitalos.html`, Untracked `20`, `docs/Index.html`.
 - Protokoll-Commit `b471707` auf dev-product (AL-LOG.md 2026-11-08 gefuellt, RESULTS.md-Session, NEXT.md-Folgetasks, Guide-Abhaken) — selective Staging direkt im Haupt-Checkout: der Temp-Worktree-Flow haette den Protokoll-Commit dangling hinterlassen, und Schwester-ALs committen ihre Guide-Abhakungen ebenfalls direkt auf dev-product. ABTEILUNG.md bleibt untracked (CEO-Datei, nur gemeldet).
 - Trailer-Abweichung: Commits dieses Laufs tragen Mistral-Vibe-Co-Author statt der Claude-Signatur der Guide-Vorlage (ausfuehrender Agent ist Mistral Vibe). Kein Push, kein Fetch, kein Master/Tag/Gitlink/Submodule-Touch, kein tele. Bericht in der CEO-Inbox `~/.local/state/abteilungen/inbox/vitalos-2026-11-08.md`.
 
@@ -126,3 +126,17 @@ Inbox melden.
   - Guide `prod/docs/product-dev/abteilungen/vitalos.md`: Aufgabe 6 / CEO-Freigabe 2 abgehakt.
 - **Offene Punkte & Blocker:** Blocker: keine. Offen: Org-Hits c3315277 (+alpha, M2 APK-Vorbereitung für Simon & Matthias) und 378427eb (+cto, GitHub Pages erfassen/bewerten); fremde Dateistände unberührt.
 - **Commit & Abschluss:** Commit auf `dev-product` (RESULTS.md, NEXT.md, AL-LOG.md, vitalos.md). Kein Push, kein Gitlink-/Submodule-Touch.
+
+## Letzter Lauf — 2026-11-09 (Abteilungsleiter-Lauf; EINE Aufgabe: Org-Hit 378427eb GitHub Pages)
+
+- **Stand & Regelquellen:** Einstieg `abteilungsleiter brief vitalos`; Queues FIRE.md fehlt, TODO.md alle [x] → NEXT.md. HEAD vor Lauf `f2eadda`. Branchabstand `origin/master...HEAD` 0/3 (nur dokumentiert). Submodule: 7 Drift-Marker `+` (6pack/fitness/fuel/journal/plan/relax/skills) — fremde/dirty Checkouts, nur gemeldet. Arbeitsbaum zusätzlich `M AL-LOG.md` (Vorlage). Vorlauf 03:40 Engine agy = FEHLER, AL-LOG-Sektion leer.
+- **Ausgeführte Aufgabe:** Org-Hit `378427eb` (+cto +hit): GitHub-Pages-Kanal erfasst und bewertet ohne Console-/Konfigänderung. Bestand Legacy Pages `master`/`/docs` → `https://nimmsel23.github.io/vitalos/`; 17 Dateien; Root 404 / `Index.html` 200; keine Rohsecrets, wohl SA-Mails/Secret-Namen; Empfehlung deaktivieren oder stark beschneiden (Owner-Gate). Doku: `prod/docs/FIREBASE.md` § GitHub Pages; Verweise in `docs/DEPLOYMENT.md` + `docs/UNIFIED-PRODUCT.md`; Guide Aufgabe 8 abgehakt; NEXT/RESULTS/AL-LOG; Taskwarrior done.
+- **Offene Punkte & Blocker:** Blocker keine. Offen: `c3315277` (+alpha, M2-APK fällig heute), `8e82a31b` (C-004), Owner-Entscheidung Pages, Submodule-Drift nur beobachten.
+- **Commit & Abschluss:** Commit auf `dev-product` (FIREBASE/DEPLOYMENT/UNIFIED-PRODUCT, NEXT/RESULTS, Guide, AL-LOG, ABTEILUNG). Kein Push, kein Gitlink-/Submodule-/Pages-Touch.
+
+## Letzter Lauf — 2026-11-09 (~15:40 CET, Abteilungsleiter-Lauf; EINE Aufgabe: C-002 Handoff)
+
+- **Stand & Regelquellen:** Einstieg `abteilungsleiter brief vitalos` (Queues: keine neuen TODO-Punkte; Org project:vitalos = c3315277/+alpha, 7df12a13/+cto, e83d8daa/+al). HEAD vor Lauf `f2075da`. Branchabstand `origin/master...HEAD` 0/33 (nur dokumentiert). Submodule-Marker: 0. Arbeitsbaum sauber.
+- **Ausgeführte Aufgabe:** Guide #9 / Org `3c55e958` C-002 M1-RC Geräteabnahme — Befund + Handoff (kein Gerät, kein Emulator-Start). Artefakte `app-debug.apk` (7,9M) + `app-release.aab` (6,0M), `com.vitalos.app`. DoD-Schritte offen. NEXT/RESULTS/Guide-Handoff/AL-LOG; Org-Annotation.
+- **Offene Punkte & Blocker:** Blocker = kein adb-Gerät. Offen: C-002 Rest (Live), `e83d8daa` vos-fitness, `c3315277` M2-APK (+alpha), Dependabot/PR #13 (+cto).
+- **Commit & Abschluss:** Commit auf `dev-product` (Guide, NEXT, RESULTS, AL-LOG, ABTEILUNG). Kein Push, kein Install/Emulator/Gitlink-Touch.

@@ -13,6 +13,7 @@ und Produkt-Firebase sind damit nicht veröffentlicht.
 | Produkt-Web/Native bauen | Root `product:*`; [Befehle](UNIFIED-PRODUCT.md) |
 | Produkt-Firebase veröffentlichen | [Produkt-Runbook](../prod/docs/FIREBASE.md) |
 | APK/AAB, Signing, Store | [Store-Plan](../prod/docs/STORE-PUBLISHING-PLAN.md) |
+| GitHub Pages (`docs/` → `nimmsel23.github.io/vitalos`) | kein Firebase; Bestand/Empfehlung im [Produkt-Runbook § GitHub Pages](../prod/docs/FIREBASE.md#github-pages-meta-repo-kein-firebase-hosting) — Owner-Gate behalten/deaktivieren |
 
 Aktueller Umbau-Strang ist `dev-product`; `master` bleibt private Produktion.
 Ein älterer lokaler `dev`-Strang und weitere Worktrees sind gesondert zu

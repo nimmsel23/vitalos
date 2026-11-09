@@ -9,7 +9,7 @@ und Detailfindings liegen additiv in
 wird vom CTO — auch automatisch in der täglichen 06:40-Runde — fortgeführt:
 Stehbild strafft, Überschriften behalten, Neuerscheinendes einsortieren.
 
-Stand: 2026-11-08, ca. 08:45 CET (CTO-Live-Runde 06:40-Nachlauf: AL-Nacht 8/9 OK — fitness turn_limit mit inzwischen grünem Check; SmartLog-500 = M1-RC-Letzblocker, Fix über Alpha-Linie unterwegs; Dienste nach Symlink-Konsolidierung grün verifiziert; UI-Modus der Nachtläufe auf headless zurückgestellt (s. Abschnitt UI-Modus); Details STATUS.md/TODO.md-CTO-SEKTION).
+Stand: 2026-11-09, ca. 10:41 CET (Nachzieh-Runde: Inventar frisch; C-004+Guard done; C-001 3 Fakten an CEO; AL 9/9 Catchup bestaetigt; coach unpushed + 6pack #38 + Dependabot-Root-Verifikation offen; Emulator-Beweis 13:00; Details state-CTO.md).
 
 ## Derzeitiges Systembild (Tageszyklus)
 
@@ -20,12 +20,14 @@ Stand: 2026-11-08, ca. 08:45 CET (CTO-Live-Runde 06:40-Nachlauf: AL-Nacht 8/9 OK
              session im kitty statt headless, ABTEILUNG_MODE=kitty, headless = Fallback;
              ab 08.11. erzwingt Drop-in 10-ui-headless.conf ABTEILUNG_UI=headless für
              ALLE geplanten Läufe — der Coach-Pilot-Zweig läuft davor und bleibt unberührt)
-06:40        CTO-Runde (vitalos-cto.timer): Abnahme der Nacht, Technik-Inventar,
-             Hygiene (u. a. ~/.git darf nicht existieren), Aufträge +go, Rückkanal
-             3-Zeiler; liest: state-CTO.md, Koordinationsfläche, AL-Logtails,
+08:15        CTO-Runde (vitalos-cto.timer, seit 2026-11-09): Abnahme der Nacht,
+             Technik-Inventar, Hygiene (u. a. ~/.git darf nicht existieren),
+             Aufträge +go, Rückkanal 3-Zeiler + Mail an nimmdaniel+cto;
+             liest: state-CTO.md, Koordinationsfläche, AL-Logtails,
              vos-docs-dirty list, vos-al-log --audit
-             Live-Gate: Laeuft der CTO als Live-Session (WS3), setzt seine
-             Wachschleife den Heartbeat → systemd-Lauf ruht (< 60 min frisch)
+             Codex-Flags: nur --approve-for-me --skip-git-repo-check (kein -s)
+             Live-Gate: Heartbeat einer Live-Session ersetzt den Timer NICHT
+             (Owner: Timer bleibt die verlässliche Tagesrunde)
 07:30        thin-results (vitalos-thin-results.service): RESULTS der Meta-
              Submodule dünnen, Destillat in Doku-Dateien, Dünne-Grenze ans Ende
 07:45        vitalos-roadmap (gebaut, Timer NOCH nicht aktiviert): Drilldown-
@@ -129,45 +131,26 @@ push dev → Check grün → automerge-pr.yml (Dependabot-Squash auf dev,
 
 ## Offene Punkte (kommende Runden)
 
-1. M1-RC-LETZTBLOCKER smart_log_failed (Org-Task 5f09bbb1): Ursache verifiziert
-   — Gemini antwortete, validateResult warf schema_meal (Nicht-HttpsError) →
-   Catch-all-500 + klemmender Tages-Lock; KEIN Provider-Fehler. Fix steht:
-   backend-dev 5f2f694 (fail-closed-Mapper + Kontingent-Freigabe bei
-   entschiedenem Outcome; Proben 5/5). Deploy = Owner-Gate via CEO; zudem
-   Alt-Sperre des Emulator-Testkontos klären (Owner-Aktion oder Nachweis nach
-   Tageswechsel). Belegfenster: Emulator-Lauf 13:00.
-2. Journal-Client-Haertung (Org-Task eeb9d722): Mapping an die HttpsError-
-   Codes des Backend-Fixes anpassen, sobald dieser deployed ist.
-3. fitness HOTLIST-115 ship: Check dev GRUEN (fca8d65, Runs 42441867294/67309),
-   _origin-Badge implementiert (b6e2b74); Release-Kette (Promote+Live-Deploy)
-   anstossen/verifizieren, danach Org-Task 20 schliessen — Auftrag Mo-Nacht
-   (Org-Task 7bf1db9e, +hit).
-4. Skills-dev-Blocker 57f615f7: CTO-Freigabe steht (cherry-pick 217c8fb,
-   docs-only, auf dev; danach Patch-Erhalt-Nachweis + local-master-Sync) —
-   Auftrag Mo-Nacht (Org-Task 1c3b5b4f).
-5. Merge-Agent-Drafts der Owner-Linie (fitness #92, journal #42, plan #43,
-   coach #10): repair-fail auf PR-Branches (Alt-Kopie, token-Input) — Empfehlung
-   rebasen steht; Owner-Linie entscheidet (via CEO).
-6. Dependabot-Major-Umstellung (Org-Task bd20f24d, Owner-Pauschalfreigabe
-   07.11.): Betta setzt journal+fuel zuerst um, Rest gestaffelt; Rollback =
-   revert-Squash auf dev; fitness/habits/learn bleiben bewusst gesperrt.
-7. WAYLAND-Import-Ursache systemd-Manager-Umgebung klaeren (Org-Task 5870061d);
-   Abhilfe steht (Drop-in 10-ui-headless.conf).
-8. Kitty-Pilot-Bewertung Mo (Org-Task 20ba0446): Pilot-Zweig griff in der
-   ersten Nacht nicht (vermutlich kein @kitty-Socket im Service-Kontext);
-   Bewertung mit CEO — Soll: kitty NUR coach als persistente Session.
-9. Security-Buendel (Org-Task 3e4b583d, +hit, faellig 12.11.): Vorbereitung
-   in der Montag-Runde.
-10. AUTOMATION-Inventur (Stehenderauftrag): Anker seit 08.11. in allen 9
-    Guides; erste AL-Zeilen erwartet ab Montag-Nacht — CTO-Aggregation
-    danach (SO-Frist um eine Nacht verschoben; Tent-Argument heute
-    qualitativ: automerge/merge-agent/ci-scan/roadmap/thin-results/Detektor).
-11. Door-Erinnerung: scheduledDoorReminders ohne Cloud-Scheduler-Job —
-    Anlage bei der Deploy-Linie anordnen (aus der Invoker-Diagnose).
-12. vitalos #13 (node-forge, prod/functions) bleibt Owner-Gate; Meta-Dep-PR-
-    Modell (manuell vs. dev-Zweig) liegt als Optionen beim CEO.
-13. vitalos-cto fish-Profil ergaenzen (CEO-Hinweis Skelett); Python-Werkzeuge
-    nach Oracle-Konsolidierung ins EINE Org-venv ~/.venv; bash/node ohne.
+1. M1-RC SmartLog-Beweis (Org-Task 5f09bbb1): Fix 5f2f694 DEPLOYED (CEO 08.11.);
+   Beleg = Emulator 13:00 heute. Danach Client-Haertung eeb9d722.
+2. Shell-CI Lockfile (767c02ad): journal-app lucide-react/tailwind-merge Drift
+   vs Root-Lockfile — Deploy 42527809554 rot; Aktiv in NEXT.md.
+3. Dependabot Meta Root-only (uuid 7df12a13): yml lokal auf directory=/ ;
+   Verifikation naechster Mo-Lauf (keine prod vite/zod misconfigured_tooling).
+   vitalos #13 node-forge bleibt Owner-Gate.
+4. 6pack vite-8 #38 rot (uuid a80cb883): Fix analog fitness 87d349c.
+5. coach Catchup unpushed (uuid 7cd93f79): nur eigene 4 Commits pushen.
+6. C-007 Merge-Agent-Regel (uuid 4b2781de): Vorschlag Patch/Minor-only bis
+   2027-02-07 — wartet CEO-Ack; Drafts #42/#43/#10 rebasen.
+7. C-001/C-002/C-003/C-004 Dispatch-Hits: Play-Console, Geraeteabnahme,
+   4-Deposit-Lueckenliste, Sichtbarkeit — AL/Live bzw. CTO.
+8. Security-Buendel (uuid 3e4b583d, due 12.11.).
+9. WAYLAND-Import-Ursache (uuid 5870061d); Abhilfe headless-Drop-in steht.
+   Kitty-Pilot bewertet/geschlossen (20ba0446): headless Standard.
+10. AUTOMATION-Inventur: erste Zeilen Mo (relax 2, fitness 1) — Aggregation
+    weiterfuehren.
+11. gog CEO-Mailbox Auth (refresh-token) — Owner/CEO-Handgriff.
+12. Engine-Credits agy: Nachtwelle tot; Catchup-Bias cursor bleibt Reserve.
 
 ## CI-Nachprüfung und Pages-Landingpages — 2026-11-07
 

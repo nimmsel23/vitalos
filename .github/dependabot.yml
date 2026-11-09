@@ -1,4 +1,10 @@
 # Managed dependency updates; vendored mini-app-shell copies are maintained at their source.
+# CTO 2026-11-09: npm NUR vom Workspace-Root `/`.
+# Hintergrund: Dependabot-Jobs „npm_and_yarn in /prod for vite|zod“ (Runs
+# 42527900415 / 42527900307) scheiterten mit misconfigured_tooling — `/prod`
+# liegt IN pnpm-workspace.yaml; Updates müssen über Root-Lockfile laufen.
+# Unterverzeichnisse (/functions, /fuel-os, …) hier bewusst NICHT mehr gelistet,
+# damit keine parallelen Subdir-Updater gegen den Workspace laufen.
 version: 2
 updates:
 - package-ecosystem: github-actions
@@ -24,12 +30,7 @@ updates:
   open-pull-requests-limit: 5
   commit-message:
     prefix: deps
-  directories:
-  - /
-  - /fuel-os
-  - /functions
-  - /packages/mini-app-shell
-  - /vos-fitness
+  directory: /
   cooldown:
     default-days: 7
   groups:

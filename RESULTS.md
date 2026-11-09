@@ -1,3 +1,58 @@
+## 2026-11-09 — AL-Lauf vitalos: C-002 Handoff (Org `3c55e958`)
+
+Eine Aufgabe (Guide #9): M1-RC Geräteabnahme — kein physisches Gerät, Emulator laut Guide nicht im Timer-Lauf.
+
+- Meta HEAD: `f2075da`. Branchabstand `origin/master...HEAD` 0/33 (nur dokumentiert). Submodule-Marker: 0.
+- Artefakte: `prod/android/app/build/outputs/apk/debug/app-debug.apk` (7,9M, 2026-11-06), `…/bundle/release/app-release.aab` (6,0M); `applicationId` `com.vitalos.app`.
+- `adb devices`: leer. AVDs vorhanden (`Medium_Phone_API_37.0`, `Small_Phone_API_37`) — nicht gestartet.
+- 4 Schritte Install/Login/Journal/Sync: nicht ausführbar → Handoff Live-Terminal/Gerät; Task bleibt pending.
+- Guide #9 Handoff-Notiz; NEXT/AL-LOG/ABTEILUNG; Org-Annotation `3c55e958`. Kein Push, kein Install, kein Emulator.
+
+## 2026-11-09 — Vite-8 Fleet-Nachzug + App-Pin-Bump
+
+- Shell-CI-Skripte `test-sixpack-auth.mjs` / `test-firebase-messaging.mjs`: `transformWithEsbuild` → `esbuild.transform`, Dev-Dep `esbuild ^0.27.7` (Vite-8-Vorbeuge; lokal grün).
+- `betta-vitalos-catchup`: alle Module master→vitalos synced (u. a. 6pack/skills Vite-Fixes).
+- Meta-Gitlinks gebumpt: fitness/fuel/journal/plan/skills/6pack auf aktuellen vitalos-Stand.
+
+## 2026-11-09 — PM-Steuerung nur CPO
+
+- Owner-Korrektur: CTO hat keinen PM-Hebel.
+
+## 2026-11-09 — COO-Owner-Vertrag (Erstgespräch)
+
+- Owner: Wochenkontakt, Abschirmung, Anti-Meta; Rollenmail 1×/Tag dritte Person.
+- CPO/CTO steuern PM; `role-mail` + Wrapper verdrahtet.
+
+## 2026-11-09 — Inbox nimmsel23+ceo an COO
+
+- Owner: lokale Mail-Triage/ack (`ceo-mail`) = COO, nicht CEO-Stundenlauf.
+- `ORG.md`/Skills/`coo-run`/`ceo-run`; Timer stuendlich *:55.
+
+## 2026-11-09 — Strukturhygiene an COO (statt CEO)
+
+- Owner: Pfad-/Schema-Korrekturen = COO-Pflicht, kein CEO-Thema.
+- `ORG.md` + Skills `vitalos-coo`/`vitalos-ceo` nachgezogen.
+
+## 2026-11-09 — Koordination aus migration/unified-product gezogen
+
+- `prod/migration/unified-product/coordination/` → `prod/coordination/` (git mv).
+- Altpfad bleibt Symlink; `migration/unified-product/README.md` klaert: nur Checkout-Merge-Rest.
+- Runner/Skills/Guides auf `~/vitalos/prod/coordination/` umgebogen.
+
+## 2026-11-09 — AL-Guides: Hits = PM-Scope, AL waehlt dringendsten project-Task
+
+- `ABTEILUNGEN.md` + 9 Abteilungs-Guides: kein `+hit`-Gate fuer ALs; PM haelt Hits; AL nimmt maximal naechsten dringendsten Task der eigenen Abteilung.
+
+## 2026-11-09 — AL-Lauf vitalos: GitHub-Pages-Kanal erfasst (Org-Hit 378427eb)
+
+Eine Aufgabe aus NEXT/Org-Queue (FIRE/TODO leer): Pages-Bestand + Sensibles-Check + Doku-Absatz + Empfehlung.
+
+- API: Legacy Pages, `master`/`/docs`, `https://nimmsel23.github.io/vitalos/`, last build `a1b762e` built.
+- Live: Root 404; `Index.html` 200; Landing-Assets unter Pages-Pfad fehlend.
+- `docs/` auf master: 17 Dateien (Marketing + Ops-Runbooks). Keine Rohsecrets; SA-Mails/Secret-Namen öffentlich.
+- Empfehlung: deaktivieren/beschneiden — Owner-Gate. Keine Konfigänderung.
+- Doku: `prod/docs/FIREBASE.md` § GitHub Pages; Verweise `docs/DEPLOYMENT.md`, `docs/UNIFIED-PRODUCT.md`; Guide Aufgabe 8 abgehakt; Org-Task 378427eb done.
+
 # 2026-11-08 ~22:55 CET — Tent W46 CLOSED (Oracle)
 
 - Tent versiegelt (Return CEO ok; Lessons/Course/New Targets).
@@ -38,7 +93,7 @@ Auftrag war die CEO-freigegebene Doku-Hygiene (Aufgabe 6 des Abteilungsleiter-Gu
 Auftrag war die CEO-freigegebene Bereinigung GENAU der zwei prunable /dev/shm-Focus-Worktrees (wt-focus a199fc4, wt-focus1 e11379b). Ergebnis: beide sind bei Laufstart bereits nicht mehr registriert — keine Admin-Einträge unter `.git/worktrees/`, keine Verzeichnisse in `/dev/shm`; die Entfernung erfolgte nach dem Erstlauf (02:45 UTC, dort noch 7 registrierte) durch eine unbekannte Linie, Boot war 2026-11-06 19:48. `git worktree prune` als Freigabe-Schritt ausgeführt: no-op (rc=0), 5 registrierte Worktrees unverändert, Branches `focus-stufe-0-1` (a199fc4) und `focus-stufe-1` (e11379b) wie freigegeben unberührt. Kein Push, kein Branch-/Tag-/Gitlink-Touch.
 
 - **Inventur:** dev-product Spitze `1b9601b`; Branchabstand `origin/master...dev-product` 18/7 (nur dokumentiert, NICHT angeglichen). Submodule: genau 1 Drift-Marker (`+ journal-app` 9502f2b, heads/vitalos, fremde Ausführungslinie — nur gemeldet), sonst sauber.
-- **Nur gemeldet, kein mv/rm:** uncommittet fremd `prod/migration/unified-product/coordination/CTO.md` (`M`), `D vitalos.html`; unversioniert `20`, `docs/Index.html`, `ABTEILUNG.md` (CEO-Datei), `AL-LOG.md` (dieser Lauf committet ihn).
+- **Nur gemeldet, kein mv/rm:** uncommittet fremd `prod/coordination/CTO.md` (`M`), `D vitalos.html`; unversioniert `20`, `docs/Index.html`, `ABTEILUNG.md` (CEO-Datei), `AL-LOG.md` (dieser Lauf committet ihn).
 - **Protokoll:** Guide-Abhaken `prod/docs/product-dev/abteilungen/vitalos.md`, AL-LOG 2026-11-08 gefüllt, NEXT.md-Folgetasks — alles in einem Commit auf dev-product. Guide-Referenzen `README.md`/`WOCHENPLAN.md` unter `docs/product-dev/` fehlen nach der Symlink-Konsolidierung (gemeldet an CEO/CTO).
 
 ---

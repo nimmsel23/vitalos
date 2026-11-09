@@ -1,8 +1,30 @@
+# NEXT.md
+
+Aktive Arbeitsliste (max. 5 Punkte) fuer das vitalos Meta-Repo.
+Stand CTO-Runde 2026-11-09.
+
+## Aktiv (max. 5)
+
+- [ ] C-002 Geraeteabnahme (`3c55e958`): Handoff 2026-11-09 — APK/AAB bereit (`app-debug.apk`/`app-release.aab`, `com.vitalos.app`, Meta `f2075da`); `adb` leer, kein Emulator im Timer. Rest: Live-Install+Login+Journal+Sync.
+- [ ] vos-fitness Subversion baubar (`e83d8daa`, +al +lr): nach C-002 — Web-Build + Debug-APK oder JDK/SDK-Blocker.
+- [ ] C-001 Play-Console (`c09e4d5c`): 3 Fakten an CEO (Konto/App angelegt?); keine Zahlung.
+- [ ] SmartLog-Beweis (`5f09bbb1`): Emulator 13:00 — Deploy 5f2f694 steht; Gruennachweis abwarten.
+- [ ] M2-APK Simon/Matthias (`c3315277`, +alpha): Verteilweg bereitstellen, kein Store.
+
+## BACKLOG.md-Parkplatz (nichts geloescht; aus Aktiv ausgelagert 2026-11-09 C-005)
+
+
+<!-- vorheriger NEXT-Bestand ab hier -->
+
 - CTO: Shell-CI Lockfile `767c02ad` + SmartLog `5f09bbb1`
 - CTO: ORG-LAEUFT H1-H4 starten (Owner-Gates Mistral/State-Repo)
 - AL: Feature-Freeze Guides `b0ed4e47`
 
 # NEXT.md
+
+<!-- coo-dispatch-002-al-md -->
+- [ ] (2026-11-09 COO→AL/Live) C-002 Geraeteabnahme Org `3c55e958` — AAB/APK Install+Login+Journal+Sync Protokoll; kein Store. Live-Terminal ok.
+- [ ] (2026-11-09 COO→AL) C-001 Play-Console Org `c09e4d5c` — 3 Fakten an CEO; Guide/Live.
 - [ ] CEO-Entwurf `VitalOS-Produktstrategie-V1.3.0.md` mit Owner abnehmen;
   im M1-RC prüfen, ob ein Freitext-Tag alle vier Deposits (Body, Business,
   Balance, Being) abdeckt. Danach M2-Testuser auf tägliche Nutzung,
@@ -21,8 +43,8 @@ Aktive Arbeitsliste (max. 5 Punkte) für das vitalos Meta-Repo.
 ## 2026-11-08 (Aktuelle Org-Hits & Meta-Repo-Fokus)
 
 - [ ] Org-Task c3315277 (+alpha +hit, fällig 09.11.2026): M2-Testuser-Vorbereitung (Owner-Freigabe 20:1x): APK des Shells (com.vitalos.app, prod/android) für Simon & Matthias bereitstellen — Verteilweg dokumentieren (Play Internal Track vorbereiten oder direkte APK-Installation), keine Store-Publikation, kein Geräteanfassen; Endzustand = Installer-Weg bereit + kurze Anleitung, Ausgabe an CEO für Owner-Handoff.
-- [ ] Org-Task 378427eb (+cto +hit): GitHub-Pages-Kanal erfassen und bewerten: Pages im Meta-Repo dient docs/ von master unter nimmsel23.github.io/vitalos (baut je master-Push, seit heute CEO-beobachtet) — in KEINER Stammdoku erfasst (FIREBASE.md beider Fassungen, UNIFIED-PRODUCT: 0 Treffer). (1) Bestandsaufnahme was dort konkret öffentlich liegt (inkl. sensibler Inhalte-Check), (2) Absatz in vitalos/prod/docs/FIREBASE.md nachziehen mit Verweis-Kette von allen Deploy-Doku, (3) Empfehlung behalten vs. deaktivieren ausarbeiten — Entscheidung bleibt Owner-Gate.
-- [ ] Nur-gemeldet-Punkte beobachten (fremde Linien, nicht anfassen): uncommittet prod/migration/unified-product/coordination/CTO.md, D vitalos.html, Untracked 20/docs/Index.html; +-Drift journal-app (9502f2b, heads/vitalos).
+- [x] Org-Task 378427eb (+cto +hit): GitHub-Pages-Kanal erfasst (2026-11-09 AL): Legacy `master`/`/docs` → `nimmsel23.github.io/vitalos` (Root 404, `Index.html` 200); 17 Dateien inkl. Ops-Runbooks; keine Rohsecrets, wohl SA-Mails/Secret-Namen; Empfehlung deaktivieren/beschneiden — Owner-Gate. Doku: `prod/docs/FIREBASE.md` § GitHub Pages + Verweise in `docs/DEPLOYMENT.md` / `docs/UNIFIED-PRODUCT.md`.
+- [ ] Nur-gemeldet-Punkte beobachten (fremde Linien, nicht anfassen): uncommittet prod/coordination/CTO.md, D vitalos.html, Untracked 20/docs/Index.html; +-Drift journal-app (9502f2b, heads/vitalos).
 - [ ] Submodule-Pointer-Bumps & Shell-Tailwind-4: Modul-PRs master → vitalos und Shell-Upgrade auf Tailwind 4 nach Abschluss der aktiven Dev-Stränge abgleichen.
 
 ## 2026-11-06 (Android-Produktlinie, APK/AAB gebaut)

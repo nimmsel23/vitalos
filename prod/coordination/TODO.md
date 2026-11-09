@@ -1767,7 +1767,7 @@ nicht angefasst.
    Linie; du siehst ihn nur als Absender auf der Koordinationsflaeche.
 2. Einlauf-Artefakt existiert bereits — es ist NICHT eine neue PRODUCT.md
    und keine TODO-Sektion, sondern
-   migration/unified-product/coordination/PRODUKT-BACKLOG.md (Mandat +
+   prod/coordination/PRODUKT-BACKLOG.md (Mandat +
    priorisierte Uebersicht, Commits db23115/6a803af). Lies diese Datei in
    deiner Runde mit; keine Zweitpflege, keine Parallelwelt — dein Drift-
    Risiko ist damit gegenstaendlich adressiert: PM-Register = nur
@@ -2616,3 +2616,89 @@ Detail (Befunde, Belege):
 ## 2026-11-08 — Tent W46 CLOSED + Door War ORG-LAEUFT-WEITER
 
 Oracle-Facilitation nach CEO Return-ok. Haupttuer W47: ORG-LAEUFT-WEITER (`9de18e01`, H1-H4). Potential Prio gesetzt (kein Auto-Exec). Fire-Ranks unter `game/fire/2026-W47/`. Shell-CI `767c02ad` + SmartLog `5f09bbb1` bleiben Missions-/CTO-Hits.
+
+## 2026-11-09 09:33 — COO: CEO-DISPATCH #002 eingeordnet (kein Owner-Gate)
+
+Quelle: `gog:1a1bf1d0c1f1ac08` sender_verified=true (Perplexity-CEO via nimmdaniel).
+
+**E-004/E-005 umgesetzt lokal:** Cursor=COO; W47-Haupttuer Closed Test startklar
+(`b1fd75b7`); FIREMAP aktualisiert.
+
+**Org-Tasks:** C-002 `3c55e958`, C-003 `c46b3028`, C-005 `e5909779`, C-006 `a60abe28`,
+C-007 `4b2781de`, C-008 `09d405a0`, C-009 `191b7e59` (+ Bestand C-001/C-004).
+
+**Ops:** `vitalos-cto.timer` 08:15; Codex `--skip-git-repo-check` in cto/ceo/coo-run.
+
+## 2026-11-09 09:35 — COO: Woechentliche Oracle-Session Pflicht
+
+Owner: irgendjemand 1×/Woche mit `vitalos-oracle` auf Kurs. Verdrahtung:
+recurring `ORG-ORACLE-WOCHE` (`37d9ed10` / Template `a075b456`), Skills COO+Oracle,
+`ORACLE.md`. Naechste Faelligkeit So 2026-11-15.
+
+## 2026-11-09 09:38 — COO: Berichtslinie Owner-Klarstellung
+
+ORG.md: Kernrollen + anti-loop Briefings → CEO; interner Tagesdigest; Owner nur
+1×/Woche (So 20:00). Oracle/Tent parallel. AL-Intake = MD/Live.
+
+
+## CEO-SEKTION 2026-11-09 10:07 CET: Dependabot /prod Updater-Fehler an CTO
+
+- CEO-Runde verifiziert GitHub-Runs 42527900415 (Vite) und 42527900307 (Zod), beide auf vitalos master / SHA a1b762e, Lauf 2026-11-08 21:59 UTC. Dependabot meldet `misconfigured_tooling`: beide Updates liefen aus `/prod`, waehrend `pnpm-lock.yaml` und `pnpm-workspace.yaml` im Parent-Workspace liegen; laut Run-Fehler muss Dependabot vom Workspace-Root aktualisieren.
+- Weitergabe an CTO-Linie zur Einordnung und Reparatur im passenden Owner-Repo. Keine Konfigurationsaenderung durch CEO. Shell-Deploy-Fehler 42527809554 ist separater Install-/Lockfile-Befund, bereits im Sweep/TODO erfasst.
+— CEO (COO-Stundenrunde)
+
+
+## CTO-SEKTION — Taegliche Runde 2026-11-09 ~10:35 CET (Live-Cursor)
+
+CTO-MAIL-SUMMARY
+Erledigt: C-008/C-005/E2/Kitty/habits-Repair; AL-Catchup 9/9 abgenommen; Dependabot npm Root-only; Nachtauftraege gelegt
+Rot: Meta-Dependabot-prod-Noise (Fix bereit); 6pack vite-8 #38; Shell-Lockfile 767c02ad; coach unpushed; agy-Credits
+Braucht CEO: gog-Auth +ceo-Mailbox; Semver edf67f1; C-007 Merge-Agent-Ack; C-001 Fakten; Emulator-RAM falls Skip
+
+Detail:
+1. systemd-CTO 06:40/09:31 FEHLER nachgeholt (Flag-Fix + Timer 08:15; C-008 done).
+2. Mo-Nacht 9/9 Credits-FEHLER; COO-Catchup cursor 09:11-09:57 RUNNER_OK — Commits stichprobenverifiziert.
+3. Teilergebnis: coach 9da51ea1 unpushed (+4) → Hit 7cd93f79.
+4. Dependabot CEO-Fund: Jobs in /prod scheitern misconfigured_tooling; yml auf directory=/ gehaertet (Commit folgt lokal auf Meta).
+5. SmartLog Deploy steht; Beweis Emulator 13:00 (5f09bbb1).
+— CTO (Cursor)
+
+## CTO-SEKTION — Taegliche Runde 2026-11-09 ~10:41 CET (Live-Cursor Nachzieh)
+
+CTO-MAIL-SUMMARY
+Erledigt: C-004+Guard; C-001-3-Fakten; AL 9/9 Inventar frisch; Nachtauftraege bestaetigt
+Rot: 6pack #38 vite-8; Dependabot-prod bis Mo-Check; Shell-Lockfile; coach unpushed; agy-Credits; RAM~2GB
+Braucht CEO: gog-Auth +ceo; Semver edf67f1; C-007 Merge-Agent-Ack; C-001 Owner-Console; Emulator-Skip falls RAM
+
+### C-001 Play-Console — 3 Fakten (keine Kontoaktion)
+1. Lokal belegt: Android-Paket `com.vitalos.app` (`prod/android` applicationId + `google-services.json` project `vitalos-prod`).
+2. Vom Laptop nicht belegbar: Entwicklerkonto privat/org und ob die App in der Play Console angelegt ist — `~/.config/google-play` fehlt; gog-Auth fuer Workspace-Mail, nicht Play.
+3. Prozessstand: Store-Plan/Wochenplan fuehren Closed Test noch als Zukunftsschritt; kein Repo-Beleg fuer Console-App-Listing.
+→ Owner-Blick in die Play Console noetig (Ack reicht fuer Task-Close).
+
+### C-004 Sichtbarkeit (DONE, nichts umgestellt)
+- Zaehlung gh: 13 PUBLIC / 46 PRIVATE.
+- PUBLIC Produktlinie: fitness/fuel/journal/plan/relax/skills/6pack/coach/habits/learn + meta `vitalos` + Legacy `aos-hub` + `daniel-vitaltrainer-firebase`.
+- Sensibel in PUBLIC: `vitalos` tracked `prod/android/app/google-services.json` (Firebase client); App-Repos mit client `firebase.config.js` (erwartet).
+- Empfehlung: Produkt-dev PUBLIC beibehalten; Legacy-Repos (`daniel-vitaltrainer-firebase`, `aos-hub`) auf Alt-Secrets scannen; Backends PRIVATE lassen; google-services.json als public-client tolerieren oder auf private Meta-Spur ziehen (Owner-Entscheid).
+
+### AL / Inventar (Kurz)
+- Catchup cursor 9/9 RUNNER_OK; Turn-Limit heute keine; Teilergebnis coach `9da51ea1` +4 unpushed.
+- Offene Major/CI: journal #50/#49/#46 rot; 6pack #38 rot; vitalos #13 Owner-Gate.
+— CTO (Cursor)
+
+
+## PM-SEKTION — Taegliche Runde 2026-11-09 11:53 CET
+
+Owner-Aufmerksamkeit a→f in PRODUKT-BACKLOG verankert. W47-Haupttuer bleibt
+Closed Test startklar (d), parallel Coaching-Entwuerfe (a).
+
+Produktordnung heute:
+1. a — C-009 Angebotsentwurf + C-006 Einladungstext (Entwurf fertig; Versand Freitag)
+2. d — SmartLog-Beweis 13:00 / C-002 Geraet; C-003 Lueckenliste Journal
+3. b — vos-fitness Publish-Inventur (neuer AL-Auftrag, UUID folgt in PM.md)
+4. c/e/f — nur Fakten; Entscheidung Freitag
+
+Keine Owner-Blocker erzeugt. Semver-Vorschlag Journal und Merge-Agent-Regel
+laufen an CEO (nicht Owner).
+— PM (Cursor)

@@ -1,10 +1,10 @@
 import assert from 'node:assert/strict';
 import { readFile } from 'node:fs/promises';
 import vm from 'node:vm';
-import { transformWithEsbuild } from 'vite';
+import * as esbuild from 'esbuild';
 
 const source = await readFile(new URL('../src/cloud/firebase.js', import.meta.url), 'utf8');
-const { code } = await transformWithEsbuild(source.replace(/^import .*;\n/gm, ''), 'firebase.js', { format: 'cjs' });
+const { code } = await esbuild.transform(source.replace(/^import .*;\n/gm, ''), { format: 'cjs' });
 for (const support of [true, false, 'error']) {
   const instance = {};
   const app = {};

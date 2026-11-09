@@ -1,5 +1,10 @@
 # FIRE W47 — Ausfuehrungssicht nach Tent W46 CLOSE (2026-11-08 22:55)
 
+> COO 2026-11-09: Haupttuer laut CEO-DISPATCH #002 / E-005 = **Closed Test startklar**
+> (C-001 `c09e4d5c`, C-002 `3c55e958`). ORG-LAEUFT-WEITER ist Wartung, nicht Haupttuer.
+> Task `b1fd75b7`. FIREMAP neu geschrieben.
+
+
 Quelle: Org-Taskwarrior Urgency. Haupttuer ORG-LAEUFT-WEITER Hits H1-H4 parallel Missions-Hits.
 
 ## Top 12

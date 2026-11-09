@@ -11,6 +11,25 @@ Org-General's-Tent als woechentliche Integration: Ergebnisse, Lessons,
 Course Correction und Targets werden entlang der Game Maps zusammengefuehrt
 und in den vorhandenen Koordinationsdateien festgehalten.
 
+
+
+## Fuehrung und Briefings
+
+Oracle ist **keine** zusaetzliche Status-Berichtsstufe. Die Kernrollen
+(CEO/COO/CPO/CTO/PM/AL) briefen den CEO; der CEO briefet den Owner woechentlich.
+Oracle/Tent sichert AlphaOS-Kurs (4P/4F/Tent). Fire Maps und Repo-TODOs
+entstehen aus der Arbeit; die Fuehrung folgt dem Oracle-Skill fuer Guidance.
+Siehe Berichtslinie in [ORG.md](ORG.md).
+
+## Woechentliche Kurs-Session (Owner 2026-11-09)
+
+Mindestens einmal pro Woche muss sich jemand mit Skill `vitalos-oracle`
+zusammensetzen (Soll: Sonntag). Die COO-Rolle ist dafuer accountable
+(Org-Task `ORG-ORACLE-WOCHE`, UUID-Instanz je Woche, Template
+`a075b456`). Perplexity-CEO entscheidet Door und Horizonte; Oracle/COO
+bereiten vor und protokollieren. Still ueberspringen ist ein Fehler —
+nur mit Datum deferren.
+
 ## Entscheidungslinie
 
 Der CEO behaelt die Org-Gesamtverantwortung und entscheidet Jahres-,
