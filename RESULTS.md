@@ -1,3 +1,7 @@
+## 2026-11-09 — PM-Steuerung nur CPO
+
+- Owner-Korrektur: CTO hat keinen PM-Hebel.
+
 ## 2026-11-09 — COO-Owner-Vertrag (Erstgespräch)
 
 - Owner: Wochenkontakt, Abschirmung, Anti-Meta; Rollenmail 1×/Tag dritte Person.
