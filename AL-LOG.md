@@ -60,6 +60,6 @@ completed	success	chore(deps): sync pnpm-lock.yaml with journal-app dependency s
 - Arbeitsbaum: sauber
 
 _Vom AL ausfüllen (knapp & belegbar, je 1–3 Zeilen, Commit-/PR-Referenzen statt Erzählung):_
-- Erledigt: Org-Hit 378427eb GitHub Pages erfasst — Legacy `master`/`/docs` → nimmsel23.github.io/vitalos (Root 404, Index.html 200); Absatz `prod/docs/FIREBASE.md` + Verweise `docs/DEPLOYMENT.md`/`docs/UNIFIED-PRODUCT.md`; Guide Aufgabe 8; Task done (Commit dieses Laufs auf `dev-product`).
-- Offen/Weiter: c3315277 (+alpha +hit, fällig 09.11.) M2-APK Simon/Matthias; 8e82a31b (+cto +br) C-004 Public-Repos; Owner-Gate Pages behalten vs. deaktivieren; dirty Submodule-Marker nur gemeldet (6pack/fitness/fuel/journal/plan/relax/skills).
-- Blocker: keine (Pages-Entscheidung bewusst Owner-Gate, keine Konfigänderung).
+- Erledigt: C-002 Handoff (`3c55e958`) — Artefakte `app-debug.apk`/`app-release.aab` (`com.vitalos.app`, Meta `f2075da`); `adb` leer, kein Emulator (Guide); Protokoll in RESULTS/Guide #9/NEXT (Commit dieses Laufs auf `dev-product`).
+- Offen/Weiter: C-002 Rest Install+Login+Journal+Sync (Live-Gerät); `e83d8daa` vos-fitness Subversion; `c3315277` (+alpha) M2-APK; `7df12a13` (+cto) Dependabot Meta / PR #13 Owner-Gate.
+- Blocker: kein angeschlossenes Android-Gerät für C-002 DoD (AVDs da, Start im Timer verboten).

@@ -133,3 +133,10 @@ Inbox melden.
 - **Ausgeführte Aufgabe:** Org-Hit `378427eb` (+cto +hit): GitHub-Pages-Kanal erfasst und bewertet ohne Console-/Konfigänderung. Bestand Legacy Pages `master`/`/docs` → `https://nimmsel23.github.io/vitalos/`; 17 Dateien; Root 404 / `Index.html` 200; keine Rohsecrets, wohl SA-Mails/Secret-Namen; Empfehlung deaktivieren oder stark beschneiden (Owner-Gate). Doku: `prod/docs/FIREBASE.md` § GitHub Pages; Verweise in `docs/DEPLOYMENT.md` + `docs/UNIFIED-PRODUCT.md`; Guide Aufgabe 8 abgehakt; NEXT/RESULTS/AL-LOG; Taskwarrior done.
 - **Offene Punkte & Blocker:** Blocker keine. Offen: `c3315277` (+alpha, M2-APK fällig heute), `8e82a31b` (C-004), Owner-Entscheidung Pages, Submodule-Drift nur beobachten.
 - **Commit & Abschluss:** Commit auf `dev-product` (FIREBASE/DEPLOYMENT/UNIFIED-PRODUCT, NEXT/RESULTS, Guide, AL-LOG, ABTEILUNG). Kein Push, kein Gitlink-/Submodule-/Pages-Touch.
+
+## Letzter Lauf — 2026-11-09 (~15:40 CET, Abteilungsleiter-Lauf; EINE Aufgabe: C-002 Handoff)
+
+- **Stand & Regelquellen:** Einstieg `abteilungsleiter brief vitalos` (Queues: keine neuen TODO-Punkte; Org project:vitalos = c3315277/+alpha, 7df12a13/+cto, e83d8daa/+al). HEAD vor Lauf `f2075da`. Branchabstand `origin/master...HEAD` 0/33 (nur dokumentiert). Submodule-Marker: 0. Arbeitsbaum sauber.
+- **Ausgeführte Aufgabe:** Guide #9 / Org `3c55e958` C-002 M1-RC Geräteabnahme — Befund + Handoff (kein Gerät, kein Emulator-Start). Artefakte `app-debug.apk` (7,9M) + `app-release.aab` (6,0M), `com.vitalos.app`. DoD-Schritte offen. NEXT/RESULTS/Guide-Handoff/AL-LOG; Org-Annotation.
+- **Offene Punkte & Blocker:** Blocker = kein adb-Gerät. Offen: C-002 Rest (Live), `e83d8daa` vos-fitness, `c3315277` M2-APK (+alpha), Dependabot/PR #13 (+cto).
+- **Commit & Abschluss:** Commit auf `dev-product` (Guide, NEXT, RESULTS, AL-LOG, ABTEILUNG). Kein Push, kein Install/Emulator/Gitlink-Touch.
