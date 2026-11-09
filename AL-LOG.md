@@ -60,6 +60,6 @@ completed	success	chore(deps): sync pnpm-lock.yaml with journal-app dependency s
 - Arbeitsbaum: sauber
 
 _Vom AL ausfüllen (knapp & belegbar, je 1–3 Zeilen, Commit-/PR-Referenzen statt Erzählung):_
-- Erledigt: C-002 Handoff (`3c55e958`) — Artefakte `app-debug.apk`/`app-release.aab` (`com.vitalos.app`, Meta `f2075da`); `adb` leer, kein Emulator (Guide); Protokoll in RESULTS/Guide #9/NEXT (Commit dieses Laufs auf `dev-product`).
+- Erledigt: C-002 Handoff (`3c55e958`) — Artefakte `app-debug.apk`/`app-release.aab` (`com.vitalos.app`, Meta `f2075da`); `adb` leer, kein Emulator (Guide); `6dcc77f` + auto `5824a2d`/`14af927` (RESULTS/NEXT) auf `dev-product`.
 - Offen/Weiter: C-002 Rest Install+Login+Journal+Sync (Live-Gerät); `e83d8daa` vos-fitness Subversion; `c3315277` (+alpha) M2-APK; `7df12a13` (+cto) Dependabot Meta / PR #13 Owner-Gate.
 - Blocker: kein angeschlossenes Android-Gerät für C-002 DoD (AVDs da, Start im Timer verboten).
