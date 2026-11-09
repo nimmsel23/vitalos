@@ -2717,3 +2717,14 @@ laufen an CEO (nicht Owner).
 - Abnahme: bare `task` in Org = 86; private zsh ohne Flag = 382; Guard bei fehlender taskrc / TASKDATA-Override.
 - Deploy unveraendert ACTIVE: analyzeSmartLog `2026-11-08T21:17:48Z` (kein Re-Deploy).
 - Task `5f09bbb1` annotiert (Plan-Abnahme).
+
+## CTO-SEKTION — C-001 Play-Console Owner-Fakten verbucht (2026-11-09 ~18:55 CET)
+
+Owner/CEO gemeldet:
+1. Konto = **privat** (eine Person) — ok fuer Closed Test.
+2. App **angelegt** (`com.vitalos.app`).
+3. Closed-Test-Track: Owner unsicher → Folge-Hit `C-001b` (Org-Task neu, +cto +hit).
+
+C-001 `c09e4d5c` DONE. Naechster Store-Schritt = Closed testing in der Console
+finden/anlegen (kein Publish).
+— CTO (orgsh)
