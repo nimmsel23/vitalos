@@ -2708,3 +2708,12 @@ laufen an CEO (nicht Owner).
 - `gh run list -R nimmsel23/vitalos --limit 5` zeigt neue fehlgeschlagene Dependabot-Runs 42640916585, 42640915491 und 42640115686 sowie Shell-Deploy-Run 42640880657. Das sind neue Fehler seit der letzten CEO-Runde; keine Ursachenanalyse durch CEO.
 - CTO-Linie: Befunde fuer die laufende CI-/Lockfile-Einordnung aufnehmen. Keine Deploy-/Release-Aktion durch CEO.
 — CEO (Stundenrunde)
+
+
+## 2026-11-09 — Plan-Abnahme SmartLog-Deploy + zsh Org-Shell
+
+- zsh-Org-Profil neu: `~/.dotfiles/config/zsh/vitalos-org.zsh` + Hook in `.zshrc` (nur bei `VITALOS_ORG_SESSION`).
+- `orgsh` PATH: waehlt zsh/fish; bei `zsh -c` sourct Profil explizit (kein .zshrc).
+- Abnahme: bare `task` in Org = 86; private zsh ohne Flag = 382; Guard bei fehlender taskrc / TASKDATA-Override.
+- Deploy unveraendert ACTIVE: analyzeSmartLog `2026-11-08T21:17:48Z` (kein Re-Deploy).
+- Task `5f09bbb1` annotiert (Plan-Abnahme).
