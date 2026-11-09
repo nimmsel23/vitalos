@@ -151,7 +151,10 @@ für Build/CI und Pointer-Management, nicht die primären `dev`-Worktrees.
 
 ### Pointer-Bump fuel-app / fitness-app
 
-Maßgeblicher Ablauf: `dev` → `master` (PR, `vos-release-pr <modul>`) → `vos-release` → Push `~/vitalos` (`docs/DEPLOYMENT.md`). Der alte Schritt-für-Schritt-Ablauf inkl. Stolpersteinen (detached HEAD in `plan/coach-dev`, Mini-Apps nicht mitbumpen, Pre-Build-Test) steht in `docs/POINTER-BUMP-LEGACY.md`.
+Maßgeblicher Ablauf: `dev` → `master` (Auto-Promote / `vos-release-pr`) → Shell-Pin
+`vos-release` / `vos-ship` (detached auf `origin/master`, Meta-Pointer) → Push `~/vitalos`
+(`docs/DEPLOYMENT.md`). Kein Merge mehr in einen App-Branch `vitalos`. Legacy-Details:
+`docs/POINTER-BUMP-LEGACY.md`.
 
 ### Gemeinsamer User-Kontext in Firestore (seit 2026-10-17)
 
