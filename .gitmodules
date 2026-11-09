@@ -2,43 +2,43 @@
 	path = fitness-app
 	url = git@github.com:nimmsel23/fitness-dev.git
 	ignore = untracked
-	branch = vitalos
+	branch = master
 [submodule "fuel-dev"]
 	path = fuel-app
 	url = git@github.com:nimmsel23/fuel-dev.git
 	ignore = untracked
-	branch = vitalos
+	branch = master
 [submodule "journal-dev"]
 	path = journal-app
 	url = git@github.com:nimmsel23/journal-dev.git
 	ignore = untracked
-	branch = vitalos
+	branch = master
 [submodule "habits-dev"]
 	path = habit-app
 	url = git@github.com:nimmsel23/habits-dev.git
 	ignore = untracked
-	branch = vitalos
+	branch = master
 [submodule "learn-dev"]
 	path = learn-app
 	url = git@github.com:nimmsel23/learn-dev.git
 	ignore = untracked
-	branch = vitalos
+	branch = master
 [submodule "relax-dev"]
 	path = relax-app
 	url = git@github.com:nimmsel23/relax-dev.git
-	branch = vitalos
+	branch = master
 [submodule "6pack-dev"]
 	path = 6pack-app
 	url = git@github.com:nimmsel23/6pack-dev.git
 	ignore = untracked
-	branch = vitalos
+	branch = master
 [submodule "plan-dev"]
 	path = plan-app
 	url = git@github.com:nimmsel23/plan-dev.git
 	ignore = untracked
-	branch = vitalos
+	branch = master
 [submodule "skills-app"]
 	path = skills-app
 	url = git@github.com:nimmsel23/skills-dev.git
-	branch = vitalos
+	branch = master
 	ignore = untracked

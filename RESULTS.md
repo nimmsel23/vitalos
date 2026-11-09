@@ -3,6 +3,14 @@
 - `deploy-shell.yml`: `FITNESS_KB_DIR=fitness-app/fitness/catalog/kb` für plan-app kb-dir im Meta-Layout.
 - relax-app Pin bereits auf 33997ea.
 
+
+## 2026-11-09 — Test: Submodule-Pins auf origin/master (branch=master)
+
+`.gitmodules` `branch = vitalos` → `branch = master`. Alle `*-app` auf `origin/master`
+gepinnt (detached). Bewusster Versuch: Shell-Aufnahme ohne `vitalos`-Branch.
+Module mit Pin-Wechsel: 6pack, fitness, fuel, habit, journal (learn/plan/relax/skills
+waren schon master≡vitalos).
+
 ## 2026-11-09 — Shell: relax-app Pin auf origin/vitalos + Deploy
 
 - Gitlink `relax-app` feabf4a → 33997ea (minimatch-Override). Übrige *-app-Pins bereits aktuell. Shell-Deploy folgt.
