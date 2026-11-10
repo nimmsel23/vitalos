@@ -25,9 +25,9 @@ export const PAGES = [
   { id: 'settings', label: 'Einstellungen' },
 ]
 
-function PageShell({ title, onBack, children }) {
+function PageShell({ title, onBack, children, pageId }) {
   return (
-    <div className="pulse-page">
+    <div className="pulse-page" data-page={pageId}>
       <div className="pulse-page-head">
         <button className="pulse-icon-btn" onClick={onBack} aria-label="Zurück"><ChevronLeft size={18} /></button>
         <h2>{title}</h2>
@@ -80,7 +80,7 @@ export function SubPage({ id, onBack, onOpen, sessions, signOut, sessionDate, on
   const page = PAGES.find((p) => p.id === id)
   if (!page) return null
   return (
-    <PageShell title={page.label} onBack={onBack}>
+    <PageShell title={page.label} onBack={onBack} pageId={id}>
       <PageBoundary key={id} onBack={onBack}>
         <Suspense fallback={<div className="pulse-empty">…</div>}>
           {id === 'training' && (
@@ -96,7 +96,7 @@ export function SubPage({ id, onBack, onOpen, sessions, signOut, sessionDate, on
           {id === 'logbuch' && <Session key="logbuch" subTab="logbuch" recentDays={recentDays} onOpenSession={onOpenSession} onInspectExercise={inspectExercise} onSubNav={onSubNav} />}
           {id === 'learn' && <Learn onInspectExercise={inspectExercise} muscleLanguage={muscleLanguage} taxonomy={taxonomy} />}
           {id === 'settings' && (
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+            <div className="pulse-settings">
               <Settings hideAppearance />
               {signOut && (
                 <button

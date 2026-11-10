@@ -16,8 +16,12 @@
   background: var(--bg);
   color: var(--ink);
   position: relative;
-  overflow-x: hidden;
+  overflow-x: clip;
 }
+
+/* Imported pages share one canvas; an opaque sticky session header must not
+   cut a rectangle out of Pulse's atmospheric background. */
+.pulse-root.pulse-root--page::before, .pulse-root.pulse-root--page::after { content: none; }
 
 /* atmospheric grain + radial glow instead of a flat background */
 .pulse-root::before {
@@ -290,8 +294,50 @@
   min-width: 0;
   /* eingebettete fitness-app-Views sind für Shell-Scrollflächen gebaut: nichts darf
      seitlich überstehen (iOS zoomt/verschiebt sonst die ganze Seite) */
-  overflow-x: clip;
   padding: 1.25rem 1.25rem max(3rem, calc(env(safe-area-inset-bottom) + 2rem));
+}
+
+/* Native form controls have intrinsic widths on Safari. Let grid/flex cells
+   shrink instead of clipping the right half of the form. Keep text inputs at
+   16px so focusing them does not zoom the installed iPhone PWA. */
+.pulse-settings { display: flex; flex-direction: column; gap: 1rem; }
+.pulse-settings :where(div, section, input, select, textarea, button) { min-width: 0; }
+.pulse-settings :where(input, select, textarea) {
+  max-width: 100%;
+  font-size: 16px;
+}
+.pulse-settings > div { width: 100%; padding-bottom: 0; }
+.pulse-settings section.card {
+  padding: 1rem;
+  border: 1px solid var(--line);
+  border-radius: 1rem;
+  background: var(--bg2);
+  animation: none;
+}
+.pulse-settings section.card + *,
+.pulse-settings section.card > * + * { margin-top: 1rem; }
+.pulse-settings section.card input { background: var(--bg); }
+.pulse-settings section.card h3 { font-size: 0.95rem; }
+.pulse-settings section.card button { min-height: 44px; }
+.pulse-settings section.card .flex-1 { flex-basis: 0; overflow-wrap: anywhere; }
+.pulse-settings section.card .grid { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0.75rem; }
+.pulse-settings section.card .grid > :first-child { grid-column: 1 / -1; }
+.pulse-settings [style*="var(--dim)"] { opacity: 1 !important; color: var(--muted) !important; }
+
+/* Pulse has no bottom navigation. The session's sticky header already offers
+   Save; its shell-specific floating duplicate would cover Quick Input. */
+.pulse-page[data-page="training"] .fixed.right-4.z-40 { display: none; }
+.pulse-page[data-page="training"] .session-header { padding-inline: 0; }
+
+@media (max-width: 640px) {
+  .pulse-page-head {
+    padding: max(0.75rem, env(safe-area-inset-top)) max(1rem, env(safe-area-inset-right)) 0.75rem max(1rem, env(safe-area-inset-left));
+    gap: 0.65rem;
+  }
+  .pulse-page-body {
+    padding: 1rem max(1rem, env(safe-area-inset-right)) max(2rem, calc(env(safe-area-inset-bottom) + 1rem)) max(1rem, env(safe-area-inset-left));
+  }
+  .pulse-settings > div > .grid { grid-template-columns: minmax(0, 1fr); gap: 1rem; }
 }
 .pulse-menu { display: flex; flex-direction: column; gap: 0.6rem; }
 .pulse-menu-item {

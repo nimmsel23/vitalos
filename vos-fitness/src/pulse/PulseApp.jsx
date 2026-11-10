@@ -67,7 +67,7 @@ export default function PulseApp() {
   if (!user) return <AuthScreen signIn={signIn} signInEmail={signInEmail} signUpEmail={signUpEmail} />
 
   return (
-    <div className="pulse-root">
+    <div className={`pulse-root${page ? ' pulse-root--page' : ''}`}>
       <PageBoundary key={page} onBack={() => go('')}>
         {page === 'menu' && <MenuPage onOpen={go} onBack={() => go('')} />}
         {page && page !== 'menu' && (
