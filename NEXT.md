@@ -6,7 +6,7 @@ Stand CTO-Runde 2026-11-09.
 ## Aktiv (max. 5)
 
 - [ ] C-002 Geraeteabnahme (`3c55e958`): Handoff 2026-11-09 — APK/AAB bereit (`app-debug.apk`/`app-release.aab`, `com.vitalos.app`, Meta `f2075da`); `adb` leer, kein Emulator im Timer. Rest: Live-Install+Login+Journal+Sync.
-- [ ] vos-fitness Subversion baubar (`e83d8daa`, +al +lr): nach C-002 — Web-Build + Debug-APK oder JDK/SDK-Blocker.
+- [x] vos-fitness Subversion baubar (`e83d8daa`, 2026-11-10 AL): Web-Build OK + Debug-APK-Pfad; Host weiter 404; Rest Asset-Links/Keystore/Play.
 - [ ] C-001 Play-Console (`c09e4d5c`): 3 Fakten an CEO (Konto/App angelegt?); keine Zahlung.
 - [ ] SmartLog-Beweis (`5f09bbb1`): Emulator 13:00 — Deploy 5f2f694 steht; Gruennachweis abwarten.
 - [ ] M2-APK Simon/Matthias (`c3315277`, +alpha): Verteilweg bereitstellen, kein Store.
