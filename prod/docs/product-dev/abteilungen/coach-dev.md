@@ -73,10 +73,10 @@ Dein Lauf startet bis auf Weiteres als persistente interaktive Session im kitty 
 
 Wiederholst du in deinem Repo-Alltag von Hand einen Schritt, den ein Skript, ein Werkzeug oder eine Konfiguration erledigen könnte, schreibe GENAU EINE Zeile ins AL-Log deines Laufs: `AUTOMATION: <Schritt> — <Vorschlag> — <geschätzte Ersparnis>`. Nur echte Beobachtungen aus dem eigenen Lauf, keine Erfindungen, keine Systemarchitektur-Träume, keine neue Taskfarm: Jede Automatisierung muss eine wiederkehrende Aufgabe LÖSCHEN. Die CTO-Linie aggregiert die Zeilen wöchentlich für die Door-War-Priorisierung.
 
-## CTO-Nachtauftrag (2026-11-09)
+## CTO-Nachtauftrag (2026-11-10)
 
-1. Catchup 09:51 liess `9da51ea1` (+3 docs) **unpushed** auf lokalem `dev` —
-   gezielt nur die eigenen 4 Commits pushen (`origin/dev`), fremde Mods
-   (`server.py`, `coach-backends.json`, …) NICHT mitschiffen. Check belegen.
-2. Kitty-Pilot: CTO-Bewertung 09.11. = headless Standard bleibt; Pilot nur bei
-   aktivem `@kitty`-Socket — kein erzwungener Kitty-Start ohne Socket.
+1. Org `49499dfb`: Dependabot Updates `backend/fuel` (fastify / @fastify/static)
+   Runs 42763764350 / 42763764833 rot — Ursache einordnen (misconfigured_tooling
+   vs Update-Fail). Fix nur wenn klar und scoped; sonst Befund im AL-LOG.
+2. Kitty-Pilot unveraendert: headless Standard; Pilot nur bei lebendem @kitty.
+3. Fremde Inbox/Chat-WIP und Submodule-Dirty nicht stagen.

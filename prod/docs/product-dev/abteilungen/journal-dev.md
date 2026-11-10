@@ -57,12 +57,14 @@ Jede Linie und jeder AL darf eigene Shell-Hilfen (Skripte, Aliase, fish-Funktion
 
 Wiederholst du in deinem Repo-Alltag von Hand einen Schritt, den ein Skript, ein Werkzeug oder eine Konfiguration erledigen könnte, schreibe GENAU EINE Zeile ins AL-Log deines Laufs: `AUTOMATION: <Schritt> — <Vorschlag> — <geschätzte Ersparnis>`. Nur echte Beobachtungen aus dem eigenen Lauf, keine Erfindungen, keine Systemarchitektur-Träume, keine neue Taskfarm: Jede Automatisierung muss eine wiederkehrende Aufgabe LÖSCHEN. Die CTO-Linie aggregiert die Zeilen wöchentlich für die Door-War-Priorisierung.
 
-## CTO-Nachtauftrag (2026-11-09)
+## CTO-Nachtauftrag (2026-11-10)
 
-1. C-003 Lueckenliste 4-Deposit (`c46b3028`) — DoD max 5 Luecken S/M/L, kein Bau.
-2. **Owner 09.11.: keine PR-/Merge-Sperre.** Dependabot #46/#49/#50 (firebase/react
-   Majors) Check rot → **fixen und squash auf `dev`**, nicht liegenlassen. Draft
-   Merge-Agent #42 ohne Rebase nicht mergen (Draft ≠ Policy-Block).
-3. Client-Haertung `eeb9d722` erst nach SmartLog-Emulator-Beweis.
-4. **Semver aktiv (CEO 09.11.):** Root-`package.json` = `1.0.0` (Option B). Feature =
-   MINOR, Fix = PATCH mitbumpen (`DEPLOYMENT.md`).
+1. **Client-Haertung** Org `eeb9d722`: `smartLogErrorText` mappt unbekannte/
+   INTERNAL[0]-Errors auf fail-closed Nutzertext („Smart Logging ist gerade
+   nicht verfuegbar"). Server-Fix 5f2f694 ist LIVE — Codes an Ist-Stand mappen.
+   Check (Journal) belegen; kein Deploy/Functions.
+2. **Semver Live** Org `d48d852d`: nach Promote Header/Update-Dialog auf
+   journal-vos = `1.0.x+sha` belegen (DOM/Text reicht). Tip `package.json` ist
+   bereits `1.0.1`.
+3. Draft Merge-Agent **#42** (base=master) nicht mergen/rebasen — Draft ≠ Policy.
+4. Owner-Regel: keine PR-/Merge-Sperre; rote Dep-PRs fixen+squash, nicht parken.

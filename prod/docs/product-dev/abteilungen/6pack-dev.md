@@ -63,8 +63,8 @@ Jede Linie und jeder AL darf eigene Shell-Hilfen (Skripte, Aliase, fish-Funktion
 
 Wiederholst du in deinem Repo-Alltag von Hand einen Schritt, den ein Skript, ein Werkzeug oder eine Konfiguration erledigen könnte, schreibe GENAU EINE Zeile ins AL-Log deines Laufs: `AUTOMATION: <Schritt> — <Vorschlag> — <geschätzte Ersparnis>`. Nur echte Beobachtungen aus dem eigenen Lauf, keine Erfindungen, keine Systemarchitektur-Träume, keine neue Taskfarm: Jede Automatisierung muss eine wiederkehrende Aufgabe LÖSCHEN. Die CTO-Linie aggregiert die Zeilen wöchentlich für die Door-War-Priorisierung.
 
-## CTO-Nachtauftrag (2026-11-09)
+## CTO-Nachtauftrag (2026-11-10)
 
-1. Dependabot #38 vite 6→8 ist rot (Check/Deploy fail) — gleiches Muster wie
-   fitness vite-8 (`build.target 'modules'`). Fix analog fitness 87d349c oder
-   PR schliessen/blocken; kein Blind-Merge. Feature-Freeze gilt.
+1. Vite-8 #38 erledigt (gemergt 09.11.). Kein neuer Blocker.
+2. Eingang TODO/NEXT sichten; Feature-Freeze bis 2027-02-07 (nur Bugfix/CI/Docs/
+   Deps Patch-Minor). Untracked APK nur melden, nicht committen.

@@ -64,8 +64,9 @@ Jede Linie und jeder AL darf eigene Shell-Hilfen (Skripte, Aliase, fish-Funktion
 
 Wiederholst du in deinem Repo-Alltag von Hand einen Schritt, den ein Skript, ein Werkzeug oder eine Konfiguration erledigen könnte, schreibe GENAU EINE Zeile ins AL-Log deines Laufs: `AUTOMATION: <Schritt> — <Vorschlag> — <geschätzte Ersparnis>`. Nur echte Beobachtungen aus dem eigenen Lauf, keine Erfindungen, keine Systemarchitektur-Träume, keine neue Taskfarm: Jede Automatisierung muss eine wiederkehrende Aufgabe LÖSCHEN. Die CTO-Linie aggregiert die Zeilen wöchentlich für die Door-War-Priorisierung.
 
-## CTO-Nachtauftrag (2026-11-09)
+## CTO-Nachtauftrag (2026-11-10)
 
-1. Org-Task `ca183b8c`: RESULTS.md-`.gitignore`-Eintrag entfernen (Tracking bleibt).
-2. Lokal `dev` stark hinter `origin/dev` — vor Arbeit ff-only sync; fremdes
-   `docs/CLAUDE.md` nicht anfassen.
+1. **Hit** Org `175b5162`: Tip `52bc1da` Check rot — `tooling:biome` Format in
+   `scripts` (Vite-Preload-Marker-Zeile). Biome format/fix → Push `dev` →
+   Check (Fitness) gruen belegen (Run-ID). Feature-Freeze: nur CI/Docs/Bugfix.
+2. Fremdes WIP im Checkout nicht anfassen; Arbeit nur im Temp-Worktree.
