@@ -144,6 +144,27 @@ body {
   outline-offset: 3px;
 }
 
+/* Hub-Kacheln: farbige Umrandung bei Hover, Tastaturfokus und offenem Rechtsklick-Menü */
+.vos-hub-tile {
+  outline: 2px solid transparent;
+  outline-offset: 2px;
+  transition:
+    transform 160ms cubic-bezier(.2, .8, .2, 1),
+    background-color 160ms,
+    opacity 160ms,
+    outline-color 160ms,
+    border-color 160ms;
+}
+.vos-hub-tile:hover,
+.vos-hub-tile:focus-visible,
+.vos-hub-tile[aria-expanded="true"] {
+  outline-color: color-mix(in srgb, var(--hub-tile-color, var(--accent)) 78%, transparent);
+  border-color: color-mix(in srgb, var(--hub-tile-color, var(--accent)) 42%, transparent) !important;
+}
+.vos-hub-tile:focus:not(:focus-visible):not(:hover):not([aria-expanded="true"]) {
+  outline-color: transparent;
+}
+
 .vos-skip-link { position: fixed; left: 12px; top: 12px; z-index: 100; transform: translateY(-150%); }
 .vos-skip-link:focus { transform: none; }
 .vos-keyboard-help { margin: auto; width: min(34rem, calc(100vw - 24px)); max-height: 85dvh; overflow-y: auto; }

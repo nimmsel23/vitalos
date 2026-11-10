@@ -111,8 +111,9 @@ export default function Hub({ navigate, variant = 'page', runtimeDate, openSessi
               menuLabel={`${label} – Unterbereiche`}
               items={tileMenuItems(id, handleNavigate)}
               onClick={() => handleNavigate(id)}
-              className="vos-press relative flex min-h-[128px] flex-col justify-between overflow-hidden rounded-[22px] p-4 text-left"
+              className="vos-hub-tile vos-press relative flex min-h-[128px] flex-col justify-between overflow-hidden rounded-[22px] p-4 text-left"
               style={{
+                '--hub-tile-color': color,
                 background: `linear-gradient(160deg, color-mix(in srgb, ${color} 16%, var(--card)) 0%, var(--card) 70%)`,
                 border: '1px solid color-mix(in srgb, var(--ink) 7%, transparent)',
               }}

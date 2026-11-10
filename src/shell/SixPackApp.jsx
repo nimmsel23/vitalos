@@ -14,6 +14,7 @@ export default function SixPackApp({ user, onNavigate }) {
   })
 
   return (
+    // Theme nur hier scoped — SixPackPromiseCard darf documentElement in der Shell nicht umfärben.
     <div data-theme="sixpack" className="min-h-[100dvh] overflow-y-auto bg-[var(--bg)] text-[var(--ink)]">
       <div className="mx-auto max-w-xl px-4 py-4">
         {/* 6Pack-Push kommt nur von der 6Pack-App (6pack-dev). Fitness hat ihn entfernt; die Standalone-Variante

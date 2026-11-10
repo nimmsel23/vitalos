@@ -23,6 +23,7 @@ CEO/Owner-Gate. Org-Task `b0ed4e47`.
 Du schreibst Daniel nicht direkt (kein tele/wacli). Der Runner protokolliert den Lauf lokal; der CEO liest das Log und entscheidet über eine Nachricht. Owner-Fragen mit `+ceo` markieren.
 
 ## Aufgabenliste (oberste offene zuerst; erledigte hier mit Datum + Commit abhaken)
+0. [x] **Learn-3D Docs** (2026-11-10): `src/views/Learn/ARCHITECTURE.md` + `AUDIT.md` BodyParts3D nachgezogen — Commit auf `dev` (AL-Lauf).
 1. [ ] **Tagesinventur (jeden Lauf):** `git -C ~/dev/fitness-dev status --short`, `git log --oneline -5 dev`, `gh run list -R nimmsel23/fitness-dev --branch dev --limit 3`; unversionierte Dateien nur MELDEN (nie rm/mv); Befund kurz in den Log.
 2. [ ] **Eingang:** `TODO.md`/`NEXT.md` im Repo sichten — Bot-Zeilen mit Zeitstempel sind potenzielle Aufgaben; Aufgaben mit eindeutigem Ergebnis bearbeiten, Unklarheiten als Vorschlag im Guide notieren.
 3. [ ] Offene Aufgabe aus dieser Liste abarbeiten: hoechstens EINE pro Lauf.
