@@ -1,4 +1,10 @@
+## 2026-11-10 — Meta: `@tanstack/query-core` wie Prod
+
+- Root-`package.json`: `@tanstack/query-core` `^5.107.1` (analog `prod/package.json`).
+- Behebt pnpm-Hoisting: `vos-fitness` `npm run build` fand `query-core` nicht → jetzt grün (`dist-firebase`).
+
 ## 2026-11-10 — vos-fitness: Rolldown-Preload-Guard vorbeugend
+
 
 - `vos-fitness/vite.config.cjs`: `fixRolldownPreloadMarker` (wie 6pack/skills/relax).
 - Live/Build aktuell Vite 6.4.5 → nicht betroffen; Guard für Vite-8-Bump / Cap-Lazy-Imports.
