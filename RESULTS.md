@@ -1,3 +1,10 @@
+## 2026-11-10 — pnpm-Workspaces: skills-app + Rolldown-Pin + Check
+
+- `skills-app` in Meta-`pnpm-workspace.yaml` (fehlte trotz Shell-Import); Lockfile-Importer nachgezogen.
+- Meta-Override `rolldown: 1.2.16` (kein 1.3.0-Preload-Blackscreen).
+- Neu: `bin/vos-workspace-check` (Submodule ↔ workspace + frozen). `~/dev` bleibt bewusst **kein** Mega-Workspace.
+- Home-Junk `~/package.json`+Lockfile archiviert unter `~/.local/archiv/home-pnpm-junk-2026-11-10/`.
+
 ## 2026-11-10 — Shell: Hub-Hover-Ring + 6Pack Theme scoped
 
 - Hub-Kacheln: farbige Outline bei Hover, `:focus-visible` und offenem Rechtsklick-Menü (`vos-hub-tile` / `--hub-tile-color`).
