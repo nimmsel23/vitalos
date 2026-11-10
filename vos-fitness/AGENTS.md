@@ -65,6 +65,14 @@ build styles` and `Normalize fitness VOS Firebase scripts`. Keep commits scoped
 to the changed surface. PRs should describe the user-visible effect, list the
 commands run, and include screenshots for UI/layout changes.
 
+## Vite 8 / Rolldown (Vorbeuge)
+
+`vite.config.cjs` enthält `fixRolldownPreloadMarker`. Aktuell baut vos-fitness
+über Parent-Vite **6.4.5** (kein Rolldown-Bug). Plugin trotzdem behalten: bei
+Vite-8-Bump oder Capacitor-Lazy-`import('./web')` aus `fitness-app` sonst
+`__VITE_PRELOAD__<hash>` → SyntaxError → Blackscreen auf `fitness-vos.web.app`
+(wie `vos-6pack`). Entspricht dem Guard in 6pack/skills/relax.
+
 ## Agent-Specific Instructions
 
 Follow the parent VitalOS rule: commit every working intermediate or final state

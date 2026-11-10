@@ -29,6 +29,23 @@ const planSubmoduleFallback = () => ({
   },
 });
 
+// Vite 8 / Rolldown appends a content-hash to the `__VITE_PRELOAD__` marker
+// (`__VITE_PRELOAD__50b3…`). Vite's import-analysis then replaces only the
+// 16-char marker, leaving `[]50b3…` — invalid JS (black screen, same as vos-6pack).
+// vos-fitness builds today on Vite 6.4.5 (parent); keep this guard so a Vite-8
+// bump or Capacitor lazy `import('./web')` from fitness-app cannot blackscreen
+// fitness-vos.web.app.
+function fixRolldownPreloadMarker() {
+  return {
+    name: "fix-rolldown-preload-marker",
+    renderChunk(code) {
+      if (!code.includes("__VITE_PRELOAD__")) return null;
+      const next = code.replace(/__VITE_PRELOAD__[a-f\d]{8,}/g, "__VITE_PRELOAD__");
+      return next === code ? null : { code: next, map: null };
+    },
+  };
+}
+
 module.exports = defineConfig(async ({ mode }) => {
   const { vosChangelog } = await import('../packages/mini-app-shell/vos-changelog-vite.mjs');
   const { miniAppSubmodulePlugin } = await import('../fitness-app/vite-miniapp-submodules.mjs');
@@ -45,7 +62,8 @@ module.exports = defineConfig(async ({ mode }) => {
       planSubmoduleFallback(),
       miniAppSubmodulePlugin(FITNESS),
       vosChangelog({ appId: 'vos-fitness', appName: 'VOS Fitness', accent: '#60a5fa', releaseRoot: FITNESS }),
-      react()
+      react(),
+      fixRolldownPreloadMarker(),
     ],
     resolve: {
       preserveSymlinks: true,
