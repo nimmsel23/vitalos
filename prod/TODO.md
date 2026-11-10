@@ -26,3 +26,8 @@
 ## 2026-11-01 — Coach ship
 
 - [x] vos-ship coach ergänzen, standalone Coach mit veröffentlichtem Plan-Pin ausliefern, gemeinsame App-Rules aus VitalOS deployen und Live-SHA prüfen.
+
+## 2026-11-10 — CEO-Dispatch #003
+
+- [ ] C-010 Play Console Closed-Test-Track `com.vitalos.app`: Owner-Klickliste (15 Punkte, Status, Lieferant) in `prod/docs/PLAY-CLOSED-TEST-CLICKLIST.md`. Track-Existenz unbekannt. Kein Console-Klick und kein Upload aus diesem Auftrag.
+- [ ] C-011 Live-Smoke nach Live-Deploy (Shell, Journal, 6Pack, Fitness): Tabelle und Regel in `docs/LIVE-SMOKE.md`. Smoke-PRs blockieren keinen Merge und sind erst nach Merge aktiv. Journal-Live ist bei der Probe rot (Syntaxfehler, leeres Root), letzter Deploy-Lauf war grün.

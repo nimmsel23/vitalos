@@ -1,0 +1,113 @@
+# C-010 — Owner-Klickliste Closed Test `com.vitalos.app`
+
+Stand: 2026-11-10. CEO-Dispatch 2026-11-10 #003, Auftrag C-010.
+Ziel: erster Closed-Test-Release der bestehenden Play-Console-App `com.vitalos.app`.
+Diese Liste ist eine Klickanleitung. Sie legt keinen Track an, lädt kein AAB hoch
+und ändert nichts in der Play Console.
+
+Die App existiert laut Auftrag in einem privaten persönlichen Play-Console-Konto
+(C-001 erledigt). Ob der Closed-Test-Track schon existiert, ist unbekannt.
+In den Repos gibt es keinen Beleg für einen Track, eine Testerliste oder ein
+eingereichtes Store-Formular. Der letzte Repo-Vermerk dazu steht in
+`prod/coordination/TODO.md` (C-001, 2026-11-09): vom Laptop war die Console
+nicht einsehbar.
+
+Geprüft am 2026-11-10 gegen die Play-Console-Hilfe:
+
+- [App-Testanforderungen für neue persönliche Konten](https://support.google.com/googleplay/android-developer/answer/14151465)
+- [Open-, Closed- oder Internal-Test einrichten](https://support.google.com/googleplay/android-developer/answer/9845334)
+- [App für die Prüfung vorbereiten (App content)](https://support.google.com/googleplay/android-developer/answer/9859455)
+- [App anlegen und Store-Eintrag](https://support.google.com/googleplay/android-developer/answer/9859152)
+- [Vorschaugrafiken](https://support.google.com/googleplay/android-developer/answer/9866151)
+- [Data Safety](https://support.google.com/googleplay/android-developer/answer/10787469)
+- [Zielgruppe und App-Inhalte](https://support.google.com/googleplay/android-developer/answer/9867159)
+- [Kontolöschung](https://support.google.com/googleplay/android-developer/answer/13327111)
+- [Target-API](https://support.google.com/googleplay/android-developer/answer/11926878)
+- [Play App Signing](https://support.google.com/googleplay/android-developer/answer/9842756)
+
+## Was vor dem ersten Closed-Upload gilt
+
+Ein Closed Test startet erst nach abgeschlossenem App-Setup. Dazu gehören
+Store-Eintrag, Datenschutz-URL, Data Safety, Content Rating, Zielgruppe,
+Werbedeklaration und App-Zugang, wenn die App einen Login hat. Data Safety
+gilt für Closed-, Open- und Production-Tracks. Ein reiner Internal-Track ist
+davon ausgenommen und zählt nicht als Closed Test.
+
+Der Opt-in-Link erscheint nur, wenn der App-Status „Published“ ist. „Draft“
+und „Pending publication“ zeigen keinen Link. Nach der ersten Veröffentlichung
+eines Tests kann der Link mehrere Stunden brauchen.
+
+Neue Apps werden beim ersten Bundle-Upload automatisch in Play App Signing
+mit von Google erzeugten Schlüsseln eingeschrieben (quantum-ready hybrid
+signing). Der lokale Keystore signiert das Upload-Bundle. Die Fingerabdrücke
+des Google-Schlüssels müssen danach bei Firebase liegen, sonst scheitert
+Google-Login auf der Store-Installation.
+
+Seit dem 31. August 2026 müssen neue Apps und Updates Android 16 (API 36)
+zielen. `prod/android/variables.gradle` setzt `targetSdkVersion = 36`.
+
+## 12 Tester und 14 Tage
+
+Die Regel gilt für persönliche Play-Console-Konten, die nach dem
+13. November 2023 angelegt wurden. Mindestens 12 Tester müssen beim
+Produktionsantrag durchgehend für die vorangegangenen 14 Tage im Closed Test
+angemeldet (opted-in) sein. Wer austritt, unterbricht seine Serie. Ein
+Wiedereintritt beginnt bei Tag 0. Danach stellt der Owner im Dashboard
+„Apply for production“ und beantwortet die drei Abschnitte zum Closed Test,
+zur App und zur Produktionsreife.
+
+Persönliche Konten, die vor dem 13. November 2023 angelegt wurden, fallen
+laut Google nicht unter diese Testpflicht. Das Anlagedatum dieses Kontos
+steht in keinem Repo. Der Owner liest es in der Console, bevor er sich auf
+eine Ausnahme verlässt.
+
+Die 14 Tage sind die Voraussetzung für den Produktionszugang. Sie sind keine
+Voraussetzung für das Anlegen des Tracks oder den ersten Upload. Der erste
+Closed-Upload am Freitag startet die Uhr erst, nachdem die Tester den
+Opt-in-Link bestätigt haben.
+
+## Klickliste (15)
+
+Status meint den Beleg in den Repos: vorhanden, fehlt oder teilweise.
+Der Console-Klick bleibt beim Owner.
+
+| # | Klick | Repo-Beleg | Status | Liefert |
+| --- | --- | --- | --- | --- |
+| 1 | Closed Testing öffnen (`Test and release` → `Testing` → `Closed testing`). Den von Google angelegten initialen Track prüfen. Fehlt er, Track anlegen. Noch kein extra benannter Zweit-Track. | Kein Track, keine Tester, kein Release in den Repos. `prod/coordination/TODO.md` (C-001) hält nur fest, dass die Console vom Laptop nicht einsehbar war. | fehlt | Owner |
+| 2 | Tester hinterlegen: E-Mail-Liste (bis 2.000 Adressen je Liste) oder Google Group (`name@googlegroups.com`). Feedback-URL oder Feedback-E-Mail eintragen. Opt-in-Link kopieren und verschicken, sobald der Status „Published“ ist. Für die 12/14-Regel mindestens 12 Personen, die eingeloggt bleiben. | Keine Testerliste, keine Google Group, keine Feedback-Adresse im Repo. | fehlt | Owner |
+| 3 | Store-Texte eintragen. Name höchstens 30 Zeichen, Kurzbeschreibung höchstens 80, Beschreibung höchstens 4.000. Entwurf kürzen und vom Owner freigeben, bevor er in die Console kommt. | Produktentwurf `prod/docs/STORE-LISTING-DRAFT.md`: Name „VitalOS – Journal & Gewohnheiten“ hat 32 Zeichen (en dash zählt), Kurzbeschreibung 50 Zeichen, Beschreibung vorhanden. Älterer Entwurf nur „VitalOS“ in `docs/STORE-RELEASE-STATUS.md`. Beides ist Arbeitsentwurf, keine freigegebene Store-Aussage. | teilweise | PM/CPO (Text), Owner (Freigabe und Klick) |
+| 4 | Pflichtgrafiken hochladen: App-Icon 512×512 PNG mit Alpha, höchstens 1024 KB; Feature Graphic 1024×500 JPEG oder 24-bit-PNG ohne Alpha; mindestens zwei Screenshots (JPEG oder 24-bit-PNG, kurze Seite mindestens 320 px, lange Seite höchstens 3840 px und höchstens doppelt so lang wie die kurze). Vier Screenshots ab 1080 px sind eine Empfehlung, keine Pflicht zum Veröffentlichen. | 512-px-Kandidaten `prod/branding/observe/icons/icon-512.png` (35 KB) und `prod/branding/operate/icons/icon-512.png` (40 KB), dazu maskable Varianten. Launcher unter `prod/android/app/src/main/res/mipmap-*` endet bei 192 px und ist kein Store-Icon. `prod/docs/STORE-PUBLISHING-PLAN.md` („Fehlt-Liste“) verlangt ein eigenes Store-Icon und eine Feature Graphic. Keine Feature Graphic und keine Screenshots im Repo. | teilweise | PM/CPO (Grafiken), Owner (Upload) |
+| 5 | Kategorie und Tags, öffentliche Kontakt-E-Mail, Länder und Regionen der Tester. Länder gelten für alle Tracks. Tester außerhalb der gewählten Länder können den Closed Test nicht installieren. | In den Store-Entwürfen als offene Owner-Bestätigung genannt (`prod/docs/STORE-LISTING-DRAFT.md`, Abschnitt „Kontoinhaber-Bestätigung“). Keine festgelegte Kategorie, Mail oder Länderliste. | fehlt | PM/CPO (Vorschlag), Owner (Klick) |
+| 6 | Datenschutz-URL unter App content eintragen. Die Seite ist öffentlich per `https`, weltweit ohne Login und ohne Geo-Sperre, eine normale Webseite (kein PDF) und beschreibt Erhebung, Nutzung und Weitergabe inklusive der beteiligten Stellen. Dieselbe URL gehört in den Store-Eintrag und in die App. | Keine Datenschutzseite, keine Route und keine URL in `prod/src`, `docs/` oder den Store-Entwürfen. Die Entwürfe listen die URL als offen. | fehlt | PM/CPO (Text), CTO (öffentliche Seite), Owner (URL eintragen) |
+| 7 | Data-Safety-Formular ausfüllen und einreichen, inklusive der Fragen zur Datenlöschung. Auch eine App ohne erhobene Daten muss das Formular abschließen und eine Datenschutz-URL nennen. SDKs im ausgelieferten Bundle mitzählen (Firebase Auth, Firestore, Google Sign-In; Smart-Log/Gemini nur, wenn dieser Build es wirklich aufruft). | Formular existiert nur in der Console. Datenfluss ist in den Store-Entwürfen als noch abzugleichen markiert (`prod/docs/STORE-LISTING-DRAFT.md`, `prod/docs/STORE-PUBLISHING-PLAN.md`). Kein ausgefülltes Formular im Repo. | fehlt | CTO (Dateninventar des Release-Builds), Owner (Formular) |
+| 8 | Kontolöschung: In-App-Weg (oder deutlich gesetzter Link aus der App) plus Web-URL, über die jemand die Löschung beantragen kann, ohne die App neu zu installieren. Die Web-URL kommt ins Data-Safety-Formular. Die Live-Shell zeigt „Account erstellen“, damit fällt die App unter die Pflicht. | Kein Löschfluss in `prod/src` (Suche nach Datenschutz, `deleteAccount`, `deleteUser` ohne Treffer). `prod/docs/STORE-LISTING-DRAFT.md` führt Kontolöschung als offenen Punkt. | fehlt | CTO (In-App-Weg), PM/CPO (Webseite), Owner (URL) |
+| 9 | Content-Rating-Fragebogen abschließen, damit die App nicht „Unrated“ bleibt. | Kein Fragebogen und keine Freigabe im Repo. Die Entwürfe nennen Altersfreigabe als Owner-Bestätigung. | fehlt | PM/CPO (Inhaltsfakten), Owner (Fragebogen) |
+| 10 | Target audience and content: Altersgruppen angeben. Enthält die Zielgruppe Kinder, gilt die Families Policy. Vorher müssen Werbedeklaration, App-Zugang und Datenschutz-URL stehen. | Keine festgelegte Altersgruppe. `prod/docs/STORE-LISTING-DRAFT.md` lässt die Zielgruppe beim Kontoinhaber. Der Entwurf beschreibt ein Journal ohne Diagnose. | fehlt | PM/CPO (Vorschlag Erwachsene), Owner (Klick) |
+| 11 | App access / Sign-in details: funktionierende Zugangsdaten und kurze Schritte, damit die Prüfung den Login erreicht. Bis zu fünf Sätze. Sonderfälle (zweites Feld, Einmalcode) ins Feld „Any other instructions“. | Login ist vorhanden: `prod/capacitor.config.json` (`FirebaseAuthentication`, Provider `google.com`), Live-Shell `https://vitalos.web.app` zeigt Anmeldung und „Account erstellen“ (Probe 2026-11-10). Kein Reviewer-Konto und keine Console-Anleitung im Repo. | teilweise | Owner (Testkonto und Klick), CTO (Konto am Closed-Build prüfen) |
+| 12 | Werbedeklaration: Yes oder No. Yes bei Banner, Interstitial, Native Ads und Ad-SDKs. Ein schlichter „More Apps“-Hinweis ohne Werbeformat ist No. Eine falsche Angabe ist ein Policy-Verstoß. | Suche in `prod/` nach AdMob, AdSense und gängigen Ad-SDKs ohne Treffer. Die Console-Deklaration selbst liegt nicht im Repo. | teilweise | CTO (Bestätigung am Release-Build), Owner (Klick No, solange der Build keine Anzeigen hat) |
+| 13 | Signiertes Android App Bundle hochladen. `versionCode` höher als jeder schon hochgeladene Stand, `targetSdk` 36, Signatur mit dem Upload-Key (RSA mindestens 2048 Bit). Play App Signing übernimmt den App-Signaturschlüssel. Nach dem Upload die angezeigten SHA-1/SHA-256, bei Hybrid-Signing alle genannten Schlüssel, in Firebase unter `com.vitalos.app` eintragen. Den privaten Keystore nicht hochladen und nicht committen. | `prod/android/app/build.gradle`: `applicationId` `com.vitalos.app`, `versionCode` 1, `versionName` `0.1.0`, Release-Signatur nur wenn die gitignorierte `prod/android/keystore.properties` existiert. `prod/android/variables.gradle`: `targetSdkVersion` 36, `minSdkVersion` 24. `prod/capacitor.config.json`: `appId` `com.vitalos.app`. Signierweg und lokale AAB vom 2026-11-06 in `prod/docs/STORE-PUBLISHING-PLAN.md`; das AAB liegt nicht im Git und ist nicht der heutige Quellstand. Play-App-Signing-Entscheidung dort noch offen; für eine neue App schreibt Google den Weg inzwischen vor. | teilweise | CTO (frisches AAB mit Upload-Key, Firebase-Fingerabdrücke nach dem Upload), Owner (Upload und Signing-Seite) |
+| 14 | Release auf dem Closed Track anlegen: Bundle, Release Notes, Länder aus Punkt 5, zur Prüfung senden, ausrollen. Danach den Status lesen. Der Opt-in-Link aus Punkt 2 erscheint bei „Published“. Der erste Link kann mehrere Stunden brauchen. | Kein Release, keine Release Notes, kein Console-Status im Repo. | fehlt | Owner |
+| 15 | Kontodatum prüfen. Liegt die Kontoeröffnung nach dem 13. November 2023: 12 Tester aus Punkt 2 müssen 14 aufeinanderfolgende Tage opted-in bleiben. Danach im Dashboard „Apply for production“. Liegt sie davor, gilt diese Testpflicht laut Google nicht. | Kein Kontodatum, keine Testerzahl und kein Opt-in-Nachweis im Repo. | fehlt | Owner |
+
+## Nur wenn die Console die Kachel zeigt
+
+Diese Punkte sind keine eigenen Zeilen, weil die Console sie nur bei passendem
+Bundle oder passender Kategorie einblendet. Der Owner beantwortet dann genau
+die Kachel unter `Needs attention`:
+
+- Permissions Declaration, wenn Play nach dem AAB danach fragt. Das Manifest
+  `prod/android/app/src/main/AndroidManifest.xml` enthält `INTERNET` und
+  `POST_NOTIFICATIONS`, keine SMS- oder Call-Log-Permission.
+- News, Government, Financial features oder Health, sobald die Kachel erscheint.
+  Der Listing-Entwurf beschreibt ein persönliches Journal ohne Diagnose. Die
+  Antwort muss zum ausgelieferten Build passen.
+
+## Reihenfolge am Freitag
+
+1. Punkte 3 bis 12 vorbereiten, soweit der Status „fehlt“ oder „teilweise“ ist.
+2. Punkt 13: frisches AAB, dann Upload. Signing-Fingerabdrücke danach in Firebase.
+3. Punkte 1, 2 und 14: Track, Tester, Release, auf „Published“ warten, Link schicken.
+4. Punkt 15 startet mit dem ersten bestätigten Opt-in und entscheidet den
+   späteren Produktionsantrag. Er hält den Freitag-Upload nicht auf.
+
+Kein Store-Upload, kein Console-Klick und keine Ausgabe in diesem Auftrag.
