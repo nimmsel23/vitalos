@@ -93,9 +93,14 @@ trifft die Haupt-URL des jeweiligen Auftrags.
 
 ## Wo der Smoke liegt
 
-| Repo | Branch | Dateien | Auslöser |
+`workflow_run` startet erst, wenn die Workflow-Datei auf dem Default-Branch
+liegt. Bei den App-Repos ist das `master`. Der PR zielt auf `dev`; der
+bestehende Promote trägt die Datei danach nach `master`. Dieser Auftrag
+mergt und promotet nicht.
+
+| Repo | Stand | Commit | Auslöser |
 | --- | --- | --- | --- |
-| `nimmsel23/vitalos` | `codex/c010-c011-closed-test-smoke` | `scripts/live-smoke.mjs`, `.github/workflows/live-smoke.yml` | `Deploy VitalOS Shell` → `vitalos.web.app`; `Deploy VOS Fitness PWA` → `fitness-vos.web.app` |
-| `nimmsel23/journal-dev` | `codex/c011-smoke` | dieselben zwei Dateien | `Live Deploy (Journal master)` → `journal-vos.web.app` |
-| `nimmsel23/6pack-dev` | `codex/c011-smoke` | dieselben zwei Dateien | `6Pack deploy (preview + standalone)` auf `master` → `vos-6pack.web.app` |
-| `nimmsel23/fitness-dev` | `codex/c011-smoke` | dieselben zwei Dateien | `Live Deploy (Fitness master)` → `fitness-aos.web.app` |
+| `nimmsel23/vitalos` | PR gegen `master`: https://github.com/nimmsel23/vitalos/pull/16 | `692614d30aefeba10211e85df5240eaa9964a52e` | `Deploy VitalOS Shell` → `vitalos.web.app`; `Deploy VOS Fitness PWA` → `fitness-vos.web.app` |
+| `nimmsel23/journal-dev` | Branch `codex/c011-smoke` gepusht. PR-Anlage gegen `dev` liefert HTTP 403 (`Resource not accessible by integration`). Vergleich: https://github.com/nimmsel23/journal-dev/compare/dev...codex/c011-smoke?expand=1 | `26d5d276373d284312a65ecbf5868662685135d0` | `Live Deploy (Journal master)` → `journal-vos.web.app` |
+| `nimmsel23/6pack-dev` | Branch `codex/c011-smoke` gepusht. Dieselbe 403 bei der PR-Anlage. Vergleich: https://github.com/nimmsel23/6pack-dev/compare/dev...codex/c011-smoke?expand=1 | `6a5161884410ec66682e4999714310e7b35c8a97` | `6Pack deploy (preview + standalone)` auf `master` → `vos-6pack.web.app` |
+| `nimmsel23/fitness-dev` | Branch `codex/c011-smoke` gepusht. Dieselbe 403 bei der PR-Anlage. Vergleich: https://github.com/nimmsel23/fitness-dev/compare/dev...codex/c011-smoke?expand=1 | `68657a20dc05aae3c1a9c4caabfb5ff65747c5fb` | `Live Deploy (Fitness master)` → `fitness-aos.web.app` |
