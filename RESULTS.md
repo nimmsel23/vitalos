@@ -1,3 +1,9 @@
+## 2026-11-10 — Auth: `vitalos-fitness-prod.web.app` authorized domain
+
+- Identity Toolkit `authorizedDomains` um `vitalos-fitness-prod.web.app` ergänzt (SA).
+- Stand: `vitalos-prod.firebaseapp.com`, `vitalos-prod.web.app`, `localhost`, `vitalos-fitness-prod.web.app`.
+- `redirect_uri_mismatch` auf Shell braucht weiterhin OAuth-Redirect-URIs in der Google Cloud Console (Owner).
+
 ## 2026-11-10 — `vitalos-fitness-prod.web.app` live (Hosting)
 
 - `pnpm run build:fitness:product` (Isolation PASS) → Deploy Hosting-Target `fitness-product` → Site `vitalos-fitness-prod`.
