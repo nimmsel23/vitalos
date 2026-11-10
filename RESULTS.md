@@ -1,3 +1,8 @@
+## 2026-11-10 — Shell: Hub-Hover-Ring + 6Pack Theme scoped
+
+- Hub-Kacheln: farbige Outline bei Hover, `:focus-visible` und offenem Rechtsklick-Menü (`vos-hub-tile` / `--hub-tile-color`).
+- 6Pack-Submodule `be9c01f`: im Shell-Embed kein `documentElement`-Theme mehr; Wrapper behält Rot, Sidebar/Nav behalten Shell-Farben. Meta-Pin + Lockfile `083b929`.
+
 ## 2026-11-10 — Auth: `vitalos-fitness-prod.web.app` authorized domain
 
 - Identity Toolkit `authorizedDomains` um `vitalos-fitness-prod.web.app` ergänzt (SA).
