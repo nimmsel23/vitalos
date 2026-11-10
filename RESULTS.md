@@ -1,3 +1,11 @@
+## 2026-11-10 — AL ~15:40: M2-Verteilweg (`c3315277`)
+
+- Eine Aufgabe: Sideload-Verteilweg für Simon & Matthias dokumentiert —
+  `prod/docs/M2-TESTUSER-APK-VERTEILWEG.md` (APK-Pfad, SHA-256, Kurz-Anleitung;
+  Play-Internal erst nach C-010/C-001b). Kein Store, kein Gerät.
+- Intake: TODO C-010/C-011 abgehakt (bereits `e60b4d4` / PR #16). Guide #11/#12.
+- Org-Task `c3315277` done; C-002 (`3c55e958`) weiter Live-Gerät.
+
 ## 2026-11-10 — Live Smoke: setup-node pnpm-Cache
 
 - Rot nach PR #16: `actions/setup-node@v5` Default `package-manager-cache` sucht `pnpm` (aus `packageManager`), Job nutzt aber nur npm/Playwright in `$RUNNER_TEMP`.
