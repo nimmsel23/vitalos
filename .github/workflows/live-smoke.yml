@@ -32,9 +32,12 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v5
 
+      # packageManager in package.json ist pnpm — Cache würde pnpm verlangen.
+      # Dieser Job installiert Playwright absichtlich per npm in $RUNNER_TEMP.
       - uses: actions/setup-node@v5
         with:
           node-version: 22
+          package-manager-cache: false
 
       - name: Live-Seite prüfen
         env:

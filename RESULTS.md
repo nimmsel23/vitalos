@@ -1,3 +1,8 @@
+## 2026-11-10 — Live Smoke: setup-node pnpm-Cache
+
+- Rot nach PR #16: `actions/setup-node@v5` Default `package-manager-cache` sucht `pnpm` (aus `packageManager`), Job nutzt aber nur npm/Playwright in `$RUNNER_TEMP`.
+- Fix: `package-manager-cache: false` in `live-smoke.yml`.
+
 ## 2026-11-10 — C-010 Klickliste und C-011 Live-Smoke
 
 - CEO-Dispatch #003. Klickliste Closed Test: `prod/docs/PLAY-CLOSED-TEST-CLICKLIST.md` (15 Punkte, Repo-Status, Lieferant). Kein Console-Klick.
