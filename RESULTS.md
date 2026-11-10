@@ -1,4 +1,11 @@
+## 2026-11-10 — `vitalos-fitness-prod.web.app` live (Hosting)
+
+- `pnpm run build:fitness:product` (Isolation PASS) → Deploy Hosting-Target `fitness-product` → Site `vitalos-fitness-prod`.
+- Predeploy-Guard `deploy-product.mjs` absichtlich umgangen (Owner-Zuruf); temp Config ohne `predeploy`.
+- Live: HTTP 200, Title „Fitness VOS“, Asset `index-C80e-IFO.js`. Asset-Links/Fingerprints weiter offen (TWA-Verify).
+
 ## 2026-11-10 — Meta: `@tanstack/query-core` wie Prod
+
 
 - Root-`package.json`: `@tanstack/query-core` `^5.107.1` (analog `prod/package.json`).
 - Behebt pnpm-Hoisting: `vos-fitness` `npm run build` fand `query-core` nicht → jetzt grün (`dist-firebase`).
