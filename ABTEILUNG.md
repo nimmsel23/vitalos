@@ -140,3 +140,10 @@ Inbox melden.
 - **Ausgeführte Aufgabe:** Guide #9 / Org `3c55e958` C-002 M1-RC Geräteabnahme — Befund + Handoff (kein Gerät, kein Emulator-Start). Artefakte `app-debug.apk` (7,9M) + `app-release.aab` (6,0M), `com.vitalos.app`. DoD-Schritte offen. NEXT/RESULTS/Guide-Handoff/AL-LOG; Org-Annotation.
 - **Offene Punkte & Blocker:** Blocker = kein adb-Gerät. Offen: C-002 Rest (Live), `e83d8daa` vos-fitness, `c3315277` M2-APK (+alpha), Dependabot/PR #13 (+cto).
 - **Commit & Abschluss:** Commit auf `dev-product` (Guide, NEXT, RESULTS, AL-LOG, ABTEILUNG). Kein Push, kein Install/Emulator/Gitlink-Touch.
+
+## Letzter Lauf — 2026-11-10 (~03:40 CET, Abteilungsleiter-Lauf; EINE Aufgabe: vos-fitness baubar)
+
+- **Stand & Regelquellen:** Einstieg `abteilungsleiter brief vitalos` (keine neuen TODO-Punkte; Org project:vitalos = c3315277/+alpha, 7df12a13/+cto, e83d8daa/+al). HEAD vor Lauf `711c8eb`. Branch `master`, Abstand `origin/master...HEAD` 0/0. Submodule: 0 Pointer-Drift; dirty working trees nur gemeldet (`m fitness-app`, `m fuel-app`).
+- **Ausgeführte Aufgabe:** Guide #10 / Org `e83d8daa` — Web-Build OK + Host 404 belegt + Debug-APK-Pfad; PostCSS auf TW4-Plugin; `@tanstack/query-core` Direkt-Dep. Restlücken Asset-Links/Keystore/Play in AL-LOG. NEXT/RESULTS/Guide/AL-LOG; Task done.
+- **Offene Punkte & Blocker:** Blocker keine (DoD). Offen: C-002 Live-Rest, M2-APK (+alpha), Dependabot-Mo (+cto), Hosting-Deploy nur mit Owner-Auftrag.
+- **Commit & Abschluss:** Commit auf `master` (vos-fitness postcss, prod package/lock, Guide, NEXT/RESULTS, AL-LOG, ABTEILUNG). Kein Push, kein Deploy/Store/Gitlink-Touch.

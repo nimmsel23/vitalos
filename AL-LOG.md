@@ -63,3 +63,32 @@ _Vom AL ausfüllen (knapp & belegbar, je 1–3 Zeilen, Commit-/PR-Referenzen sta
 - Erledigt: C-002 Handoff (`3c55e958`) — Artefakte `app-debug.apk`/`app-release.aab` (`com.vitalos.app`, Meta `f2075da`); `adb` leer, kein Emulator (Guide); `6dcc77f` + auto `5824a2d`/`14af927` (RESULTS/NEXT) auf `dev-product`.
 - Offen/Weiter: C-002 Rest Install+Login+Journal+Sync (Live-Gerät); `e83d8daa` vos-fitness Subversion; `c3315277` (+alpha) M2-APK; `7df12a13` (+cto) Dependabot Meta / PR #13 Owner-Gate.
 - Blocker: kein angeschlossenes Android-Gerät für C-002 DoD (AVDs da, Start im Timer verboten).
+
+## 2026-11-10 (Dienstag) — Abteilungsleiter-Lauf
+
+_Automatik (vos-al-log Vorlage 2026-11-10):_
+- Commits seit 2026-11-08: 711c8eb chore(tooling): habits/learn aus apply-Liste (Owner-Freeze)
+4158da2 chore(tooling): SSOT Biome/knip/syncpack templates
+5c0a2a3 docs(cto): Owner — keine PR-Sperre; journal AL fix+merge Majors
+cbbef27 docs(cto): C-001 Play-Console Owner-Fakten — privat, App da
+d22cc83 docs(al): journal Semver 1.0.0 Option B in Nachtauftrag
+1344002 Merge pull request #13 from nimmsel23/dependabot/npm_and_yarn/prod/functions/node-forge-1.4.3
+f336571 docs: Remote-vitalos gelöscht; Pre-Push-Umbau dokumentiert
+d1b55d0 docs: Fleet-CI/AGENTS auf Shell-Pin nachgezogen
+0519d61 docs+chore: Shell-Pin auf origin/master — Tooling und Doku
+5ce495f docs(ceo): Plan-Abnahme SmartLog-Deploy + zsh Org-Shell
+4c35e3c docs: auto-update CLAUDE.md
+15bf3dd docs: auto-update CLAUDE.md
+85e3e3e docs: auto-update CLAUDE.md
+3c174ea docs: auto-update CLAUDE.md
+00b3e4e chore: test — Submodule-Pins auf origin/master (branch=master)
+- Offene PRs: (keine offenen PRs / gh nicht verfuegbar)
+- CI (letzte Läufe): completed	success	chore(tooling): habits/learn aus apply-Liste (Owner-Freeze)	Deploy VitalOS Shell	master	push	42704140111	1m27s	2026-11-09T21:36:44Z
+completed	success	chore(tooling): SSOT Biome/knip/syncpack templates	Deploy VitalOS Shell	master	push	42703316948	1m31s	2026-11-09T21:31:34Z
+completed	success	Merge pull request #13 from nimmsel23/dependabot/npm_and_yarn/prod/fu…	Deploy VitalOS Shell	master	push	42702550241	1m38s	2026-11-09T21:26:41Z
+- Arbeitsbaum: 2 uncommittete Pfade
+
+_Vom AL ausfüllen (knapp & belegbar, je 1–3 Zeilen, Commit-/PR-Referenzen statt Erzählung):_
+- Erledigt: Guide #10 / Org `e83d8daa` vos-fitness baubar — Web `pnpm --filter @vitalos/product run build:fitness:product` OK (`prod/vos-fitness/dist-firebase`, Isolation PASS); Host `vitalos-fitness-prod.web.app` HTTP 404 (kein Deploy); Debug-APK `prod/platforms/fitness-twa/app/build/outputs/apk/debug/app-debug.apk` (4,8M, `at.vitalos.fitness`, JDK17). Fixes: `prod` +`@tanstack/query-core`, `vos-fitness/postcss` → `@tailwindcss/postcss` (+Dep). Restlücken: Asset-Links 404/0 Fingerprints; Keystore nur gitignored Draft; kein Play-Eintrag.
+- Offen/Weiter: C-002 Rest Live (`3c55e958`); `c3315277` (+alpha) M2-APK; `7df12a13` (+cto) Dependabot Mo-Lauf; Hosting-Deploy vos-fitness nur mit Owner-Auftrag.
+- Blocker: keine für DoD dieses Tasks (Hosting/Store bewusst nicht angefasst).
