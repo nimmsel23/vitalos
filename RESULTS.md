@@ -1,4 +1,11 @@
+## 2026-11-10 — vos-fitness: Rolldown-Preload-Guard vorbeugend
+
+- `vos-fitness/vite.config.cjs`: `fixRolldownPreloadMarker` (wie 6pack/skills/relax).
+- Live/Build aktuell Vite 6.4.5 → nicht betroffen; Guard für Vite-8-Bump / Cap-Lazy-Imports.
+- `vos-fitness/AGENTS.md` dokumentiert. Meta-Repo nicht gepusht (nur lokal vorbereitet).
+
 ## 2026-11-10 — AL: vos-fitness Subversion baubar (`e83d8daa`)
+
 
 - Web-Build `build:fitness:product` OK → `prod/vos-fitness/dist-firebase` (Isolation PASS); Host `vitalos-fitness-prod.web.app` HTTP 404.
 - Debug-APK: `prod/platforms/fitness-twa/app/build/outputs/apk/debug/app-debug.apk` (4,8M, `at.vitalos.fitness`, JDK17).
