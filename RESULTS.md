@@ -1,3 +1,9 @@
+## 2026-11-10 — C-010 Klickliste und C-011 Live-Smoke
+
+- CEO-Dispatch #003. Klickliste Closed Test: `prod/docs/PLAY-CLOSED-TEST-CLICKLIST.md` (15 Punkte, Repo-Status, Lieferant). Kein Console-Klick.
+- Live-Smoke blockiert keinen Merge: `scripts/live-smoke.mjs` und `.github/workflows/live-smoke.yml` (Shell und fitness-vos). Tabelle: `docs/LIVE-SMOKE.md`.
+- Manuelle Probe: vitalos, vos-6pack, fitness-aos und fitness-vos grün. journal-vos.web.app rot (HTTP 200, leeres `#root`, `missing ) after argument list`, Rolldown-Preload-Hash im Bundle). Letzter Journal-Deploy-Lauf bleibt grün.
+
 ## 2026-11-10 — pnpm-Workspaces: skills-app + Rolldown-Pin + Check
 
 - `skills-app` in Meta-`pnpm-workspace.yaml` (fehlte trotz Shell-Import); Lockfile-Importer nachgezogen.
