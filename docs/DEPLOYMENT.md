@@ -125,6 +125,18 @@ wie die anderen. Alte verschachtelte Checkouts: `~/.bak-nest-submodules/`.
 - Firestore-Rules nur aus `~/vitalos` (`deploy-firestore-rules.yml` oder lokal), nie aus einem App-Repo.
 - Fuel-Mini-Apps (`vos-fuel-*`) laufen nie per CI, nur manuell.
 
+## pnpm-Workspaces (Stand 2026-11-10)
+
+Zwei Ebenen, absichtlich getrennt — **`~/dev` ist kein Workspace**:
+
+| Ort | Rolle | Lockfile |
+|---|---|---|
+| `~/vitalos` | Shell-Meta (`packages:` = `*-app` Submodule + `prod`) | Root `pnpm-lock.yaml` |
+| `~/dev/<modul>-dev` | Standalone-CI / tägliche Arbeit | eigenes Lockfile |
+
+Nach Dependency-Änderung im Modul: Lockfile dort committen → Promote → `vos-release` (zieht Meta-Lockfile mit Pointer).
+Checks: `vos-workspace-check`, `bash ~/dev/bin/lockfile-drift-check.sh`. Rolldown-Pin Meta: `1.2.16` (nicht `1.3.0`).
+
 ## Fehlerbilder
 
 - **Alle Deploys rot im Schritt „Install“:** `ERR_PNPM_OUTDATED_LOCKFILE` — `pnpm-lock.yaml` im Meta-Repo passt nicht

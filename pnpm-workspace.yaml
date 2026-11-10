@@ -1,9 +1,13 @@
+# Meta-Workspace = nur die Shell. Jedes ~/dev/*-dev hat SEIN eigenes Workspace+Lockfile
+# für Standalone-CI. Niemals ~/dev zu einem Mega-Workspace machen — das kämpft mit
+# den Modul-Lockfiles und macht frozen-installs in CI rot.
 packages:
   - "."
   - "prod"
   - "fitness-app"
   - "6pack-app"
   - "plan-app"
+  - "skills-app"
   - "fuel-app"
   - "journal-app"
   - "habit-app"
@@ -18,6 +22,10 @@ allowBuilds:
 overrides:
   '@firebase/util': 1.12.1
   '@grpc/grpc-js': 1.14.7
+  # Vite 8.3.x: rolldown 1.3.0 hängt xxhash an __VITE_PRELOAD__ → Blackscreen.
+  # Meta-Pin hält alle Submodule auf der sicheren Linie (fitness/6pack standalone
+  # dürfen zusätzlich den Marker-Fix haben).
+  rolldown: 1.2.16
   'workbox-build>glob': ^14.0.2
   'rimraf@6>glob': ^14.0.2
   'nodemon>minimatch': ^11.0.4

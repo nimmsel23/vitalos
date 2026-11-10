@@ -1,0 +1,43 @@
+#!/usr/bin/env bash
+# vos-workspace-check — Meta-Workspace vs. Submodule-Pins
+# Prüft:
+#   1) Jedes .gitmodules-Pfad mit package.json steht in pnpm-workspace.yaml
+#   2) pnpm install --frozen-lockfile --lockfile-only im Meta-Root
+# Exit 0 = ok, 1 = Drift/Fehler.
+set -euo pipefail
+ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+cd "$ROOT"
+
+WS="$ROOT/pnpm-workspace.yaml"
+[[ -f "$WS" ]] || { echo "fehlt: pnpm-workspace.yaml"; exit 1; }
+
+mapfile -t SUBS < <(git config --file .gitmodules --get-regexp 'path$' | awk '{print $2}' | sort)
+missing=0
+for path in "${SUBS[@]}"; do
+  [[ -f "$path/package.json" ]] || continue
+  if ! grep -qE "^[[:space:]]*-[[:space:]]*[\"']?${path}[\"']?[[:space:]]*$" "$WS"; then
+    echo "FEHLT in pnpm-workspace.yaml: $path (hat package.json, ist Submodul)"
+    missing=1
+  fi
+done
+
+# Extra: packages/* die im Workspace stehen, müssen existieren
+while read -r pkg; do
+  [[ "$pkg" == "." || "$pkg" == "./" ]] && continue
+  pkg="${pkg#./}"
+  [[ -e "$pkg" ]] || { echo "Workspace-Eintrag ohne Pfad: $pkg"; missing=1; }
+done < <(awk '/^packages:/{p=1;next} p && /^[^[:space:]#-]/{exit} p && /^[[:space:]]*-/{gsub(/["'\'' ]/,""); sub(/^-/,""); print}' "$WS")
+
+if ! pnpm install --frozen-lockfile --lockfile-only >/tmp/vos-workspace-check.log 2>&1; then
+  echo "frozen-lockfile FAIL — siehe /tmp/vos-workspace-check.log"
+  tail -20 /tmp/vos-workspace-check.log
+  missing=1
+else
+  echo "frozen-lockfile: ok"
+fi
+
+if [[ "$missing" -eq 0 ]]; then
+  echo "vos-workspace-check: ok ($(printf '%s,' "${SUBS[@]}" | sed 's/,$//'))"
+  exit 0
+fi
+exit 1
