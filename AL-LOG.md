@@ -89,6 +89,6 @@ completed	success	Merge pull request #13 from nimmsel23/dependabot/npm_and_yarn/
 - Arbeitsbaum: 2 uncommittete Pfade
 
 _Vom AL ausfüllen (knapp & belegbar, je 1–3 Zeilen, Commit-/PR-Referenzen statt Erzählung):_
-- Erledigt: Guide #10 / Org `e83d8daa` vos-fitness baubar — Web `pnpm --filter @vitalos/product run build:fitness:product` OK (`prod/vos-fitness/dist-firebase`, Isolation PASS); Host `vitalos-fitness-prod.web.app` HTTP 404 (kein Deploy); Debug-APK `prod/platforms/fitness-twa/app/build/outputs/apk/debug/app-debug.apk` (4,8M, `at.vitalos.fitness`, JDK17). Fixes: `prod` +`@tanstack/query-core`, `vos-fitness/postcss` → `@tailwindcss/postcss` (+Dep). Restlücken: Asset-Links 404/0 Fingerprints; Keystore nur gitignored Draft; kein Play-Eintrag.
-- Offen/Weiter: C-002 Rest Live (`3c55e958`); `c3315277` (+alpha) M2-APK; `7df12a13` (+cto) Dependabot Mo-Lauf; Hosting-Deploy vos-fitness nur mit Owner-Auftrag.
-- Blocker: keine für DoD dieses Tasks (Hosting/Store bewusst nicht angefasst).
+- Erledigt: Org `c3315277` M2-Verteilweg — `prod/docs/M2-TESTUSER-APK-VERTEILWEG.md` (Sideload Debug-APK `com.vitalos.app` 0.1.0 SHA `ad47e50d…`, Kurz-Anleitung); Intake C-010/C-011 TODO [x] (`e60b4d4`/PR #16); Guide #11/#12; Vorlauf 03:40 vos-fitness `e83d8daa` in ABTEILUNG.
+- Offen/Weiter: C-002 Live (`3c55e958`); C-001b Closed-Track (`+cto`); `fdd8b7fd` Dependabot esbuild Meta; Journal-Live-Rot (C-011 Probe) → CTO.
+- Blocker: kein adb-Gerät für C-002; Play-Internal erst nach Owner-Klicks C-010.
