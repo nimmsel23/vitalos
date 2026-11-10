@@ -1,3 +1,10 @@
+## 2026-11-10 — AL: vos-fitness Subversion baubar (`e83d8daa`)
+
+- Web-Build `build:fitness:product` OK → `prod/vos-fitness/dist-firebase` (Isolation PASS); Host `vitalos-fitness-prod.web.app` HTTP 404.
+- Debug-APK: `prod/platforms/fitness-twa/app/build/outputs/apk/debug/app-debug.apk` (4,8M, `at.vitalos.fitness`, JDK17).
+- Fixes: `@tanstack/query-core` + `@tailwindcss/postcss` in `prod/package.json`; `vos-fitness/postcss.config.cjs` auf TW4-Plugin.
+- Restlücken: Asset-Links 404 / 0 Fingerprints; Draft-Keystore gitignored; kein Play-Eintrag.
+
 ## 2026-11-09 — Node Tooling SSOT
 
 - `tooling/` + syncpack kritische Pins (`@firebase/util`).
