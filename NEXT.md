@@ -8,13 +8,15 @@ Stand CTO-Runde 2026-11-09.
 - [x] Hub-Hover-Ring + 6Pack Theme-Diebstahl: Shell `9b3ccb7`, 6pack `be9c01f` / Meta-Pin `083b929` (2026-11-10). Live-Abnahme: Sidebar bleibt Shell-Farbe im 6Pack-Tab.
 - [ ] C-002 Geraeteabnahme (`3c55e958`): Handoff 2026-11-09 — APK/AAB bereit (`app-debug.apk`/`app-release.aab`, `com.vitalos.app`, Meta `f2075da`); `adb` leer, kein Emulator im Timer. Rest: Live-Install+Login+Journal+Sync.
 - [x] vos-fitness Subversion baubar (`e83d8daa`, 2026-11-10 AL): Web-Build OK + Debug-APK-Pfad; Host weiter 404; Rest Asset-Links/Keystore/Play.
+- [x] M2-APK Simon/Matthias (`c3315277`): Verteilweg `prod/docs/M2-TESTUSER-APK-VERTEILWEG.md` (2026-11-10 AL) — Sideload; Owner teilt privaten Link.
+- [x] C-010/C-011 Aufnahme: PR #16 / `e60b4d4` (TODO 2026-11-10 abgehakt).
 - ~~vos-fitness Vite-8 Rolldown `__VITE_PRELOAD__`-Blackscreen~~: `fixRolldownPreloadMarker` lokal vorbereitet (Vite 6 heute; Push Meta auf Zuruf).
 - ~~`vitalos-fitness-prod.web.app` 404~~: Hosting live 2026-11-10. Offen: Asset-Links/Play; dauerhaften Deploy-Pfad statt Guard-Bypass.
 
 
 - [ ] C-001 Play-Console (`c09e4d5c`): 3 Fakten an CEO (Konto/App angelegt?); keine Zahlung.
 - [ ] SmartLog-Beweis (`5f09bbb1`): Emulator 13:00 — Deploy 5f2f694 steht; Gruennachweis abwarten.
-- [ ] M2-APK Simon/Matthias (`c3315277`, +alpha): Verteilweg bereitstellen, kein Store.
+- [ ] C-001b Closed-Test-Track (`+cto`): Existenz-Fakt an CEO; Owner-Klickliste C-010.
 
 
 ## 2026-11-09 — Branch-Modell (nach Shell-Pin auf master)
