@@ -7,6 +7,12 @@ eigenes Firebase-Ziel `fitness-aos`; Produkt-Builds verlangen `vitalos-prod`.
 App-Quellen kommen aus den gemeinsamen Submodulen im Parent. Das Produkt hat
 keine eigenen App-Pins oder ein eigenes Lockfile.
 
+**Owner-Trennung (2026-11-11):** Store-User und private Klienten bekommen denselben
+Quellcode in getrennten Firebase-/Firestore-Hostings, Projekten und Accounts.
+Google-Konten: privat/Org = `nimmsel23@gmail`, nach außen (Store/Produkt) =
+`nimmdaniel@gmail`. Architektur-Metapher und Release-Folge:
+[UNIFIED-PRODUCT.md — Owner-Klarstellung 2026-11-11](../../docs/UNIFIED-PRODUCT.md#owner-klarstellung-2026-11-11-quelle-vs-store-gewand).
+
 Root-Builds über `product:*` starten: [Befehlsübersicht](../../docs/UNIFIED-PRODUCT.md).
 Direkte produktinterne Befehle und Firebase-Konfigurationen unten beziehen sich
 auf das Arbeitsverzeichnis `/home/alpha/vitalos/prod`, sofern nicht anders angegeben.

@@ -7,6 +7,13 @@
 kein eigenes Git-Repo und keine App-Submodule. Beide Shells verwenden die neun
 App-Submodule im Root und das gemeinsame `pnpm-lock.yaml`.
 
+Owner-Metapher (2026-11-11): `src/` = Shell-Quellcode; `prod/` = Play-/App-
+Store- und Klienten-Gewand derselben Kombi (Analogie `fitness-dev` →
+`vos-fitness`). Store-User und private Klienten teilen Quellcode, nicht
+Firebase-Projekt/Account — Details und Account-Trennung in
+[docs/UNIFIED-PRODUCT.md](docs/UNIFIED-PRODUCT.md) („Owner-Klarstellung
+2026-11-11“).
+
 `master` ist Default und private Produktion. Der frühere Umbau-Zweig
 `dev-product` (integriert 2026-11-06 als `2fe70f3`) ist nach `master` gemergt
 und entfernt. Der Produkt-Importer steht seit `e9ec5e9` im gemeinsamen Lockfile.
