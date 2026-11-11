@@ -1,3 +1,12 @@
+## 2026-11-11 — AL: Dependabot esbuild Ursache (`fdd8b7fd`)
+
+- Eine Aufgabe: Security-Update-Rot Root-esbuild geklaert — Fehler
+  `security_update_dependency_not_found` (Runs `42640916585` ff.).
+- Root-Caret `^0.27.7` schliesst Patch `0.28.1` aus; Alerts #205/#206
+  (GHSA-g7r4-m6w7-qqqr, low, Windows-only). Befund
+  `prod/docs/DEPENDABOT-ESBUILD-BEFUND.md`; Fix bleibt CTO (Bump/Override).
+- Guide #13; Org `fdd8b7fd` done. C-002 weiter kein adb-Gerät.
+
 ## 2026-11-10 — AL ~15:40: M2-Verteilweg (`c3315277`)
 
 - Eine Aufgabe: Sideload-Verteilweg für Simon & Matthias dokumentiert —
