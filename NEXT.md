@@ -11,7 +11,7 @@ Stand CTO-Runde 2026-11-09.
 - [x] Journal-Kanon vos-journal (2026-11-11): journal-vos → 301; Owner OAuth-URIs in fitness-aos auf vos-journal straffen.
 - [ ] TWA-APK-Releases als Git-/Release-Link in Settings-Tabs der fitness-aos-Apps anbieten (Owner-Notiz UNIFIED-PRODUCT; Vorbild Skills `android-latest`).
 - [x] Journal Solo-Icons unter vos-journal `/mini/…` (2026-11-11, journal-dev `37d58fd`); Live-Abnahme + OAuth auf nur vos-journal straffen (Owner).
-- [ ] C-002 Geraeteabnahme (`3c55e958`): Handoff 2026-11-09 — APK/AAB bereit (`app-debug.apk`/`app-release.aab`, `com.vitalos.app`, Meta `f2075da`); `adb` leer, kein Emulator im Timer. Rest: Live-Install+Login+Journal+Sync.
+- [ ] C-002 Geraeteabnahme (`3c55e958`): Handoff 2026-11-11 ~15:45 — APK/AAB bereit (`app-debug.apk` SHA `ad47e50d…` / `app-release.aab`, `com.vitalos.app`, Meta `021016f`); `adb` leer; leeres DoD-Protokoll; nächster Emulator-Slot **2026-11-17** (CTO ggf. früher). Rest: Live/Emulator Install+Login+Journal+Sync.
 - [x] Hub-Hover-Ring + 6Pack Theme-Diebstahl: Shell `9b3ccb7`, 6pack `be9c01f` / Meta-Pin `083b929` (2026-11-10). Live-Abnahme: Sidebar bleibt Shell-Farbe im 6Pack-Tab.
 - [x] vos-fitness Subversion baubar (`e83d8daa`, 2026-11-10 AL): Web-Build OK + Debug-APK-Pfad; Host weiter 404; Rest Asset-Links/Keystore/Play.
 - [x] M2-APK Simon/Matthias (`c3315277`): Verteilweg `prod/docs/M2-TESTUSER-APK-VERTEILWEG.md` (2026-11-10 AL) — Sideload; Owner teilt privaten Link.
