@@ -1,3 +1,9 @@
+## 2026-11-11 — Policy: keine .bak mehr
+
+- `.gitignore`: `*.bak*`, `*.bak[0-9]*`, `*.pre3.bak`
+- `AGENTS.md`: Backup-Regel entfernt (Git = Historie)
+- Bestehende `.bak`-Dateien im Tree gelöscht
+
 ## 2026-11-11 — Nacht: Org-Desks + Dashboard + systemd
 
 - `prod/coordination/ORG.md`: Skill-Stacks auf `~/.vos`-Desks / Packages 2026-11-11.

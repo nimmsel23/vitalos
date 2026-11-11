@@ -42,8 +42,9 @@ ist Planung, kein Nachweis eines Builds oder Releases.
 - App-Quellcode: jeweiliges `~/dev/*-dev`-Repository (dort der jeweilige
   Integrationsbranch, i. d. R. `dev`). Die `*-app`-Ordner sind
   Merge-/Integrations-Checkouts, keine zweiten Entwicklungsquellen.
-- Vor Edits Backup anlegen (`cp … .bak`). Nur eigene Pfade committen. Fremde
-  uncommitted Arbeit nicht anfassen — aber dafür keine neuen Worktrees anlegen.
+- Keine `.bak`-Dateien anlegen (Git ist die Historie; `*.bak*` ist gitignored).
+  Nur eigene Pfade committen. Fremde uncommitted Arbeit nicht anfassen — aber
+  dafür keine neuen Worktrees anlegen.
 - Laufende Services nicht killen oder neu starten. Kein sudo. AlphaOS bleibt
   ein eigenständiges Projekt und ist kein Ziel dieses Umbaus.
 

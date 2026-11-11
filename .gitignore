@@ -16,3 +16,5 @@ serviceAccountKey.json
 
 # Local Firebase configuration for the independent Fuel OS copy.
 fuel-os/src/client/lib/firebase.config*.js
+*.pre3.bak
+*.bak[0-9]*
