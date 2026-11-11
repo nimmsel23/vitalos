@@ -8,6 +8,7 @@ Stand CTO-Runde 2026-11-09.
 
 - [x] Owner-Klarstellung Quelle/Store-Gewand (2026-11-11): UNIFIED-PRODUCT + AGENTS + FIREBASE.
 - [x] Prod-CI deppensicher (2026-11-11): `product-check` Push+Boundaries, `deploy-product-hosting` dispatch-only, Guards fail-closed; Owner setzt noch GitHub-Secrets.
+- [ ] TWA-APK-Releases als Git-/Release-Link in Settings-Tabs der fitness-aos-Apps anbieten (Owner-Notiz UNIFIED-PRODUCT; Vorbild Skills `android-latest`).
 - [ ] C-002 Geraeteabnahme (`3c55e958`): Handoff 2026-11-09 — APK/AAB bereit (`app-debug.apk`/`app-release.aab`, `com.vitalos.app`, Meta `f2075da`); `adb` leer, kein Emulator im Timer. Rest: Live-Install+Login+Journal+Sync.
 - [x] Hub-Hover-Ring + 6Pack Theme-Diebstahl: Shell `9b3ccb7`, 6pack `be9c01f` / Meta-Pin `083b929` (2026-11-10). Live-Abnahme: Sidebar bleibt Shell-Farbe im 6Pack-Tab.
 - [x] vos-fitness Subversion baubar (`e83d8daa`, 2026-11-10 AL): Web-Build OK + Debug-APK-Pfad; Host weiter 404; Rest Asset-Links/Keystore/Play.
