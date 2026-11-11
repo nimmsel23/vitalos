@@ -41,6 +41,24 @@ jobs:
           git submodule sync
           git submodule update --init --recursive
 
+      # KB-SOT ist nimmsel23/fitness (öffentlich); fitness-dev hat fitness/catalog/kb seit 710fd66 nicht mehr.
+      # Gleiches Muster wie fitness-dev check.yml / deploy-master.yml / preview-dev.yml.
+      - name: Checkout fitness KB (SOT)
+        uses: actions/checkout@v5
+        with:
+          repository: nimmsel23/fitness
+          ref: main
+          path: fitness-kb
+          submodules: recursive
+
+      - name: KB einhängen
+        run: |
+          set -euo pipefail
+          mkdir -p fitness-app/fitness/catalog
+          ln -sfn "$GITHUB_WORKSPACE/fitness-kb" fitness-app/fitness/catalog/kb
+          test -d fitness-app/fitness/catalog/kb/exercises/6pack
+          echo "KB @ $(git -C fitness-kb rev-parse --short HEAD)"
+
       - uses: pnpm/action-setup@v4
         with:
           version: 11.3.0
