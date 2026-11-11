@@ -25,19 +25,21 @@ Skill-Sitze (Laptop): **CEO, COO, CPO, CTO, PM, AL** (+ Oracle).
 Owner: Orders + Gates; optional Freitag/Sonntag; Brand.
 
 **Org-Norm:** Jeder Laptop-Agent hält sich an **AOS Chapters**
-(`orgsh -c 'aos chapter …'`). Taskwarrior-**Urgency = Fire Map**.
+(`orgsh -c 'aos chapter …'`). **Fire Map** = Owner (Daniel) — was **er**
+machen muss; Org-TW ≠ Owner-Fire-Map.
 
 ## Stand & Gates
 
 ```
 vos / WebApp  -->  Commit | Gate | +org
-Org (Laptop)  -->  Taskwarrior + Shell + Ship
-Owner         -->  ORDER | Gate-Antwort | Freitag | Brand
+Org (Laptop)  -->  Taskwarrior + Shell + Ship  (Agenten-Arbeit)
+Owner         -->  Fire Map | ORDER | Gate | Freitag | Brand
 ```
 
-- Merksatz: **vos = WebApps/Git · Org = Laptop TW+Shell · Daniel = Orders+Gates.**
-- **Org-Agenten:** AOS Chapters (`orgsh -c 'aos chapter …'`) als Leitplanke;
-  **Taskwarrior-Urgency = Fire Map.**
+- Merksatz: **vos = WebApps/Git · Org = Laptop TW+Shell · Daniel =
+  Fire Map + Orders + Gates.**
+- **Org-Agenten:** AOS Chapters; Org-TW priorisiert ihre Arbeit — nicht
+  Daniels Fire Map.
 
 ## Berichtsstil
 
@@ -77,12 +79,10 @@ CTO-Lauf: `cto-run` 08:15. `ceo-run` :05 nur bei altem Heartbeat.
 
 Org = Laptop + Taskwarrior + Shell. vos/WebApps ≠ Org-Abteilung.
 
-Fuer die uebrigen Rollen bildet die Menge der Taskwarrior-Aufgaben mit der
-hoechsten Urgency die Fire-Map-Ausfuehrungssicht. Jede Rolle kennzeichnet ihre
-Aufgaben in der gemeinsamen Org-DB mit einem Rollen-Tag (`+ceo`, `+cpo`, `+cto`,
-`+oracle`, `+pm`, `+al` usw.); andere Rollen richten ihre Ausfuehrung weitgehend
-an Taskwarrior aus. Daniels persoenlicher General's Tent und Core4-Score bleiben
-davon getrennt — sein persoenlicher Tent ist auf spaeter verschoben.
+Org-Rollen priorisieren ueber Taskwarrior-Urgency in der Org-DB (Tags
+`+ceo`/`+cpo`/`+cto`/…). Das ist **Agenten-Arbeit**, nicht Daniels **Fire
+Map**. Fire Map = Owner-Ausfuehrung (The Game). Tent und Core4-Score bleiben
+Daniels persoenlicher Kreis.
 
 Dokumentations-Input: Die `docs/product-dev/abteilungen/*.md` enthalten
 derzeit Runbook-, Aufgaben- und Workflow-Anteile. Daniel weist darauf hin,
