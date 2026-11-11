@@ -6,6 +6,9 @@ Alles so simpel wie möglich — Meta-`vitalos` und die `*-dev`-Repos dünn
 halten. **Einzige Ausnahme: `vitalos/prod`** (Store/Produkt darf komplex
 sein). CI/Docs/Agent-Workflows außerhalb von `prod/` nicht aufblasen.
 
+**Umsetzen vor Dokumentieren:** Sofort Machbares zuerst ändern/pushen,
+Doku danach nachziehen — nicht umgekehrt.
+
 ## Architektur und Zuständigkeit
 
 `~/vitalos` enthält private PWA und Store-Produkt. Die private Shell liegt in
