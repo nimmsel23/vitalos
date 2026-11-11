@@ -36,6 +36,8 @@ jobs:
       - uses: actions/setup-node@v5
         with:
           node-version: 22
+          # Layout-Job hat kein pnpm; ohne das greift der Auto-Cache über packageManager und scheitert.
+          package-manager-cache: false
       - name: Check shared-source layout
         run: node prod/scripts/check-shared-layout.mjs
       - name: Check product Firebase boundaries
