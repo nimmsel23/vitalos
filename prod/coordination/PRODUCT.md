@@ -1,6 +1,6 @@
 # PRODUCT.md — Produktlandschaft (Stand 2026-11-11)
 
-**Namen:** `vitalos` = Projekt (Meta-Repo `~/vitalos`, Shell+Apps) ·
+**Namen:** `vitalos` = Projekt + Git-Repo (`nimmsel23/vitalos`, `~/vitalos`) ·
 **VitalOS** = die große Full-Variante (Zielbild Observe→Operate) ·
 `vos` = Org-Git/WebApps (`nimmsel23/vos`). Nicht vermischen.
 

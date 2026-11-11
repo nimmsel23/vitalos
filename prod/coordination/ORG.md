@@ -3,8 +3,8 @@
 Ort: `~/vitalos/prod/coordination/`. Pflege = gleicher Commit wie die Aenderung.
 Owner-Vertrag: `~/.vos/org/OWNER-CONTRACT.md` (`nimmsel23/vos`).
 
-**Namen:** `vitalos` = Projekt (dieses Meta-Repo) · **VitalOS** = Full-Produkt ·
-`vos` = Git/WebApps-Schicht. Nicht vermischen.
+**Namen:** `vitalos` = Projekt + dieses Git-Repo · **VitalOS** = Full-Produkt ·
+`vos` = Org-Git/WebApps-Schicht. Nicht vermischen.
 
 Lies bei Kurs-Arbeit: OWNER-CONTRACT -> DIESER -> PRODUCT.md (-> CEO.md nur
 als Laufgedächtnis).
