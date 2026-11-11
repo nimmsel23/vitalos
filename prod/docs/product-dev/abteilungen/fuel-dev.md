@@ -60,8 +60,11 @@ Jede Linie und jeder AL darf eigene Shell-Hilfen (Skripte, Aliase, fish-Funktion
 
 Wiederholst du in deinem Repo-Alltag von Hand einen Schritt, den ein Skript, ein Werkzeug oder eine Konfiguration erledigen könnte, schreibe GENAU EINE Zeile ins AL-Log deines Laufs: `AUTOMATION: <Schritt> — <Vorschlag> — <geschätzte Ersparnis>`. Nur echte Beobachtungen aus dem eigenen Lauf, keine Erfindungen, keine Systemarchitektur-Träume, keine neue Taskfarm: Jede Automatisierung muss eine wiederkehrende Aufgabe LÖSCHEN. Die CTO-Linie aggregiert die Zeilen wöchentlich für die Door-War-Priorisierung.
 
-## CTO-Nachtauftrag (2026-11-10)
+## CTO-Nachtauftrag (2026-11-11)
 
-1. Org `6a0eeebc` bleibt pending bis echter Dependabot-PR-Merge-Beleg (0 offene
+1. **Hit** Org `c545486f`: Teilergebnis Push — lokalen AL-Docs-Stack
+   (+5/−1 vs origin/dev, Tip `5186437`) rebasen/ff und auf `origin/dev`
+   pushen; `scripts/portal.mjs` dirty nicht anfassen; Check nach Push belegen.
+2. Org `6a0eeebc` bleibt pending bis echter Dependabot-PR-Merge-Beleg (0 offene
    Dep-PRs ist kein Merge-Beleg). Stabilitaet weiter beobachten/annotieren.
-2. Feature-Freeze: nur Bugfix/CI/Docs/Deps; iOS `ca22778` nicht ohne CEO.
+3. Feature-Freeze: nur Bugfix/CI/Docs/Deps; iOS-Login Live `a87a883` nicht ohne CEO.

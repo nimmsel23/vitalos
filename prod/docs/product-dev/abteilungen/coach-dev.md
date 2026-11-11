@@ -73,10 +73,10 @@ Dein Lauf startet bis auf Weiteres als persistente interaktive Session im kitty 
 
 Wiederholst du in deinem Repo-Alltag von Hand einen Schritt, den ein Skript, ein Werkzeug oder eine Konfiguration erledigen könnte, schreibe GENAU EINE Zeile ins AL-Log deines Laufs: `AUTOMATION: <Schritt> — <Vorschlag> — <geschätzte Ersparnis>`. Nur echte Beobachtungen aus dem eigenen Lauf, keine Erfindungen, keine Systemarchitektur-Träume, keine neue Taskfarm: Jede Automatisierung muss eine wiederkehrende Aufgabe LÖSCHEN. Die CTO-Linie aggregiert die Zeilen wöchentlich für die Door-War-Priorisierung.
 
-## CTO-Nachtauftrag (2026-11-10)
+## CTO-Nachtauftrag (2026-11-11)
 
-1. Org `49499dfb`: Dependabot Updates `backend/fuel` (fastify / @fastify/static)
-   Runs 42763764350 / 42763764833 rot — Ursache einordnen (misconfigured_tooling
-   vs Update-Fail). Fix nur wenn klar und scoped; sonst Befund im AL-LOG.
-2. Kitty-Pilot unveraendert: headless Standard; Pilot nur bei lebendem @kitty.
-3. Fremde Inbox/Chat-WIP und Submodule-Dirty nicht stagen.
+1. [x] Dependabot backend/fuel `49499dfb` (10.11.) — erledigt; Tip `74ef91ba`
+   Check/Pages gruen (Deploy-seed `66a908a4`).
+2. Eingang TODO/NEXT + Org-Queue sichten; Feature-Freeze (nur Bugfix/CI/Docs/
+   Deps). Fremde Inbox/Chat-WIP und Submodule-Dirty nicht stagen.
+3. Kitty-Pilot unveraendert: headless Standard; Pilot nur bei lebendem @kitty.

@@ -9,7 +9,7 @@ und Detailfindings liegen additiv in
 wird vom CTO — auch automatisch in der täglichen 06:40-Runde — fortgeführt:
 Stehbild strafft, Überschriften behalten, Neuerscheinendes einsortieren.
 
-Stand: 2026-11-10, ca. 08:15 CET (AL 9/9 cursor OK; SmartLog 5f09bbb1 + Dependabot-/prod 7df12a13 done; #13/#38 gemergt; rot: fitness tip biome, Meta esbuild-security, coach backend/fuel Dep; Nacht: eeb9d722/175b5162/49499dfb; Details state-CTO.md).
+Stand: 2026-11-11, ca. 08:15 CET (AL 9/9 cursor OK; Live-Smoke 42799838824=setup-node transient, Tip gruen; Engine-Pin cursor off→auto; Teilergebnisse fuel/relax unpushed → Hits c545486f/ed94e4cd; automerge-retarget 0e25e4c4; Details state-CTO.md).
 
 ## Derzeitiges Systembild (Tageszyklus)
 
@@ -98,7 +98,10 @@ push dev → Check grün → automerge-pr.yml (Dependabot-Squash auf dev,
 
 ## Engine-Lage
 
-- claude/codex: bis 11.11. limitiert; Läufe laufen über Reserve (vibe).
+- Ab 2026-11-11: AL-Default `auto` (vibe→cursor→claude→codex). Cursor-Pin
+  Drop-in `20-engine-cursor.conf` deaktiviert (`.disabled-20261111`).
+- claude/codex: Fenster ab 11.11. offen (Script-Defaults AVAILABLE_AFTER).
+- agy bleibt PM-Engine, nicht im AL-Pool.
 - Auto-Doc-Engine-Kette: claude/haiku → codex/gpt-6-luna → vibe
   (Fix 2026-11-07: Modell heißt gpt-6-luna, nicht luna).
 
@@ -131,26 +134,19 @@ push dev → Check grün → automerge-pr.yml (Dependabot-Squash auf dev,
 
 ## Offene Punkte (kommende Runden)
 
-1. M1-RC SmartLog-Beweis (Org-Task 5f09bbb1): Fix 5f2f694 DEPLOYED (CEO 08.11.);
-   Beleg = Emulator 13:00 heute. Danach Client-Haertung eeb9d722.
-2. Shell-CI Lockfile (767c02ad): journal-app lucide-react/tailwind-merge Drift
-   vs Root-Lockfile — Deploy 42527809554 rot; Aktiv in NEXT.md.
-3. Dependabot Meta Root-only (uuid 7df12a13): yml lokal auf directory=/ ;
-   Verifikation naechster Mo-Lauf (keine prod vite/zod misconfigured_tooling).
-   vitalos #13 node-forge bleibt Owner-Gate.
-4. 6pack vite-8 #38 rot (uuid a80cb883): Fix analog fitness 87d349c.
-5. coach Catchup unpushed (uuid 7cd93f79): nur eigene 4 Commits pushen.
-6. C-007 Merge-Agent-Regel (uuid 4b2781de): Vorschlag Patch/Minor-only bis
-   2027-02-07 — wartet CEO-Ack; Drafts #42/#43/#10 rebasen.
-7. C-001/C-002/C-003/C-004 Dispatch-Hits: Play-Console, Geraeteabnahme,
-   4-Deposit-Lueckenliste, Sichtbarkeit — AL/Live bzw. CTO.
-8. Security-Buendel (uuid 3e4b583d, due 12.11.).
-9. WAYLAND-Import-Ursache (uuid 5870061d); Abhilfe headless-Drop-in steht.
-   Kitty-Pilot bewertet/geschlossen (20ba0446): headless Standard.
-10. AUTOMATION-Inventur: erste Zeilen Mo (relax 2, fitness 1) — Aggregation
-    weiterfuehren.
-11. gog CEO-Mailbox Auth (refresh-token) — Owner/CEO-Handgriff.
-12. Engine-Credits agy: Nachtwelle tot; Catchup-Bias cursor bleibt Reserve.
+1. Teilergebnis-Pushes: fuel `c545486f`, relax `ed94e4cd` (Nacht 11./12.11.).
+2. automerge base=master→dev Retarget SSOT journal `0e25e4c4` / Tracking
+   `c1f9b6ce`; danach Port auf Schwester-Repos.
+3. fuel Stabilitätswache `6a0eeebc` bis echter Dependabot-Merge-Beleg.
+4. fitness Haupt-Checkout-Sync `903f1fbe` (vos-al-log Prefill/Worktree).
+5. C-001b Closed-Test-Track `358d9335` — Owner/Play-Console-Fakt.
+6. Security-Buendel `3e4b583d` (Owner-Gate).
+7. Cloud-CTO-Design `c63fad5d/ee2fb0de/8929c32b/0a771e65` (nicht Bau-Welle).
+8. gog CEO-Mailbox Auth (refresh-token) — Owner/CEO-Handgriff.
+9. Meta Dependabot esbuild-security Noise (AL-Befund `fdd8b7fd`); Draft
+   journal #42 unberührt.
+10. WAYLAND-Import-Ursache `5870061d`; Abhilfe headless-Drop-in steht.
+11. AUTOMATION-Inventur weiterfuehren (Door-War).
 
 ## CI-Nachprüfung und Pages-Landingpages — 2026-11-07
 
