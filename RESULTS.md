@@ -1,3 +1,10 @@
+## 2026-11-11 — Journal-Kanon vos-journal
+
+- `journal-dev`: Target `v2` = kanonisch `vos-journal.web.app`; Target `journal`
+  (`journal-vos`) nur noch 301-Redirect (`hosting/journal-vos-redirect`).
+- Docs/Portal/HOSTING-TARGETS nachgezogen; Flavor-Icons unter derselben Origin
+  als Folgeoption dokumentiert.
+
 ## 2026-11-11 — Produkt-CI Secrets gesetzt
 
 - Vier Secrets auf `nimmsel23/vitalos` per `gh secret set` aus
