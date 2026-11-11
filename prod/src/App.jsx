@@ -18,6 +18,7 @@ import { HomeHubGate } from './shell/HomeGates.jsx'
 import { localISO } from './shell/runtimeDate.js'
 import { getEditionEntryTab, getRuntimeEdition, getProductEdition, PRODUCT_EDITION } from './shell/productEdition.js'
 import EditionModeSwitch from './shell/EditionModeSwitch.jsx'
+import LegalLinks from './shell/LegalLinks.jsx'
 
 const DAY_START = 8
 const DAY_END   = 20
@@ -595,6 +596,7 @@ export default function App() {
           <button onClick={() => setAuthRegistering(!authRegistering)} className="mt-5 w-full text-[14px] text-fit-dim hover:text-fit-accent">
             {authRegistering ? 'Bereits einen Account? Anmelden' : 'Neu hier? Account erstellen'}
           </button>
+          <LegalLinks className="mt-6 justify-center" />
         </div>
       </div>
     )

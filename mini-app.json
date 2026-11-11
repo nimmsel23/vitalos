@@ -20,6 +20,7 @@
         ],
         "cacheAllSameOrigin": true,
         "navTimeoutMs": null,
+        "navPassthrough": ["/datenschutz", "/konto-loeschen"],
         "api": {
           "swr": [
             "/session",

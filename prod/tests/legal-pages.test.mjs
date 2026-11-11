@@ -1,0 +1,77 @@
+import test from "node:test";
+import assert from "node:assert/strict";
+import fs from "node:fs";
+import path from "node:path";
+import { fileURLToPath } from "node:url";
+import { ACCOUNT_DELETION_URL, CONTACT_EMAIL, CONTACT_EMAIL_IS_PLACEHOLDER, PRIVACY_URL } from "../src/cloud/legal.js";
+import { resolveHosting } from "../scripts/legal-hosting.mjs";
+
+const repo = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../..");
+
+function read(rel) {
+  return fs.readFileSync(path.join(repo, rel), "utf8");
+}
+
+test("dieselbe HTML-Fassung liegt in der Produkt- und in der Shell-Quelle", () => {
+  for (const page of ["datenschutz/index.html", "konto-loeschen/index.html"]) {
+    assert.equal(read(`public/${page}`), read(`prod/public/${page}`));
+  }
+});
+
+test("Seiten nennen Platzhalter, C-014 und die tatsächlich genutzten Dienste", () => {
+  assert.equal(CONTACT_EMAIL_IS_PLACEHOLDER, true);
+  assert.equal(CONTACT_EMAIL, "KONTAKT-FOLGT@example.invalid");
+  for (const page of ["prod/public/datenschutz/index.html", "prod/public/konto-loeschen/index.html"]) {
+    const html = read(page);
+    assert.match(html, /C-014/);
+    assert.match(html, /KONTAKT-FOLGT@example\.invalid/);
+    assert.match(html, /Firebase Authentication|Firebase-Auth/);
+    assert.match(html, /Cloud Firestore|Firestore/);
+    assert.match(html, /Google-Anmeldung|Google-Verknüpfung/);
+    assert.doesNotMatch(html, /gemini-2\.5/i);
+    assert.doesNotMatch(html, /<form/i);
+  }
+  assert.match(read("prod/public/datenschutz/index.html"), /ruft Gemini nicht auf/);
+  assert.match(read("prod/public/datenschutz/index.html"), /Werbe-SDK/);
+});
+
+test("Kontolöschung erklärt App-Weg und Weg ohne Anmeldung", () => {
+  const html = read("prod/public/konto-loeschen/index.html");
+  assert.match(html, /Setup/);
+  assert.match(html, /Konto löschen/);
+  assert.match(html, /LÖSCHEN/);
+  assert.match(html, /ohne Anmeldung/);
+  assert.match(html, /deleteOwnAccount/);
+  assert.match(html, /Wegwerfkonto/);
+});
+
+test("SPA-Fangnetz steht hinter den Rechtsseiten und Dateien gewinnen", () => {
+  assert.equal(PRIVACY_URL, "https://vitalos.web.app/datenschutz");
+  assert.equal(ACCOUNT_DELETION_URL, "https://vitalos.web.app/konto-loeschen");
+  for (const file of ["firebase.json", "prod/firebase.json"]) {
+    const hosting = JSON.parse(read(file)).hosting;
+    const sources = hosting.rewrites.map((rule) => rule.source);
+    const catchAll = sources.indexOf("**");
+    assert.ok(sources.indexOf("/datenschutz") >= 0 && sources.indexOf("/datenschutz") < catchAll, file);
+    assert.ok(sources.indexOf("/konto-loeschen") >= 0 && sources.indexOf("/konto-loeschen") < catchAll, file);
+    const publicDir = path.join(repo, "prod/public");
+    for (const url of ["/datenschutz", "/datenschutz/", "/konto-loeschen", "/konto-loeschen/"]) {
+      const hit = resolveHosting(publicDir, hosting.rewrites, url);
+      assert.equal(hit.status, 200, `${file} ${url}`);
+      assert.equal(hit.via, "static", `${file} ${url}`);
+      assert.match(hit.file, /index\.html$/);
+    }
+    const other = resolveHosting(publicDir, hosting.rewrites, "/setup");
+    assert.equal(other.via, "**");
+  }
+});
+
+test("Service Worker leitet die Rechtsseiten nicht auf die App-Shell um", () => {
+  for (const file of ["mini-app.json", "prod/mini-app.json"]) {
+    const config = JSON.parse(read(file));
+    assert.deepEqual(config.apps.vitalos.sw.navPassthrough, ["/datenschutz", "/konto-loeschen"]);
+  }
+  for (const file of ["prod/src/App.jsx", "prod/src/shell/Settings/ProfileSection.jsx", "prod/src/shell/Settings/AccountSection.jsx"]) {
+    assert.match(read(file), /LegalLinks|Konto löschen/);
+  }
+});

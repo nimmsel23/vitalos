@@ -88,6 +88,49 @@ und `--project vitalos-prod`. Der lokale Guard ist keine Push-/Deploy-Freigabe.
 Rules, Functions und Hosting getrennt beauftragen. Journal-Callables gezielt
 auswählen; ein Whole-Codebase-Deploy umfasst auch andere Functions.
 
+## Datenschutz-Seiten und Kontolöschung (C-013)
+
+Öffentliche Seiten, ohne Anmeldung:
+
+| URL | Quelle |
+| --- | --- |
+| `https://vitalos.web.app/datenschutz` | `public/datenschutz/index.html` und `prod/public/datenschutz/index.html` |
+| `https://vitalos.web.app/konto-loeschen` | `public/konto-loeschen/index.html` und `prod/public/konto-loeschen/index.html` |
+
+`vitalos.web.app` veröffentlicht der bestehende Shell-Deploy
+(`.github/workflows/deploy-shell.yml`, Projekt `fitness-aos`, Root-`firebase.json`).
+Die Produkt-Hosting-Konfiguration `prod/firebase.json` (Site `vitalos-prod`)
+trägt dieselben Rewrites vor dem SPA-Fangnetz `**`. Statische Dateien
+gewinnt Hosting vor Rewrites. Der Service Worker der Shell lässt beide
+Pfade durch, damit er die App-Shell nicht mit der Rechtsseite überschreibt.
+
+Der Wortlaut ist der Sachstand des Release-Builds (Firebase Authentication,
+Cloud Firestore, Google-Anmeldung, optionales Cloud Messaging; kein Gemini,
+kein Analytics-, Crash- oder Werbe-SDK im Produktcode). C-014 darf ihn
+ersetzen. Eine öffentliche Kontaktadresse steht nicht im Repo. Der
+Platzhalter `KONTAKT-FOLGT@example.invalid` ist nicht zustellbar.
+
+Die Kontolöschung in der App ruft `deleteOwnAccount` auf
+(`prod/functions/index.js`, Region `europe-west1`). Die Function liest die
+uid nur aus der Anmeldung, löscht die Firestore-Wurzeln dieser uid
+(`roles`, `sixpackSelfies`, `skillsUsers`, `coachConversations`, `fitness`,
+`planResponses`, `journal`, `nutrition`, `supplements`, `users`, `relax`)
+und danach den Auth-Nutzer. `kb` und `public` sind keine Nutzer-IDs.
+Geteilte Kataloge bleiben.
+
+Dieser Deploy ist nicht der Shell-Hosting-Deploy. Ein späterer Auftrag
+veröffentlicht gezielt nur diese Function, nicht die ganze Codebase:
+
+```sh
+cd /home/alpha/vitalos/prod
+npx firebase-tools deploy --only functions:vitalos:deleteOwnAccount --project vitalos-prod
+```
+
+Vorher die Tests `pnpm --filter @vitalos/product run test:account-deletion`.
+Ein manueller Löschversuch nur mit einem neuen Wegwerfkonto. Keine
+bestehenden Personenkonten und keine Produktionsdaten löschen. Der
+In-App-Knopf bleibt ohne diesen Function-Deploy ohne Serverwirkung.
+
 ## CI nach der Zusammenführung
 
 Aktive Produkt-Vorlagen liegen im Parent unter

@@ -21,6 +21,13 @@ on:
 jobs:
   preview:
     runs-on: ubuntu-latest
+    # Der Hosting-Deploy legt einen Check-Run an und kommentiert die Preview-URL.
+    # Ohne diese Rechte bricht der Schritt mit 403 ab, bevor Firebase erreicht wird
+    # (gleicher Fehler wie Lauf 41485323845 am 2026-11-02).
+    permissions:
+      checks: write
+      contents: read
+      pull-requests: write
     steps:
       - name: Checkout (ohne Submodules)
         uses: actions/checkout@v4
@@ -62,5 +69,6 @@ jobs:
           repoToken: ${{ secrets.GITHUB_TOKEN }}
           firebaseServiceAccount: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
           projectId: fitness-aos
+          target: vitalos
           channelId: pr-${{ github.event.number }}
           expires: 7d
