@@ -43,6 +43,25 @@ Nebenwirkung eines Builds erzeugen. Buildkonfiguration wird durch
 `scripts/prepare-vitalos-product-config.mjs` vorbereitet; die Bundle-Isolations-
 prüfung gehört zum Produkt-Buildweg. Platzhalter ergeben kein Release-Artefakt.
 
+## CI Secrets (nur Namen) und Deploy-Trennung
+
+Private Shell-CI (`deploy-shell.yml`) deployt nach `fitness-aos` mit
+`FIREBASE_SERVICE_ACCOUNT`. Produkt-Hosting darf dieses Secret **nie** nutzen.
+
+| GitHub Actions Secret (Name) | Zweck |
+| --- | --- |
+| `FIREBASE_SERVICE_ACCOUNT_VITALOS_PROD` | Hosting-Deploy nach `vitalos-prod` |
+| `VITE_VOS_FIREBASE_PROJECT_ID` | CI-Produkt-Build; Wert muss `vitalos-prod` sein |
+| `VITE_VOS_FIREBASE_WEB_CONFIG` | CI-Produkt-Build (Web-Config JSON) |
+| `VITE_VOS_FIREBASE_VAPID_KEY` | CI-Produkt-Build (VAPID) |
+
+Workflows:
+
+- `product-check.yml` — Push auf `master` (Paths `prod/**` u. a.) + `workflow_dispatch`: Layout, Boundary-Check, Manifest; optional Store-Build wenn die `VITE_VOS_FIREBASE_*`-Secrets gesetzt sind. **Kein Deploy.**
+- `deploy-product-hosting.yml` — nur `workflow_dispatch`: Store-Build (`dist-store`) + Hosting Target `vitalos` auf `vitalos-prod`. Fehlt `FIREBASE_SERVICE_ACCOUNT_VITALOS_PROD`, bricht der Job ab.
+
+Lokal/predeploy: `prod/scripts/ci-deploy-guard.mjs` verlangt Projekt `vitalos-prod`; TWA/`pnpm firebase` über `deploy-product.mjs` zusätzlich `VOS_PRODUCT_DEPLOY=1`. Boundary-Check: `pnpm run product:check` bzw. `node prod/scripts/check-product-boundaries.mjs`.
+
 ## Ressourceninventar
 
 Die folgenden IDs stammen aus dem bisherigen Produkt-Runbook. Sie dienen der

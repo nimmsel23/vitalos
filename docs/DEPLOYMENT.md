@@ -10,11 +10,16 @@ nicht veröffentlicht.
 | --- | --- |
 | App-Quelländerung | zuständiges `~/dev/*-dev`, dann App-Release/Integration |
 | gemeinsamen App-Stand übernehmen | Parent-Gitlink und Root-Lockfile zusammen committen |
-| private Shell veröffentlichen | autorisierter privater Release-Weg / Root-CI |
+| private Shell veröffentlichen | autorisierter privater Release-Weg / Root-CI (`deploy-shell.yml` → `fitness-aos`) |
 | Produkt-Web/Native bauen | Root `product:*`; [Befehle](UNIFIED-PRODUCT.md) |
-| Produkt-Firebase veröffentlichen | [Produkt-Runbook](../prod/docs/FIREBASE.md) |
+| Produkt-CI prüfen | `product-check.yml` (Push/`workflow_dispatch`); lokal `pnpm run product:check` |
+| Produkt-Hosting veröffentlichen | nur Owner: `deploy-product-hosting.yml` (`workflow_dispatch`) → `vitalos-prod`; Secret `FIREBASE_SERVICE_ACCOUNT_VITALOS_PROD` — **kein** privates `FIREBASE_SERVICE_ACCOUNT` |
+| Produkt-Firebase Rules/Functions | [Produkt-Runbook](../prod/docs/FIREBASE.md); eigene Owner-Aufträge |
 | APK/AAB, Signing, Store | [Store-Plan](../prod/docs/STORE-PUBLISHING-PLAN.md) |
 | GitHub Pages (`docs/` → `nimmsel23.github.io/vitalos`) | kein Firebase; Bestand/Empfehlung im [Produkt-Runbook § GitHub Pages](../prod/docs/FIREBASE.md#github-pages-meta-repo-kein-firebase-hosting) — Owner-Gate behalten/deaktivieren |
+
+Private und Produkt-Linie teilen App-Pins, nicht Firebase-Projekt oder Deploy-Secret.
+CI-Secret-Namen: [FIREBASE.md § CI Secrets](../prod/docs/FIREBASE.md#ci-secrets-nur-namen-und-deploy-trennung).
 
 `master` ist Default und private Produktion (Shell-CI). Der frühere Umbau-Strang `dev-product` ist nach master gemergt und entfernt. Parallel-Branches/Worktrees nur auf ausdrückliche Owner-Ausnahme — Git-Historie reicht.
 Ein älterer lokaler `dev`-Strang und weitere Worktrees sind gesondert zu

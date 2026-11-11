@@ -1,0 +1,99 @@
+# Owner-only Hosting-Deploy der Store-Shell nach vitalos-prod.
+# Nie fitness-aos / FIREBASE_SERVICE_ACCOUNT (privat). Nur workflow_dispatch.
+
+name: Deploy Product Hosting
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: .
+    steps:
+      - name: Checkout (ohne Submodules)
+        uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+
+      - name: Require product service account
+        env:
+          SA: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_VITALOS_PROD }}
+        run: |
+          if [ -z "$SA" ]; then
+            echo "::error::Secret FIREBASE_SERVICE_ACCOUNT_VITALOS_PROD fehlt — kein Produkt-Deploy."
+            exit 1
+          fi
+
+      - name: Private Skills submodule access
+        uses: ./.github/actions/skills-submodule-auth
+        with:
+          deploy-key: ${{ secrets.SKILLS_DEPLOY_KEY }}
+
+      - name: Submodules via HTTPS + Token
+        run: |
+          git config --global url."https://x-access-token:${{ secrets.GH_SUBMODULE_TOKEN || secrets.GITHUB_TOKEN }}@github.com/".insteadOf "git@github.com:"
+          git submodule sync
+          git submodule update --init --recursive
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 11.3.0
+
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - name: Install (Workspaces)
+        run: pnpm install --frozen-lockfile
+
+      - name: Boundary + layout checks
+        run: |
+          node prod/scripts/check-shared-layout.mjs
+          node prod/scripts/check-product-boundaries.mjs
+
+      - name: Build store (vitalos-prod)
+        env:
+          VITE_VOS_FIREBASE_PROJECT_ID: ${{ secrets.VITE_VOS_FIREBASE_PROJECT_ID }}
+          VITE_VOS_FIREBASE_WEB_CONFIG: ${{ secrets.VITE_VOS_FIREBASE_WEB_CONFIG }}
+          VITE_VOS_FIREBASE_VAPID_KEY: ${{ secrets.VITE_VOS_FIREBASE_VAPID_KEY }}
+        run: |
+          if [ -z "$VITE_VOS_FIREBASE_PROJECT_ID" ] || [ -z "$VITE_VOS_FIREBASE_WEB_CONFIG" ] || [ -z "$VITE_VOS_FIREBASE_VAPID_KEY" ]; then
+            echo "::error::Produkt-Build-Secrets fehlen (VITE_VOS_FIREBASE_*)."
+            exit 1
+          fi
+          if [ "$VITE_VOS_FIREBASE_PROJECT_ID" != "vitalos-prod" ]; then
+            echo "::error::VITE_VOS_FIREBASE_PROJECT_ID muss vitalos-prod sein."
+            exit 1
+          fi
+          pnpm run product:build
+
+      - name: Write product service account
+        env:
+          SA: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_VITALOS_PROD }}
+        run: |
+          printf '%s\n' "$SA" > /tmp/sa-vitalos-prod.json
+          chmod 600 /tmp/sa-vitalos-prod.json
+
+      - name: Deploy Hosting (vitalos-prod / dist-store)
+        working-directory: prod
+        env:
+          GOOGLE_APPLICATION_CREDENTIALS: /tmp/sa-vitalos-prod.json
+          GCLOUD_PROJECT: vitalos-prod
+          GOOGLE_CLOUD_PROJECT: vitalos-prod
+          VITE_VOS_FIREBASE_PROJECT_ID: vitalos-prod
+          VOS_PRODUCT_DEPLOY: '1'
+          VOS_PRODUCT_DEPLOY_SA: FIREBASE_SERVICE_ACCOUNT_VITALOS_PROD
+        run: |
+          # projectId: vitalos-prod — kein Fallback auf FIREBASE_SERVICE_ACCOUNT
+          pnpm dlx firebase-tools@latest deploy \
+            --only hosting:vitalos \
+            --project vitalos-prod \
+            --public dist-store \
+            --non-interactive

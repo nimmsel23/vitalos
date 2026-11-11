@@ -1,50 +1,75 @@
 #!/usr/bin/env node
 /**
- * CI-Guard: Fragt bei jedem direkten firebase deploy der nicht in GitHub
- * Actions läuft explizit nach, statt hart zu blockieren (seit 2026-08-25 —
- * der harte exit(1) nervte im Alltag; die eigentliche Absicht war, ein
- * *versehentliches* lokales Live-Deploy zu verhindern, nicht ein bewusstes).
- * Wird als predeploy-Hook in firebase.json aufgerufen.
+ * Predeploy-Guard für prod/firebase.json.
+ * Fail-closed: nur Firebase-Projekt vitalos-prod. Lokal zusätzlich Rückfrage.
  *
- * Lokal: firebase deploy → dieser Script → Rückfrage (gum confirm / y-N) → OK oder Abbruch
- * CI:    GITHUB_ACTIONS=true gesetzt → Deploy ohne Rückfrage erlaubt
- *
- * Für lokale Preview-Tests weiterhin: npm run deploy:preview (Firebase channel, kein Live-Deploy)
+ * CI:    GITHUB_ACTIONS → keine Rückfrage, aber Projektpflicht
+ * Lokal: Projektcheck, dann gum/confirm
  */
 
-import { spawnSync } from "node:child_process";
+import { spawnSync } from 'node:child_process';
+
+const PRODUCT_PROJECT = 'vitalos-prod';
+
+function resolveProjectId() {
+  return (
+    process.env.GCLOUD_PROJECT ||
+    process.env.GOOGLE_CLOUD_PROJECT ||
+    process.env.VITE_VOS_FIREBASE_PROJECT_ID ||
+    process.env.FIREBASE_PROJECT ||
+    ''
+  ).trim();
+}
+
+const projectId = resolveProjectId();
+if (projectId !== PRODUCT_PROJECT) {
+  console.error('');
+  console.error(`⛔  Produkt-Deploy nur nach ${PRODUCT_PROJECT} (got: ${projectId || '(unset)'}).`);
+  console.error('    Setze GCLOUD_PROJECT / GOOGLE_CLOUD_PROJECT / VITE_VOS_FIREBASE_PROJECT_ID.');
+  console.error('');
+  process.exit(1);
+}
 
 if (process.env.GITHUB_ACTIONS) {
+  const saHint = process.env.VOS_PRODUCT_DEPLOY_SA || '';
+  if (saHint && saHint !== 'FIREBASE_SERVICE_ACCOUNT_VITALOS_PROD') {
+    console.error('⛔  Produkt-CI darf nicht den privaten FIREBASE_SERVICE_ACCOUNT nutzen.');
+    process.exit(1);
+  }
   process.exit(0);
 }
 
-console.error("");
-console.error("⚠️  Direkter lokaler firebase deploy — normalerweise läuft das über GitHub Actions CI.");
-console.error("    Für einen risikofreien Preview-Test: npm run deploy:preview");
-console.error("");
+console.error('');
+console.error('⚠️  Direkter lokaler firebase deploy auf vitalos-prod.');
+console.error('    Normalweg: GitHub Actions workflow_dispatch (deploy-product-hosting).');
+console.error('    Preview: pnpm run deploy:preview (falls konfiguriert).');
+console.error('');
 
 function haveGum() {
-  return spawnSync("command", ["-v", "gum"], { shell: true }).status === 0;
+  return spawnSync('command', ['-v', 'gum'], { shell: true }).status === 0;
 }
 
 function confirmed() {
   if (haveGum()) {
     const res = spawnSync(
-      "gum",
-      ["confirm", "Live-Deploy trotzdem jetzt lokal durchführen?"],
-      { stdio: "inherit" }
+      'gum',
+      ['confirm', 'Live-Deploy nach vitalos-prod trotzdem lokal durchführen?'],
+      { stdio: 'inherit' },
     );
     return res.status === 0;
   }
   const res = spawnSync(
-    "bash",
-    ["-c", 'read -r -p "Live-Deploy trotzdem jetzt lokal durchführen? [y/N] " ans < /dev/tty; [[ "$ans" =~ ^([yY]|[jJ][aA]?)$ ]]'],
-    { stdio: "inherit" }
+    'bash',
+    [
+      '-c',
+      'read -r -p "Live-Deploy nach vitalos-prod trotzdem lokal? [y/N] " ans < /dev/tty; [[ "$ans" =~ ^([yY]|[jJ][aA]?)$ ]]',
+    ],
+    { stdio: 'inherit' },
   );
   return res.status === 0;
 }
 
 if (!confirmed()) {
-  console.error("⛔  Abgebrochen.");
+  console.error('⛔  Abgebrochen.');
   process.exit(1);
 }
