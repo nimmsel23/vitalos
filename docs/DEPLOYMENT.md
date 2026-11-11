@@ -88,10 +88,12 @@ Ablauf in der CI (je Repo, `.github/workflows/`):
 
 Ein direkter Push auf `master` deployt ebenfalls (`push: branches: [master]`) — gedacht für Hotfixes, normal ist der PR.
 
-Produktions-Sites (Projekt `fitness-aos`): journal → `journal`, `v2`, `door`, `voice`, `game`, `tent`
-(`journal-vos`, `vos-journal`, `vos-door`, `vos-voice`, `vos-game`, `vos-tent`); fuel → `fuel-vos`; fitness →
-`fitness-aos` (+ Training/Atlas); plan → `vos-plan`; 6pack → `vos-6pack`; skills → `vos-skills`; learn, habits, relax
-je eigene Site. `fuel-os.web.app` hat weiterhin einen eigenen Standalone-Weg.
+Produktions-Sites (Projekt `fitness-aos`): journal-Kanon **`vos-journal`** (Target `v2`, inkl. `/mini/*`);
+Legacy-Targets `journal`/`door`/`voice`/`game`/`tent`/`habits` = **301-Aliase**
+(`journal-vos`, `vos-door`, `vos-voice`, `vos-game`, `vos-tent`, `habit-vos` → vos-journal). fuel → `fuel-vos`;
+fitness → `fitness-aos` (+ Training/Atlas); plan → `vos-plan`; 6pack → `vos-6pack`; skills → `vos-skills`;
+learn/relax je eigene Site. `fuel-os.web.app` hat weiterhin einen eigenen Standalone-Weg.
+Details: `docs/HOSTING-TARGETS.md`, `portal/hosting-targets.json`.
 
 ## 2. Shell-Promotion (Pin origin/master)
 

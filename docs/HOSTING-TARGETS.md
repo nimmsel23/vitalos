@@ -78,9 +78,7 @@ Legacy-Einzelsites (`vos-fuel-log`, …) dürfen als Redirect-Hüllen weiterlebe
 | Fuel Minis | `vos-fuel` + `/mini/log\|supplements\|mikros\|protokoll` | eigene `vos-fuel-*` Sites | Subroutes auf `vos-fuel`; Alt-Sites → 301 |
 | Fitness Haupt | `vos-fitness` | `fitness-aos` | Site `vos-fitness` + Redirect; Minis analog `/mini/…` |
 | Journal | `vos-journal` | live + `/mini/{door,voice,game,tent,habits}` | Kanon; Solo-Icons = Manifest unter `/mini/*` |
-| Journal Legacy-Sites | — | `journal-vos`, `vos-door`, `vos-voice`, `vos-game`, `vos-tent`, `habit-vos` | alle **301 → vos-journal** (+ Mini-Pfad) |
-| Journal-Flavors | `vos-journal` + `/mini/…` | deployed unter Mini-Pfaden | OAuth nur noch `vos-journal` nötig |
-| Habits | `vos-habits` | `habit-vos` | → `vos-habits` (Plural, wie Produktname) |
+| Journal Legacy / Solo-Aliase | `vos-journal` (+ Pfad) | `journal-vos` → `/`; `vos-door` → `/mini/door/`; `vos-voice` → `/mini/voice/`; `vos-game` (+ `/frame|freedom|focus|fire/`) → `/mini/game/…`; `vos-tent` → `/mini/tent/`; `habit-vos` → `/mini/habits/` | **live 301-Aliase**, kein eigenes Bundle; Auth-SOT nur `vos-journal` |
 | Learn | `vos-learn` | `learn-vos` (unter fitness-dev) | → `vos-learn` |
 | Plan | `vos-plan` | `vos-plan` | ok |
 | Skills | `vos-skills` | `vos-skills` | ok |
@@ -95,8 +93,6 @@ Legacy-Einzelsites (`vos-fuel-log`, …) dürfen als Redirect-Hüllen weiterlebe
 | Setup | `vos-setup` | `vos-setup` | ok |
 | Anamnese | `vos-anamnese` | `vos-anamnese` | ok |
 | Fokus | `vos-fokus` | `vos-fokus` | ok |
-| Door / Game / Voice / Tent (Journal-Familie) | `vos-door` … | bereits `vos-*` | ok; nicht mit aos `*-aos` vermischen |
-
 AlphaOS (`game-aos`, `door-aos`, …) bleibt **außerhalb** dieses Vertrags (Projekt `core4-aos`).
 
 ## OAuth-Verifizierung & 10-URI-Limit (Owner-Gate)
@@ -109,13 +105,33 @@ nicht verifiziert ist (bereits vor ~2 Wochen aufgelaufen). Deshalb:
    öffentlicher Datenschutzerklärung auf dieser Domain.
 3. **Dann erst:** beliebig viele `vos-*`-URIs + Credentials-API-Zugang.
 
+**Marken-/OAuth-Domain = Firebase Landing, nicht ChatGPT-Sites.**
+
+| | Ziel |
+|---|---|
+| Host | Firebase-Projekt `daniel-vitaltrainer`, Site `daniel-vitaltrainer` |
+| Quellrepo | `~/dev/coach-dev/website` (`nimmsel23/daniel-vitaltrainer-firebase`) |
+| Parallel-URL | `https://daniel-vitaltrainer.web.app` (gleiche Inhalte) |
+| Nicht | `vitalos.nimmdaniel.chatgpt.site`, Shell `vitalos.web.app` als Domain-Anker |
+
 Vorhanden (Stand 2026-11-11):
-- `https://vitalos.web.app/datenschutz` und `/konto-loeschen` (HTTP 200)
+- Custom Domains in Firebase angelegt: `vitalos.at`, `www.vitalos.at` (Cert/DNS noch pending)
+- Legal live auf Firebase: `/datenschutz`, `/impressum`, `/vitalos`
+- Shell-Spiegel: `https://vitalos.web.app/datenschutz` und `/konto-loeschen` (HTTP 200)
 - Inhalt noch mit Kontakt-Platzhalter (`KONTAKT-FOLGT@example.invalid`, C-014)
 
-Noch Owner: Custom Domain richtig auf Hosting legen (DNS + Firebase Custom
-Domain), Privacy/Home auf **dieser** Domain, Consent-Screen Domains/Links
-anpassen, Verifizierung einreichen. Danach OAuth-URI-Batch + Credentials-API.
+Noch Owner (DNS bei atdomain/hostdomains — CF-Sites-A-Records ersetzen):
+
+| Name | Typ | Wert |
+|---|---|---|
+| `@` / `vitalos.at` | A | `199.36.158.100` |
+| `_acme-challenge.vitalos.at` | TXT | `IQUUmVD_c7vvt2d6mzlRIdhJJR_kMiIAs7DtdwtOJR4` |
+| `www` | A | `199.36.158.100` |
+| `_acme-challenge.www.vitalos.at` | TXT | `FNg5KejKt7IBJZu-Utl-2GKh4g8oPVi3HbWR2cJJlNE` |
+
+Alte Cloudflare-Sites-IPs (`162.159…` / `172.66…`) entfernen. Nach Propagierung:
+`https://vitalos.at/datenschutz`, `/impressum`, `/vitalos` prüfen → Consent-Screen
+auf `vitalos.at` → Verifizierung einreichen → OAuth-URI-Batch + Credentials-API.
 
 ## Auth-Contract (gilt für jede Kanon-Site)
 
