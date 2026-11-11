@@ -10,11 +10,13 @@ Stand CTO-Runde 2026-11-09.
 - [x] vos-fitness Subversion baubar (`e83d8daa`, 2026-11-10 AL): Web-Build OK + Debug-APK-Pfad; Host weiter 404; Rest Asset-Links/Keystore/Play.
 - [x] M2-APK Simon/Matthias (`c3315277`): Verteilweg `prod/docs/M2-TESTUSER-APK-VERTEILWEG.md` (2026-11-10 AL) — Sideload; Owner teilt privaten Link.
 - [x] C-010/C-011 Aufnahme: PR #16 / `e60b4d4` (TODO 2026-11-10 abgehakt).
+- [x] Dependabot esbuild Meta (`fdd8b7fd`, 2026-11-11 AL): Befund `prod/docs/DEPENDABOT-ESBUILD-BEFUND.md` — Ursache klar; Fix = CTO (Bump/Override).
 - ~~vos-fitness Vite-8 Rolldown `__VITE_PRELOAD__`-Blackscreen~~: `fixRolldownPreloadMarker` lokal vorbereitet (Vite 6 heute; Push Meta auf Zuruf).
 - ~~`vitalos-fitness-prod.web.app` 404~~: Hosting live 2026-11-10. Offen: Asset-Links/Play; dauerhaften Deploy-Pfad statt Guard-Bypass.
 
 
 - [ ] C-001 Play-Console (`c09e4d5c`): 3 Fakten an CEO (Konto/App angelegt?); keine Zahlung.
+- [ ] CTO: esbuild Root/`fitness-app` → `^0.28.2` oder pnpm-Override `esbuild: 0.28.2` (Alerts #205/#206; siehe Befund).
 - [ ] SmartLog-Beweis (`5f09bbb1`): Emulator 13:00 — Deploy 5f2f694 steht; Gruennachweis abwarten.
 - [ ] C-001b Closed-Test-Track (`+cto`): Existenz-Fakt an CEO; Owner-Klickliste C-010.
 
