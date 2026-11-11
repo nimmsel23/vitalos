@@ -18,9 +18,13 @@
     { "slug": "fuel-supplements", "canonical": "vos-fuel", "path": "/mini/supplements", "current": ["vos-fuel-supplements"], "repo": "fuel-dev", "kind": "solo-alias" },
     { "slug": "fuel-mikros", "canonical": "vos-fuel", "path": "/mini/mikros", "current": ["vos-fuel-mikros"], "repo": "fuel-dev", "kind": "solo-alias" },
     { "slug": "fuel-protokoll", "canonical": "vos-fuel", "path": "/mini/protokoll", "current": ["vos-fuel-protokoll"], "repo": "fuel-dev", "kind": "solo-alias" },
-    { "slug": "journal", "canonical": "vos-journal", "current": ["vos-journal"], "aliases": ["journal-vos"], "redirect": { "from": "journal-vos", "to": "https://vos-journal.web.app", "type": 301 }, "repo": "journal-dev", "kind": "main", "miniBase": "/mini", "minis": ["door", "voice", "game", "tent", "habits"], "note": "Flavors heute noch eigene vos-* Sites; Icons können unter vos-journal Manifest-Pfaden laufen" },
+    { "slug": "journal", "canonical": "vos-journal", "current": ["vos-journal"], "aliases": ["journal-vos", "vos-door", "vos-voice", "vos-game", "vos-tent", "habit-vos"], "repo": "journal-dev", "kind": "main", "miniBase": "/mini", "minis": ["door", "voice", "game", "tent", "habits"], "note": "Solo-Icons = /mini/<id>/; Legacy-Sites 301" },
     { "slug": "journal-vos", "canonical": "vos-journal", "current": ["journal-vos"], "repo": "journal-dev", "kind": "legacy-redirect" },
-    { "slug": "habits", "canonical": "vos-habits", "current": ["habit-vos"], "repo": "journal-dev", "kind": "main" },
+    { "slug": "door", "canonical": "vos-journal", "path": "/mini/door/", "current": ["vos-door"], "repo": "journal-dev", "kind": "solo-alias" },
+    { "slug": "voice", "canonical": "vos-journal", "path": "/mini/voice/", "current": ["vos-voice"], "repo": "journal-dev", "kind": "solo-alias" },
+    { "slug": "game", "canonical": "vos-journal", "path": "/mini/game/", "current": ["vos-game"], "repo": "journal-dev", "kind": "solo-alias" },
+    { "slug": "tent", "canonical": "vos-journal", "path": "/mini/tent/", "current": ["vos-tent"], "repo": "journal-dev", "kind": "solo-alias" },
+    { "slug": "habits", "canonical": "vos-journal", "path": "/mini/habits/", "current": ["habit-vos"], "repo": "journal-dev", "kind": "solo-alias" },
     { "slug": "learn", "canonical": "vos-learn", "current": ["learn-vos"], "repo": "fitness-dev", "kind": "main" },
     { "slug": "plan", "canonical": "vos-plan", "current": ["vos-plan"], "repo": "plan-dev", "kind": "main" },
     { "slug": "skills", "canonical": "vos-skills", "current": ["vos-skills"], "repo": "skills-dev", "kind": "main" },
@@ -34,10 +38,6 @@
     { "slug": "touren", "canonical": "vos-touren", "current": ["vos-touren"], "repo": "fitness-dev", "kind": "solo" },
     { "slug": "setup", "canonical": "vos-setup", "current": ["vos-setup"], "repo": "fitness-dev", "kind": "solo" },
     { "slug": "anamnese", "canonical": "vos-anamnese", "current": ["vos-anamnese"], "repo": "fitness-dev", "kind": "solo" },
-    { "slug": "fokus", "canonical": "vos-fokus", "current": ["vos-fokus"], "repo": "fitness-dev", "kind": "solo" },
-    { "slug": "door", "canonical": "vos-door", "current": ["vos-door"], "repo": "journal-dev", "kind": "solo" },
-    { "slug": "game", "canonical": "vos-game", "current": ["vos-game"], "repo": "journal-dev", "kind": "solo" },
-    { "slug": "voice", "canonical": "vos-voice", "current": ["vos-voice"], "repo": "journal-dev", "kind": "solo" },
-    { "slug": "tent", "canonical": "vos-tent", "current": ["vos-tent"], "repo": "journal-dev", "kind": "solo" }
+    { "slug": "fokus", "canonical": "vos-fokus", "current": ["vos-fokus"], "repo": "fitness-dev", "kind": "solo" }
   ]
 }

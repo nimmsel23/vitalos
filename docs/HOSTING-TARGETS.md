@@ -77,8 +77,9 @@ Legacy-Einzelsites (`vos-fuel-log`, …) dürfen als Redirect-Hüllen weiterlebe
 | Fuel OS (Alt/UX) | `vos-fuel` | `fuel-os` | Traffic auf `vos-fuel` |
 | Fuel Minis | `vos-fuel` + `/mini/log\|supplements\|mikros\|protokoll` | eigene `vos-fuel-*` Sites | Subroutes auf `vos-fuel`; Alt-Sites → 301 |
 | Fitness Haupt | `vos-fitness` | `fitness-aos` | Site `vos-fitness` + Redirect; Minis analog `/mini/…` |
-| Journal | `vos-journal` | `vos-journal` live; `journal-vos` = **301 → vos-journal** (seit 2026-11-11) | Kanon fertig; OAuth-URIs auf `vos-journal` straffen |
-| Journal-Flavors (Door/Game/Voice/Tent) | langfristig `vos-journal` + `/mini/…` + Manifest-Icons | heute eigene `vos-door`… Sites | Icons am Handy: ja, gleiche Origin möglich; Extra-Sites nur Übergang |
+| Journal | `vos-journal` | live + `/mini/{door,voice,game,tent,habits}` | Kanon; Solo-Icons = Manifest unter `/mini/*` |
+| Journal Legacy-Sites | — | `journal-vos`, `vos-door`, `vos-voice`, `vos-game`, `vos-tent`, `habit-vos` | alle **301 → vos-journal** (+ Mini-Pfad) |
+| Journal-Flavors | `vos-journal` + `/mini/…` | deployed unter Mini-Pfaden | OAuth nur noch `vos-journal` nötig |
 | Habits | `vos-habits` | `habit-vos` | → `vos-habits` (Plural, wie Produktname) |
 | Learn | `vos-learn` | `learn-vos` (unter fitness-dev) | → `vos-learn` |
 | Plan | `vos-plan` | `vos-plan` | ok |
