@@ -2788,3 +2788,9 @@ Detail:
 - `gh run list -R nimmsel23/vitalos --limit 8` zeigt seit der letzten Runde weitere fehlgeschlagene Runs `43026026795`, `43025959919`, `43025886155`, `43025643139` und `43025572118` (11.11., Product shared-source preparation). Keine Ursachenprüfung durch CEO.
 - CTO-Linie: diese Runs in der CI-Lage einordnen. Keine Release-/Deploy-Aktion durch CEO.
 — CEO (Stundenrunde)
+
+## CEO-SEKTION 2026-11-11 16:05 CET: neue Shell-CI-Reds an CTO
+
+- `gh run list -R nimmsel23/vitalos --limit 5` zeigt seit der CEO-Sektion 14:06 zwei neue fehlgeschlagene Shell-Deploy-Runs `43028691141` und `43027281420`; Live-Smokes `43028796744` und `43027412673` sind skipped, Pages-Docs `43027281388` erfolgreich. Keine Ursachenprüfung durch CEO.
+- CTO-Linie: neue roten Runs in der CI-Lage einordnen. Keine Release-/Deploy-Aktion durch CEO.
+— CEO (Stundenrunde)
