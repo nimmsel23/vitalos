@@ -95,6 +95,13 @@ Private Root-Builds und `product:*`-Befehle haben unterschiedliche Ziele.
 Produkt-Builds verlangen `vitalos-prod` und ihre eigene Firebase-Konfiguration.
 Geheimnisse bleiben in ignoriertem `prod/.product-config/` oder der Build-
 Umgebung. Nichts davon ausgeben, kopieren in Doku oder committen.
+**Owner 2026-11-11:** Wenn Produkt-CI Secrets in GitHub fehlen und lokal
+`prod/.product-config/product.env` plus
+`vos-product-firebase-service-account.json` vorliegen, setzt der Agent sie
+selbst per `gh secret set` auf `nimmsel23/vitalos` (Namen:
+`VITE_VOS_FIREBASE_*`, `FIREBASE_SERVICE_ACCOUNT_VITALOS_PROD`) — Werte nie
+loggen oder committen. Das private Secret `FIREBASE_SERVICE_ACCOUNT`
+(`fitness-aos`) nicht überschreiben.
 Build, native Synchronisierung, APK/AAB, Installation, Anmeldung, Signing und
 Veröffentlichung sind getrennte Nachweise. Kein erfolgreicher Teil ersetzt die
 übrigen Schritte. Details und Arbeitsverzeichnisse: `docs/UNIFIED-PRODUCT.md`.

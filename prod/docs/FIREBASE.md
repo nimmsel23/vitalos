@@ -55,6 +55,12 @@ Private Shell-CI (`deploy-shell.yml`) deployt nach `fitness-aos` mit
 | `VITE_VOS_FIREBASE_WEB_CONFIG` | CI-Produkt-Build (Web-Config JSON) |
 | `VITE_VOS_FIREBASE_VAPID_KEY` | CI-Produkt-Build (VAPID) |
 
+Quelle lokal: `prod/.product-config/product.env` und
+`prod/.product-config/vos-product-firebase-service-account.json`. Owner-Regel
+2026-11-11: Agenten mit Zugriff setzen fehlende Secrets selbst via
+`gh secret set -R nimmsel23/vitalos` (Werte nie ausgeben/committen); privates
+`FIREBASE_SERVICE_ACCOUNT` unberührt lassen. Stand gesetzt: 2026-11-11.
+
 Workflows:
 
 - `product-check.yml` — Push auf `master` (Paths `prod/**` u. a.) + `workflow_dispatch`: Layout, Boundary-Check, Manifest; optional Store-Build wenn die `VITE_VOS_FIREBASE_*`-Secrets gesetzt sind. **Kein Deploy.**
