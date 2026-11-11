@@ -31,3 +31,10 @@
 
 - [ ] C-010 Play Console Closed-Test-Track `com.vitalos.app`: Owner-Klickliste (15 Punkte, Status, Lieferant) in `prod/docs/PLAY-CLOSED-TEST-CLICKLIST.md`. Track-Existenz unbekannt. Kein Console-Klick und kein Upload aus diesem Auftrag.
 - [ ] C-011 Live-Smoke nach Live-Deploy (Shell, Journal, 6Pack, Fitness): Tabelle und Regel in `docs/LIVE-SMOKE.md`. Smoke-PRs blockieren keinen Merge und sind erst nach Merge aktiv. Journal-Live ist bei der Probe rot (Syntaxfehler, leeres Root), letzter Deploy-Lauf war grün.
+
+## 2026-11-11 — C-013 Datenschutz und Kontolöschung
+
+- [x] Öffentliche Seiten `/datenschutz` und `/konto-loeschen` (statisches HTML in `prod/public` und `public`, Rewrites vor dem SPA-Fangnetz, Links auf Login, im Körperprofil und im Setup-Bereich Konto).
+- [x] Callable `deleteOwnAccount` in `prod/functions` löscht nur die Firestore-Bäume der aufrufenden uid und danach den Auth-Nutzer. Tests mit nachgebautem Firestore, kein Lauf gegen echte Daten.
+- [ ] Blocker: keine öffentliche Kontaktadresse im Repo. Platzhalter `KONTAKT-FOLGT@example.invalid`. C-014 ersetzt den Datenschutz-Wortlaut.
+- [ ] Blocker: Function-Deploy nach `vitalos-prod` gehört nicht zum Shell-Auto-Deploy. Ohne ihn hat der In-App-Knopf keine Serverwirkung. Nur ein neues Wegwerfkonto prüfen, nie bestehende Personenkonten.

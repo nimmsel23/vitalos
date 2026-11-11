@@ -20,6 +20,7 @@
         ],
         "cacheAllSameOrigin": true,
         "navTimeoutMs": null,
+        "navPassthrough": ["/datenschutz", "/konto-loeschen"],
         "api": {
           "swr": [
             "/session",
@@ -67,7 +68,7 @@
       "iconDir": "branding/observe/icons",
       "splash": { "icon": "./icon-192.png" },
       "register": { "expose": true },
-      "sw": { "prefix": "observe-", "shell": ["./", "./index.html", "./manifest.json", "./icon-192.png", "./icon-512.png"], "api": {} }
+      "sw": { "prefix": "observe-", "shell": ["./", "./index.html", "./manifest.json", "./icon-192.png", "./icon-512.png"], "api": {}, "navPassthrough": ["/datenschutz", "/konto-loeschen"] }
     },
     "operate": {
       "name": "VitalOS Operate",
@@ -77,7 +78,7 @@
       "iconDir": "branding/operate/icons",
       "splash": { "icon": "./icon-192.png" },
       "register": { "expose": true },
-      "sw": { "prefix": "operate-", "shell": ["./", "./index.html", "./manifest.json", "./icon-192.png", "./icon-512.png"], "api": {} }
+      "sw": { "prefix": "operate-", "shell": ["./", "./index.html", "./manifest.json", "./icon-192.png", "./icon-512.png"], "api": {}, "navPassthrough": ["/datenschutz", "/konto-loeschen"] }
     }
   }
 }

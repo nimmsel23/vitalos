@@ -3,6 +3,7 @@ import { User2, Save, Check } from 'lucide-react';
 import { useUser } from '../../contexts/UserContext';
 import { useShellSettings } from '../store.js';
 import { updateUserProfile } from '@db';
+import LegalLinks from '../LegalLinks.jsx';
 
 const inputCls = "w-full bg-fit-bg2 border border-fit-line rounded-xl px-4 py-3 text-sm font-bold text-fit-ink focus:border-fit-accent outline-none transition-colors";
 
@@ -150,6 +151,9 @@ export default function ProfileSection() {
         </>
       )}
       </button>
+
+      <LegalLinks />
+      <p className="text-[12px] text-fit-dim">Das Konto selbst löschst du im Bereich Konto darüber.</p>
 
       </section>
     );

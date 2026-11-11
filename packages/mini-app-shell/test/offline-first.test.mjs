@@ -68,3 +68,12 @@ test('API networkFirst: hängendes Netz → Timeout → letzter gespiegelter Sta
   assert.ok(Date.now() - t0 < 500);
   assert.equal(res, undefined);
 });
+
+test('navPassthrough: Rechtsseiten gehen am Service Worker vorbei', async () => {
+  const w = setup({ net: 'ok', sw: { navPassthrough: ['/datenschutz', '/konto-loeschen'], cacheAllSameOrigin: true } });
+  await w.handlers.install({ waitUntil: (p) => p });
+  for (const path of ['/datenschutz', '/datenschutz/', '/konto-loeschen/index.html']) {
+    assert.equal(await w.ask(path, {}, 'navigate'), undefined, path);
+  }
+  assert.deepEqual(w.calls, []);
+});
