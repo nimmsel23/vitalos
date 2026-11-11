@@ -7,43 +7,34 @@ Owner-Vertrag (Gates, Einschreiten, Anti-Meta, Perplexity-Optionen):
 Lies bei Kurs-Arbeit: OWNER-CONTRACT -> DIESER -> PRODUCT.md (-> CEO.md nur
 als Laufgedächtnis).
 
-## Gleichrangig — Skills, keine Fantasie-Charaktere
+## Org = Laptop-Agenten (Taskwarrior + Shell)
 
-Agenten sind **gleich**, egal Cursor / Claude / ChatGPT / Grok / Perplexity.
-**Rolle = Skill** (`vitalos-*` + Methoden), geladen wenn die Arbeit es braucht
-— passend zum Solopreneur (Vitaltrainer / Creator / VitalOS), nicht als
-Hierarchie zwischen Chats.
+Die Org sind die Agenten/Runner **auf diesem Laptop** mit Org-Task-DB
+(`orgsh`) und Shell — Cursor, lokale CLIs, systemd (`coo-run`, `cto-run`,
+`abteilung@…`). Untereinander **gleichrangig**. Rolle = Skill (`vitalos-*`),
+kein Charakter.
 
-Skill-Sitze die reichen: **CEO, COO, CPO, CTO, PM, AL** (+ Oracle-Werkzeug).
-Kein Shadow-CEO-Orchester. Ping-Pong verboten: nicht „brief die andere Rolle“,
-sondern Skill laden / Task+Tag / Commit.
+**Ausserhalb der Org:** Perplexity-, Grok-, ChatGPT-, Claude-WebApps — kein
+Taskwarrior, keine Shell. Research/Sparring; wirken erst, wenn Output als
+Commit / Gate / `+org`-Mail vom Laptop aufgenommen wird.
 
-- **Owner Daniel:** High-Level Business-Orders + Owner-Gates + optional Freitag /
-  Sonntag. Kein Tages-Dispatcher. Kapazitaet = Klienten, Training, Brand.
-- **CEO-Skill:** Kurs buendeln, Gates schaerfen, Sonntags-Zusammenfassung —
-  **wer** den Skill laedt (Cursor o.a.), ist egal. Kein Pflicht-WebApp-CEO.
-- **COO-Skill:** Betrieb, Inbox, Runner (`coo-run` 06:25). Owner nur bei Brand.
-- **CTO-Skill:** Code/CI/AL (`cto-run` 08:15). Deploy nach Owner-Go.
-- **CPO-Skill:** Produkt-Was / Discovery / Reihenfolge.
-- **PM-Skill:** Ein Move/Tag mit ALs (`+hit`).
-- **AL:** Repo-Ship 2×/Tag; Intake Guide-MD / TODO / Live.
-- **Perplexity (Default B):** Research auf Auftrag (vos-Commit oder WebApp-
-  Dauerauftrag). **Keine Fuehrungsrolle.** Optionen A/C in OWNER-CONTRACT.
+Skill-Sitze lokal: **CEO, COO, CPO, CTO, PM, AL** (+ Oracle-Werkzeug).
+Ping-Pong verboten — Skill laden / Task+Tag / Commit.
 
-Oracle = Door/Game/Tent-Werkzeug, keine Fuehrung.
+- **Owner Daniel:** High-Level Orders + Gates; optional Freitag/Sonntag; Brand.
+- **CEO/COO/CPO/CTO/PM/AL-Skills:** wie bisher, lokal geladen.
+- **Web Research (Perplexity Default B):** Auftrag → Output committen; kein Sitz.
 
-## Git = Organisation; Owner = Gates
+## Git + Taskwarrior = Stand; Owner = Gates
 
 ```
-Arbeit / Entscheidung  -->  Commit (vos | vitalos | App-Repo) + Org-Task
-Owner                  <--  Gate-Mail (+org) | ORDER | Freitag | Brand | So optional
+Laptop-Org:  Skill/Runner  -->  Commit + Org-Task
+WebApp:      Text/Research -->  nur wertvoll als Commit / +org
+Owner:       ORDER | Gate-Antwort | Freitag | Brand | So optional
 ```
 
-- Keine Berichtskette Rolle→Rolle→Owner.
-- REAL/RAW/RELEVANT/RESULTS nur wenn ein Bericht noetig ist (Gate/Digest) —
-  nicht als taegliches Ping-Ritual.
-- Merksatz: **Git = Stand · Skills = Kompetenz · Daniel = Orders+Gates ·
-  Perplexity = Research (Default).**
+- Merksatz: **Laptop = Org · Git+TW = Stand · Skills = Kompetenz ·
+  WebApps = aussen · Daniel = Orders+Gates.**
 
 ## Berichtsstil
 
@@ -69,7 +60,7 @@ Aufnahme macht ihre Empfehlungen nicht automatisch zu Org-Regeln.
 | PM-Skill | `vitalos-pm` (+ desk); `moc-pm.md` | 1 Move/Tag; Owner Freitag optional. |
 | AL | Repo-Guide; `vitalos-al` | 2×/Tag systemd. |
 | Oracle | `vitalos-oracle` | Door/Game/Tent — Werkzeug. |
-| Research | Perplexity (Default B) | Auftrag via vos-Commit / WebApp-Dauerauftrag → Ergebnis committen. |
+| (ausserhalb) Research | Perplexity & Co. | Kein Org-Sitz; Output nur via Commit/`+org`. |
 
 CTO-Lauf: `cto-run` 08:15. `ceo-run` :05 nur bei altem Heartbeat.
 
@@ -79,10 +70,9 @@ CTO-Lauf: `cto-run` 08:15. `ceo-run` :05 nur bei altem Heartbeat.
 | --- | --- |
 | **Cursor** | Primär-Alltag / Execution |
 | Claude / ChatGPT / Codex | Skills bei Bedarf; AL-Failover |
-| Perplexity | Research (nicht Führung, Default B) |
-| Grok | Optional adversarial / Narrative — **kein** Shadow-CEO |
+| Perplexity / Grok / ChatGPT-Web / Claude-Web | **Ausserhalb** der Org — Research/Sparring |
 
-Keine parallelen „Charakter-CEOs“. Gleicher Skill-Text, gleiche Gates.
+Org-Mitgliedschaft = Laptop + Taskwarrior + Shell. Web ≠ Abteilung.
 
 Fuer die uebrigen Rollen bildet die Menge der Taskwarrior-Aufgaben mit der
 hoechsten Urgency die Fire-Map-Ausfuehrungssicht. Jede Rolle kennzeichnet ihre
