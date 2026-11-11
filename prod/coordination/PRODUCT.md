@@ -1,8 +1,8 @@
 # PRODUCT.md — Produktlandschaft (Stand 2026-11-11)
 
 **Namen:** `vitalos` = Projekt + Git-Repo (`nimmsel23/vitalos`, `~/vitalos`) ·
-**VitalOS** = die große Full-Variante (Zielbild Observe→Operate) ·
-`vos` = Org-Git/WebApps (`nimmsel23/vos`). Nicht vermischen.
+**VitalOS** = komplettes System (Produkt + Betrieb; Philosophie aus
+WakeUpWarrior / WarriorOS / AlphaOS) · `vos` = Org-Git/WebApps. Nicht vermischen.
 
 Vertiefung: UNIFIED-PRODUCT.md (Meta-Repo docs/), prod/docs/SCOPE-OBSERVE-V1.md,
 prod/docs/PRODUCT-CHECKOUT.md, STORE-PUBLISHING-PLAN.md. APPS.md-Prinzip: Diese
@@ -30,8 +30,9 @@ Owner: **CTO** aktualisiert (`vos-portal --all` / `--check` + Hosting-Kanon);
 
 ## Projekt `vitalos` (Shell, 9 Apps, Meta-Repo ~/vitalos)
 
-Technik-Stand des **Projekts**. Die Marke/Full-Variante **VitalOS** baut darauf
-auf, ist aber das größere Produktziel — nicht jeder App-Ship = „VitalOS fertig“.
+Technik-Stand des **Projekts**. **VitalOS** ist das komplette System drumherum
+(Apps + Coaching/Brand + AlphaOS-/Warrior-Disziplin) — nicht jeder App-Ship =
+„VitalOS fertig“.
 
 Shell: Web/Firebase (vitalos.web.app) + Android (prod/android, Capacitor,
 com.vitalos.app) + Pages-Kanal (github.io/vitalos, Bewertung offen).
