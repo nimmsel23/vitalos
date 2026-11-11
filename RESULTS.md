@@ -1,3 +1,9 @@
+## 2026-11-11 — Owner-Notiz: TWA-APK in fitness-aos Settings
+
+- UNIFIED-PRODUCT: TWA-APK-Releases können in Settings der privaten
+  `fitness-aos`-Apps als Git-/Release-Link angeboten werden (Vorbild Skills
+  GitHub-Release `android-latest`). NEXT ergänzt; noch nicht gebaut.
+
 ## 2026-11-11 — Prod-CI deppensicher
 
 - `prod/scripts/check-product-boundaries.mjs` + `pnpm run product:check`.
