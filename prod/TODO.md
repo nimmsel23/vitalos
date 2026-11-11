@@ -31,3 +31,7 @@
 
 - [ ] C-010 Play Console Closed-Test-Track `com.vitalos.app`: Owner-Klickliste (15 Punkte, Status, Lieferant) in `prod/docs/PLAY-CLOSED-TEST-CLICKLIST.md`. Track-Existenz unbekannt. Kein Console-Klick und kein Upload aus diesem Auftrag.
 - [ ] C-011 Live-Smoke nach Live-Deploy (Shell, Journal, 6Pack, Fitness): Tabelle und Regel in `docs/LIVE-SMOKE.md`. Smoke-PRs blockieren keinen Merge und sind erst nach Merge aktiv. Journal-Live ist bei der Probe rot (Syntaxfehler, leeres Root), letzter Deploy-Lauf war grün.
+
+## 2026-11-11 — C-015 Data Safety und AAB
+
+- [ ] C-015 Data Safety und signiertes AAB `com.vitalos.app` (versionCode 1, targetSdk 36), Frist Do 2026-11-12 20:00 Europe/Vienna: Antworten, Werbe-Beleg und Prüferanleitung ohne Zugangsdaten in `prod/docs/DATA-SAFETY-ANSWERS.md`. Klickliste 7, 11 und 12 sind bereit zur Freigabe. Punkt 13 enthält das lokale Verfahren; Pfad `prod/android/app/build/outputs/bundle/release/app-release.aab`, SHA-256 `<nach lokalem signiertem bundleRelease eintragen>`. Offen ist der signierte `bundleRelease` auf der Maschine mit `prod/android/keystore.properties`. Kein Play-Upload aus diesem Auftrag.
