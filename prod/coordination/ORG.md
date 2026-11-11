@@ -101,11 +101,9 @@ nach Inhalt zuordnen; nicht mechanisch alle Runbook-Inhalte verschieben.
 - Timer-Rhythmus (Owner 2026-11-09): ALs **zweimal taeglich** per systemd
   (`OnCalendar` Nacht+Nachmittag, z.B. journal 02:10/14:10 … coach 06:10/
   18:10). `coo-run` 06:25 → `coo-health` (kein LLM); Agent+Mail nur bei Rot
-  bzw. `COO_FORCE=1`. Perplexity-CEO-Digest
-  **08:00**. `cto-run` **08:15** (`vitalos-cto.timer`, nach Digest).
-  Engine: **Cursor-first** AL-Pool **cursor→claude→codex** (Vibe pausiert).
-  Skill-SSOT: `~/.vos`. Perplexity = Research (OWNER-CONTRACT B).
-  Owner-Gates: `+org` / `org-mail` — kein Rollen-Pingpong.
+  bzw. `COO_FORCE=1`. `cto-run` **08:15**. Engine: **Cursor-first**
+  AL-Pool **cursor→claude→codex** (Vibe pausiert). Skill-SSOT: `~/.vos`.
+  vos/WebApps = Research-Schicht (OWNER-CONTRACT B). Owner-Gates: `+org`.
   roadmap 07:45, thin-results, emulator-test 13:00 (RAM-Gate 2500MB).
   Lokaler `ceo-run` stuendlich :05 (Live-Heartbeat pausiert; Reduktion auf
   woechentlich als Owner-Input vorgemerkt). ceo-digest 23:45 lokal
