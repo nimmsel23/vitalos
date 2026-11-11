@@ -36,6 +36,8 @@ Owner         -->  ORDER | Gate-Antwort | Freitag | Brand
 ```
 
 - Merksatz: **vos = WebApps/Git · Org = Laptop TW+Shell · Daniel = Orders+Gates.**
+- **Org-Agenten:** AOS Chapters (`orgsh -c 'aos chapter …'`) als Leitplanke;
+  **Taskwarrior-Urgency = Fire Map.**
 
 ## Berichtsstil
 
