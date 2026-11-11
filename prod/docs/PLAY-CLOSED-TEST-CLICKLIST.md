@@ -1,6 +1,9 @@
 # C-010 — Owner-Klickliste Closed Test `com.vitalos.app`
 
 Stand: 2026-11-10. CEO-Dispatch 2026-11-10 #003, Auftrag C-010.
+C-015 (2026-11-11) setzt die Punkte 7, 11 und 12 auf „bereit zur Freigabe“
+und ergänzt Punkt 13 um das lokale AAB-Verfahren. Der Console-Klick bleibt
+beim Owner.
 Ziel: erster Closed-Test-Release der bestehenden Play-Console-App `com.vitalos.app`.
 Diese Liste ist eine Klickanleitung. Sie legt keinen Track an, lädt kein AAB hoch
 und ändert nichts in der Play Console.
@@ -68,8 +71,8 @@ Opt-in-Link bestätigt haben.
 
 ## Klickliste (15)
 
-Status meint den Beleg in den Repos: vorhanden, fehlt oder teilweise.
-Der Console-Klick bleibt beim Owner.
+Status meint den Beleg in den Repos: vorhanden, fehlt, teilweise,
+bereit zur Freigabe oder AAB offen. Der Console-Klick bleibt beim Owner.
 
 | # | Klick | Repo-Beleg | Status | Liefert |
 | --- | --- | --- | --- | --- |
@@ -79,15 +82,58 @@ Der Console-Klick bleibt beim Owner.
 | 4 | Pflichtgrafiken hochladen: App-Icon 512×512 PNG mit Alpha, höchstens 1024 KB; Feature Graphic 1024×500 JPEG oder 24-bit-PNG ohne Alpha; mindestens zwei Screenshots (JPEG oder 24-bit-PNG, kurze Seite mindestens 320 px, lange Seite höchstens 3840 px und höchstens doppelt so lang wie die kurze). Vier Screenshots ab 1080 px sind eine Empfehlung, keine Pflicht zum Veröffentlichen. | 512-px-Kandidaten `prod/branding/observe/icons/icon-512.png` (35 KB) und `prod/branding/operate/icons/icon-512.png` (40 KB), dazu maskable Varianten. Launcher unter `prod/android/app/src/main/res/mipmap-*` endet bei 192 px und ist kein Store-Icon. `prod/docs/STORE-PUBLISHING-PLAN.md` („Fehlt-Liste“) verlangt ein eigenes Store-Icon und eine Feature Graphic. Keine Feature Graphic und keine Screenshots im Repo. | teilweise | PM/CPO (Grafiken), Owner (Upload) |
 | 5 | Kategorie und Tags, öffentliche Kontakt-E-Mail, Länder und Regionen der Tester. Länder gelten für alle Tracks. Tester außerhalb der gewählten Länder können den Closed Test nicht installieren. | In den Store-Entwürfen als offene Owner-Bestätigung genannt (`prod/docs/STORE-LISTING-DRAFT.md`, Abschnitt „Kontoinhaber-Bestätigung“). Keine festgelegte Kategorie, Mail oder Länderliste. | fehlt | PM/CPO (Vorschlag), Owner (Klick) |
 | 6 | Datenschutz-URL unter App content eintragen. Die Seite ist öffentlich per `https`, weltweit ohne Login und ohne Geo-Sperre, eine normale Webseite (kein PDF) und beschreibt Erhebung, Nutzung und Weitergabe inklusive der beteiligten Stellen. Dieselbe URL gehört in den Store-Eintrag und in die App. | C-013: `prod/public/datenschutz/index.html`, gleiche Datei in `public/datenschutz/index.html` für den Shell-Deploy. Rewrites in `firebase.json` und `prod/firebase.json` stehen vor `**`. Der Service Worker lässt `/datenschutz` durch (`navPassthrough`). URL `https://vitalos.web.app/datenschutz`. Nach dem Merge prüft `curl -sI https://vitalos.web.app/datenschutz` HTTP 200 ohne Login. Der Wortlaut ist der Sachstand des Release-Builds und darf durch C-014 ersetzt werden. Kontaktadresse fehlt, Platzhalter `KONTAKT-FOLGT@example.invalid`. | teilweise | CTO (Seite und Hosting), PM/CPO (C-014-Text und Kontaktadresse), Owner (URL in der Console) |
-| 7 | Data-Safety-Formular ausfüllen und einreichen, inklusive der Fragen zur Datenlöschung. Auch eine App ohne erhobene Daten muss das Formular abschließen und eine Datenschutz-URL nennen. SDKs im ausgelieferten Bundle mitzählen (Firebase Auth, Firestore, Google Sign-In; Smart-Log/Gemini nur, wenn dieser Build es wirklich aufruft). | Formular existiert nur in der Console. Datenfluss ist in den Store-Entwürfen als noch abzugleichen markiert (`prod/docs/STORE-LISTING-DRAFT.md`, `prod/docs/STORE-PUBLISHING-PLAN.md`). Kein ausgefülltes Formular im Repo. | fehlt | CTO (Dateninventar des Release-Builds), Owner (Formular) |
+| 7 | Data-Safety-Formular ausfüllen und einreichen, inklusive der Fragen zur Datenlöschung. Auch eine App ohne erhobene Daten muss das Formular abschließen und eine Datenschutz-URL nennen. SDKs im ausgelieferten Bundle mitzählen (Firebase Auth, Firestore, Google Sign-In; Smart-Log/Gemini nur, wenn dieser Build es wirklich aufruft). | Antworten für versionCode 1 in `prod/docs/DATA-SAFETY-ANSWERS.md` (C-015, geprüft 2026-11-11). Erhoben: E-Mail, Nutzer-ID, optional Name, Gesundheits- und Fitnessdaten, Journal- und sonstige Nutztexte, Geräte-UUID. Nicht erhoben in diesem Build: Gemini, Werbung, Standort, Fotos, Kalender, Absturzlogs. Lösch-URL `https://vitalos.web.app/konto-loeschen` (C-013, auf master). Die URL erst eintragen, wenn die Seite ohne Login antwortet. | bereit zur Freigabe | CTO (Inventar), Owner (Formular) |
 | 8 | Kontolöschung: In-App-Weg (oder deutlich gesetzter Link aus der App) plus Web-URL, über die jemand die Löschung beantragen kann, ohne die App neu zu installieren. Die Web-URL kommt ins Data-Safety-Formular. Die Live-Shell zeigt „Account erstellen“, damit fällt die App unter die Pflicht. | C-013: In der App Tab Setup, Bereich Konto, „Konto löschen“ (`prod/src/shell/Settings/AccountSection.jsx`). Dieselben Links auf dem Login und im Körperprofil. Callable `deleteOwnAccount` in `prod/functions` löscht nur die Firestore-Bäume der aufrufenden uid und danach den Auth-Nutzer. Webseite `prod/public/konto-loeschen/index.html`, URL `https://vitalos.web.app/konto-loeschen`, ebenfalls HTTP 200 ohne Login nach dem Shell-Deploy. Prüfung im Repo: `pnpm --filter @vitalos/product run test:account-deletion`. Danach nur ein neues Wegwerfkonto in `vitalos-prod`, nie ein bestehendes Personenkonto. Die Function veröffentlicht der Shell-Deploy nicht mit. | teilweise | CTO (In-App-Weg und Function), PM/CPO (Webtext C-014), Owner (URL, Function-Deploy, Wegwerfkonto) |
 | 9 | Content-Rating-Fragebogen abschließen, damit die App nicht „Unrated“ bleibt. | Kein Fragebogen und keine Freigabe im Repo. Die Entwürfe nennen Altersfreigabe als Owner-Bestätigung. | fehlt | PM/CPO (Inhaltsfakten), Owner (Fragebogen) |
 | 10 | Target audience and content: Altersgruppen angeben. Enthält die Zielgruppe Kinder, gilt die Families Policy. Vorher müssen Werbedeklaration, App-Zugang und Datenschutz-URL stehen. | Keine festgelegte Altersgruppe. `prod/docs/STORE-LISTING-DRAFT.md` lässt die Zielgruppe beim Kontoinhaber. Der Entwurf beschreibt ein Journal ohne Diagnose. | fehlt | PM/CPO (Vorschlag Erwachsene), Owner (Klick) |
-| 11 | App access / Sign-in details: funktionierende Zugangsdaten und kurze Schritte, damit die Prüfung den Login erreicht. Bis zu fünf Sätze. Sonderfälle (zweites Feld, Einmalcode) ins Feld „Any other instructions“. | Login ist vorhanden: `prod/capacitor.config.json` (`FirebaseAuthentication`, Provider `google.com`), Live-Shell `https://vitalos.web.app` zeigt Anmeldung und „Account erstellen“ (Probe 2026-11-10). Kein Reviewer-Konto und keine Console-Anleitung im Repo. | teilweise | Owner (Testkonto und Klick), CTO (Konto am Closed-Build prüfen) |
-| 12 | Werbedeklaration: Yes oder No. Yes bei Banner, Interstitial, Native Ads und Ad-SDKs. Ein schlichter „More Apps“-Hinweis ohne Werbeformat ist No. Eine falsche Angabe ist ein Policy-Verstoß. | Suche in `prod/` nach AdMob, AdSense und gängigen Ad-SDKs ohne Treffer. Die Console-Deklaration selbst liegt nicht im Repo. | teilweise | CTO (Bestätigung am Release-Build), Owner (Klick No, solange der Build keine Anzeigen hat) |
-| 13 | Signiertes Android App Bundle hochladen. `versionCode` höher als jeder schon hochgeladene Stand, `targetSdk` 36, Signatur mit dem Upload-Key (RSA mindestens 2048 Bit). Play App Signing übernimmt den App-Signaturschlüssel. Nach dem Upload die angezeigten SHA-1/SHA-256, bei Hybrid-Signing alle genannten Schlüssel, in Firebase unter `com.vitalos.app` eintragen. Den privaten Keystore nicht hochladen und nicht committen. | `prod/android/app/build.gradle`: `applicationId` `com.vitalos.app`, `versionCode` 1, `versionName` `0.1.0`, Release-Signatur nur wenn die gitignorierte `prod/android/keystore.properties` existiert. `prod/android/variables.gradle`: `targetSdkVersion` 36, `minSdkVersion` 24. `prod/capacitor.config.json`: `appId` `com.vitalos.app`. Signierweg und lokale AAB vom 2026-11-06 in `prod/docs/STORE-PUBLISHING-PLAN.md`; das AAB liegt nicht im Git und ist nicht der heutige Quellstand. Play-App-Signing-Entscheidung dort noch offen; für eine neue App schreibt Google den Weg inzwischen vor. | teilweise | CTO (frisches AAB mit Upload-Key, Firebase-Fingerabdrücke nach dem Upload), Owner (Upload und Signing-Seite) |
+| 11 | App access / Sign-in details: funktionierende Zugangsdaten und kurze Schritte, damit die Prüfung den Login erreicht. Bis zu fünf Sätze. Sonderfälle (zweites Feld, Einmalcode) ins Feld „Any other instructions“. | Anleitung ohne Zugangsdaten in `prod/docs/DATA-SAFETY-ANSWERS.md`, Abschnitt „App-Zugang für die Prüfung“. Prüferweg: Anmeldebildschirm, E-Mail und Passwort, Button „Anmelden“. Nicht „Mit Google anmelden“. Der Owner legt das Konto in `vitalos-prod` an und trägt E-Mail und Passwort nur in der Console ein. Im Repo stehen die Platzhalter `<nur in der Play Console>`. | bereit zur Freigabe | Owner (Konto anlegen und in die Console schreiben) |
+| 12 | Werbedeklaration: Yes oder No. Yes bei Banner, Interstitial, Native Ads und Ad-SDKs. Ein schlichter „More Apps“-Hinweis ohne Werbeformat ist No. Eine falsche Angabe ist ein Policy-Verstoß. | Antwort No. Beleg und der genaue `rg`-Aufruf in `prod/docs/DATA-SAFETY-ANSWERS.md`, Abschnitt „Werbedeklaration: No“. Suche am 2026-11-11 in `prod/` ohne Docs, `node_modules`, `public` und Markdown: keine Treffer auf AdMob, AdSense und die genannten Ad-SDKs. Gradle hängt kein `play-services-ads` ein. | bereit zur Freigabe | Owner (Klick No) |
+| 13 | Signiertes Android App Bundle hochladen. `versionCode` höher als jeder schon hochgeladene Stand, `targetSdk` 36, Signatur mit dem Upload-Key (RSA mindestens 2048 Bit). Play App Signing übernimmt den App-Signaturschlüssel. Nach dem Upload die angezeigten SHA-1/SHA-256, bei Hybrid-Signing alle genannten Schlüssel, in Firebase unter `com.vitalos.app` eintragen. Den privaten Keystore nicht hochladen und nicht committen. | Config geprüft (C-015): `versionCode` 1, `versionName` `0.1.0`, `targetSdkVersion` 36, Release-Signatur nur bei vorhandener gitignorierter `prod/android/keystore.properties`. Kopierbares Verfahren im Abschnitt „AAB lokal bauen (C-015)“. Pfad: `prod/android/app/build/outputs/bundle/release/app-release.aab`. SHA-256: `<nach lokalem signiertem bundleRelease eintragen>`. Diese Prüfung hat das Bundle nicht gebaut. | AAB offen | Owner auf der Maschine mit Keystore (signiertes Bundle und Hash), danach Upload |
 | 14 | Release auf dem Closed Track anlegen: Bundle, Release Notes, Länder aus Punkt 5, zur Prüfung senden, ausrollen. Danach den Status lesen. Der Opt-in-Link aus Punkt 2 erscheint bei „Published“. Der erste Link kann mehrere Stunden brauchen. | Kein Release, keine Release Notes, kein Console-Status im Repo. | fehlt | Owner |
 | 15 | Kontodatum prüfen. Liegt die Kontoeröffnung nach dem 13. November 2023: 12 Tester aus Punkt 2 müssen 14 aufeinanderfolgende Tage opted-in bleiben. Danach im Dashboard „Apply for production“. Liegt sie davor, gilt diese Testpflicht laut Google nicht. | Kein Kontodatum, keine Testerzahl und kein Opt-in-Nachweis im Repo. | fehlt | Owner |
+
+## AAB lokal bauen (C-015)
+
+Geprüft am 2026-11-11, ohne das Bundle zu erzeugen. `versionCode` 1 und
+`versionName` `0.1.0` stehen in `prod/android/app/build.gradle`.
+`targetSdkVersion` 36 steht in `prod/android/variables.gradle`.
+`signingConfigs.release` liest `keystore.properties` über `rootProject` und
+wird nur angehängt, wenn `prod/android/keystore.properties` existiert. Die
+Datei ist gitignored. Ohne sie signiert Gradle das Release-Bundle nicht, und
+Play nimmt es nicht an.
+
+Der Keystore und `prod/.product-config/product.env` bleiben lokal. Nichts
+davon ausgeben oder committen. JDK 21 ist der Gradle-Runner für diesen Stand
+(Gradle 8.14.3, Plugin `capacitor-local-notifications`). Die Befehle laufen
+im Meta-Repo-Root.
+
+```bash
+set -a
+source prod/.product-config/product.env
+set +a
+export JAVA_HOME="${JAVA_HOME:-$HOME/.local/share/jvm/jdk-21.0.13+9}"
+
+pnpm run product:build:native
+pnpm --dir prod exec cap sync android
+( cd prod/android && ./gradlew bundleRelease )
+sha256sum prod/android/app/build/outputs/bundle/release/app-release.aab
+```
+
+`product:build:native` schreibt die Web-Assets nach `prod/dist-native`.
+`cap sync android` kopiert sie ins native Projekt. `bundleRelease` schreibt
+das signierte Bundle, sobald `keystore.properties` vorliegt.
+
+Pfad: `prod/android/app/build/outputs/bundle/release/app-release.aab`
+
+SHA-256: `<nach lokalem signiertem bundleRelease eintragen>`
+
+Das Artefakt nicht committen (`*.aab` ist gitignored). Nach dem Upload die
+in der Console gezeigten SHA-1/SHA-256 in Firebase unter `com.vitalos.app`
+eintragen. Den privaten Keystore nicht hochladen.
+
+In der Prüfungsumgebung von C-015 fehlten Android-SDK, `node_modules`, die
+ausgecheckten App-Submodule, `product.env` und `keystore.properties`.
+`bundleRelease` wurde dort nicht gestartet.
 
 ## Nur wenn die Console die Kachel zeigt
 
