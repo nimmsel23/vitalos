@@ -51,6 +51,10 @@ if (!isNativeShell) setPersistence(auth, browserLocalPersistence).catch(() => {}
 
 export const googleProvider = new GoogleAuthProvider();
 
+// fuel-app (seit a87a883) importiert authDomain für die iOS-Redirect-Prüfung
+// (sameSiteAuth). Die Shell schreibt die authDomain nicht um; sie gilt wie konfiguriert.
+export const authDomain = config.authDomain;
+
 // Vertex AI — fuel-dev (ScannerModal, LogView, MicrosAiCoach) erwartet diesen
 // Export, da deren firebase.js im Firebase-Build hierauf umgeleitet wird.
 // Product AI must use a server-enforced entitlement and quota. Legacy Fuel
