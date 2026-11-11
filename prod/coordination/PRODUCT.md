@@ -1,8 +1,8 @@
 # PRODUCT.md — Produktlandschaft (Stand 2026-11-11)
 
 **Namen:** `vitalos` = Projekt+Repo · **VitalOS** = System · `vos` = Org-Git.
-Philosophie/Fluss (core4-aos → vereinfacht hierher; User = Body+Being;
-kein Archetypen-Wortlaut in UI): `~/.vos/org/PHILOSOPHY.md`.
+Philosophie: User = doing/thinking/feeling/being (kein 4B-Domain-Zeug);
+Owner-Alpha unsichtbar — `~/.vos/org/PHILOSOPHY.md`.
 
 Vertiefung: UNIFIED-PRODUCT.md (Meta-Repo docs/), prod/docs/SCOPE-OBSERVE-V1.md,
 prod/docs/PRODUCT-CHECKOUT.md, STORE-PUBLISHING-PLAN.md. APPS.md-Prinzip: Diese
