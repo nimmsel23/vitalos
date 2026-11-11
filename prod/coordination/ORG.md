@@ -3,9 +3,10 @@
 Ort: `~/vitalos/prod/coordination/`. Pflege = gleicher Commit wie die Aenderung.
 Owner-Vertrag: `~/.vos/org/OWNER-CONTRACT.md` (`nimmsel23/vos`).
 
-**Namen:** `vitalos` = Projekt + dieses Git-Repo · **VitalOS** = komplettes
-System (WakeUpWarrior/WarriorOS/AlphaOS-Philosophie) · `vos` = Org-Git/WebApps.
-Nicht vermischen.
+**Namen:** `vitalos` = Projekt+Repo · **VitalOS** = System · `vos` = Org-Git/
+WebApps · **core4-aos** = Owner übt AlphaOS. Philosophie-SSOT:
+`~/.vos/org/PHILOSOPHY.md` — Nutzer: Body+Being Dominion (einfach);
+Owner-Org: Business-Dominion; K/W/M/L & 4B-Jargon **nicht** ins Produkt.
 
 Lies bei Kurs-Arbeit: OWNER-CONTRACT -> DIESER -> PRODUCT.md (-> CEO.md nur
 als Laufgedächtnis).

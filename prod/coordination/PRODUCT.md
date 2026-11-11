@@ -1,8 +1,8 @@
 # PRODUCT.md — Produktlandschaft (Stand 2026-11-11)
 
-**Namen:** `vitalos` = Projekt + Git-Repo (`nimmsel23/vitalos`, `~/vitalos`) ·
-**VitalOS** = komplettes System (Produkt + Betrieb; Philosophie aus
-WakeUpWarrior / WarriorOS / AlphaOS) · `vos` = Org-Git/WebApps. Nicht vermischen.
+**Namen:** `vitalos` = Projekt+Repo · **VitalOS** = System · `vos` = Org-Git.
+Philosophie/Fluss (core4-aos → vereinfacht hierher; User = Body+Being;
+kein Archetypen-Wortlaut in UI): `~/.vos/org/PHILOSOPHY.md`.
 
 Vertiefung: UNIFIED-PRODUCT.md (Meta-Repo docs/), prod/docs/SCOPE-OBSERVE-V1.md,
 prod/docs/PRODUCT-CHECKOUT.md, STORE-PUBLISHING-PLAN.md. APPS.md-Prinzip: Diese
