@@ -24,9 +24,9 @@ Kein zweites Abteilungs-Orchester im Browser.
 Skill-Sitze (Laptop): **CEO, COO, CPO, CTO, PM, AL** (+ Oracle).
 Owner: Orders + Gates; optional Freitag/Sonntag; Brand.
 
-**Org-Norm:** Jeder Laptop-Agent hält sich an **AOS Chapters**
-(`orgsh -c 'aos chapter …'`). **Fire Map** = Owner (Daniel) — was **er**
-machen muss; Org-TW ≠ Owner-Fire-Map.
+**Org-Norm:** **AlphaOS = Owner.** Org kennt Chapters (`aos chapter` /
+`intro`) als Kontext, betreibt aber **schlankes PM** (TW + Skills + Git +
+Gates). **Fire Map** = Owner; Org-TW ≠ Fire Map.
 
 ## Stand & Gates
 
@@ -38,8 +38,8 @@ Owner         -->  Fire Map | ORDER | Gate | Freitag | Brand
 
 - Merksatz: **vos = WebApps/Git · Org = Laptop TW+Shell · Daniel =
   Fire Map + Orders + Gates.**
-- **Org-Agenten:** AOS Chapters; Org-TW priorisiert ihre Arbeit — nicht
-  Daniels Fire Map.
+- **Org-Agenten:** schlankes PM; AlphaOS nachschlagen ok, nicht Pflichtritual.
+  Org-TW ≠ Daniels Fire Map.
 
 ## Berichtsstil
 
