@@ -37,6 +37,9 @@ Technik-Stand des **Projekts**. **VitalOS** ist das komplette System drumherum
 Shell: Web/Firebase (vitalos.web.app) + Android (prod/android, Capacitor,
 com.vitalos.app) + Pages-Kanal (github.io/vitalos, Bewertung offen).
 
+Lineage: **`~/aos`** ist der Ursprung — daraus entstanden u.a. `fitness-dev`
+und `fuel-dev` (siehe `~/.vos/org/PHILOSOPHY.md`).
+
 ## APPS (App-Ordner im Meta-Repo <-> Quell-Repo in ~/dev, Branch vitalos)
 | App (Meta) | Quell-Repo | App-Thema |
 | --- | --- | --- |
