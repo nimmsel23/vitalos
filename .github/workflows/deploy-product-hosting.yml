@@ -59,6 +59,17 @@ jobs:
           test -d fitness-app/fitness/catalog/kb/exercises/6pack
           echo "KB @ $(git -C fitness-kb rev-parse --short HEAD)"
 
+      # fuel-app src/shared/* re-exportiert nach ../../../../backend/fuel/... (SOT nimmsel23/backend, privat).
+      # Gleiches Muster wie fuel-dev check.yml / deploy-master.yml.
+      - name: Checkout backend (fuel shared SOT)
+        uses: actions/checkout@v5
+        with:
+          repository: nimmsel23/backend
+          ref: dev
+          path: backend
+          token: ${{ secrets.SYNC_TOKEN }}
+          persist-credentials: false
+
       - uses: pnpm/action-setup@v4
         with:
           version: 11.3.0
