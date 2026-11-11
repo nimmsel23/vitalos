@@ -1,5 +1,6 @@
 # NEXT.md
 
+- [ ] Betta-Modul-GAPS: fitness/fuel/journal/habits/learn (`~/.vos/cto/DRAFTS/2026-11-11-BETTA-GAPS.md`)
 Aktive Arbeitsliste (max. 5 Punkte) fuer das vitalos Meta-Repo.
 Stand CTO-Runde 2026-11-09.
 

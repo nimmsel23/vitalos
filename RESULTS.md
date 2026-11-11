@@ -1,3 +1,10 @@
+## 2026-11-11 — Nacht: Org-Desks + Dashboard + systemd
+
+- `prod/coordination/ORG.md`: Skill-Stacks auf `~/.vos`-Desks / Packages 2026-11-11.
+- `docs/`: VitalOS Org-Dashboard-Build (Organisation/Betrieb/Business) gespiegelt.
+- Parallel (außerhalb Meta-Commit): Vitaltrainer `website/vitalos-dashboard`,
+  dotfiles Betta-SSH-Fix + Timer-Align; PT-Strategien unter `~/vitaltrainer/marketing/`.
+
 ## 2026-11-11 — AL: Dependabot esbuild Ursache (`fdd8b7fd`)
 
 - Eine Aufgabe: Security-Update-Rot Root-esbuild geklaert — Fehler

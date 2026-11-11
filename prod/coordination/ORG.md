@@ -49,21 +49,24 @@ Berichte an den CEO im Format REAL * RAW * RELEVANT * RESULTS. Bei mentaler
 Verknotung VOICE: STOP * SUBMIT * STRUGGLE * STRIKE. Das haelt The Alpha Code
 und The Voice als Qualitaetssicherung — nicht als Extra-Berichtsschicht.
 
-## Rollen-Skill-Stacks (Owner-Inputs, Stand 2026-11-08)
+## Rollen-Skill-Stacks (Owner-Inputs, Stand 2026-11-11)
 
 Arbeitsmodell: Rolle = Kern-SKILL + passende Methoden-SKILLs + die aktuellen
-Projekt- und Koordinationsdokumente. Externe Skills ergaenzen diese Quellen;
-die Aufnahme macht ihre Empfehlungen nicht automatisch zu Org-Regeln.
+Projekt- und Koordinationsdokumente. Desk-SSOT: `~/.vos/<rolle>/` (README,
+INTERPLAY, `.skills/vitalos-*`). Git-Pakete 1:1 unter Repo-Root (nicht in
+`.vos` kopieren): `~/pm-skills`, `~/product-engineering`, `~/pm-brain` — am
+Desk als `package-*`-Symlink. Externe Skills ergaenzen diese Quellen; die
+Aufnahme macht ihre Empfehlungen nicht automatisch zu Org-Regeln.
 
 | Rolle | Kern-SKILL und Wissensanker | Ergaenzungen / Stand |
 | --- | --- | --- |
-| CEO | `CEO.md` -> `ORG.md` -> `PRODUCT.md`; Skill `vitalos-ceo` | Perplexity: Kurs, Digest 08:00, Wochen-Door, Owner-Sonntag. |
-| COO (Cursor) | `COO.md`; Skill `vitalos-coo` | Betrieb: Inbox, Runner, `coo-run` 06:25; lokal ausfuehren, kein Gegenkurs. |
-| CTO (Codex) | `CODEX.md`; `CTO.md` und Koordinations-TODO | Skill-Stack: `ponytail`, `karpathy-guidelines`, `git-commit-analyzer` (lesend), `gitclassic` (oeffentliche Repos, lesend), `skill-creator`; `impeccable`/`taste` bei UI-Aufgaben. Sweep und Pythagora bleiben externe CI-Produktpruefung, keine SKILL.md-Installation. |
-| CPO (Claude) | [CPO.md](CPO.md) | Produkt-Was; Stack product-strategy / OST / prioritization. |
-| PM | CPO-Rahmen; kein eigenes PM-SKILL | Umsetzung mit ALs. |
-| AL (Codex) | Repo-`AGENTS.md` / Guide-MD | 2×/Tag systemd; Alpha/Betta unter CTO. |
-| Oracle | `vitalos-oracle` / [ORACLE.md](ORACLE.md) | Werkzeug Door/Game/Tent — keine Fuehrungsrolle. |
+| CEO | `CEO.md` -> `ORG.md` -> `PRODUCT.md`; `~/.vos/ceo/.skills/vitalos-ceo` | Perplexity: Kurs, Digest 08:00, Wochen-Door, Owner-Sonntag tele. Desk: `DRAFTS/NIGHT-SHIFT-BRIEF.md` fuer Morgen-Review. Option: pm-skills-Methoden via `~/.vibe/skills`. |
+| COO (Cursor) | `COO.md`; `~/.vos/coo/.skills/vitalos-coo` | Betrieb: Inbox `nimmsel23+ceo`, Runner, `coo-run` 06:25; lokal ausfuehren, kein Gegenkurs. Owner nur Brand. |
+| CTO (Codex) | `CODEX.md`; `CTO.md`; `~/.vos/cto/.skills/vitalos-cto` | Methoden: ponytail, karpathy-guidelines, git-commit-analyzer, skill-creator; Paket `~/product-engineering` am Desk. `cto-run` 08:15. Kein PM-Hebel. |
+| CPO (Claude) | [CPO.md](CPO.md); `vitalos-cpo` + `vitalos-cpo-desk` | Produkt-Was; product-strategy / OST / prioritization; Pakete `~/pm-skills`, `~/pm-brain` am Desk. Steuert PM. |
+| PM | `~/.vos/pm/.skills/vitalos-pm` + `vitalos-pm-desk`; Desk `moc-pm.md` | 1 Move/Tag mit ALs; Mail CEO daily; Owner Freitag. Pakete pm-skills / pm-brain am Desk. |
+| AL (Codex) | Repo-`AGENTS.md` / Guide-MD; `~/.vos/al/.skills/vitalos-al` | 2×/Tag systemd; `package-product-engineering`; Alpha/Betta unter CTO. |
+| Oracle | `~/.vos/oracle/.skills/vitalos-oracle` / [ORACLE.md](ORACLE.md) | vos-door/game/tent-Phasen; Werkzeug — keine Fuehrungsrolle. COO: `ORG-ORACLE-WOCHE`. |
 
 CTO-Lauf: `cto-run` 08:15. CEO lokal: `ceo-run` stuendlich :05 (Heartbeat
 pausiert). Wochen-Door: CEO.
