@@ -6,8 +6,10 @@ Stand CTO-Runde 2026-11-09.
 
 ## Aktiv (max. 5)
 
-- [x] Hub-Hover-Ring + 6Pack Theme-Diebstahl: Shell `9b3ccb7`, 6pack `be9c01f` / Meta-Pin `083b929` (2026-11-10). Live-Abnahme: Sidebar bleibt Shell-Farbe im 6Pack-Tab.
+- [x] Owner-Klarstellung Quelle/Store-Gewand (2026-11-11): UNIFIED-PRODUCT + AGENTS + FIREBASE.
+- [ ] Prod-CI deppensicher (Folge der Klarstellung): Guards/Checks fail-closed für `vitalos/prod`; kein Auto-Deploy ohne Owner-Gate.
 - [ ] C-002 Geraeteabnahme (`3c55e958`): Handoff 2026-11-09 — APK/AAB bereit (`app-debug.apk`/`app-release.aab`, `com.vitalos.app`, Meta `f2075da`); `adb` leer, kein Emulator im Timer. Rest: Live-Install+Login+Journal+Sync.
+- [x] Hub-Hover-Ring + 6Pack Theme-Diebstahl: Shell `9b3ccb7`, 6pack `be9c01f` / Meta-Pin `083b929` (2026-11-10). Live-Abnahme: Sidebar bleibt Shell-Farbe im 6Pack-Tab.
 - [x] vos-fitness Subversion baubar (`e83d8daa`, 2026-11-10 AL): Web-Build OK + Debug-APK-Pfad; Host weiter 404; Rest Asset-Links/Keystore/Play.
 - [x] M2-APK Simon/Matthias (`c3315277`): Verteilweg `prod/docs/M2-TESTUSER-APK-VERTEILWEG.md` (2026-11-10 AL) — Sideload; Owner teilt privaten Link.
 - [x] C-010/C-011 Aufnahme: PR #16 / `e60b4d4` (TODO 2026-11-10 abgehakt).
