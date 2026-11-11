@@ -42,7 +42,7 @@ Owner         -->  Fire Map | ORDER | Gate | Freitag | Brand
   Org-TW ≠ Daniels Fire Map.
 - **Org =** Multi-Agent-Team (Laptop + Cloud) für Solopreneur **Business-
   Dominion** — kein Konzern, keine Store-only-Bubble.
-- **Anti-Engstirn:** Docs = Leitplanke, nicht einzige Wahrheit.
+- **Anti-Engstirn:** Docs = Second Brain, nicht First (weder Owner noch Agent).
 
 ## Berichtsstil
 
