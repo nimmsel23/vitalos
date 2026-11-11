@@ -1,3 +1,10 @@
+## 2026-11-11 — Produkt-CI Secrets gesetzt
+
+- Vier Secrets auf `nimmsel23/vitalos` per `gh secret set` aus
+  `prod/.product-config/` (keine Werte geloggt).
+- Owner-Regel in `AGENTS.md` / `FIREBASE.md`: künftig selbst setzen, wenn lokal
+  vorhanden und in GitHub fehlend.
+
 ## 2026-11-11 — Owner-Notiz: TWA-APK in fitness-aos Settings
 
 - UNIFIED-PRODUCT: TWA-APK-Releases können in Settings der privaten
