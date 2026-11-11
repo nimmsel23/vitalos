@@ -1,8 +1,10 @@
-# ORG.md — Landkarte der VitalOS-Org (Stand 2026-11-11)
+# ORG.md — Landkarte der Org um Projekt vitalos (Stand 2026-11-11)
 
 Ort: `~/vitalos/prod/coordination/`. Pflege = gleicher Commit wie die Aenderung.
-Owner-Vertrag (Gates, Einschreiten, Anti-Meta, Perplexity-Optionen):
-`~/.vos/org/OWNER-CONTRACT.md` (`nimmsel23/vos`).
+Owner-Vertrag: `~/.vos/org/OWNER-CONTRACT.md` (`nimmsel23/vos`).
+
+**Namen:** `vitalos` = Projekt (dieses Meta-Repo) · **VitalOS** = Full-Produkt ·
+`vos` = Git/WebApps-Schicht. Nicht vermischen.
 
 Lies bei Kurs-Arbeit: OWNER-CONTRACT -> DIESER -> PRODUCT.md (-> CEO.md nur
 als Laufgedächtnis).
