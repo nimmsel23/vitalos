@@ -9,6 +9,10 @@ und Detailfindings liegen additiv in
 wird vom CTO — auch automatisch in der täglichen 06:40-Runde — fortgeführt:
 Stehbild strafft, Überschriften behalten, Neuerscheinendes einsortieren.
 
+**Simplicity (Owner 2026-11-11):** Meta-`vitalos` + alle `*-dev` so simpel
+wie möglich. **Einzige Ausnahme: `vitalos/prod`.** Neue CI/Infra nur bei
+echtem Schmerz; sonst weglassen. SOT: `.dotfiles/docs/CI.md` (Kopf).
+
 Stand: 2026-11-11, ca. 08:15 CET (AL 9/9 cursor OK; Live-Smoke 42799838824=setup-node transient, Tip gruen; Engine-Pin cursor off→auto; Teilergebnisse fuel/relax unpushed → Hits c545486f/ed94e4cd; automerge-retarget 0e25e4c4; Details state-CTO.md).
 
 ## Derzeitiges Systembild (Tageszyklus)
@@ -24,7 +28,10 @@ Stand: 2026-11-11, ca. 08:15 CET (AL 9/9 cursor OK; Live-Smoke 42799838824=setup
              Technik-Inventar, Hygiene (u. a. ~/.git darf nicht existieren),
              Aufträge +go, Rückkanal 3-Zeiler + Mail an nimmdaniel+cto;
              liest: state-CTO.md, Koordinationsfläche, AL-Logtails,
-             vos-docs-dirty list, vos-al-log --audit
+             vos-docs-dirty list, vos-al-log --audit;
+             Dev-Dashboard: `vos-portal --all --check` — bei Drift `vos-portal`
+             + `portal/dev-status.json` (Auth/Gate/ROT) nachziehen
+             (SOT docs/DEV-DASHBOARD.md, Pages …/dev-dashboard.html)
              Codex-Flags: nur --approve-for-me --skip-git-repo-check (kein -s)
              Live-Gate: Heartbeat einer Live-Session ersetzt den Timer NICHT
              (Owner: Timer bleibt die verlässliche Tagesrunde)
@@ -132,21 +139,33 @@ push dev → Check grün → automerge-pr.yml (Dependabot-Squash auf dev,
 - Kommunikation: Koordinationsfläche und lokale Runner-Logs. Nur der CEO
   sendet reguläre Nachrichten an Daniel; AL-/CTO-Runner melden nicht per tele.
 
+## Dev-Dashboard (Owner-Pflicht CTO)
+
+- Generator: `~/vitalos/bin/vos-portal` → `portal/index.html`,
+  `docs/dev-dashboard.html`, je Repo `docs/apps.html`.
+- Kuratiert: `portal/dev-status.json` (authMode, loginGate, rot).
+- Hosting-Kanon: `docs/HOSTING-TARGETS.md` + `portal/hosting-targets.json`
+  — Ziel überall `vos-<slug>.web.app`; Suffix-Hauptapps (`fuel-vos`,
+  `journal-vos`, …) und `fitness-aos` migrieren; keine neuen `*-vos`-Sites.
+- PM-Link: `PRODUCT.md` § Dev-Dashboard. Keine zweite manuelle Apps-Liste.
+
 ## Offene Punkte (kommende Runden)
 
 1. Teilergebnis-Pushes: fuel `c545486f`, relax `ed94e4cd` (Nacht 11./12.11.).
-2. automerge base=master→dev Retarget SSOT journal `0e25e4c4` / Tracking
+2. Fuel Mini OAuth redirect URIs (`redirect_uri_mismatch`) — GCP Console;
+   Dashboard-ROT in `portal/dev-status.json` bis erledigt.
+3. automerge base=master→dev Retarget SSOT journal `0e25e4c4` / Tracking
    `c1f9b6ce`; danach Port auf Schwester-Repos.
-3. fuel Stabilitätswache `6a0eeebc` bis echter Dependabot-Merge-Beleg.
-4. fitness Haupt-Checkout-Sync `903f1fbe` (vos-al-log Prefill/Worktree).
-5. C-001b Closed-Test-Track `358d9335` — Owner/Play-Console-Fakt.
-6. Security-Buendel `3e4b583d` (Owner-Gate).
-7. Cloud-CTO-Design `c63fad5d/ee2fb0de/8929c32b/0a771e65` (nicht Bau-Welle).
-8. gog CEO-Mailbox Auth (refresh-token) — Owner/CEO-Handgriff.
-9. Meta Dependabot esbuild-security Noise (AL-Befund `fdd8b7fd`); Draft
+4. fuel Stabilitätswache `6a0eeebc` bis echter Dependabot-Merge-Beleg.
+5. fitness Haupt-Checkout-Sync `903f1fbe` (vos-al-log Prefill/Worktree).
+6. C-001b Closed-Test-Track `358d9335` — Owner/Play-Console-Fakt.
+7. Security-Buendel `3e4b583d` (Owner-Gate).
+8. Cloud-CTO-Design `c63fad5d/ee2fb0de/8929c32b/0a771e65` (nicht Bau-Welle).
+9. gog CEO-Mailbox Auth (refresh-token) — Owner/CEO-Handgriff.
+10. Meta Dependabot esbuild-security Noise (AL-Befund `fdd8b7fd`); Draft
    journal #42 unberührt.
-10. WAYLAND-Import-Ursache `5870061d`; Abhilfe headless-Drop-in steht.
-11. AUTOMATION-Inventur weiterfuehren (Door-War).
+11. WAYLAND-Import-Ursache `5870061d`; Abhilfe headless-Drop-in steht.
+12. AUTOMATION-Inventur weiterfuehren (Door-War).
 
 ## CI-Nachprüfung und Pages-Landingpages — 2026-11-07
 

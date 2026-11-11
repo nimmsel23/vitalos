@@ -1,5 +1,11 @@
 # AGENTS.md — gemeinsames VitalOS-Meta-Repo
 
+## Simplicity (Owner 2026-11-11)
+
+Alles so simpel wie möglich — Meta-`vitalos` und die `*-dev`-Repos dünn
+halten. **Einzige Ausnahme: `vitalos/prod`** (Store/Produkt darf komplex
+sein). CI/Docs/Agent-Workflows außerhalb von `prod/` nicht aufblasen.
+
 ## Architektur und Zuständigkeit
 
 `~/vitalos` enthält private PWA und Store-Produkt. Die private Shell liegt in
