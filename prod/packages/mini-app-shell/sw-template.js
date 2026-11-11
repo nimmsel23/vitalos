@@ -161,6 +161,10 @@ self.addEventListener('fetch', (e) => {
   if (url.origin !== self.location.origin) return
   const path = rel(url.pathname)
 
+  // Öffentliche Rechtsseiten nicht als Navigation cachen: ein Treffer würde
+  // sonst die App-Shell unter index.html ersetzen.
+  if (hit(CFG.navPassthrough, path)) return
+
   if (req.mode === 'navigate') {
     e.respondWith(CFG.navStrategy === 'network' ? networkFirstNav(req, CFG.navTimeoutMs === undefined ? 4000 : CFG.navTimeoutMs) : cacheFirstNav(req))
     return

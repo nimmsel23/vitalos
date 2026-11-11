@@ -9,7 +9,11 @@ und Detailfindings liegen additiv in
 wird vom CTO — auch automatisch in der täglichen 06:40-Runde — fortgeführt:
 Stehbild strafft, Überschriften behalten, Neuerscheinendes einsortieren.
 
-Stand: 2026-11-10, ca. 08:15 CET (AL 9/9 cursor OK; SmartLog 5f09bbb1 + Dependabot-/prod 7df12a13 done; #13/#38 gemergt; rot: fitness tip biome, Meta esbuild-security, coach backend/fuel Dep; Nacht: eeb9d722/175b5162/49499dfb; Details state-CTO.md).
+**Simplicity (Owner 2026-11-11):** Meta-`vitalos` + alle `*-dev` so simpel
+wie möglich. **Einzige Ausnahme: `vitalos/prod`.** Neue CI/Infra nur bei
+echtem Schmerz; sonst weglassen. SOT: `.dotfiles/docs/CI.md` (Kopf).
+
+Stand: 2026-11-11, ca. 08:15 CET (AL 9/9 cursor OK; Live-Smoke 42799838824=setup-node transient, Tip gruen; Engine-Pin cursor off→auto; Teilergebnisse fuel/relax unpushed → Hits c545486f/ed94e4cd; automerge-retarget 0e25e4c4; Details state-CTO.md).
 
 ## Derzeitiges Systembild (Tageszyklus)
 
@@ -24,7 +28,10 @@ Stand: 2026-11-10, ca. 08:15 CET (AL 9/9 cursor OK; SmartLog 5f09bbb1 + Dependab
              Technik-Inventar, Hygiene (u. a. ~/.git darf nicht existieren),
              Aufträge +go, Rückkanal 3-Zeiler + Mail an nimmdaniel+cto;
              liest: state-CTO.md, Koordinationsfläche, AL-Logtails,
-             vos-docs-dirty list, vos-al-log --audit
+             vos-docs-dirty list, vos-al-log --audit;
+             Dev-Dashboard: `vos-portal --all --check` — bei Drift `vos-portal`
+             + `portal/dev-status.json` (Auth/Gate/ROT) nachziehen
+             (SOT docs/DEV-DASHBOARD.md, Pages …/dev-dashboard.html)
              Codex-Flags: nur --approve-for-me --skip-git-repo-check (kein -s)
              Live-Gate: Heartbeat einer Live-Session ersetzt den Timer NICHT
              (Owner: Timer bleibt die verlässliche Tagesrunde)
@@ -98,7 +105,10 @@ push dev → Check grün → automerge-pr.yml (Dependabot-Squash auf dev,
 
 ## Engine-Lage
 
-- claude/codex: bis 11.11. limitiert; Läufe laufen über Reserve (vibe).
+- Ab 2026-11-11: AL-Default `auto` (vibe→cursor→claude→codex). Cursor-Pin
+  Drop-in `20-engine-cursor.conf` deaktiviert (`.disabled-20261111`).
+- claude/codex: Fenster ab 11.11. offen (Script-Defaults AVAILABLE_AFTER).
+- agy bleibt PM-Engine, nicht im AL-Pool.
 - Auto-Doc-Engine-Kette: claude/haiku → codex/gpt-6-luna → vibe
   (Fix 2026-11-07: Modell heißt gpt-6-luna, nicht luna).
 
@@ -129,28 +139,33 @@ push dev → Check grün → automerge-pr.yml (Dependabot-Squash auf dev,
 - Kommunikation: Koordinationsfläche und lokale Runner-Logs. Nur der CEO
   sendet reguläre Nachrichten an Daniel; AL-/CTO-Runner melden nicht per tele.
 
+## Dev-Dashboard (Owner-Pflicht CTO)
+
+- Generator: `~/vitalos/bin/vos-portal` → `portal/index.html`,
+  `docs/dev-dashboard.html`, je Repo `docs/apps.html`.
+- Kuratiert: `portal/dev-status.json` (authMode, loginGate, rot).
+- Hosting-Kanon: `docs/HOSTING-TARGETS.md` + `portal/hosting-targets.json`
+  — Ziel überall `vos-<slug>.web.app`; Suffix-Hauptapps (`fuel-vos`,
+  `journal-vos`, …) und `fitness-aos` migrieren; keine neuen `*-vos`-Sites.
+- PM-Link: `PRODUCT.md` § Dev-Dashboard. Keine zweite manuelle Apps-Liste.
+
 ## Offene Punkte (kommende Runden)
 
-1. M1-RC SmartLog-Beweis (Org-Task 5f09bbb1): Fix 5f2f694 DEPLOYED (CEO 08.11.);
-   Beleg = Emulator 13:00 heute. Danach Client-Haertung eeb9d722.
-2. Shell-CI Lockfile (767c02ad): journal-app lucide-react/tailwind-merge Drift
-   vs Root-Lockfile — Deploy 42527809554 rot; Aktiv in NEXT.md.
-3. Dependabot Meta Root-only (uuid 7df12a13): yml lokal auf directory=/ ;
-   Verifikation naechster Mo-Lauf (keine prod vite/zod misconfigured_tooling).
-   vitalos #13 node-forge bleibt Owner-Gate.
-4. 6pack vite-8 #38 rot (uuid a80cb883): Fix analog fitness 87d349c.
-5. coach Catchup unpushed (uuid 7cd93f79): nur eigene 4 Commits pushen.
-6. C-007 Merge-Agent-Regel (uuid 4b2781de): Vorschlag Patch/Minor-only bis
-   2027-02-07 — wartet CEO-Ack; Drafts #42/#43/#10 rebasen.
-7. C-001/C-002/C-003/C-004 Dispatch-Hits: Play-Console, Geraeteabnahme,
-   4-Deposit-Lueckenliste, Sichtbarkeit — AL/Live bzw. CTO.
-8. Security-Buendel (uuid 3e4b583d, due 12.11.).
-9. WAYLAND-Import-Ursache (uuid 5870061d); Abhilfe headless-Drop-in steht.
-   Kitty-Pilot bewertet/geschlossen (20ba0446): headless Standard.
-10. AUTOMATION-Inventur: erste Zeilen Mo (relax 2, fitness 1) — Aggregation
-    weiterfuehren.
-11. gog CEO-Mailbox Auth (refresh-token) — Owner/CEO-Handgriff.
-12. Engine-Credits agy: Nachtwelle tot; Catchup-Bias cursor bleibt Reserve.
+1. Teilergebnis-Pushes: fuel `c545486f`, relax `ed94e4cd` (Nacht 11./12.11.).
+2. Fuel Mini OAuth redirect URIs (`redirect_uri_mismatch`) — GCP Console;
+   Dashboard-ROT in `portal/dev-status.json` bis erledigt.
+3. automerge base=master→dev Retarget SSOT journal `0e25e4c4` / Tracking
+   `c1f9b6ce`; danach Port auf Schwester-Repos.
+4. fuel Stabilitätswache `6a0eeebc` bis echter Dependabot-Merge-Beleg.
+5. fitness Haupt-Checkout-Sync `903f1fbe` (vos-al-log Prefill/Worktree).
+6. C-001b Closed-Test-Track `358d9335` — Owner/Play-Console-Fakt.
+7. Security-Buendel `3e4b583d` (Owner-Gate).
+8. Cloud-CTO-Design `c63fad5d/ee2fb0de/8929c32b/0a771e65` (nicht Bau-Welle).
+9. gog CEO-Mailbox Auth (refresh-token) — Owner/CEO-Handgriff.
+10. Meta Dependabot esbuild-security Noise (AL-Befund `fdd8b7fd`); Draft
+   journal #42 unberührt.
+11. WAYLAND-Import-Ursache `5870061d`; Abhilfe headless-Drop-in steht.
+12. AUTOMATION-Inventur weiterfuehren (Door-War).
 
 ## CI-Nachprüfung und Pages-Landingpages — 2026-11-07
 
@@ -175,3 +190,11 @@ push dev → Check grün → automerge-pr.yml (Dependabot-Squash auf dev,
 - Kein Doppel-Merge-Race: merge-agent.yml (fasst nur `vitalos master` an) und automerge-pr.yml (nur Dependabot->dev) haben disjunkte Basen; Draft-PRs werden gesprungen (isDraft-Filter); concurrency-Gruppe serialisiert eigene Cron+PR-Läufe. Belege: Org-Task d0ee4de2.
 - 4 Owner-Draft-PRs offen (fitness #92, journal #42, plan #43, coach #10): deren repair-Schritte failen auf den PR-Branches an Alt-Kopien der ci-agent-Workflows (`Input required and not supplied: token`, z. B. journal-Run 42393768790). Empfehlung an die Owner-Linie (via CEO): vor Publish auf dev rebasen. 6pack #35/#37 bereits gemergt.
 - SYNC_TOKEN fehlt in allen 5 Repos; GITHUB_TOKEN-Merges feuern keine Push-Workflows (Architektur-Folge dokumentiert in Org-Task d0ee4de2).
+
+## Simplicity-Umsetzung 2026-11-11
+
+- Fleet-weit aus `*-dev` entfernt: `gemini-ci-repair.yml`, `merge-agent.yml`.
+- Spine: Check → automerge-pr → automerge → Deploy. SOT `.dotfiles/docs/CI.md` §1.
+- `vos-pr-wave` bleibt lokal als Fangnetz für Non-Dependabot-PRs.
+- `vitalos/prod` unverändert (einzige erlaubte Komplexitätszone).
+

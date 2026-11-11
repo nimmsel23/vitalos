@@ -1,5 +1,6 @@
 const functions = require("firebase-functions");
 const admin = require("firebase-admin");
+const { handleDeleteOwnAccount, callableFailure } = require("./deleteOwnAccount");
 
 admin.initializeApp();
 
@@ -268,4 +269,29 @@ exports.scheduledVitalosPushReminders = functions
     }
 
     return null;
+  });
+
+// Löscht nur das Konto der aufrufenden Anmeldung. data.uid wird ignoriert,
+// außer wenn es von der Anmeldung abweicht — dann Abbruch ohne Löschung.
+exports.deleteOwnAccount = functions
+  .runWith({ timeoutSeconds: 300, memory: "512MB" })
+  .region("europe-west1")
+  .https.onCall(async (data, context) => {
+    try {
+      const result = await handleDeleteOwnAccount(data, context, {
+        firestore: admin.firestore(),
+        auth: admin.auth(),
+        nowSeconds: () => Math.floor(Date.now() / 1000),
+      });
+      functions.logger.info("deleteOwnAccount abgeschlossen", {
+        uid: context.auth && context.auth.uid,
+        documents: result.deletedPaths.length,
+      });
+      return { ok: true };
+    } catch (error) {
+      const failure = callableFailure(error);
+      if (failure) throw new functions.https.HttpsError(failure.code, failure.message);
+      functions.logger.error("deleteOwnAccount fehlgeschlagen", { message: error && error.message });
+      throw error;
+    }
   });

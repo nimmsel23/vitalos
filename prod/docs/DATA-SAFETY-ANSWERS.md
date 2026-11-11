@@ -18,7 +18,7 @@ Der native Web-Build ist `pnpm run product:build:native`
 | --- | --- |
 | Werden die abgefragten Nutzerdaten erhoben oder weitergegeben? | Ja, erhoben. Weitergabe an Dritte: Nein. |
 | Verschlüsselung bei der Übertragung | Ja, für alle erhobenen Arten (HTTPS/TLS zu Firebase). |
-| Können Nutzer die Löschung verlangen? | Ja. URL `https://vitalos.web.app/konto-loeschen` (C-013, parallel). |
+| Können Nutzer die Löschung verlangen? | Ja. URL `https://vitalos.web.app/konto-loeschen` (C-013, auf master). |
 | Werbung | No. Kein Ad-SDK im Release-Build. |
 | Konto in der App | Ja. Prüferweg ist E-Mail und Passwort, nicht Google. |
 
@@ -28,8 +28,9 @@ Das ist Auftragsverarbeitung für die App-Funktion. Die Produkt-Rules setzen
 `isCoach()` auf `false` (`prod/firestore.product.rules`); ein Coach liest die
 Produktdaten nicht. Es gibt keinen Verkauf und keine Werbenutzung.
 
-Die Lösch-URL liefert C-013 parallel aus. In diesem Commit gibt es in
-`prod/src` keinen `deleteUser`- oder `deleteAccount`-Pfad. Die URL erst in
+Die Lösch-URL und den In-App-Weg liefert C-013 (Seite
+`prod/public/konto-loeschen/index.html`, Callable `deleteOwnAccount` in
+`prod/functions`). Die Function geht nicht mit dem Shell-Deploy raus. Die URL erst in
 die Console eintragen, wenn `https://vitalos.web.app/konto-loeschen` ohne
 Login antwortet. Die Löschung muss das Firebase-Auth-Konto und die
 uid-gebundenen Firestore-Bäume umfassen: `users/{uid}`, `fitness/{uid}`,

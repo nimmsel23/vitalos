@@ -1,3 +1,88 @@
+## 2026-11-11 — AL C-002 Handoff (leeres Protokoll)
+
+- Org `3c55e958` / Guide #9: `adb devices` leer; Emulator nicht gestartet (Timer-Grenze).
+- Artefakte bestätigt: `prod/android/.../app-debug.apk` (7,9M, SHA `ad47e50d…`),
+  `app-release.aab` (6,0M), `com.vitalos.app`; Meta HEAD `021016f`.
+- DoD Install/Login/Journal/Sync = n/a; nächster Emulator-Slot 2026-11-17 (PM);
+  CTO kann früheren Slot setzen. Task annotiert, nicht done.
+
+## 2026-11-11 — Journal Solo-Icons unter vos-journal/mini/*
+
+- `journal-dev` `37d58fd`/`bffdaf7`: Door/Voice/Game/Tent/Habits + Game-Maps als
+  `/mini/…` auf vos-journal; Legacy-Sites nur 301 (`build-journal-minis.mjs`).
+- Doku: `HOSTING-TARGETS.md`, `portal/hosting-targets.json` (`kind: solo-alias` /
+  `legacy-redirect`), journal `DEPLOYMENT.md`/`README`/`JOURNAL-V2.md`, Meta
+  `DEPLOYMENT.md` — Alias-Tabelle explizit.
+- Live Deploy OK; Meta-Pin `journal-app` → `bffdaf7`.
+
+## 2026-11-11 — Journal-Kanon vos-journal
+
+- `journal-dev`: Target `v2` = kanonisch `vos-journal.web.app`; Target `journal`
+  (`journal-vos`) nur noch 301-Redirect (`hosting/journal-vos-redirect`).
+- Docs/Portal/HOSTING-TARGETS nachgezogen.
+
+## 2026-11-11 — Produkt-CI Secrets gesetzt
+
+- Vier Secrets auf `nimmsel23/vitalos` per `gh secret set` aus
+  `prod/.product-config/` (keine Werte geloggt).
+- Owner-Regel in `AGENTS.md` / `FIREBASE.md`: künftig selbst setzen, wenn lokal
+  vorhanden und in GitHub fehlend.
+
+## 2026-11-11 — Owner-Notiz: TWA-APK in fitness-aos Settings
+
+- UNIFIED-PRODUCT: TWA-APK-Releases können in Settings der privaten
+  `fitness-aos`-Apps als Git-/Release-Link angeboten werden (Vorbild Skills
+  GitHub-Release `android-latest`). NEXT ergänzt; noch nicht gebaut.
+
+## 2026-11-11 — Prod-CI deppensicher
+
+- `prod/scripts/check-product-boundaries.mjs` + `pnpm run product:check`.
+- `product-check.yml`: Push auf master (prod-Paths) + optional Store-Build.
+- `deploy-product-hosting.yml`: nur workflow_dispatch → `vitalos-prod` /
+  `FIREBASE_SERVICE_ACCOUNT_VITALOS_PROD` + `dist-store`.
+- Guards: `ci-deploy-guard.mjs` / `deploy-product.mjs` fail-closed (`vitalos-prod`,
+  `VOS_PRODUCT_DEPLOY=1`).
+- Doku: `prod/docs/FIREBASE.md` CI-Secrets, `docs/DEPLOYMENT.md` Trennung.
+
+## 2026-11-11 — Owner-Klarstellung: Quelle vs. Store-Gewand
+
+- Session festgehalten in `docs/UNIFIED-PRODUCT.md` (Abschnitt Owner-Klarstellung
+  2026-11-11): `src/` = Shell-Quelle, `prod/` = Store-/Klienten-Gewand;
+  Analogie `fitness-dev` → `vos-fitness`; Store-User vs private Klienten;
+  getrennte Firebase/Accounts (`nimmsel23` privat/Org, `nimmdaniel` außen);
+  private Release-Schiene aufgelockert, `prod/` CI/Deploy deppensicher.
+- Verweise: `AGENTS.md`, `prod/docs/FIREBASE.md`.
+
+## 2026-11-11 — Policy: keine .bak mehr
+
+- `.gitignore`: `*.bak*`, `*.bak[0-9]*`, `*.pre3.bak`
+- `AGENTS.md`: Backup-Regel entfernt (Git = Historie)
+- Bestehende `.bak`-Dateien im Tree gelöscht
+
+## 2026-11-11 — Nacht: Org-Desks + Dashboard + systemd
+
+- `prod/coordination/ORG.md`: Skill-Stacks auf `~/.vos`-Desks / Packages 2026-11-11.
+- `docs/`: VitalOS Org-Dashboard-Build (Organisation/Betrieb/Business) gespiegelt.
+- Parallel (außerhalb Meta-Commit): Vitaltrainer `website/vitalos-dashboard`,
+  dotfiles Betta-SSH-Fix + Timer-Align; PT-Strategien unter `~/vitaltrainer/marketing/`.
+
+## 2026-11-11 — AL: Dependabot esbuild Ursache (`fdd8b7fd`)
+
+- Eine Aufgabe: Security-Update-Rot Root-esbuild geklaert — Fehler
+  `security_update_dependency_not_found` (Runs `42640916585` ff.).
+- Root-Caret `^0.27.7` schliesst Patch `0.28.1` aus; Alerts #205/#206
+  (GHSA-g7r4-m6w7-qqqr, low, Windows-only). Befund
+  `prod/docs/DEPENDABOT-ESBUILD-BEFUND.md`; Fix bleibt CTO (Bump/Override).
+- Guide #13; Org `fdd8b7fd` done. C-002 weiter kein adb-Gerät.
+
+## 2026-11-10 — AL ~15:40: M2-Verteilweg (`c3315277`)
+
+- Eine Aufgabe: Sideload-Verteilweg für Simon & Matthias dokumentiert —
+  `prod/docs/M2-TESTUSER-APK-VERTEILWEG.md` (APK-Pfad, SHA-256, Kurz-Anleitung;
+  Play-Internal erst nach C-010/C-001b). Kein Store, kein Gerät.
+- Intake: TODO C-010/C-011 abgehakt (bereits `e60b4d4` / PR #16). Guide #11/#12.
+- Org-Task `c3315277` done; C-002 (`3c55e958`) weiter Live-Gerät.
+
 ## 2026-11-10 — Live Smoke: setup-node pnpm-Cache
 
 - Rot nach PR #16: `actions/setup-node@v5` Default `package-manager-cache` sucht `pnpm` (aus `packageManager`), Job nutzt aber nur npm/Playwright in `$RUNNER_TEMP`.

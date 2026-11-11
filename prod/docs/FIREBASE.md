@@ -7,6 +7,12 @@ eigenes Firebase-Ziel `fitness-aos`; Produkt-Builds verlangen `vitalos-prod`.
 App-Quellen kommen aus den gemeinsamen Submodulen im Parent. Das Produkt hat
 keine eigenen App-Pins oder ein eigenes Lockfile.
 
+**Owner-Trennung (2026-11-11):** Store-User und private Klienten bekommen denselben
+Quellcode in getrennten Firebase-/Firestore-Hostings, Projekten und Accounts.
+Google-Konten: privat/Org = `nimmsel23@gmail`, nach außen (Store/Produkt) =
+`nimmdaniel@gmail`. Architektur-Metapher und Release-Folge:
+[UNIFIED-PRODUCT.md — Owner-Klarstellung 2026-11-11](../../docs/UNIFIED-PRODUCT.md#owner-klarstellung-2026-11-11-quelle-vs-store-gewand).
+
 Root-Builds über `product:*` starten: [Befehlsübersicht](../../docs/UNIFIED-PRODUCT.md).
 Direkte produktinterne Befehle und Firebase-Konfigurationen unten beziehen sich
 auf das Arbeitsverzeichnis `/home/alpha/vitalos/prod`, sofern nicht anders angegeben.
@@ -36,6 +42,31 @@ Deploy dessen Ziel und Berechtigungen prüfen. Keine neuen Schlüssel als
 Nebenwirkung eines Builds erzeugen. Buildkonfiguration wird durch
 `scripts/prepare-vitalos-product-config.mjs` vorbereitet; die Bundle-Isolations-
 prüfung gehört zum Produkt-Buildweg. Platzhalter ergeben kein Release-Artefakt.
+
+## CI Secrets (nur Namen) und Deploy-Trennung
+
+Private Shell-CI (`deploy-shell.yml`) deployt nach `fitness-aos` mit
+`FIREBASE_SERVICE_ACCOUNT`. Produkt-Hosting darf dieses Secret **nie** nutzen.
+
+| GitHub Actions Secret (Name) | Zweck |
+| --- | --- |
+| `FIREBASE_SERVICE_ACCOUNT_VITALOS_PROD` | Hosting-Deploy nach `vitalos-prod` |
+| `VITE_VOS_FIREBASE_PROJECT_ID` | CI-Produkt-Build; Wert muss `vitalos-prod` sein |
+| `VITE_VOS_FIREBASE_WEB_CONFIG` | CI-Produkt-Build (Web-Config JSON) |
+| `VITE_VOS_FIREBASE_VAPID_KEY` | CI-Produkt-Build (VAPID) |
+
+Quelle lokal: `prod/.product-config/product.env` und
+`prod/.product-config/vos-product-firebase-service-account.json`. Owner-Regel
+2026-11-11: Agenten mit Zugriff setzen fehlende Secrets selbst via
+`gh secret set -R nimmsel23/vitalos` (Werte nie ausgeben/committen); privates
+`FIREBASE_SERVICE_ACCOUNT` unberührt lassen. Stand gesetzt: 2026-11-11.
+
+Workflows:
+
+- `product-check.yml` — Push auf `master` (Paths `prod/**` u. a.) + `workflow_dispatch`: Layout, Boundary-Check, Manifest; optional Store-Build wenn die `VITE_VOS_FIREBASE_*`-Secrets gesetzt sind. **Kein Deploy.**
+- `deploy-product-hosting.yml` — nur `workflow_dispatch`: Store-Build (`dist-store`) + Hosting Target `vitalos` auf `vitalos-prod`. Fehlt `FIREBASE_SERVICE_ACCOUNT_VITALOS_PROD`, bricht der Job ab.
+
+Lokal/predeploy: `prod/scripts/ci-deploy-guard.mjs` verlangt Projekt `vitalos-prod`; TWA/`pnpm firebase` über `deploy-product.mjs` zusätzlich `VOS_PRODUCT_DEPLOY=1`. Boundary-Check: `pnpm run product:check` bzw. `node prod/scripts/check-product-boundaries.mjs`.
 
 ## Ressourceninventar
 
@@ -87,6 +118,49 @@ ist der Store-Output ausdrücklich zu wählen, z. B. mit `--public dist-store`
 und `--project vitalos-prod`. Der lokale Guard ist keine Push-/Deploy-Freigabe.
 Rules, Functions und Hosting getrennt beauftragen. Journal-Callables gezielt
 auswählen; ein Whole-Codebase-Deploy umfasst auch andere Functions.
+
+## Datenschutz-Seiten und Kontolöschung (C-013)
+
+Öffentliche Seiten, ohne Anmeldung:
+
+| URL | Quelle |
+| --- | --- |
+| `https://vitalos.web.app/datenschutz` | `public/datenschutz/index.html` und `prod/public/datenschutz/index.html` |
+| `https://vitalos.web.app/konto-loeschen` | `public/konto-loeschen/index.html` und `prod/public/konto-loeschen/index.html` |
+
+`vitalos.web.app` veröffentlicht der bestehende Shell-Deploy
+(`.github/workflows/deploy-shell.yml`, Projekt `fitness-aos`, Root-`firebase.json`).
+Die Produkt-Hosting-Konfiguration `prod/firebase.json` (Site `vitalos-prod`)
+trägt dieselben Rewrites vor dem SPA-Fangnetz `**`. Statische Dateien
+gewinnt Hosting vor Rewrites. Der Service Worker der Shell lässt beide
+Pfade durch, damit er die App-Shell nicht mit der Rechtsseite überschreibt.
+
+Der Wortlaut ist der Sachstand des Release-Builds (Firebase Authentication,
+Cloud Firestore, Google-Anmeldung, optionales Cloud Messaging; kein Gemini,
+kein Analytics-, Crash- oder Werbe-SDK im Produktcode). C-014 darf ihn
+ersetzen. Eine öffentliche Kontaktadresse steht nicht im Repo. Der
+Platzhalter `KONTAKT-FOLGT@example.invalid` ist nicht zustellbar.
+
+Die Kontolöschung in der App ruft `deleteOwnAccount` auf
+(`prod/functions/index.js`, Region `europe-west1`). Die Function liest die
+uid nur aus der Anmeldung, löscht die Firestore-Wurzeln dieser uid
+(`roles`, `sixpackSelfies`, `skillsUsers`, `coachConversations`, `fitness`,
+`planResponses`, `journal`, `nutrition`, `supplements`, `users`, `relax`)
+und danach den Auth-Nutzer. `kb` und `public` sind keine Nutzer-IDs.
+Geteilte Kataloge bleiben.
+
+Dieser Deploy ist nicht der Shell-Hosting-Deploy. Ein späterer Auftrag
+veröffentlicht gezielt nur diese Function, nicht die ganze Codebase:
+
+```sh
+cd /home/alpha/vitalos/prod
+npx firebase-tools deploy --only functions:vitalos:deleteOwnAccount --project vitalos-prod
+```
+
+Vorher die Tests `pnpm --filter @vitalos/product run test:account-deletion`.
+Ein manueller Löschversuch nur mit einem neuen Wegwerfkonto. Keine
+bestehenden Personenkonten und keine Produktionsdaten löschen. Der
+In-App-Knopf bleibt ohne diesen Function-Deploy ohne Serverwirkung.
 
 ## CI nach der Zusammenführung
 

@@ -1,11 +1,27 @@
 # AGENTS.md — gemeinsames VitalOS-Meta-Repo
 
+## Simplicity (Owner 2026-11-11)
+
+Alles so simpel wie möglich — Meta-`vitalos` und die `*-dev`-Repos dünn
+halten. **Einzige Ausnahme: `vitalos/prod`** (Store/Produkt darf komplex
+sein). CI/Docs/Agent-Workflows außerhalb von `prod/` nicht aufblasen.
+
+**Umsetzen vor Dokumentieren:** Sofort Machbares zuerst ändern/pushen,
+Doku danach nachziehen — nicht umgekehrt. **Umgesetzt = committed.**
+
 ## Architektur und Zuständigkeit
 
 `~/vitalos` enthält private PWA und Store-Produkt. Die private Shell liegt in
 `src/`, die Produkt-Shell in `prod/src/`. `prod/` ist normal getrackt, besitzt
 kein eigenes Git-Repo und keine App-Submodule. Beide Shells verwenden die neun
 App-Submodule im Root und das gemeinsame `pnpm-lock.yaml`.
+
+Owner-Metapher (2026-11-11): `src/` = Shell-Quellcode; `prod/` = Play-/App-
+Store- und Klienten-Gewand derselben Kombi (Analogie `fitness-dev` →
+`vos-fitness`). Store-User und private Klienten teilen Quellcode, nicht
+Firebase-Projekt/Account — Details und Account-Trennung in
+[docs/UNIFIED-PRODUCT.md](docs/UNIFIED-PRODUCT.md) („Owner-Klarstellung
+2026-11-11“).
 
 `master` ist Default und private Produktion. Der frühere Umbau-Zweig
 `dev-product` (integriert 2026-11-06 als `2fe70f3`) ist nach `master` gemergt
@@ -42,8 +58,9 @@ ist Planung, kein Nachweis eines Builds oder Releases.
 - App-Quellcode: jeweiliges `~/dev/*-dev`-Repository (dort der jeweilige
   Integrationsbranch, i. d. R. `dev`). Die `*-app`-Ordner sind
   Merge-/Integrations-Checkouts, keine zweiten Entwicklungsquellen.
-- Vor Edits Backup anlegen (`cp … .bak`). Nur eigene Pfade committen. Fremde
-  uncommitted Arbeit nicht anfassen — aber dafür keine neuen Worktrees anlegen.
+- Keine `.bak`-Dateien anlegen (Git ist die Historie; `*.bak*` ist gitignored).
+  Nur eigene Pfade committen. Fremde uncommitted Arbeit nicht anfassen — aber
+  dafür keine neuen Worktrees anlegen.
 - Laufende Services nicht killen oder neu starten. Kein sudo. AlphaOS bleibt
   ein eigenständiges Projekt und ist kein Ziel dieses Umbaus.
 
@@ -87,6 +104,13 @@ Private Root-Builds und `product:*`-Befehle haben unterschiedliche Ziele.
 Produkt-Builds verlangen `vitalos-prod` und ihre eigene Firebase-Konfiguration.
 Geheimnisse bleiben in ignoriertem `prod/.product-config/` oder der Build-
 Umgebung. Nichts davon ausgeben, kopieren in Doku oder committen.
+**Owner 2026-11-11:** Wenn Produkt-CI Secrets in GitHub fehlen und lokal
+`prod/.product-config/product.env` plus
+`vos-product-firebase-service-account.json` vorliegen, setzt der Agent sie
+selbst per `gh secret set` auf `nimmsel23/vitalos` (Namen:
+`VITE_VOS_FIREBASE_*`, `FIREBASE_SERVICE_ACCOUNT_VITALOS_PROD`) — Werte nie
+loggen oder committen. Das private Secret `FIREBASE_SERVICE_ACCOUNT`
+(`fitness-aos`) nicht überschreiben.
 Build, native Synchronisierung, APK/AAB, Installation, Anmeldung, Signing und
 Veröffentlichung sind getrennte Nachweise. Kein erfolgreicher Teil ersetzt die
 übrigen Schritte. Details und Arbeitsverzeichnisse: `docs/UNIFIED-PRODUCT.md`.

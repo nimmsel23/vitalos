@@ -17,6 +17,65 @@ Der Haupt-Checkout enthält den Umbau auf `dev-product`. Die bestehende private
 am gemeinsamen App-Pin gilt für beide Varianten; Unterschiede im Verhalten
 werden ausdrücklich in Shell, Adaptern oder Produkt-Buildmodus umgesetzt.
 
+## Owner-Klarstellung 2026-11-11: Quelle vs. Store-Gewand
+
+Owner-Aussagen aus der Session 2026-11-11 (Architektur-Metapher und
+Betriebsgrenzen). Operative Details zu Firebase bleiben in
+[FIREBASE.md](../prod/docs/FIREBASE.md).
+
+### Analogie zur Fitness-Linie
+
+| Schicht | Fitness | VitalOS-Shell |
+| --- | --- | --- |
+| Quellcode | `fitness-dev` | private Shell `src/` + Subapps (`~/dev/*-dev` → Root-Pins `*-app`) |
+| Auslieferung im schönen Gewand | `vos-fitness` („vos-app“ / „vitalos-app“) | `prod/` — Play-/App-Store-Vertreter derselben Shell |
+| Zweck | dem Klienten zur Unterstützung mitgegeben | dieselbe Kombi auch als Verkaufsprodukt |
+
+`src/` ist der Shell-Quellcode der herkömmlichen/privaten VitalOS-Shell.
+`prod/` ist nicht ein zweites App-Ökosystem mit eigenen Submodule-Pins, sondern
+der Store- und Klienten-Vertreter derselben Quellkombi.
+
+### Zwei Nutzergruppen, ein Quellcode
+
+Es gibt **Store-User** und **private Klienten**. Beide bekommen im Wesentlichen
+denselben Quellcode, aber in **unterschiedlichen** Firebase-/Firestore-Hostings,
+Projekten und Accounts:
+
+| Gruppe | Rolle | typisches Ziel |
+| --- | --- | --- |
+| private Klienten | Coaching-Unterstützung (VOS-App mitgeben) | private Linie, Firebase-Projekt `fitness-aos` |
+| Store-User | Verkauf über Play/App Store | Produktlinie `prod/`, Firebase-Projekt `vitalos-prod`, Paket `com.vitalos.app` |
+
+Doppelzweck: die App bzw. Subapp-Kombi ist gut genug für Coaching **und** wird
+verkauft.
+
+### Google-Accounts (Owner)
+
+| Bereich | Konto |
+| --- | --- |
+| privat und Org | `nimmsel23@gmail` |
+| alles nach außen (Store, öffentliche Produktlinie) | `nimmdaniel@gmail` |
+
+### Release-Folge (Session)
+
+Die Release-Schiene für private/classic Shell + Subapps wird etwas
+**aufgelockert**. Gegenstück: CI und Deployment für `vitalos/prod` müssen
+**deppensicher** und fail-closed vom privaten Pfad getrennt bleiben (kein
+versehentliches Mischen von Projekten, Hostings oder Accounts). Owner parallel:
+Console-Arbeit laut Gate (Play Closed-Test / zugehörige Firebase-Schritte) —
+Owner-Hand, kein stiller Auto-Deploy nach `vitalos-prod` allein aus dieser
+Klarstellung.
+
+### TWA-APK in privaten Settings (Owner-Notiz)
+
+Owner 2026-11-11: TWA-APK-Releases können in den **Settings-Tabs der
+`fitness-aos`-Apps** (private Linie) als **Git-/Release-Link** angeboten
+werden — analog zu bestehenden GitHub-Release-APKs (z. B. Skills
+`android-latest`). Zweck: Klienten die VOS-/TWA-App zum Sideload aus der
+laufenden privaten App heraus erreichen, ohne Play-Store-Zwang. Noch keine
+Umsetzung in diesem Doc-Schritt; Verteilweg-Vorbild bleibt
+[M2-TESTUSER-APK-VERTEILWEG.md](../prod/docs/M2-TESTUSER-APK-VERTEILWEG.md).
+
 ## Befehle im Meta-Repo-Root
 
 Ausführen unter `/home/alpha/vitalos`. Produkt-Buildwerte vorher aus der

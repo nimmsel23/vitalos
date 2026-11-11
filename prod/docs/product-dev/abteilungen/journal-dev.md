@@ -57,14 +57,11 @@ Jede Linie und jeder AL darf eigene Shell-Hilfen (Skripte, Aliase, fish-Funktion
 
 Wiederholst du in deinem Repo-Alltag von Hand einen Schritt, den ein Skript, ein Werkzeug oder eine Konfiguration erledigen könnte, schreibe GENAU EINE Zeile ins AL-Log deines Laufs: `AUTOMATION: <Schritt> — <Vorschlag> — <geschätzte Ersparnis>`. Nur echte Beobachtungen aus dem eigenen Lauf, keine Erfindungen, keine Systemarchitektur-Träume, keine neue Taskfarm: Jede Automatisierung muss eine wiederkehrende Aufgabe LÖSCHEN. Die CTO-Linie aggregiert die Zeilen wöchentlich für die Door-War-Priorisierung.
 
-## CTO-Nachtauftrag (2026-11-10)
+## CTO-Nachtauftrag (2026-11-11)
 
-1. **Client-Haertung** Org `eeb9d722`: `smartLogErrorText` mappt unbekannte/
-   INTERNAL[0]-Errors auf fail-closed Nutzertext („Smart Logging ist gerade
-   nicht verfuegbar"). Server-Fix 5f2f694 ist LIVE — Codes an Ist-Stand mappen.
-   Check (Journal) belegen; kein Deploy/Functions.
-2. **Semver Live** Org `d48d852d`: nach Promote Header/Update-Dialog auf
-   journal-vos = `1.0.x+sha` belegen (DOM/Text reicht). Tip `package.json` ist
-   bereits `1.0.1`.
+1. **Hit** Org `0e25e4c4` / Tracking `c1f9b6ce`: In `automerge-pr.yml` vor dem
+   Squash Dependabot-PRs mit `base=master` auf `base=dev` retargeten (CI.md
+   Fallensteller). Check-Beleg im AL-LOG; kein Draft-#42-Touch.
+2. [x] Client-Haertung `eeb9d722` + Semver Live `d48d852d` (10./11.11.) — erledigt.
 3. Draft Merge-Agent **#42** (base=master) nicht mergen/rebasen — Draft ≠ Policy.
 4. Owner-Regel: keine PR-/Merge-Sperre; rote Dep-PRs fixen+squash, nicht parken.

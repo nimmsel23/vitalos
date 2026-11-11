@@ -89,6 +89,35 @@ completed	success	Merge pull request #13 from nimmsel23/dependabot/npm_and_yarn/
 - Arbeitsbaum: 2 uncommittete Pfade
 
 _Vom AL ausfüllen (knapp & belegbar, je 1–3 Zeilen, Commit-/PR-Referenzen statt Erzählung):_
-- Erledigt: Guide #10 / Org `e83d8daa` vos-fitness baubar — Web `pnpm --filter @vitalos/product run build:fitness:product` OK (`prod/vos-fitness/dist-firebase`, Isolation PASS); Host `vitalos-fitness-prod.web.app` HTTP 404 (kein Deploy); Debug-APK `prod/platforms/fitness-twa/app/build/outputs/apk/debug/app-debug.apk` (4,8M, `at.vitalos.fitness`, JDK17). Fixes: `prod` +`@tanstack/query-core`, `vos-fitness/postcss` → `@tailwindcss/postcss` (+Dep). Restlücken: Asset-Links 404/0 Fingerprints; Keystore nur gitignored Draft; kein Play-Eintrag.
-- Offen/Weiter: C-002 Rest Live (`3c55e958`); `c3315277` (+alpha) M2-APK; `7df12a13` (+cto) Dependabot Mo-Lauf; Hosting-Deploy vos-fitness nur mit Owner-Auftrag.
-- Blocker: keine für DoD dieses Tasks (Hosting/Store bewusst nicht angefasst).
+- Erledigt: Org `c3315277` M2-Verteilweg — `prod/docs/M2-TESTUSER-APK-VERTEILWEG.md` (Sideload Debug-APK `com.vitalos.app` 0.1.0 SHA `ad47e50d…`, Kurz-Anleitung); Intake C-010/C-011 TODO [x] (`e60b4d4`/PR #16); Guide #11/#12; Vorlauf 03:40 vos-fitness `e83d8daa` in ABTEILUNG.
+- Offen/Weiter: C-002 Live (`3c55e958`); C-001b Closed-Track (`+cto`); `fdd8b7fd` Dependabot esbuild Meta; Journal-Live-Rot (C-011 Probe) → CTO.
+- Blocker: kein adb-Gerät für C-002; Play-Internal erst nach Owner-Klicks C-010.
+
+## 2026-11-11 (Mittwoch) — Abteilungsleiter-Lauf
+
+_Automatik (vos-al-log Vorlage 2026-11-11):_
+- Commits seit 2026-11-08: 7febc7a docs(al): journal-dev Semver-Live d48d852d abgehakt (0.2.0+031a78c)
+c5011b3 docs(al): M2-Verteilweg für Simon/Matthias + AL-LOG 2026-11-10
+8c2bc21 docs: auto-update NEXT.md
+aa4b550 docs: auto-update RESULTS.md
+a983e02 docs: auto-update NEXT.md
+24bf359 docs: auto-update TODO.md
+63a7cfb docs(ceo): route live smoke failure to CTO
+711bc62 fix(ci): disable pnpm cache in Live Smoke workflow
+2fe4550 docs(cto): 2026-11-10 Runde — AL-Abnahme, Hits, Nachtauftraege
+e60b4d4 C-010 Closed-Test-Klickliste und C-011 Live-Smoke (#16)
+d76517f fix(pnpm): add skills-app to workspace and pin rolldown 1.2.16
+ce43306 docs: auto-update RESULTS.md
+9d662d7 docs: hub hover ring and scoped sixpack theme
+b728f75 docs: auto-update RESULTS.md
+9b3ccb7 fix(shell): hub tile hover ring and scoped sixpack theme note
+- Offene PRs: (keine offenen PRs / gh nicht verfuegbar)
+- CI (letzte Läufe): completed	success	Live Smoke (VitalOS)	Live Smoke (VitalOS)	master	workflow_run	42893247054	49s	2026-11-10T20:14:04Z
+completed	success	Live Smoke (VitalOS)	Live Smoke (VitalOS)	master	workflow_run	42893236404	29s	2026-11-10T20:14:00Z
+completed	success	Fix Pulse mobile settings and training layout	Deploy VitalOS Shell	master	push	42892947949	1m38s	2026-11-10T20:12:20Z
+- Arbeitsbaum: 11 uncommittete Pfade
+
+_Vom AL ausfüllen (knapp & belegbar, je 1–3 Zeilen, Commit-/PR-Referenzen statt Erzählung):_
+- Erledigt: C-002 Handoff Refresh (`3c55e958`) — APK/AAB bestätigt (`ad47e50d…`/`06cca969…`, `com.vitalos.app`, Meta `021016f`); leeres DoD-Protokoll; Slot **2026-11-17**; Guide#9/NEXT/RESULTS; Vorlauf 03:45 esbuild `fdd8b7fd` bleibt done.
+- Offen/Weiter: C-002 Rest Install+Login+Journal+Sync (Live/Emulator 17.11 oder früher via CTO); CTO esbuild Bump/Override; C-001b (`+cto`); Journal-Live-Rot → CTO. Fremde Dirt (portal/src/coordination) unberührt.
+- Blocker: C-002 — `adb devices` leer; kein Emulator im Timer (AVDs vorhanden, Start verboten).

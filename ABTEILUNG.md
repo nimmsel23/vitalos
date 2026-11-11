@@ -147,3 +147,24 @@ Inbox melden.
 - **Ausgeführte Aufgabe:** Guide #10 / Org `e83d8daa` — Web-Build OK + Host 404 belegt + Debug-APK-Pfad; PostCSS auf TW4-Plugin; `@tanstack/query-core` Direkt-Dep. Restlücken Asset-Links/Keystore/Play in AL-LOG. NEXT/RESULTS/Guide/AL-LOG; Task done.
 - **Offene Punkte & Blocker:** Blocker keine (DoD). Offen: C-002 Live-Rest, M2-APK (+alpha), Dependabot-Mo (+cto), Hosting-Deploy nur mit Owner-Auftrag.
 - **Commit & Abschluss:** Commit auf `master` (vos-fitness postcss, prod package/lock, Guide, NEXT/RESULTS, AL-LOG, ABTEILUNG). Kein Push, kein Deploy/Store/Gitlink-Touch.
+
+## Letzter Lauf — 2026-11-10 (~15:40 CET, Abteilungsleiter-Lauf; EINE Aufgabe: M2-Verteilweg)
+
+- **Stand & Regelquellen:** Einstieg `abteilungsleiter brief vitalos` (Org project:vitalos = `c3315277`/+alpha overdue, `fdd8b7fd`/+cto; neue TODO C-010/C-011 bereits als Docs in `e60b4d4`/PR #16). HEAD vor Lauf `63a7cfb`. Branch `master`, voraus 1 vs origin. `adb devices` leer.
+- **Ausgeführte Aufgabe:** Org `c3315277` — Verteilweg dokumentiert in `prod/docs/M2-TESTUSER-APK-VERTEILWEG.md` (Sideload Debug-APK, SHA-256, Kurz-Anleitung Simon/Matthias; Play-Internal bewusst nachgelagert). Intake: TODO C-010/C-011 [x]; Guide #11/#12; NEXT/RESULTS/AL-LOG.
+- **Offene Punkte & Blocker:** Blocker C-002 = kein Gerät. Offen: C-002 Live, C-001b/+cto, Dependabot esbuild `fdd8b7fd`, Journal-Live-Rot → CTO. Owner muss privaten APK-Link an Tester geben.
+- **Commit & Abschluss:** Commit auf `master` (M2-Doku, TODO/NEXT/RESULTS, Guide, AL-LOG, ABTEILUNG). Kein Push, kein Store/Gerät/Gitlink-Touch.
+
+## Letzter Lauf — 2026-11-11 (~03:45 CET, Abteilungsleiter-Lauf; EINE Aufgabe: Dependabot esbuild Befund)
+
+- **Stand & Regelquellen:** Einstieg `abteilungsleiter brief vitalos` (Org project:vitalos = `fdd8b7fd`/+cto +lr; keine neuen TODO-Punkte). HEAD vor Lauf `7febc7a`. Branch `master`, `origin/master...HEAD` 1/7 (nur dokumentiert). Submodule-Drift `+` 6pack/plan/relax/skills (fremde Dirty — unberührt). `adb devices` leer.
+- **Ausgeführte Aufgabe:** Org `fdd8b7fd` — Ursache Security-Update-Rot geklaert (`security_update_dependency_not_found`; Root-Caret `^0.27.7` vs Patch `0.28.1`; Alerts #205/#206). Befund `prod/docs/DEPENDABOT-ESBUILD-BEFUND.md`; Guide #13; NEXT/RESULTS/AL-LOG; Task done. Kein package.json-/Lockfile-/Override-Edit.
+- **Offene Punkte & Blocker:** Blocker C-002 = kein Gerät. Offen: CTO esbuild-Fix, C-002 Live, C-001b, Journal-Live-Rot. Fremde Dirt (ORG.md, fitness-dev.md, docs/assets, Submodule) unberührt.
+- **Commit & Abschluss:** Commit auf `master` (Befund, Guide, NEXT/RESULTS, AL-LOG, ABTEILUNG). Kein Push, kein Dependabot-Merge, kein Gitlink-Touch.
+
+## Letzter Lauf — 2026-11-11 (~15:45 CET, Abteilungsleiter-Lauf; EINE Aufgabe: C-002 Handoff Refresh)
+
+- **Stand & Regelquellen:** Einstieg `abteilungsleiter brief vitalos` (keine offenen Org-Tasks project:vitalos; keine neuen TODO-Punkte). HEAD vor Lauf `021016f`. Branch `master`. Fremde Dirt (portal/src/coordination/docs-dev-dashboard) unberührt. `adb devices` leer; AVDs vorhanden, Start im Timer verboten.
+- **Ausgeführte Aufgabe:** Guide #9 / Org `3c55e958` C-002 — APK/AAB-Pfad + SHA bestätigt (`ad47e50d…`/`06cca969…`, `com.vitalos.app`); leeres DoD-Protokoll (Install/Login/Journal/Sync = n/a); nächster Emulator-Slot **2026-11-17** (PM; CTO ggf. früher). Guide-Handoff/NEXT/RESULTS/AL-LOG; Task annotiert, nicht done.
+- **Offene Punkte & Blocker:** Blocker C-002 = kein Gerät. Offen: C-002 Live/Emulator-Rest, CTO esbuild-Fix, C-001b, Journal-Live-Rot. Fremde Dirt unberührt.
+- **Commit & Abschluss:** Commit auf `master` (Guide, NEXT, RESULTS, AL-LOG, ABTEILUNG). Kein Push, kein Install/Emulator/Gitlink-Touch.

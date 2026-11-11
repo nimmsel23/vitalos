@@ -27,6 +27,9 @@
     "firebase": "node scripts/deploy-product.mjs",
     "build:fitness:twa:web": "bash scripts/build-fitness-twa-web.sh",
     "check:layout": "node scripts/check-shared-layout.mjs",
+    "check:boundaries": "node scripts/check-product-boundaries.mjs",
+    "check": "pnpm run check:layout && pnpm run check:boundaries",
+    "test:account-deletion": "node --test functions/deleteOwnAccount.test.mjs tests/delete-account-flow.test.mjs tests/legal-pages.test.mjs",
     "release:manifest": "node scripts/release-manifest.mjs"
   },
   "dependencies": {

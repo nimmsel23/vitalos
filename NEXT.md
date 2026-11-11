@@ -1,20 +1,30 @@
 # NEXT.md
 
+- [ ] Betta-Modul-GAPS: fitness/fuel/journal/habits/learn (`~/.vos/cto/DRAFTS/2026-11-11-BETTA-GAPS.md`)
 Aktive Arbeitsliste (max. 5 Punkte) fuer das vitalos Meta-Repo.
 Stand CTO-Runde 2026-11-09.
 
 ## Aktiv (max. 5)
 
+- [x] Owner-Klarstellung Quelle/Store-Gewand (2026-11-11): UNIFIED-PRODUCT + AGENTS + FIREBASE.
+- [x] Prod-CI deppensicher (2026-11-11): `product-check` Push+Boundaries, `deploy-product-hosting` dispatch-only, Guards fail-closed; Owner setzt noch GitHub-Secrets.
+- [x] Journal-Kanon vos-journal (2026-11-11): journal-vos → 301; Owner OAuth-URIs in fitness-aos auf vos-journal straffen.
+- [ ] TWA-APK-Releases als Git-/Release-Link in Settings-Tabs der fitness-aos-Apps anbieten (Owner-Notiz UNIFIED-PRODUCT; Vorbild Skills `android-latest`).
+- [x] Journal Solo-Icons unter vos-journal `/mini/…` (2026-11-11, journal-dev `37d58fd`); Live-Abnahme + OAuth auf nur vos-journal straffen (Owner).
+- [ ] C-002 Geraeteabnahme (`3c55e958`): Handoff 2026-11-11 ~15:45 — APK/AAB bereit (`app-debug.apk` SHA `ad47e50d…` / `app-release.aab`, `com.vitalos.app`, Meta `021016f`); `adb` leer; leeres DoD-Protokoll; nächster Emulator-Slot **2026-11-17** (CTO ggf. früher). Rest: Live/Emulator Install+Login+Journal+Sync.
 - [x] Hub-Hover-Ring + 6Pack Theme-Diebstahl: Shell `9b3ccb7`, 6pack `be9c01f` / Meta-Pin `083b929` (2026-11-10). Live-Abnahme: Sidebar bleibt Shell-Farbe im 6Pack-Tab.
-- [ ] C-002 Geraeteabnahme (`3c55e958`): Handoff 2026-11-09 — APK/AAB bereit (`app-debug.apk`/`app-release.aab`, `com.vitalos.app`, Meta `f2075da`); `adb` leer, kein Emulator im Timer. Rest: Live-Install+Login+Journal+Sync.
 - [x] vos-fitness Subversion baubar (`e83d8daa`, 2026-11-10 AL): Web-Build OK + Debug-APK-Pfad; Host weiter 404; Rest Asset-Links/Keystore/Play.
+- [x] M2-APK Simon/Matthias (`c3315277`): Verteilweg `prod/docs/M2-TESTUSER-APK-VERTEILWEG.md` (2026-11-10 AL) — Sideload; Owner teilt privaten Link.
+- [x] C-010/C-011 Aufnahme: PR #16 / `e60b4d4` (TODO 2026-11-10 abgehakt).
+- [x] Dependabot esbuild Meta (`fdd8b7fd`, 2026-11-11 AL): Befund `prod/docs/DEPENDABOT-ESBUILD-BEFUND.md` — Ursache klar; Fix = CTO (Bump/Override).
 - ~~vos-fitness Vite-8 Rolldown `__VITE_PRELOAD__`-Blackscreen~~: `fixRolldownPreloadMarker` lokal vorbereitet (Vite 6 heute; Push Meta auf Zuruf).
 - ~~`vitalos-fitness-prod.web.app` 404~~: Hosting live 2026-11-10. Offen: Asset-Links/Play; dauerhaften Deploy-Pfad statt Guard-Bypass.
 
 
 - [ ] C-001 Play-Console (`c09e4d5c`): 3 Fakten an CEO (Konto/App angelegt?); keine Zahlung.
+- [ ] CTO: esbuild Root/`fitness-app` → `^0.28.2` oder pnpm-Override `esbuild: 0.28.2` (Alerts #205/#206; siehe Befund).
 - [ ] SmartLog-Beweis (`5f09bbb1`): Emulator 13:00 — Deploy 5f2f694 steht; Gruennachweis abwarten.
-- [ ] M2-APK Simon/Matthias (`c3315277`, +alpha): Verteilweg bereitstellen, kein Store.
+- [ ] C-001b Closed-Test-Track (`+cto`): Existenz-Fakt an CEO; Owner-Klickliste C-010.
 
 
 ## 2026-11-09 — Branch-Modell (nach Shell-Pin auf master)
@@ -55,7 +65,7 @@ Aktive Arbeitsliste (max. 5 Punkte) für das vitalos Meta-Repo.
 
 ## 2026-11-08 (Aktuelle Org-Hits & Meta-Repo-Fokus)
 
-- [ ] Org-Task c3315277 (+alpha +hit, fällig 09.11.2026): M2-Testuser-Vorbereitung (Owner-Freigabe 20:1x): APK des Shells (com.vitalos.app, prod/android) für Simon & Matthias bereitstellen — Verteilweg dokumentieren (Play Internal Track vorbereiten oder direkte APK-Installation), keine Store-Publikation, kein Geräteanfassen; Endzustand = Installer-Weg bereit + kurze Anleitung, Ausgabe an CEO für Owner-Handoff.
+- [x] Org-Task c3315277: M2-Verteilweg erledigt 2026-11-10 AL — `prod/docs/M2-TESTUSER-APK-VERTEILWEG.md` (Sideload; Owner teilt Link).
 - [x] Org-Task 378427eb (+cto +hit): GitHub-Pages-Kanal erfasst (2026-11-09 AL): Legacy `master`/`/docs` → `nimmsel23.github.io/vitalos` (Root 404, `Index.html` 200); 17 Dateien inkl. Ops-Runbooks; keine Rohsecrets, wohl SA-Mails/Secret-Namen; Empfehlung deaktivieren/beschneiden — Owner-Gate. Doku: `prod/docs/FIREBASE.md` § GitHub Pages + Verweise in `docs/DEPLOYMENT.md` / `docs/UNIFIED-PRODUCT.md`.
 - [ ] Nur-gemeldet-Punkte beobachten (fremde Linien, nicht anfassen): uncommittet prod/coordination/CTO.md, D vitalos.html, Untracked 20/docs/Index.html; +-Drift journal-app (9502f2b, heads/vitalos).
 - [ ] Submodule-Pointer-Bumps & Shell-Tailwind-4: Modul-PRs master → vitalos und Shell-Upgrade auf Tailwind 4 nach Abschluss der aktiven Dev-Stränge abgleichen.
