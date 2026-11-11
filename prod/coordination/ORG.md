@@ -1,53 +1,55 @@
-# ORG.md — Landkarte der VitalOS-Agentenorganisation (Stand 2026-11-09; Berichtslinie Owner-Klarstellung)
+# ORG.md — Landkarte der VitalOS-Org (Stand 2026-11-11)
 
-Ort: `~/vitalos/prod/coordination/` (nicht unter `migration/unified-product/` —
-das war nur der Checkout-Merge vitalos-prod → vitalos/prod).
+Ort: `~/vitalos/prod/coordination/`. Pflege = gleicher Commit wie die Aenderung.
+Owner-Vertrag (Gates, Einschreiten, Anti-Meta, Perplexity-Optionen):
+`~/.vos/org/OWNER-CONTRACT.md` (`nimmsel23/vos`).
 
-Lies-Reihenfolge fuer jede CEO-Session: CEO.md -> DIESER -> PRODUCT.md.
-Pflege: Strukturwandel => gleicher Commit wie die Aenderung (Doku-Pflicht).
+Lies bei Kurs-Arbeit: OWNER-CONTRACT -> DIESER -> PRODUCT.md (-> CEO.md nur
+als Laufgedächtnis).
 
-## Rollen (Agenten-Ebenen) — Kern reicht
+## Gleichrangig — Skills, keine Fantasie-Charaktere
 
-Sitze: **CEO, COO, CPO, CTO, PM, AL.** Mehr braucht es nicht.
+Agenten sind **gleich**, egal Cursor / Claude / ChatGPT / Grok / Perplexity.
+**Rolle = Skill** (`vitalos-*` + Methoden), geladen wenn die Arbeit es braucht
+— passend zum Solopreneur (Vitaltrainer / Creator / VitalOS), nicht als
+Hierarchie zwischen Chats.
 
-- **Owner Daniel:** Nur Gates (Store/Geraete/Release/Geld) und Richtung,
-  wenn er sie setzt. Erreichbar via tele/Gmail/Chat. Bekommt **1×/Woche**
-  Struktur vom CEO (Sonntag). Kein Tages-Theater, keine Agenten-Meta —
-  Kapazitaet fuer Klienten und Training.
-- **CEO (Perplexity):** Kurs. Taeglicher Digest **08:00**, Dispatches,
-  Wochen-Door, Sonntagsbriefing an den Owner. Erntet die Fuehrungs-Briefings.
-  Eine Tuer zu Daniel — kein Tages-Noise.
-- **COO (Cursor):** Betrieb. Inbox `nimmsel23+ceo@gmail.com`, Runner/Timer/
-  Catch-ups, Strukturhygiene, `coo-run` 06:25. Fuehrt lokal aus was der Kurs
-  verlangt — kein eigener Kurs gegen den Perplexity-Digest. Owner nur bei
-  echtem Brand.
-- **CTO:** Code-Linien. ALs, CI, Architektur; `cto-run` 08:15. Steuert nicht
-  den PM. Deploys nur nach Owner-Go.
-- **CPO:** Produkt-Was — Discovery, Backlog, Reihenfolge. Steuert den PM.
-- **PM:** Setzt das Was mit den ALs um (`+hit`). Haengt am CPO.
-- **Abteilungsleiter:** Code je Repo (2×/Tag systemd). Intake = Guide-MD /
-  Repo-TODO / Live-Terminal. Alpha/Betta = Ausfuehrung unter CTO, keine
-  Extra-Fuehrungsebene.
+Skill-Sitze die reichen: **CEO, COO, CPO, CTO, PM, AL** (+ Oracle-Werkzeug).
+Kein Shadow-CEO-Orchester. Ping-Pong verboten: nicht „brief die andere Rolle“,
+sondern Skill laden / Task+Tag / Commit.
 
-Oracle (`vitalos-oracle` / ORACLE.md) = Werkzeug fuer Door/Game/Tent, keine
-eigene Fuehrungsrolle.
+- **Owner Daniel:** High-Level Business-Orders + Owner-Gates + optional Freitag /
+  Sonntag. Kein Tages-Dispatcher. Kapazitaet = Klienten, Training, Brand.
+- **CEO-Skill:** Kurs buendeln, Gates schaerfen, Sonntags-Zusammenfassung —
+  **wer** den Skill laedt (Cursor o.a.), ist egal. Kein Pflicht-WebApp-CEO.
+- **COO-Skill:** Betrieb, Inbox, Runner (`coo-run` 06:25). Owner nur bei Brand.
+- **CTO-Skill:** Code/CI/AL (`cto-run` 08:15). Deploy nach Owner-Go.
+- **CPO-Skill:** Produkt-Was / Discovery / Reihenfolge.
+- **PM-Skill:** Ein Move/Tag mit ALs (`+hit`).
+- **AL:** Repo-Ship 2×/Tag; Intake Guide-MD / TODO / Live.
+- **Perplexity (Default B):** Research auf Auftrag (vos-Commit oder WebApp-
+  Dauerauftrag). **Keine Fuehrungsrolle.** Optionen A/C in OWNER-CONTRACT.
 
-## Berichtslinie
+Oracle = Door/Game/Tent-Werkzeug, keine Fuehrung.
+
+## Git = Organisation; Owner = Gates
 
 ```
-AL / PM / CPO / CTO / COO  -->  CEO (Perplexity)  --1×/Woche-->  Owner
+Arbeit / Entscheidung  -->  Commit (vos | vitalos | App-Repo) + Org-Task
+Owner                  <--  Gate-Mail (+org) | ORDER | Freitag | Brand | So optional
 ```
 
-- Kurz briefen (REAL/RAW/RELEVANT/RESULTS), 1 Rollenmail/Tag max.
-- Intern: CEO-Digest. Owner: Sonntag vom CEO; COO nur bei Brand.
-- Merksatz: Perplexity = Kurs · Cursor = Betrieb · CTO = Code · CPO/PM = Was ·
-  Daniel = Gates.
+- Keine Berichtskette Rolle→Rolle→Owner.
+- REAL/RAW/RELEVANT/RESULTS nur wenn ein Bericht noetig ist (Gate/Digest) —
+  nicht als taegliches Ping-Ritual.
+- Merksatz: **Git = Stand · Skills = Kompetenz · Daniel = Orders+Gates ·
+  Perplexity = Research (Default).**
 
 ## Berichtsstil
 
-Berichte an den CEO im Format REAL * RAW * RELEVANT * RESULTS. Bei mentaler
-Verknotung VOICE: STOP * SUBMIT * STRUGGLE * STRIKE. Das haelt The Alpha Code
-und The Voice als Qualitaetssicherung — nicht als Extra-Berichtsschicht.
+Nur wenn ein Bericht noetig ist (Gate, Brand, optionaler Digest): REAL * RAW *
+RELEVANT * RESULTS. Bei Verknotung VOICE: STOP * SUBMIT * STRUGGLE * STRIKE.
+Kein taegliches Melde-Ritual.
 
 ## Rollen-Skill-Stacks (Owner-Inputs, Stand 2026-11-11)
 
@@ -60,51 +62,27 @@ Aufnahme macht ihre Empfehlungen nicht automatisch zu Org-Regeln.
 
 | Rolle | Kern-SKILL und Wissensanker | Ergaenzungen / Stand |
 | --- | --- | --- |
-| CEO | `CEO.md` -> `ORG.md` -> `PRODUCT.md`; `~/.vos/ceo/.skills/vitalos-ceo` | Perplexity: Kurs, Digest 08:00, Wochen-Door, Owner-Sonntag tele. Desk: `DRAFTS/NIGHT-SHIFT-BRIEF.md` fuer Morgen-Review. Option: pm-skills am Desk / Cursor. |
-| COO (Cursor) | `COO.md`; `~/.vos/coo/.skills/vitalos-coo` | Betrieb: Inbox `nimmsel23+ceo`, Runner, `coo-run` 06:25; lokal ausfuehren, kein Gegenkurs. Owner nur Brand. |
-| CTO (Codex) | `CODEX.md`; `CTO.md`; `~/.vos/cto/.skills/vitalos-cto` | Methoden: ponytail, karpathy-guidelines, git-commit-analyzer, skill-creator; Paket `~/product-engineering` am Desk. `cto-run` 08:15. Kein PM-Hebel. |
-| CPO (Claude) | [CPO.md](CPO.md); `vitalos-cpo` + `vitalos-cpo-desk` | Produkt-Was; product-strategy / OST / prioritization; Pakete `~/pm-skills`, `~/pm-brain` am Desk. Steuert PM. |
-| PM | `~/.vos/pm/.skills/vitalos-pm` + `vitalos-pm-desk`; Desk `moc-pm.md` | 1 Move/Tag mit ALs; Mail CEO daily; Owner Freitag. Pakete pm-skills / pm-brain am Desk. |
-| AL (Codex) | Repo-`AGENTS.md` / Guide-MD; `~/.vos/al/.skills/vitalos-al` | 2×/Tag systemd; `package-product-engineering`; Alpha/Betta unter CTO. |
-| Oracle | `~/.vos/oracle/.skills/vitalos-oracle` / [ORACLE.md](ORACLE.md) | vos-door/game/tent-Phasen; Werkzeug — keine Fuehrungsrolle. COO: `ORG-ORACLE-WOCHE`. |
+| CEO-Skill | `~/.vos/ceo/.skills/vitalos-ceo`; Lauf `CEO.md` | Kurs buendeln, Gates; Sonntag optional. Beliebige Engine. |
+| COO-Skill | `~/.vos/coo/.skills/vitalos-coo` | Inbox `nimmsel23+ceo`, Runner, `coo-run` 06:25. Brand → Owner. |
+| CTO-Skill | `~/.vos/cto/.skills/vitalos-cto` | `cto-run` 08:15; `~/product-engineering`. |
+| CPO-Skill | `vitalos-cpo` (+ desk) | Was/Discovery; `~/pm-skills`, `~/pm-brain`. |
+| PM-Skill | `vitalos-pm` (+ desk); `moc-pm.md` | 1 Move/Tag; Owner Freitag optional. |
+| AL | Repo-Guide; `vitalos-al` | 2×/Tag systemd. |
+| Oracle | `vitalos-oracle` | Door/Game/Tent — Werkzeug. |
+| Research | Perplexity (Default B) | Auftrag via vos-Commit / WebApp-Dauerauftrag → Ergebnis committen. |
 
-CTO-Lauf: `cto-run` 08:15. CEO lokal: `ceo-run` stuendlich :05 (Heartbeat
-pausiert). Wochen-Door: CEO.
+CTO-Lauf: `cto-run` 08:15. `ceo-run` :05 nur bei altem Heartbeat.
 
-Bevorzugtes Plattform- und Teammodell (Owner-Input):
+### Plattformen (Werkzeug, kein Rang)
 
-| Layer | Plattform / Agent | Schwerpunkt |
-| --- | --- | --- |
-| Execution | **Cursor** | Primär-Alltag (Org, PM, ALs, Rapid Product) — Stand 2026-11-11. |
-| Execution | Codex | Engineering, verlaessliche Code-Aenderungen und Repo-AL-Fallback. |
-| Execution | Claude | CPO / Reviews; AL-Failover nach Cursor. |
-| Execution | Antigravity / Vibe | Optional wenn Credits; nicht Primär. |
-| Intelligence | Perplexity | Research. |
-| Intelligence | Grok | Adversarial, Narrative, Public und Strategy. |
-| Intelligence | Claude | CPO sowie Evaluation, Metrics, Memory, Architecture Reviews und Quality Gates. |
+| Werkzeug | Nutzen |
+| --- | --- |
+| **Cursor** | Primär-Alltag / Execution |
+| Claude / ChatGPT / Codex | Skills bei Bedarf; AL-Failover |
+| Perplexity | Research (nicht Führung, Default B) |
+| Grok | Optional adversarial / Narrative — **kein** Shadow-CEO |
 
-Codex und Claude Code sind als spezialisierte Sub-Agents in Antigravity
-vorgesehen. Diese Aufteilung soll verhindern, dass jeder Agent alles macht;
-die gewuenschten Effekte sind klare Spannungsfelder, besseres Langzeitgedaechtnis
-und eine echte Multi-Agent-Infrastruktur. Das Modell bleibt ein anpassbarer
-Org-Input; die technische Integration ist damit nicht bestaetigt.
-
-Vorgeschlagene Ergaenzungen kritischer Verantwortungsbereiche:
-
-| Rollen-Vorschlag | Vorgeschlagene Besetzung | Zweck / erwarteter Beitrag |
-| --- | --- | --- |
-| Red Team / Adversarial | Grok | Plaene, Annahmen und Code regelmaessig angreifen, um blinde Flecken und Fehler frueh offenzulegen. |
-| Head of Evaluation & Metrics | Claude | Messen, ob Qualitaet und Teamleistung tatsaechlich steigen, statt sich nur besser anzufuehlen. |
-| Knowledge & Memory Manager | Claude | Langfristiges Firmenwissen, Entscheidungslog und Lessons Learned pflegen. |
-| Growth / Narrative / Public | Grok | Kommunikation nach aussen, Storytelling und Real-Time-Sentiment (z. B. X) beobachten. |
-| Security & Reliability | Codex + Claude | Production-Code und Agenten-Sicherheit absichern. |
-
-Diese Rollen-/Besetzungsmodelle sind Owner-Inputs zur Org-Entwicklung; sie
-definieren fuer sich allein noch keine laufenden Agenten, Systemd-Timer,
-Zugriffsrechte oder Rollen-Tags.
-
-Die Modellgewichtung ist eine Orientierung nach Aufgabenart und kann sich mit
-Verfuegbarkeit und konkreter Evidenz weiterentwickeln.
+Keine parallelen „Charakter-CEOs“. Gleicher Skill-Text, gleiche Gates.
 
 Fuer die uebrigen Rollen bildet die Menge der Taskwarrior-Aufgaben mit der
 hoechsten Urgency die Fire-Map-Ausfuehrungssicht. Jede Rolle kennzeichnet ihre
@@ -141,11 +119,9 @@ nach Inhalt zuordnen; nicht mechanisch alle Runbook-Inhalte verschieben.
   18:10). `coo-run` 06:25 → `coo-health` (kein LLM); Agent+Mail nur bei Rot
   bzw. `COO_FORCE=1`. Perplexity-CEO-Digest
   **08:00**. `cto-run` **08:15** (`vitalos-cto.timer`, nach Digest).
-  Engine (Owner 2026-11-11): **Cursor-first.** AL-Pool
-  **cursor→claude→codex** (Vibe pausiert / keine Tokens; kein agy im Pool).
-  **PM-Alltag = Cursor** (Antigravity/Gemini optional ab Credits).
-  **`agy` CLI = Staff-Worker** (nicht PM/AL). `pm-run` = headless Sweep.
-  Skill-SSOT: `~/.vos` (`nimmsel23/vos`); `~/.vibe/skills` nur Mount.
+  Engine: **Cursor-first** AL-Pool **cursor→claude→codex** (Vibe pausiert).
+  Skill-SSOT: `~/.vos`. Perplexity = Research (OWNER-CONTRACT B).
+  Owner-Gates: `+org` / `org-mail` — kein Rollen-Pingpong.
   roadmap 07:45, thin-results, emulator-test 13:00 (RAM-Gate 2500MB).
   Lokaler `ceo-run` stuendlich :05 (Live-Heartbeat pausiert; Reduktion auf
   woechentlich als Owner-Input vorgemerkt). ceo-digest 23:45 lokal
