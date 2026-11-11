@@ -4,7 +4,7 @@ Ort: `~/vitalos/prod/coordination/`. Pflege = gleicher Commit wie die Aenderung.
 Owner-Vertrag: `~/.vos/org/OWNER-CONTRACT.md` (`nimmsel23/vos`).
 
 **Namen:** `vitalos` = Projekt+Repo · **VitalOS** = System · `vos` = Org-Git/
-WebApps · **core4-aos** = Owner übt AlphaOS. Philosophie-SSOT:
+WebApps · **core4-aos** = Firebase zu `~/aos`. Philosophie-SSOT:
 `~/.vos/org/PHILOSOPHY.md` — Nutzer: Body+Being Dominion (einfach);
 Owner-Org: Business-Dominion; K/W/M/L & 4B-Jargon **nicht** ins Produkt.
 
