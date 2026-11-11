@@ -1,3 +1,12 @@
+## 2026-11-11 — Owner-Klarstellung: Quelle vs. Store-Gewand
+
+- Session festgehalten in `docs/UNIFIED-PRODUCT.md` (Abschnitt Owner-Klarstellung
+  2026-11-11): `src/` = Shell-Quelle, `prod/` = Store-/Klienten-Gewand;
+  Analogie `fitness-dev` → `vos-fitness`; Store-User vs private Klienten;
+  getrennte Firebase/Accounts (`nimmsel23` privat/Org, `nimmdaniel` außen);
+  private Release-Schiene aufgelockert, `prod/` CI/Deploy deppensicher.
+- Verweise: `AGENTS.md`, `prod/docs/FIREBASE.md`.
+
 ## 2026-11-11 — Policy: keine .bak mehr
 
 - `.gitignore`: `*.bak*`, `*.bak[0-9]*`, `*.pre3.bak`
