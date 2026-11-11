@@ -8,9 +8,11 @@
 
 ## 2026-11-11 — Journal Solo-Icons unter vos-journal/mini/*
 
-- `journal-dev` `37d58fd` (dev): Door/Voice/Game/Tent/Habits + Game-Maps als
+- `journal-dev` `37d58fd`/`bffdaf7`: Door/Voice/Game/Tent/Habits + Game-Maps als
   `/mini/…` auf vos-journal; Legacy-Sites nur 301 (`build-journal-minis.mjs`).
-- HOSTING-TARGETS + `portal/hosting-targets.json` nachgezogen.
+- Doku: `HOSTING-TARGETS.md`, `portal/hosting-targets.json` (`kind: solo-alias` /
+  `legacy-redirect`), journal `DEPLOYMENT.md`/`README`/`JOURNAL-V2.md`, Meta
+  `DEPLOYMENT.md` — Alias-Tabelle explizit.
 - Live Deploy OK; Meta-Pin `journal-app` → `bffdaf7`.
 
 ## 2026-11-11 — Journal-Kanon vos-journal
