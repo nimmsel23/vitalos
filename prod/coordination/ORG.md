@@ -24,6 +24,9 @@ Kein zweites Abteilungs-Orchester im Browser.
 Skill-Sitze (Laptop): **CEO, COO, CPO, CTO, PM, AL** (+ Oracle).
 Owner: Orders + Gates; optional Freitag/Sonntag; Brand.
 
+**Org-Norm:** Jeder Laptop-Agent hält sich an **AOS Chapters**
+(`orgsh -c 'aos chapter …'`). Taskwarrior-**Urgency = Fire Map**.
+
 ## Stand & Gates
 
 ```
