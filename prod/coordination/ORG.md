@@ -60,7 +60,7 @@ Aufnahme macht ihre Empfehlungen nicht automatisch zu Org-Regeln.
 
 | Rolle | Kern-SKILL und Wissensanker | Ergaenzungen / Stand |
 | --- | --- | --- |
-| CEO | `CEO.md` -> `ORG.md` -> `PRODUCT.md`; `~/.vos/ceo/.skills/vitalos-ceo` | Perplexity: Kurs, Digest 08:00, Wochen-Door, Owner-Sonntag tele. Desk: `DRAFTS/NIGHT-SHIFT-BRIEF.md` fuer Morgen-Review. Option: pm-skills-Methoden via `~/.vibe/skills`. |
+| CEO | `CEO.md` -> `ORG.md` -> `PRODUCT.md`; `~/.vos/ceo/.skills/vitalos-ceo` | Perplexity: Kurs, Digest 08:00, Wochen-Door, Owner-Sonntag tele. Desk: `DRAFTS/NIGHT-SHIFT-BRIEF.md` fuer Morgen-Review. Option: pm-skills am Desk / Cursor. |
 | COO (Cursor) | `COO.md`; `~/.vos/coo/.skills/vitalos-coo` | Betrieb: Inbox `nimmsel23+ceo`, Runner, `coo-run` 06:25; lokal ausfuehren, kein Gegenkurs. Owner nur Brand. |
 | CTO (Codex) | `CODEX.md`; `CTO.md`; `~/.vos/cto/.skills/vitalos-cto` | Methoden: ponytail, karpathy-guidelines, git-commit-analyzer, skill-creator; Paket `~/product-engineering` am Desk. `cto-run` 08:15. Kein PM-Hebel. |
 | CPO (Claude) | [CPO.md](CPO.md); `vitalos-cpo` + `vitalos-cpo-desk` | Produkt-Was; product-strategy / OST / prioritization; Pakete `~/pm-skills`, `~/pm-brain` am Desk. Steuert PM. |
@@ -75,9 +75,10 @@ Bevorzugtes Plattform- und Teammodell (Owner-Input):
 
 | Layer | Plattform / Agent | Schwerpunkt |
 | --- | --- | --- |
-| Execution | Antigravity | Plattform und Orchestrierung fuer Teamwork, Remote Agents und laengere Horizonte. |
-| Execution | Codex | Engineering, verlaessliche Code-Aenderungen und standardmaessiger Repo-AL je Repository. |
-| Execution | Vibe / Cursor | Rapid Product, Frontend-Prototypen, Flow und Feel. |
+| Execution | **Cursor** | Primär-Alltag (Org, PM, ALs, Rapid Product) — Stand 2026-11-11. |
+| Execution | Codex | Engineering, verlaessliche Code-Aenderungen und Repo-AL-Fallback. |
+| Execution | Claude | CPO / Reviews; AL-Failover nach Cursor. |
+| Execution | Antigravity / Vibe | Optional wenn Credits; nicht Primär. |
 | Intelligence | Perplexity | Research. |
 | Intelligence | Grok | Adversarial, Narrative, Public und Strategy. |
 | Intelligence | Claude | CPO sowie Evaluation, Metrics, Memory, Architecture Reviews und Quality Gates. |
@@ -128,8 +129,9 @@ nach Inhalt zuordnen; nicht mechanisch alle Runbook-Inhalte verschieben.
 - App-Entwicklung: ~/dev/<name>-dev (Produkt-App-Quellen, s. PRODUCT.md)
 - Tools/Dienste: ~/.dotfiles (Runner, Units, Skripte), ~/aos (AlphaOS CLI,
   Firmenphilosophie), ~/.org (Org-Zuhause, venv symlink), ~/dev/agent-skills
-  (Skill-Standard-Referenz, read-only), ~/.vibe/skills (Org-Agenten-Skills,
-  BEFUND: unversioniert — Befund bei CTO-Linie), Skill-Format-Standard: ~/dev/agent-skills (Spec).
+  (Skill-Standard-Referenz, read-only), ~/.vos (Org-Skill-SSOT, Git
+  nimmsel23/vos); ~/.vibe/skills nur Mount/Symlink. Skill-Format-Standard:
+  ~/dev/agent-skills (Spec).
 - Nicht verwechseln: skills-dev = Skills-APP (Produkt), NICHT die
   Skill-Verwaltung der Agenten.
 
@@ -139,12 +141,11 @@ nach Inhalt zuordnen; nicht mechanisch alle Runbook-Inhalte verschieben.
   18:10). `coo-run` 06:25 → `coo-health` (kein LLM); Agent+Mail nur bei Rot
   bzw. `COO_FORCE=1`. Perplexity-CEO-Digest
   **08:00**. `cto-run` **08:15** (`vitalos-cto.timer`, nach Digest).
-  Engine (Owner 2026-11-09): AL-Pool **vibe→cursor→claude→codex** mit Credits-
-  Failover (kein agy). Bis **2026-11-11** AL-Erstversuch **cursor**.
-  **PM = Antigravity-Electron-GUI oder Web-Gemini** (`nimmdaniel+pm@gmail.com`).
-  Antigravity-Credits ab **2026-11-14**; Interim-GUI = Cursor Desktop.
+  Engine (Owner 2026-11-11): **Cursor-first.** AL-Pool
+  **cursor→claude→codex** (Vibe pausiert / keine Tokens; kein agy im Pool).
+  **PM-Alltag = Cursor** (Antigravity/Gemini optional ab Credits).
   **`agy` CLI = Staff-Worker** (nicht PM/AL). `pm-run` = headless Sweep.
-  Claude/Codex ab 11.11.
+  Skill-SSOT: `~/.vos` (`nimmsel23/vos`); `~/.vibe/skills` nur Mount.
   roadmap 07:45, thin-results, emulator-test 13:00 (RAM-Gate 2500MB).
   Lokaler `ceo-run` stuendlich :05 (Live-Heartbeat pausiert; Reduktion auf
   woechentlich als Owner-Input vorgemerkt). ceo-digest 23:45 lokal

@@ -25,7 +25,7 @@ com.vitalos.app) + Pages-Kanal (github.io/vitalos, Bewertung offen).
 | skills-app | skills-dev | Uebungs-/Skills-Katalog der Fitness-Linie (APP!) |
 
 Hinweis fuer CEO-Sessions: skills-app ist ein PRODUKT (Katalog-App), die
-Agenten-Faehigkeiten heissen Org-Skills und liegen in ~/.vibe/skills.
+Agenten-Faehigkeiten heissen Org-Skills und liegen in ~/.vos (Primär Cursor).
 
 ## Release-Fluss (je App)
 dev (Quell-Repo) -> push origin dev -> CI Check -> Auto-Promote -> master
