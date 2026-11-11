@@ -1,0 +1,43 @@
+{
+  "$comment": "Kanonische Hosting-Sites vos-<slug>.web.app — SOT-Text: docs/HOSTING-TARGETS.md. CTO pflegt. fuel-aos war falsch-Projekt, gelöscht, Name gesperrt → Soll vos-fuel (nicht -aos).",
+  "updated": "2026-11-11",
+  "schema": "https://vos-<slug>.web.app",
+  "history": {
+    "fuel-aos": "deleted-wrong-project-name-unavailable",
+    "fuel-vos": "replacement-in-fitness-aos-project",
+    "fitness-aos": "only-main-left-on-aos-url",
+    "vos-fitness": "semantic-wrapper-over-fitness-src"
+  },
+  "exceptionBrand": {
+    "vitalos": { "site": "vitalos", "note": "Shell-Marke vitalos.web.app — Ausnahme; optional später vos-shell" }
+  },
+  "targets": [
+    { "slug": "fitness", "canonical": "vos-fitness", "current": ["fitness-aos"], "repo": "fitness-dev", "kind": "main" },
+    { "slug": "fuel", "canonical": "vos-fuel", "current": ["fuel-vos", "fuel-os"], "retired": ["fuel-aos"], "repo": "fuel-dev", "kind": "main", "miniBase": "/mini", "minis": ["log", "supplements", "mikros", "protokoll"] },
+    { "slug": "fuel-log", "canonical": "vos-fuel", "path": "/mini/log", "current": ["vos-fuel-log"], "repo": "fuel-dev", "kind": "solo-alias" },
+    { "slug": "fuel-supplements", "canonical": "vos-fuel", "path": "/mini/supplements", "current": ["vos-fuel-supplements"], "repo": "fuel-dev", "kind": "solo-alias" },
+    { "slug": "fuel-mikros", "canonical": "vos-fuel", "path": "/mini/mikros", "current": ["vos-fuel-mikros"], "repo": "fuel-dev", "kind": "solo-alias" },
+    { "slug": "fuel-protokoll", "canonical": "vos-fuel", "path": "/mini/protokoll", "current": ["vos-fuel-protokoll"], "repo": "fuel-dev", "kind": "solo-alias" },
+    { "slug": "journal", "canonical": "vos-journal", "current": ["vos-journal"], "aliases": ["journal-vos"], "redirect": { "from": "journal-vos", "to": "https://vos-journal.web.app", "type": 301 }, "repo": "journal-dev", "kind": "main", "miniBase": "/mini", "minis": ["door", "voice", "game", "tent", "habits"], "note": "Flavors heute noch eigene vos-* Sites; Icons können unter vos-journal Manifest-Pfaden laufen" },
+    { "slug": "journal-vos", "canonical": "vos-journal", "current": ["journal-vos"], "repo": "journal-dev", "kind": "legacy-redirect" },
+    { "slug": "habits", "canonical": "vos-habits", "current": ["habit-vos"], "repo": "journal-dev", "kind": "main" },
+    { "slug": "learn", "canonical": "vos-learn", "current": ["learn-vos"], "repo": "fitness-dev", "kind": "main" },
+    { "slug": "plan", "canonical": "vos-plan", "current": ["vos-plan"], "repo": "plan-dev", "kind": "main" },
+    { "slug": "skills", "canonical": "vos-skills", "current": ["vos-skills"], "repo": "skills-dev", "kind": "main" },
+    { "slug": "relax", "canonical": "vos-relax", "current": [], "repo": "relax-dev", "kind": "main" },
+    { "slug": "6pack", "canonical": "vos-6pack", "current": ["vos-6pack"], "repo": "6pack-dev", "kind": "main" },
+    { "slug": "coach", "canonical": "vos-coach", "current": ["vos-coach"], "repo": "coach-dev", "kind": "main" },
+    { "slug": "training", "canonical": "vos-training", "current": ["vos-training"], "repo": "fitness-dev", "kind": "solo" },
+    { "slug": "atlas", "canonical": "vos-atlas", "current": ["vos-atlas"], "repo": "fitness-dev", "kind": "solo" },
+    { "slug": "logbuch", "canonical": "vos-logbuch", "current": ["vos-logbuch"], "repo": "fitness-dev", "kind": "solo" },
+    { "slug": "review", "canonical": "vos-review", "current": ["vos-review"], "repo": "fitness-dev", "kind": "solo" },
+    { "slug": "touren", "canonical": "vos-touren", "current": ["vos-touren"], "repo": "fitness-dev", "kind": "solo" },
+    { "slug": "setup", "canonical": "vos-setup", "current": ["vos-setup"], "repo": "fitness-dev", "kind": "solo" },
+    { "slug": "anamnese", "canonical": "vos-anamnese", "current": ["vos-anamnese"], "repo": "fitness-dev", "kind": "solo" },
+    { "slug": "fokus", "canonical": "vos-fokus", "current": ["vos-fokus"], "repo": "fitness-dev", "kind": "solo" },
+    { "slug": "door", "canonical": "vos-door", "current": ["vos-door"], "repo": "journal-dev", "kind": "solo" },
+    { "slug": "game", "canonical": "vos-game", "current": ["vos-game"], "repo": "journal-dev", "kind": "solo" },
+    { "slug": "voice", "canonical": "vos-voice", "current": ["vos-voice"], "repo": "journal-dev", "kind": "solo" },
+    { "slug": "tent", "canonical": "vos-tent", "current": ["vos-tent"], "repo": "journal-dev", "kind": "solo" }
+  ]
+}
