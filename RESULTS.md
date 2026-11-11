@@ -1,3 +1,13 @@
+## 2026-11-11 — Prod-CI deppensicher
+
+- `prod/scripts/check-product-boundaries.mjs` + `pnpm run product:check`.
+- `product-check.yml`: Push auf master (prod-Paths) + optional Store-Build.
+- `deploy-product-hosting.yml`: nur workflow_dispatch → `vitalos-prod` /
+  `FIREBASE_SERVICE_ACCOUNT_VITALOS_PROD` + `dist-store`.
+- Guards: `ci-deploy-guard.mjs` / `deploy-product.mjs` fail-closed (`vitalos-prod`,
+  `VOS_PRODUCT_DEPLOY=1`).
+- Doku: `prod/docs/FIREBASE.md` CI-Secrets, `docs/DEPLOYMENT.md` Trennung.
+
 ## 2026-11-11 — Owner-Klarstellung: Quelle vs. Store-Gewand
 
 - Session festgehalten in `docs/UNIFIED-PRODUCT.md` (Abschnitt Owner-Klarstellung
