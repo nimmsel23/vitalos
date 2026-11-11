@@ -66,6 +66,16 @@ Console-Arbeit laut Gate (Play Closed-Test / zugehörige Firebase-Schritte) —
 Owner-Hand, kein stiller Auto-Deploy nach `vitalos-prod` allein aus dieser
 Klarstellung.
 
+### TWA-APK in privaten Settings (Owner-Notiz)
+
+Owner 2026-11-11: TWA-APK-Releases können in den **Settings-Tabs der
+`fitness-aos`-Apps** (private Linie) als **Git-/Release-Link** angeboten
+werden — analog zu bestehenden GitHub-Release-APKs (z. B. Skills
+`android-latest`). Zweck: Klienten die VOS-/TWA-App zum Sideload aus der
+laufenden privaten App heraus erreichen, ohne Play-Store-Zwang. Noch keine
+Umsetzung in diesem Doc-Schritt; Verteilweg-Vorbild bleibt
+[M2-TESTUSER-APK-VERTEILWEG.md](../prod/docs/M2-TESTUSER-APK-VERTEILWEG.md).
+
 ## Befehle im Meta-Repo-Root
 
 Ausführen unter `/home/alpha/vitalos`. Produkt-Buildwerte vorher aus der
