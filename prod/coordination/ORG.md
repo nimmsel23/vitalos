@@ -7,34 +7,28 @@ Owner-Vertrag (Gates, Einschreiten, Anti-Meta, Perplexity-Optionen):
 Lies bei Kurs-Arbeit: OWNER-CONTRACT -> DIESER -> PRODUCT.md (-> CEO.md nur
 als Laufgedächtnis).
 
-## Org = Laptop-Agenten (Taskwarrior + Shell)
+## Zwei Schichten: `vos` (WebApps) vs Org (Laptop)
 
-Die Org sind die Agenten/Runner **auf diesem Laptop** mit Org-Task-DB
-(`orgsh`) und Shell — Cursor, lokale CLIs, systemd (`coo-run`, `cto-run`,
-`abteilung@…`). Untereinander **gleichrangig**. Rolle = Skill (`vitalos-*`),
-kein Charakter.
+| Schicht | Wer | Was |
+| --- | --- | --- |
+| **`vos`** | WebApps (Perplexity, Grok, ChatGPT-/Claude-Web, …) + Git `nimmsel23/vos` | Denk-/Research-/Order-Fläche. WebApps sind **basically vos**. |
+| **Org** | Laptop-Agenten mit `orgsh` + Shell + Runner | Ausfuehrung. Skills `vitalos-*`. Gleichrangig. |
 
-**Ausserhalb der Org:** Perplexity-, Grok-, ChatGPT-, Claude-WebApps — kein
-Taskwarrior, keine Shell. Research/Sparring; wirken erst, wenn Output als
-Commit / Gate / `+org`-Mail vom Laptop aufgenommen wird.
+WebApp-Output zählt als vos-Commit / Gate / `+org` — dann greift die Org.
+Kein zweites Abteilungs-Orchester im Browser.
 
-Skill-Sitze lokal: **CEO, COO, CPO, CTO, PM, AL** (+ Oracle-Werkzeug).
-Ping-Pong verboten — Skill laden / Task+Tag / Commit.
+Skill-Sitze (Laptop): **CEO, COO, CPO, CTO, PM, AL** (+ Oracle).
+Owner: Orders + Gates; optional Freitag/Sonntag; Brand.
 
-- **Owner Daniel:** High-Level Orders + Gates; optional Freitag/Sonntag; Brand.
-- **CEO/COO/CPO/CTO/PM/AL-Skills:** wie bisher, lokal geladen.
-- **Web Research (Perplexity Default B):** Auftrag → Output committen; kein Sitz.
-
-## Git + Taskwarrior = Stand; Owner = Gates
+## Stand & Gates
 
 ```
-Laptop-Org:  Skill/Runner  -->  Commit + Org-Task
-WebApp:      Text/Research -->  nur wertvoll als Commit / +org
-Owner:       ORDER | Gate-Antwort | Freitag | Brand | So optional
+vos / WebApp  -->  Commit | Gate | +org
+Org (Laptop)  -->  Taskwarrior + Shell + Ship
+Owner         -->  ORDER | Gate-Antwort | Freitag | Brand
 ```
 
-- Merksatz: **Laptop = Org · Git+TW = Stand · Skills = Kompetenz ·
-  WebApps = aussen · Daniel = Orders+Gates.**
+- Merksatz: **vos = WebApps/Git · Org = Laptop TW+Shell · Daniel = Orders+Gates.**
 
 ## Berichtsstil
 
@@ -60,7 +54,7 @@ Aufnahme macht ihre Empfehlungen nicht automatisch zu Org-Regeln.
 | PM-Skill | `vitalos-pm` (+ desk); `moc-pm.md` | 1 Move/Tag; Owner Freitag optional. |
 | AL | Repo-Guide; `vitalos-al` | 2×/Tag systemd. |
 | Oracle | `vitalos-oracle` | Door/Game/Tent — Werkzeug. |
-| (ausserhalb) Research | Perplexity & Co. | Kein Org-Sitz; Output nur via Commit/`+org`. |
+| vos / WebApps | Perplexity & Co. | Basically vos; Output = Commit/`+org`. |
 
 CTO-Lauf: `cto-run` 08:15. `ceo-run` :05 nur bei altem Heartbeat.
 
@@ -70,9 +64,9 @@ CTO-Lauf: `cto-run` 08:15. `ceo-run` :05 nur bei altem Heartbeat.
 | --- | --- |
 | **Cursor** | Primär-Alltag / Execution |
 | Claude / ChatGPT / Codex | Skills bei Bedarf; AL-Failover |
-| Perplexity / Grok / ChatGPT-Web / Claude-Web | **Ausserhalb** der Org — Research/Sparring |
+| Perplexity / Grok / ChatGPT-Web / Claude-Web | **vos-Schicht** — Git, kein TW/Shell |
 
-Org-Mitgliedschaft = Laptop + Taskwarrior + Shell. Web ≠ Abteilung.
+Org = Laptop + Taskwarrior + Shell. vos/WebApps ≠ Org-Abteilung.
 
 Fuer die uebrigen Rollen bildet die Menge der Taskwarrior-Aufgaben mit der
 hoechsten Urgency die Fire-Map-Ausfuehrungssicht. Jede Rolle kennzeichnet ihre
