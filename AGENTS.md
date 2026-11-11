@@ -7,7 +7,7 @@ halten. **Einzige Ausnahme: `vitalos/prod`** (Store/Produkt darf komplex
 sein). CI/Docs/Agent-Workflows außerhalb von `prod/` nicht aufblasen.
 
 **Umsetzen vor Dokumentieren:** Sofort Machbares zuerst ändern/pushen,
-Doku danach nachziehen — nicht umgekehrt.
+Doku danach nachziehen — nicht umgekehrt. **Umgesetzt = committed.**
 
 ## Architektur und Zuständigkeit
 
