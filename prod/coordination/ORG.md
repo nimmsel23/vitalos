@@ -40,8 +40,8 @@ Owner         -->  Fire Map | ORDER | Gate | Freitag | Brand
   Fire Map + Orders + Gates.**
 - **Org-Agenten:** schlankes PM; AlphaOS nachschlagen ok, nicht Pflichtritual.
   Org-TW ≠ Daniels Fire Map.
-- **Anti-Bubble:** Org nicht auf App/Play-Store-`vitalos` verengen —
-  Coaching/Brand/Cash/Creator mitdenken.
+- **Org =** Multi-Agent-Team (Laptop + Cloud) für Solopreneur **Business-
+  Dominion** — kein Konzern, keine Store-only-Bubble.
 
 ## Berichtsstil
 
