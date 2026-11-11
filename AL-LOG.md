@@ -118,6 +118,6 @@ completed	success	Fix Pulse mobile settings and training layout	Deploy VitalOS S
 - Arbeitsbaum: 11 uncommittete Pfade
 
 _Vom AL ausfüllen (knapp & belegbar, je 1–3 Zeilen, Commit-/PR-Referenzen statt Erzählung):_
-- Erledigt: Org `fdd8b7fd` — Dependabot esbuild Ursache `security_update_dependency_not_found` (Runs `42640916585`/`42643232360`); Root-Caret `^0.27.7` vs Patch `0.28.1`; Alerts #205/#206 GHSA-g7r4-m6w7-qqqr; Befund `prod/docs/DEPENDABOT-ESBUILD-BEFUND.md`; Guide #13.
-- Offen/Weiter: CTO Fix esbuild Bump/Override; C-002 Live (`3c55e958`); C-001b Closed-Track (`+cto`); Journal-Live-Rot → CTO. Fremde Dirt: Submodule `+` 6pack/plan/relax/skills, `M` ORG.md/fitness-dev.md, docs/assets-Hash (unberührt).
-- Blocker: C-002 — `adb devices` leer; kein Emulator im Timer.
+- Erledigt: C-002 Handoff Refresh (`3c55e958`) — APK/AAB bestätigt (`ad47e50d…`/`06cca969…`, `com.vitalos.app`, Meta `021016f`); leeres DoD-Protokoll; Slot **2026-11-17**; Guide#9/NEXT/RESULTS; Vorlauf 03:45 esbuild `fdd8b7fd` bleibt done.
+- Offen/Weiter: C-002 Rest Install+Login+Journal+Sync (Live/Emulator 17.11 oder früher via CTO); CTO esbuild Bump/Override; C-001b (`+cto`); Journal-Live-Rot → CTO. Fremde Dirt (portal/src/coordination) unberührt.
+- Blocker: C-002 — `adb devices` leer; kein Emulator im Timer (AVDs vorhanden, Start verboten).
