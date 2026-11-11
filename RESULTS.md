@@ -1,9 +1,15 @@
+## 2026-11-11 — Journal Solo-Icons unter vos-journal/mini/*
+
+- `journal-dev` `37d58fd` (dev): Door/Voice/Game/Tent/Habits + Game-Maps als
+  `/mini/…` auf vos-journal; Legacy-Sites nur 301 (`build-journal-minis.mjs`).
+- HOSTING-TARGETS + `portal/hosting-targets.json` nachgezogen.
+- Live nach Auto-Promote master; dann Meta-Pin `journal-app`.
+
 ## 2026-11-11 — Journal-Kanon vos-journal
 
 - `journal-dev`: Target `v2` = kanonisch `vos-journal.web.app`; Target `journal`
   (`journal-vos`) nur noch 301-Redirect (`hosting/journal-vos-redirect`).
-- Docs/Portal/HOSTING-TARGETS nachgezogen; Flavor-Icons unter derselben Origin
-  als Folgeoption dokumentiert.
+- Docs/Portal/HOSTING-TARGETS nachgezogen.
 
 ## 2026-11-11 — Produkt-CI Secrets gesetzt
 
