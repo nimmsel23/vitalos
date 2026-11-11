@@ -63,8 +63,8 @@ Wiederholst du in deinem Repo-Alltag von Hand einen Schritt, den ein Skript, ein
    INTERNAL[0]-Errors auf fail-closed Nutzertext („Smart Logging ist gerade
    nicht verfuegbar"). Server-Fix 5f2f694 ist LIVE — Codes an Ist-Stand mappen.
    Check (Journal) belegen; kein Deploy/Functions.
-2. **Semver Live** Org `d48d852d`: nach Promote Header/Update-Dialog auf
-   journal-vos = `1.0.x+sha` belegen (DOM/Text reicht). Tip `package.json` ist
-   bereits `1.0.1`.
+2. [x] **Semver Live** Org `d48d852d` (erledigt 2026-11-11): journal-vos Header
+   `v0.2.0+031a78c` + Update-Dialog belegt (Live Deploy 42803023456; C-012 Baseline
+   0.2.0, nicht 1.0.x). Task done.
 3. Draft Merge-Agent **#42** (base=master) nicht mergen/rebasen — Draft ≠ Policy.
 4. Owner-Regel: keine PR-/Merge-Sperre; rote Dep-PRs fixen+squash, nicht parken.
