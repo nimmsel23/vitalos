@@ -1,0 +1,155 @@
+{
+  "generated": "2026-11-12T23:16:18+01:00",
+  "docs": [
+    {
+      "key": "status",
+      "path": "../STATUS.md",
+      "label": "Status",
+      "group": "Lage"
+    },
+    {
+      "key": "todo",
+      "path": "../TODO.md",
+      "label": "TODO",
+      "group": "Lage"
+    },
+    {
+      "key": "backlog",
+      "path": "../PRODUKT-BACKLOG.md",
+      "label": "Produkt-Backlog",
+      "group": "Lage"
+    },
+    {
+      "key": "boards",
+      "path": "../BOARDS.md",
+      "label": "Living Boards",
+      "group": "Lage"
+    },
+    {
+      "key": "org",
+      "path": "../ORG.md",
+      "label": "Org",
+      "group": "Org"
+    },
+    {
+      "key": "cto",
+      "path": "../CTO.md",
+      "label": "CTO",
+      "group": "Org"
+    },
+    {
+      "key": "cpo",
+      "path": "../CPO.md",
+      "label": "CPO",
+      "group": "Org"
+    },
+    {
+      "key": "oracle",
+      "path": "../ORACLE.md",
+      "label": "Oracle",
+      "group": "Org"
+    },
+    {
+      "key": "product",
+      "path": "../PRODUCT.md",
+      "label": "Produkt",
+      "group": "Produkt"
+    },
+    {
+      "key": "auftrag",
+      "path": "../AUFTRAG-ANDROID-LINIE.md",
+      "label": "Android-Linie",
+      "group": "Produkt"
+    },
+    {
+      "key": "scope",
+      "path": "../CEO-SCOPE-OBSERVE-V1.md",
+      "label": "Scope Observe v1",
+      "group": "Produkt"
+    },
+    {
+      "key": "roadmap",
+      "path": "../CEO-ROADMAP-STATUS.md",
+      "label": "Roadmap",
+      "group": "Produkt"
+    },
+    {
+      "key": "strategy",
+      "path": "../CEO-STRATEGY-DELTA.md",
+      "label": "Strategie-Delta",
+      "group": "Produkt"
+    },
+    {
+      "key": "arch",
+      "path": "../CEO-ARCHITECTURE-STATUS.md",
+      "label": "Architektur",
+      "group": "Produkt"
+    },
+    {
+      "key": "departments",
+      "path": "../CEO-DEPARTMENTS-KONZEPT.md",
+      "label": "Departments",
+      "group": "Org"
+    },
+    {
+      "key": "cloudcto",
+      "path": "../DESIGN-CLOUD-CTO.md",
+      "label": "Cloud-CTO Design",
+      "group": "Org"
+    },
+    {
+      "key": "p2weekly",
+      "path": "../P2-WEEKLY-BESTANDSAUFNAHME.md",
+      "label": "P2 Weekly",
+      "group": "Ritual"
+    },
+    {
+      "key": "stunden",
+      "path": "../CEO-STUNDEN-PROMPT.md",
+      "label": "CEO-Stunden",
+      "group": "Ritual"
+    },
+    {
+      "key": "vibe",
+      "path": "../VIBE-PROMPT.md",
+      "label": "Vibe-Prompt",
+      "group": "Ritual"
+    },
+    {
+      "key": "readme",
+      "path": "../README.md",
+      "label": "README",
+      "group": "Ritual"
+    },
+    {
+      "key": "game",
+      "path": "../game/README.md",
+      "label": "Game",
+      "group": "Ritual"
+    },
+    {
+      "key": "tent-tent-2026-w46",
+      "path": "../game/TENT-2026-W46.md",
+      "label": "TENT-2026-W46",
+      "group": "Ritual"
+    },
+    {
+      "key": "gamerun-game-run-2026-w45",
+      "path": "../game/GAME-RUN-2026-W45.md",
+      "label": "GAME-RUN-2026-W45",
+      "group": "Ritual"
+    },
+    {
+      "key": "pm-draft-c006-tester-einladung",
+      "path": "../PM-DRAFT-C006-tester-einladung.md",
+      "label": "PM-DRAFT-C006-tester-einladung",
+      "group": "Entwurf"
+    },
+    {
+      "key": "pm-draft-c009-coaching-angebot",
+      "path": "../PM-DRAFT-C009-coaching-angebot.md",
+      "label": "PM-DRAFT-C009-coaching-angebot",
+      "group": "Entwurf"
+    }
+  ]
+}

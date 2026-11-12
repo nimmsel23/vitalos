@@ -1,9 +1,11 @@
 // Lagezelt — liest die Koordinations-Markdowns live (fetch) und rendert sie ohne Abhängigkeiten.
+// Dokumentliste: ui/manifest.json (via gen-manifest.sh), Fallback unten.
 
-const DOCS = [
+const FALLBACK_DOCS = [
   { key: "status", path: "../STATUS.md", label: "Status", group: "Lage" },
   { key: "todo", path: "../TODO.md", label: "TODO", group: "Lage" },
   { key: "backlog", path: "../PRODUKT-BACKLOG.md", label: "Produkt-Backlog", group: "Lage" },
+  { key: "boards", path: "../BOARDS.md", label: "Living Boards", group: "Lage" },
   { key: "org", path: "../ORG.md", label: "Org", group: "Org" },
   { key: "cto", path: "../CTO.md", label: "CTO", group: "Org" },
   { key: "cpo", path: "../CPO.md", label: "CPO", group: "Org" },
@@ -16,7 +18,26 @@ const DOCS = [
   { key: "game", path: "../game/README.md", label: "Game", group: "Ritual" },
   { key: "readme", path: "../README.md", label: "README", group: "Ritual" },
 ];
-const DOC = Object.fromEntries(DOCS.map((d) => [d.key, d]));
+
+/** Living-Board-Aufträge (vitalos#27); Status aus BOARDS.md-Tabelle wenn vorhanden. */
+const BOARD_CARDS = [
+  { area: "workspace Hub", issue: 28, repo: "nimmsel23/workspace", cats: ["Team", "Wochenrhythmus", "Git/Siblings", "Automation", "Owner-Offen", "Outbound-Guard"] },
+  { area: "VitalTraining", issue: 29, repo: "nimmsel23/business-vitaltraining", cats: ["Offers", "Research", "B2B-Direkt", "Skills", "Website/CI", "Focus-Map"] },
+  { area: "creator", issue: 30, repo: "nimmsel23/business-creator", cats: ["Avatarin/BIP", "Content-KW", "Docs", "Ship-Log", "Eliminations"] },
+  { area: "business Vault", issue: 31, repo: "nimmsel23/obsidian-business", cats: ["Focus Map", "Frame", "Vault-Links", "Fristen", "Git-Drift"] },
+  { area: "vitalos Meta", issue: 32, repo: "nimmsel23/vitalos", cats: ["Submodule-Pins", "Store", "CI", "Org-Ritual", "Portal", "Release"] },
+  { area: "coach-dev", issue: 33, repo: "nimmsel23/coach-dev", cats: ["Auth", "Client-Scope", "Inspector", "Plan-Pin", "CI-Gate", "Acceptance"] },
+];
+
+let DOCS = FALLBACK_DOCS.slice();
+let DOC = Object.fromEntries(DOCS.map((d) => [d.key, d]));
+let manifestMeta = { generated: null, source: "fallback" };
+
+function setDocs(list, meta = {}) {
+  DOCS = list;
+  DOC = Object.fromEntries(DOCS.map((d) => [d.key, d]));
+  manifestMeta = { generated: meta.generated || null, source: meta.source || "fallback" };
+}
 
 const ROLE_ORDER = ["ceo", "coo", "cto", "cpo", "pm", "al", "alpha", "betta", "oracle", "mentor", "owner", "org"];
 const ROLE_LABEL = { ceo: "CEO", coo: "COO", cto: "CTO", cpo: "CPO", pm: "PM", al: "AL", alpha: "Alpha", betta: "Betta", oracle: "Oracle", mentor: "Mentor", owner: "Owner", org: "Org" };
@@ -353,6 +374,18 @@ function statusStand() {
 
 /* ── Laden ──────────────────────────────────────────── */
 
+async function loadManifest() {
+  try {
+    const res = await fetch("./manifest.json", { cache: "no-store" });
+    if (!res.ok) throw new Error(`${res.status}`);
+    const data = await res.json();
+    if (!Array.isArray(data.docs) || !data.docs.length) throw new Error("leeres Manifest");
+    setDocs(data.docs, { generated: data.generated, source: "manifest" });
+  } catch {
+    setDocs(FALLBACK_DOCS.slice(), { source: "fallback" });
+  }
+}
+
 async function fetchDoc(d) {
   try {
     const res = await fetch(d.path, { cache: "no-store" });
@@ -367,12 +400,16 @@ async function fetchDoc(d) {
 }
 
 async function loadAll() {
+  await loadManifest();
   const texts = await Promise.all(DOCS.map(fetchDoc));
   let changed = false;
+  const next = {};
   DOCS.forEach((d, i) => {
+    next[d.key] = texts[i];
     if (state.text[d.key] !== texts[i]) changed = true;
-    state.text[d.key] = texts[i];
   });
+  // Keys aus altem Manifest entfernen, die nicht mehr existieren
+  state.text = next;
   state.syncedAt = new Date();
   paintSync();
   return changed;
@@ -428,7 +465,7 @@ function viewLage() {
       <div class="rise" ${r()}>
         <p class="eyebrow">Lagebild · KW ${isoWeek(now)}</p>
         <h1>${greet}.<br><em>Was zählt jetzt?</em></h1>
-        <p class="lede">${offen.length} Punkte in der Rangfolge${last ? `, letzter Eintrag ${ago(last.when?.date)} von ${ROLE_LABEL[last.role]}` : ""}. Alles hier liest live aus <code>coordination/</code>.</p>
+        <p class="lede">${offen.length} Punkte in der Rangfolge${last ? `, letzter Eintrag ${ago(last.when?.date)} von ${ROLE_LABEL[last.role]}` : ""}. Live aus <code>coordination/</code> · ${DOCS.length} Docs (${esc(manifestMeta.source)}).</p>
       </div>
       <div class="clock rise" ${r()}><b id="clock">${now.toTimeString().slice(0, 5)}</b>${esc(weekday)}</div>
     </header>
@@ -436,8 +473,9 @@ function viewLage() {
     <div class="ticker rise" ${r()}>
       <a class="tick hot" href="#docs/status/${anchorOf("status", /^OFFEN\b/i)}"><div class="n">${offen.length}</div><div class="l">offen in der Rangfolge</div></a>
       <a class="tick" href="#logbuch"><div class="n">${today}</div><div class="l">Logbuch-Einträge heute</div></a>
-      <a class="tick" href="#produkt"><div class="n">${apps || "–"}</div><div class="l">Apps im Projekt</div></a>
+      <a class="tick" href="#boards"><div class="n">${BOARD_CARDS.length}</div><div class="l">Living-Board-Aufträge</div></a>
       <a class="tick" href="#rollen"><div class="n">${roles || "–"}</div><div class="l">Rollen an Bord</div></a>
+      <a class="tick" href="#produkt"><div class="n">${apps || "–"}</div><div class="l">Apps im Projekt</div></a>
     </div>
 
     <div class="cols">
@@ -546,6 +584,52 @@ function filtered() {
     (!q || (e.raw + "\n" + e.body).toLowerCase().includes(q)));
 }
 
+function boardStatusMap() {
+  const rows = tableRows(section(state.text.boards, /^Boards\b/i));
+  const map = {};
+  rows.forEach((c) => {
+    const area = plain(c[0]);
+    const status = plain(c[3] || c[2] || "");
+    if (area) map[area.toLowerCase()] = status;
+  });
+  return map;
+}
+
+function viewBoards() {
+  const st = boardStatusMap();
+  let i = 0;
+  const r = () => `style="--i:${i++}"`;
+  return `
+    ${errNote()}
+    <header class="page-head rise" ${r()}>
+      <div>
+        <p class="eyebrow">Living Boards · Hook / Action / Cloud-Agent</p>
+        <h1>Boards</h1>
+        <p class="lede">Area-Dashboards mit Kategorien, die sich selbst aktualisieren sollen — Bau-Guide <code>~/DASHBOARDS.md</code>, Bridge <code>BOARDS.md</code>. Dev-Hosting-Inventar bleibt beim <a href="../../docs/DEV-DASHBOARD.md" target="_blank" rel="noopener">vos-portal Dev-Dashboard</a>.</p>
+      </div>
+    </header>
+    <div class="apps">${BOARD_CARDS.map((b, n) => {
+      const status = st[b.area.toLowerCase()] || "Auftrag";
+      const url = `https://github.com/nimmsel23/vitalos/issues/${b.issue}`;
+      return `
+        <a class="app board-card rise" style="--i:${n};--hue:${HUES[n % HUES.length]};text-decoration:none;color:inherit" href="${esc(url)}" target="_blank" rel="noopener">
+          <span class="glyph">#${b.issue}</span>
+          <b>${esc(b.area)}</b>
+          <span class="repo">${esc(b.repo)}</span>
+          <p class="stand"><span class="tag">${esc(status)}</span></p>
+          <p>${b.cats.map(esc).join(" · ")}</p>
+        </a>`;
+    }).join("")}</div>
+    <section class="panel block rise" ${r()}>
+      <div class="sec-title"><h2>Bridge-Dokument</h2><a class="src" href="#docs/boards">BOARDS.md →</a></div>
+      <div class="md">${state.text.boards ? renderMd(section(state.text.boards, /^Verwandte Oberflächen/i) || state.text.boards.slice(0, 1200)) : `<p class="muted">BOARDS.md nicht lesbar.</p>`}</div>
+    </section>
+    <p class="muted rise" ${r()}>Epic <a href="https://github.com/nimmsel23/vitalos/issues/27" target="_blank" rel="noopener">vitalos#27</a>
+      · Manifest ${manifestMeta.generated ? esc(manifestMeta.generated) : "—"} (${esc(manifestMeta.source)})
+      · neu indexieren: <code>./ui/gen-manifest.sh</code></p>
+  `;
+}
+
 function viewLogbuch() {
   const all = entries();
   const counts = {};
@@ -640,7 +724,7 @@ function viewDocs() {
 
 /* ── Routing & Rendering ────────────────────────────── */
 
-const VIEWS = { lage: viewLage, rollen: viewRollen, produkt: viewProdukt, logbuch: viewLogbuch, docs: viewDocs };
+const VIEWS = { lage: viewLage, rollen: viewRollen, produkt: viewProdukt, boards: viewBoards, logbuch: viewLogbuch, docs: viewDocs };
 
 function route() {
   const raw = decodeURIComponent(location.hash.replace(/^#/, ""));
@@ -723,8 +807,8 @@ document.addEventListener("keydown", (ev) => {
   const inInput = /^(INPUT|TEXTAREA)$/.test(document.activeElement?.tagName || "");
   if (ev.key === "Escape" && inInput) { document.activeElement.blur(); return; }
   if (inInput) return;
-  const views = ["lage", "rollen", "produkt", "logbuch", "docs"];
-  if (/^[1-5]$/.test(ev.key)) { location.hash = views[+ev.key - 1]; return; }
+  const views = ["lage", "rollen", "produkt", "boards", "logbuch", "docs"];
+  if (/^[1-6]$/.test(ev.key)) { location.hash = views[+ev.key - 1]; return; }
   if (ev.key === "/") {
     ev.preventDefault();
     if (state.view !== "logbuch") location.hash = "logbuch";
