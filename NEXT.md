@@ -6,6 +6,7 @@ Stand CTO-Runde 2026-11-09.
 
 ## Aktiv (max. 5)
 
+- [x] C-015 Repo-Anteil (2026-11-12 AL): Data Safety + signiertes AAB SHA `682c7ed6…` in Klickliste/DATA-SAFETY; Play-Upload + Firebase-Fingerprints = Owner.
 - [x] Owner-Klarstellung Quelle/Store-Gewand (2026-11-11): UNIFIED-PRODUCT + AGENTS + FIREBASE.
 - [x] Prod-CI deppensicher (2026-11-11): `product-check` Push+Boundaries, `deploy-product-hosting` dispatch-only, Guards fail-closed; Owner setzt noch GitHub-Secrets.
 - [x] Journal-Kanon vos-journal (2026-11-11): journal-vos → 301; Owner OAuth-URIs in fitness-aos auf vos-journal straffen.
