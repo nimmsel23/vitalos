@@ -41,4 +41,4 @@
 
 ## 2026-11-11 — C-015 Data Safety und AAB
 
-- [ ] C-015 Data Safety und signiertes AAB `com.vitalos.app` (versionCode 1, targetSdk 36), Frist Do 2026-11-12 20:00 Europe/Vienna: Antworten, Werbe-Beleg und Prüferanleitung ohne Zugangsdaten in `prod/docs/DATA-SAFETY-ANSWERS.md`. Klickliste 7, 11 und 12 sind bereit zur Freigabe. Punkt 13 enthält das lokale Verfahren; Pfad `prod/android/app/build/outputs/bundle/release/app-release.aab`, SHA-256 `<nach lokalem signiertem bundleRelease eintragen>`. Offen ist der signierte `bundleRelease` auf der Maschine mit `prod/android/keystore.properties`. Kein Play-Upload aus diesem Auftrag.
+- [x] C-015 Repo-Anteil (2026-11-12 AL): Data Safety / Werbung / Prüferanleitung in `prod/docs/DATA-SAFETY-ANSWERS.md`; Klickliste 7/11/12 bereit; Punkt 13 AAB lokal bereit — Pfad `prod/android/app/build/outputs/bundle/release/app-release.aab`, SHA-256 `682c7ed6557743a3b816bf01434a709f17149f530fef6c8b6b2c22921723865b` (CN VitalOS Product, jarsigner OK). Kein Play-Upload aus diesem Auftrag → Owner.
