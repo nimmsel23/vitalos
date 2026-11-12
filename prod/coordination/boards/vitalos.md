@@ -1,6 +1,6 @@
 # Dashboard — vitalos Meta
 
-Generated: 2026-11-13T00:44:07+01:00 · SHA: `385bcee` · Issue: [#32](https://github.com/nimmsel23/vitalos/issues/32) · Repo: `nimmsel23/vitalos`
+Generated: 2026-11-12T23:46:08+00:00 · SHA: `120f219` · Issue: [#32](https://github.com/nimmsel23/vitalos/issues/32) · Repo: `nimmsel23/vitalos`
 
 Refresh: `prod/coordination/ui/gen-boards.py` (+ optional Hook/Action).
 
@@ -8,21 +8,21 @@ Refresh: `prod/coordination/ui/gen-boards.py` (+ optional Hook/Action).
 
 ## 1. Submodule-Pins (Kurz)
 
-- `fitness-app: `e729fd9``
-- `fuel-app: `5417f59``
-- `journal-app: `cab4817``
-- `habit-app: `0bf7d47``
-- `learn-app: `e5b867fa``
-- `relax-app: `cadeefb``
-- `6pack-app: `c703a5d``
-- `plan-app: `f6d2669e``
-- `skills-app: `b6bff75``
+- `fitness-app: `120f219``
+- `fuel-app: `120f219``
+- `journal-app: `120f219``
+- `habit-app: `120f219``
+- `learn-app: `120f219``
+- `relax-app: `120f219``
+- `6pack-app: `120f219``
+- `plan-app: `120f219``
+- `skills-app: `120f219``
 
 
 ## 2. Store / Legal Docs
 
-- `STORE-PUBLISHING-PLAN.md`
 - `CLI-VLOG-VOS-FIRESTORE.md`
+- `STORE-PUBLISHING-PLAN.md`
 - `STORE-RELEASE-STATUS.md`
 
 
@@ -46,6 +46,8 @@ Refresh: `prod/coordination/ui/gen-boards.py` (+ optional Hook/Action).
 
 ## 6. Release-Train / Ship-Log
 
+- `120f219 fix(ci): BOARDS_HOME per GITHUB_ENV setzen (runner.temp im Job-env unzulässig)`
+- `b9da22f fix(ci): living-boards checkt Sibling-Repos aus statt rekursiver Submodule`
 - `385bcee fix(shell): Fuel-Standalone-Link auf vos-fuel.web.app`
 - `cf9060d chore(submodules): bump skills,fitness,6pack,plan after release`
 - `e121c5a feat(coordination): Living Boards Generator aus Repo-Evidenz`
@@ -54,6 +56,4 @@ Refresh: `prod/coordination/ui/gen-boards.py` (+ optional Hook/Action).
 - `24e3fef Store-Build: Inbox und Coach sperren (#38)`
 - `c3f2ad9 docs(privacy): align policy and data safety with the release build (#23)`
 - `43e54e3 docs(al): C-015 Commit-Refs in AL-LOG/ABTEILUNG`
-- `f6d657a docs(al): C-015 AAB SHA-256 und Data-Safety-Stand (2026-11-12)`
-- `7457fac docs: auto-update NEXT.md`
 

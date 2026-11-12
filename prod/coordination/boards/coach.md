@@ -1,6 +1,6 @@
 # Dashboard — coach-dev
 
-Generated: 2026-11-13T00:44:07+01:00 · SHA: `1e84fe57` · Issue: [#33](https://github.com/nimmsel23/vitalos/issues/33) · Repo: `nimmsel23/coach-dev`
+Generated: 2026-11-12T23:46:08+00:00 · SHA: `1e84fe5` · Issue: [#33](https://github.com/nimmsel23/vitalos/issues/33) · Repo: `nimmsel23/coach-dev`
 
 Refresh: `prod/coordination/ui/gen-boards.py` (+ optional Hook/Action).
 
@@ -9,11 +9,11 @@ Refresh: `prod/coordination/ui/gen-boards.py` (+ optional Hook/Action).
 ## 1. Auth & access (recent log hits)
 
 - auth-ish commits in last 15: **3**
-- `1e84fe57 fix(ci): Dependabot base=master→dev Retarget vor Squash (Org c1f9b6ce)`
-- `aa1b6029 docs(coach): AssignPlan routes through pinned Plan TrainingPlans`
-- `c5087e42 refactor(coach): route legacy rotations through the pinned Plan workspace`
-- `e491a2b6 docs: auto-update RESULTS.md`
-- `b6448a77 fix(coach): preserve client profiles when discovery refresh fails`
+- `1e84fe5 fix(ci): Dependabot base=master→dev Retarget vor Squash (Org c1f9b6ce)`
+- `aa1b602 docs(coach): AssignPlan routes through pinned Plan TrainingPlans`
+- `c5087e4 refactor(coach): route legacy rotations through the pinned Plan workspace`
+- `e491a2b docs: auto-update RESULTS.md`
+- `b6448a7 fix(coach): preserve client profiles when discovery refresh fails`
 
 
 ## 2. Client scope

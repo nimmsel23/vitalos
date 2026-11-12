@@ -1,6 +1,6 @@
 # Dashboard — VitalTraining
 
-Generated: 2026-11-13T00:44:07+01:00 · SHA: `53e82dd` · Issue: [#29](https://github.com/nimmsel23/vitalos/issues/29) · Repo: `nimmsel23/business-vitaltraining`
+Generated: 2026-11-12T23:46:07+00:00 · SHA: `53e82dd` · Issue: [#29](https://github.com/nimmsel23/vitalos/issues/29) · Repo: `nimmsel23/business-vitaltraining`
 
 Refresh: `prod/coordination/ui/gen-boards.py` (+ optional Hook/Action).
 
@@ -50,7 +50,7 @@ Refresh: `prod/coordination/ui/gen-boards.py` (+ optional Hook/Action).
 
 ## 6. Focus-Map-Bridge
 
-- `/home/alpha/business/FOCUS_MAP_2026_11-12_Business.md`: lesbar
+- `/home/runner/work/_temp/siblings/business/FOCUS_MAP_2026_11-12_Business.md`: lesbar
 - L20: Bis 31.12. laufen bezahlte Brücken (Workshop + begrenzte Audits), BIP-Content-Rhythmus steht, und die Pipeline für den **Januar Beta-Wartelisten-Launch** ist re
 - L29: - Kanäle: LinkedIn + Instagram fest; **TikTok/IG Reels = Wachstumsspur** für die Kern-Avatarin; Dev-Handle FaDaRo bleibt außen weg
 - L31: - **Kern-Avatarin:** gestresste **berufstätige Influencer-Mütter** — Job + Kids + Content-Maschine gleichzeitig; brauchen Vitalität/System, kein weiteres „Hustl

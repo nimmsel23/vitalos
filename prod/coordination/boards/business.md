@@ -1,6 +1,6 @@
 # Dashboard — business Vault
 
-Generated: 2026-11-13T00:44:07+01:00 · SHA: `5c4263e` · Issue: [#31](https://github.com/nimmsel23/vitalos/issues/31) · Repo: `nimmsel23/obsidian-business`
+Generated: 2026-11-12T23:46:08+00:00 · SHA: `5c4263e` · Issue: [#31](https://github.com/nimmsel23/vitalos/issues/31) · Repo: `nimmsel23/obsidian-business`
 
 Refresh: `prod/coordination/ui/gen-boards.py` (+ optional Hook/Action).
 
@@ -19,8 +19,8 @@ Refresh: `prod/coordination/ui/gen-boards.py` (+ optional Hook/Action).
 
 ## 3. Vault-Links
 
-- Broken top-level symlinks: 0
-- fehlt
+- Broken top-level symlinks: 1
+- `org`
 
 
 ## 4. Fristen (`frist:`)

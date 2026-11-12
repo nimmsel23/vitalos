@@ -1,12 +1,6 @@
 {
-  "generated": "2026-11-13T00:44:07+01:00",
+  "generated": "2026-11-12T23:46:08+00:00",
   "docs": [
-    {
-      "key": "status",
-      "path": "../STATUS.md",
-      "label": "Status",
-      "group": "Lage"
-    },
     {
       "key": "todo",
       "path": "../TODO.md",
