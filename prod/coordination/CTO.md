@@ -191,10 +191,12 @@ push dev → Check grün → automerge-pr.yml (Dependabot-Squash auf dev,
 - 4 Owner-Draft-PRs offen (fitness #92, journal #42, plan #43, coach #10): deren repair-Schritte failen auf den PR-Branches an Alt-Kopien der ci-agent-Workflows (`Input required and not supplied: token`, z. B. journal-Run 42393768790). Empfehlung an die Owner-Linie (via CEO): vor Publish auf dev rebasen. 6pack #35/#37 bereits gemergt.
 - SYNC_TOKEN fehlt in allen 5 Repos; GITHUB_TOKEN-Merges feuern keine Push-Workflows (Architektur-Folge dokumentiert in Org-Task d0ee4de2).
 
-## Simplicity-Umsetzung 2026-11-11
+## Simplicity / Automatisierung — Klarstellung 2026-11-12
 
-- Fleet-weit aus `*-dev` entfernt: `gemini-ci-repair.yml`, `merge-agent.yml`.
-- Spine: Check → automerge-pr → automerge → Deploy. SOT `.dotfiles/docs/CI.md` §1.
-- `vos-pr-wave` bleibt lokal als Fangnetz für Non-Dependabot-PRs.
-- `vitalos/prod` unverändert (einzige erlaubte Komplexitätszone).
+- Owner: **volle Automatisierung** behalten. Simplicity ≠ Auto-Schienen killen.
+- 2026-11-11 fälschlich entfernt, **2026-11-12 wiederhergestellt:**
+  `gemini-ci-repair.yml`, `merge-agent.yml` auf allen `*-dev`.
+- Spine: Check → Preview → automerge-pr → automerge → Deploy + Gemini +
+  Merge-Agent + `vos-pr-wave`. SOT `.dotfiles/docs/CI.md` §1.
+- `vitalos/prod` bleibt die einzige Zone für zusätzliche Produkt-Komplexität.
 
