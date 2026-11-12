@@ -78,7 +78,11 @@ function readHashState() {
   }
 
   if (mainTab === 'game' && second === 'door') return { tab: 'game', subTab: third ? `door/${third}` : 'door/potential', date: null }
-  if (STORE_BUILD && mainTab === 'coach') return { tab: 'hub', subTab: null, date: null }
+  // tab 'hub' rendert die Shell nicht. Der sichtbare Hub ist home + subTab hub,
+  // wie #hub und navigate('hub').
+  if (STORE_BUILD && (mainTab === 'inbox' || mainTab === 'coach')) {
+    return { tab: 'home', subTab: 'hub', date: null }
+  }
 
   const fitnessSessionDate = mainTab === 'fitness' && subTab === 'session' ? (date || localToday()) : date
   if (mainTab === 'hub') return { tab: 'home', subTab: 'hub', date: null }

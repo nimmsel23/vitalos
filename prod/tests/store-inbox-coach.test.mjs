@@ -66,8 +66,14 @@ function viewFor(storeBuild, hash) {
 const alphaMail = { email: 'player-alpha@example.com', uid: 'someone-else' }
 const ownerUid = { email: 'owner@example.com', uid: '59ole36uNpNwml5H6VDYCXyCME92' }
 
+function assertVisibleHub(state) {
+  assert.equal(state.tab, 'home')
+  assert.equal(state.subTab, 'hub')
+  assert.equal(state.date, null)
+}
+
 test('Store-Build: #inbox und #fitness/inbox öffnen die Inbox nicht', () => {
-  assert.equal(viewFor(true, '#inbox'), 'hub')
+  assertVisibleHub(loadHash(true)('#inbox'))
   assert.equal(viewFor(true, '#fitness/inbox'), 'gate')
   assert.notEqual(viewFor(true, '#inbox'), 'inbox')
   assert.notEqual(viewFor(true, '#fitness/inbox'), 'inbox')
@@ -82,7 +88,7 @@ test('privater Build: #inbox und #fitness/inbox bleiben die Inbox', () => {
 })
 
 test('Store-Build: #coach und #fitness/coach öffnen den Coach nicht', () => {
-  assert.equal(viewFor(true, '#coach'), 'hub')
+  assertVisibleHub(loadHash(true)('#coach'))
   assert.equal(viewFor(true, '#fitness/coach'), 'gate')
   assert.notEqual(viewFor(true, '#coach'), 'coach')
   assert.notEqual(viewFor(true, '#fitness/coach'), 'coach')
