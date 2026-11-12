@@ -59,7 +59,7 @@ Wiederholst du in deinem Repo-Alltag von Hand einen Schritt, den ein Skript, ein
 
 ## CTO-Nachtauftrag (2026-11-11)
 
-1. **Hit** Org `0e25e4c4` / Tracking `c1f9b6ce`: In `automerge-pr.yml` vor dem
+1. [x] **Hit** Org `0e25e4c4` / Tracking `c1f9b6ce` (erledigt 2026-11-12, Commit `375e122` auf journal-dev `dev`): In `automerge-pr.yml` vor dem
    Squash Dependabot-PRs mit `base=master` auf `base=dev` retargeten (CI.md
    Fallensteller). Check-Beleg im AL-LOG; kein Draft-#42-Touch.
 2. [x] Client-Haertung `eeb9d722` + Semver Live `d48d852d` (10./11.11.) — erledigt.
