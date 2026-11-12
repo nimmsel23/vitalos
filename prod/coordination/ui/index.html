@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="dark light">
+  <title>VitalOS Lagezelt</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cpath d='M16 3 3 28h26z' fill='%23ff7a3d'/%3E%3Cpath d='M16 13 11 28h10z' fill='%2314120f'/%3E%3C/svg%3E">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Gloock&family=Hanken+Grotesk:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Spline+Sans+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="./styles.css">
+</head>
+<body>
+  <div class="grain" aria-hidden="true"></div>
+  <div class="shell">
+    <aside class="side">
+      <a class="brand" href="#lage" aria-label="VitalOS Lagezelt, zur Startansicht">
+        <svg class="brand-mark" viewBox="0 0 32 32" aria-hidden="true">
+          <path d="M16 3 3 28h26z" fill="var(--ember)"/>
+          <path d="M16 13 11 28h10z" fill="var(--bg)"/>
+        </svg>
+        <span class="brand-text">
+          <strong>Lagezelt</strong>
+          <span>VitalOS · Koordination</span>
+        </span>
+      </a>
+      <nav class="nav" aria-label="Ansichten">
+        <a href="#lage" data-view="lage"><kbd>1</kbd><span>Lage</span></a>
+        <a href="#rollen" data-view="rollen"><kbd>2</kbd><span>Rollen</span></a>
+        <a href="#produkt" data-view="produkt"><kbd>3</kbd><span>Produkt</span></a>
+        <a href="#logbuch" data-view="logbuch"><kbd>4</kbd><span>Logbuch</span></a>
+        <a href="#docs" data-view="docs"><kbd>5</kbd><span>Dokumente</span></a>
+      </nav>
+      <div class="side-foot">
+        <div class="sync" id="sync"><span class="dot"></span><span id="sync-text">verbinde…</span></div>
+        <div class="side-actions">
+          <button type="button" id="btn-reload" title="Neu laden (r)">Neu laden</button>
+          <button type="button" id="btn-theme" title="Hell/Dunkel (t)" aria-label="Farbschema wechseln"><svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><circle cx="12" cy="12" r="8.5" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M12 3.5a8.5 8.5 0 0 1 0 17z" fill="currentColor"/></svg></button>
+        </div>
+        <p class="keys"><kbd>1</kbd>–<kbd>5</kbd> Ansicht · <kbd>/</kbd> Suche · <kbd>r</kbd> neu laden</p>
+      </div>
+    </aside>
+    <main class="main" id="main" tabindex="-1">
+      <div class="loading"><span></span><span></span><span></span></div>
+    </main>
+  </div>
+  <script type="module" src="./app.js"></script>
+</body>
+</html>
