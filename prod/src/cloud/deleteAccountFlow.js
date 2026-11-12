@@ -1,4 +1,4 @@
-import { CONTACT_EMAIL_IS_PLACEHOLDER } from "./legal.js";
+import { CONTACT_EMAIL, CONTACT_EMAIL_IS_PLACEHOLDER } from "./legal.js";
 
 export const CONFIRM_PHRASE = "LÖSCHEN";
 
@@ -17,8 +17,8 @@ export function deletionErrorMessage(error) {
   if (code.includes("not-found") || code.includes("unavailable") || code.includes("internal") || code.includes("unconfirmed")) {
     const contact = CONTACT_EMAIL_IS_PLACEHOLDER
       ? "Die Webseite Konto löschen beschreibt den Weg ohne App. Eine erreichbare Kontaktadresse fehlt noch."
-      : "Die Webseite Konto löschen beschreibt den Weg ohne App.";
-    return `Die Löschung ist auf dem Server noch nicht erreichbar. ${contact}`;
+      : `Schreib an ${CONTACT_EMAIL}, wir löschen das Konto dann für dich.`;
+    return `Die Löschung ist auf dem Server gerade nicht erreichbar. ${contact}`;
   }
   return "Die Löschung ist fehlgeschlagen. Es wurden keine Daten als gelöscht bestätigt.";
 }

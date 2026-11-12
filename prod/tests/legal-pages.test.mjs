@@ -18,31 +18,33 @@ test("dieselbe HTML-Fassung liegt in der Produkt- und in der Shell-Quelle", () =
   }
 });
 
-test("Seiten nennen Platzhalter, C-014 und die tatsächlich genutzten Dienste", () => {
-  assert.equal(CONTACT_EMAIL_IS_PLACEHOLDER, true);
-  assert.equal(CONTACT_EMAIL, "KONTAKT-FOLGT@example.invalid");
+test("Seiten nennen die echte Kontaktadresse und die tatsächlich genutzten Dienste", () => {
+  assert.equal(CONTACT_EMAIL_IS_PLACEHOLDER, false);
+  assert.equal(CONTACT_EMAIL, "nimmsel23+vitalos@gmail.com");
   for (const page of ["prod/public/datenschutz/index.html", "prod/public/konto-loeschen/index.html"]) {
     const html = read(page);
-    assert.match(html, /C-014/);
-    assert.match(html, /KONTAKT-FOLGT@example\.invalid/);
-    assert.match(html, /Firebase Authentication|Firebase-Auth/);
-    assert.match(html, /Cloud Firestore|Firestore/);
-    assert.match(html, /Google-Anmeldung|Google-Verknüpfung/);
+    assert.match(html, /nimmsel23\+vitalos@gmail\.com/);
+    assert.doesNotMatch(html, /example\.invalid|C-014/);
     assert.doesNotMatch(html, /gemini-2\.5/i);
     assert.doesNotMatch(html, /<form/i);
   }
-  assert.match(read("prod/public/datenschutz/index.html"), /ruft Gemini nicht auf/);
-  assert.match(read("prod/public/datenschutz/index.html"), /Werbe-SDK/);
+  const privacy = read("prod/public/datenschutz/index.html");
+  assert.match(privacy, /Firebase Authentication/);
+  assert.match(privacy, /Cloud Firestore/);
+  assert.match(privacy, /keine KI-Dienste/);
+  assert.match(privacy, /keine Werbung/);
+  assert.match(privacy, /Art\. 9 Abs\. 2 lit\. a DSGVO/);
+  assert.match(privacy, /Datenschutzbehörde/);
 });
 
-test("Kontolöschung erklärt App-Weg und Weg ohne Anmeldung", () => {
+test("Kontolöschung erklärt App-Weg und Weg ohne App", () => {
   const html = read("prod/public/konto-loeschen/index.html");
   assert.match(html, /Setup/);
   assert.match(html, /Konto löschen/);
   assert.match(html, /LÖSCHEN/);
-  assert.match(html, /ohne Anmeldung/);
-  assert.match(html, /deleteOwnAccount/);
-  assert.match(html, /Wegwerfkonto/);
+  assert.match(html, /Ohne App/);
+  assert.match(html, /mailto:nimmsel23\+vitalos@gmail\.com/);
+  assert.match(html, /Was gelöscht wird/);
 });
 
 test("SPA-Fangnetz steht hinter den Rechtsseiten und Dateien gewinnen", () => {

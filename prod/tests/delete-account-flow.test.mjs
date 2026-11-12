@@ -45,5 +45,5 @@ test("ohne Serverbestätigung bleibt die lokale Kopie stehen", async () => {
     (error) => error.code === "unconfirmed",
   );
   assert.equal(cleared, false);
-  assert.match(deletionErrorMessage({ code: "functions/not-found" }), /Kontaktadresse fehlt/);
+  assert.match(deletionErrorMessage({ code: "functions/not-found" }), /nimmsel23\+vitalos@gmail\.com/);
 });
