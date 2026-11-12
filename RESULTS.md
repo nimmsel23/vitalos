@@ -1,3 +1,8 @@
+## 2026-11-12 — CPO-Rolle auf Issues/Store-Hygiene
+
+- `prod/coordination/CPO.md`: Lage aus Issues/PRs, Gate-Schließen, PM-Steuerung, Store-Kette.
+- Spiegel in `~/.vos/cpo` Skills/README/INTERPLAY (vos-Commit).
+
 ## 2026-11-11 — AL C-002 Handoff (leeres Protokoll)
 
 - Org `3c55e958` / Guide #9: `adb devices` leer; Emulator nicht gestartet (Timer-Grenze).

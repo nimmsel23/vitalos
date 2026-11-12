@@ -224,3 +224,5 @@ Historische Review-Feststellungen aus den Oktober-Sessions wurden konsolidiert:
 - **Verifikation & Tests:** Fehlende Browser-/Gerätetests für migrierte Schemata (Profile, Geräte) und UI-Features (Pulse, Hub) wurden in den nachfolgenden Testläufen (u. a. Emulator-Runden 1 & 2 für Fokus Stufe 0/1) adressiert.
 - **Rules & Auth:** Firestore-Rules für Journal, Coach und TractionDaily wurden per modulspezifischem Rules-Build und zentralem Deploy (41319760105) verifiziert.
 - **CI/CD & Submodule:** Lockfile-Synchronisation und Standalone-Deploy-Pfade (vos-ship, vos-release) wurden etabliert; redundante Pre-Push-Deploys zugunsten von CI-Pipelines deaktiviert.
+
+- [ ] #21 Kontaktadresse mergen; deleteOwnAccount auf vitalos-prod (Owner-Terminal falls nötig)
