@@ -33,7 +33,10 @@ jobs:
         run: |
           git config --global url."https://x-access-token:${{ secrets.GH_SUBMODULE_TOKEN || secrets.GITHUB_TOKEN }}@github.com/".insteadOf "git@github.com:"
           git submodule sync
-          git submodule update --init --recursive
+          # Kein --recursive: journal-app pinnt aos-core4, aos-door, aos-game
+          # und aos-voice außerhalb von src/. Der VOS-Fuel-Build importiert sie
+          # nicht, und das CI-Token kann die Repos nicht lesen.
+          git submodule update --init
 
       - uses: pnpm/action-setup@v4
         with:
