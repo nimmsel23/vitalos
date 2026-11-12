@@ -11,7 +11,7 @@ import { useSheetFocus } from '../useSheetFocus.js'
 // Unterbereichen (statt der früheren, horizontal scrollenden Pill-Leiste
 // in der Bar selbst — die Sub-Tabs leben jetzt im ShellHeader).
 const PRIMARY_IDS = ['home', 'fitness', 'fuel', 'relax']
-const MORE_IDS = ['sixpack', 'habits', 'door', 'game', 'settings']
+const MORE_IDS = ['sixpack', 'skills', 'habits', 'door', 'game', 'settings']
 
 function flattenSubNav(subNav = []) {
   return subNav.flatMap((item) => {

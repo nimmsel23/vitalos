@@ -1,34 +1,12 @@
-name: Read-only Skills submodule access
-description: Configure the private Skills repository deploy key before recursive checkout
+name: Skills submodule access
+description: skills-dev is public. Submodule checkout uses HTTPS and a token; this step does not configure an SSH deploy key.
 inputs:
   deploy-key:
-    description: Read-only deploy key for nimmsel23/skills-dev
-    required: true
+    description: Unused. Workflows may still pass SKILLS_DEPLOY_KEY; it is ignored because the repository is public.
+    required: false
 runs:
   using: composite
   steps:
     - shell: bash
-      env:
-        SKILLS_DEPLOY_KEY: ${{ inputs.deploy-key }}
       run: |
-        set -euo pipefail
-        if [ -z "$SKILLS_DEPLOY_KEY" ]; then
-          # skills-dev ist öffentlich: ohne Deploy-Key klont der folgende Submodule-Schritt per HTTPS + Token.
-          # Mit Key (Meta-Repo, fitness-dev) bleibt der SSH-Weg für den Fall, dass das Repo wieder privat wird.
-          echo '::notice::SKILLS_DEPLOY_KEY nicht gesetzt — Skills-Submodule wird per HTTPS geklont (Repo ist öffentlich).'
-          exit 0
-        fi
-        key_path="$RUNNER_TEMP/skills-submodule-key"
-        hosts_path="$RUNNER_TEMP/skills-known-hosts"
-        umask 077
-        printf '%s\n' "$SKILLS_DEPLOY_KEY" > "$key_path"
-        curl --fail --silent --show-error https://api.github.com/meta > "$RUNNER_TEMP/github-meta.json"
-        python3 - "$RUNNER_TEMP/github-meta.json" "$hosts_path" <<'PY'
-        import json, sys
-        with open(sys.argv[1]) as source:
-            keys = json.load(source)['ssh_keys']
-        with open(sys.argv[2], 'w') as target:
-            target.write(''.join('github.com ' + key + '\n' for key in keys))
-        PY
-        git config --global core.sshCommand "ssh -i $key_path -o IdentitiesOnly=yes -o StrictHostKeyChecking=yes -o UserKnownHostsFile=$hosts_path"
-        git config --global url."ssh://git@github.com/nimmsel23/skills-dev.git".insteadOf "git@github.com:nimmsel23/skills-dev.git"
+        echo '::notice::skills-dev ist öffentlich — Submodule-Checkout per HTTPS + Token. Kein Deploy-Key, kein Abruf von api.github.com/meta.'

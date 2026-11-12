@@ -3,7 +3,7 @@ import react from '@vitejs/plugin-react'
 import { vosChangelog } from './packages/mini-app-shell/vos-changelog-vite.mjs'
 import tailwindcssPostcss from '@tailwindcss/postcss'
 import { resolve, dirname, relative, isAbsolute, sep } from 'path'
-import { existsSync, statSync } from 'fs'
+import { existsSync, readFileSync, statSync } from 'fs'
 import { fileURLToPath } from 'url'
 import { crossAppAliases } from '@vos/cross-app-aliases'
 import { miniAppSubmodulePlugin } from './fitness-app/vite-miniapp-submodules.mjs'
@@ -141,23 +141,66 @@ export default defineConfig(({ mode }) => {
   // (s.o.) greift das hier, weil relative Imports nicht von der Alias-
   // Resolution abgefangen werden.
   const SHELL_FIREBASE = resolve(VITALOS_SRC, 'cloud/firebase.js')
+  const SKILLS_CLOUD = resolve(SKILLS_APP, 'data/cloud.js')
   const SUBREPO_FIREBASE = new Set([
     resolve(FITNESS_SRC, 'firebase.js'),
     resolve(FUEL_ROOT, 'src/client/lib/firebase.js'),
     resolve(JOURNAL_DEV, 'src/lib/firebase.js'),
     resolve(HABITS_DEV, 'src/lib/firebase.js'),
     resolve(RELAX_DEV, 'src/firebase.js'),
+    // Skills hat kein eigenes firebase.js. Die Init steckt in data/cloud.js
+    // und wird im Firebase-Build auf die Shell-App umgebogen (transform unten).
+    SKILLS_CLOUD,
   ])
+  const SKILLS_CLOUD_INIT = [
+    "import { config } from '../firebase.config.js';",
+    "const existing = getApps().some(app => app.name === '[DEFAULT]');",
+    'const app = existing ? getApp() : initializeApp(config);',
+    'const db = existing ? getFirestore(app) : initializeFirestore(app, { localCache: persistentLocalCache({ tabManager: persistentMultipleTabManager() }) });',
+    'export const auth = getAuth(app);',
+  ].join('\n')
   const firebaseRedirect = {
     name: 'vitalos:subrepo-firebase-redirect',
     enforce: 'pre',
     resolveId(source, importer) {
       if (!isFirebase || !importer || !source.startsWith('.')) return null
       const resolved = resolve(dirname(importer.split('?')[0]), source)
+      if (resolved === SKILLS_CLOUD || `${resolved}.js` === SKILLS_CLOUD) return null
       if (SUBREPO_FIREBASE.has(resolved) || SUBREPO_FIREBASE.has(`${resolved}.js`)) {
         return SHELL_FIREBASE
       }
       return null
+    },
+    transform(code, id) {
+      if (!isFirebase || id.split('?')[0] !== SKILLS_CLOUD) return null
+      if (!code.includes(SKILLS_CLOUD_INIT)) {
+        this.error('skills-app/data/cloud.js initialisiert Firebase anders als der Shell-Redirect erwartet.')
+      }
+      const shellImport = `import { app, db, auth } from ${JSON.stringify(SHELL_FIREBASE)};\nexport { auth };`
+      return { code: code.replace(SKILLS_CLOUD_INIT, shellImport), map: null }
+    },
+  }
+
+  // 6Pack-Push registriert einen eigenen Messaging-SW. Die Quelle bleibt im
+  // Submodul; die Shell liefert sie unter /sixpack-messaging-sw.js aus.
+  const sixpackMessagingSw = resolve(__dirname, '6pack-app/public/sixpack-messaging-sw.js')
+  const sixpackMessagingSwPlugin = {
+    name: 'vitalos:sixpack-messaging-sw',
+    configureServer(server) {
+      server.middlewares.use((req, res, next) => {
+        if (req.url?.split('?')[0] !== '/sixpack-messaging-sw.js' || !existsSync(sixpackMessagingSw)) return next()
+        res.setHeader('Content-Type', 'application/javascript; charset=utf-8')
+        res.setHeader('Cache-Control', 'no-cache')
+        res.end(readFileSync(sixpackMessagingSw))
+      })
+    },
+    generateBundle() {
+      if (!existsSync(sixpackMessagingSw)) return
+      this.emitFile({
+        type: 'asset',
+        fileName: 'sixpack-messaging-sw.js',
+        source: readFileSync(sixpackMessagingSw),
+      })
     },
   }
 
@@ -184,6 +227,7 @@ export default defineConfig(({ mode }) => {
         ],
       }),
       firebaseRedirect,
+      sixpackMessagingSwPlugin,
       react(),
       ...federationPlugin,
     ],

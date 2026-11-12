@@ -22,7 +22,7 @@ jobs:
       - uses: actions/checkout@v5
         with:
           fetch-depth: 0
-      - name: Private Skills submodule access
+      - name: Skills submodule (public)
         uses: ./.github/actions/skills-submodule-auth
         with:
           deploy-key: ${{ secrets.SKILLS_DEPLOY_KEY }}
@@ -71,7 +71,7 @@ jobs:
         if: steps.gate.outputs.present == 'true'
         with:
           fetch-depth: 0
-      - name: Private Skills submodule access
+      - name: Skills submodule (public)
         if: steps.gate.outputs.present == 'true'
         uses: ./.github/actions/skills-submodule-auth
         with:
