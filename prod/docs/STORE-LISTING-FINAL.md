@@ -1,7 +1,7 @@
 # Store-Eintrag FINAL — `com.vitalos.app` (C-014)
 
 Stand: 2026-11-12. Sprache: Deutsch (de-DE, Standard). Owner-Entscheide 2026-11-12:
-App-Name „VitalOS: Journal & Habits“, Kontakt `nimmsel23+vitalos@gmail.com`.
+App-Name „VitalOS: Journal & Habits“, Kontakt `nimmdaniel@gmail.com`.
 Abgeglichen mit dem Store-Build (VITE_VOS_EDITION=store): keine KI, keine Werbung,
 Game/Door/Owner-Ausbildungsinhalte ausgeblendet. Zeichenzahlen per Skript geprüft
 (`python3 -c` unten). Bei Funktionsänderung des Store-Builds diese Datei mitziehen.
@@ -43,7 +43,7 @@ DEINE DATEN
 
 Wichtig: VitalOS ist ein Werkzeug zur Selbstbeobachtung und Alltagsorganisation. Es stellt keine Diagnosen und ersetzt keine ärztliche oder therapeutische Beratung.
 
-Entwickelt von einem Vitaltrainer aus Wien. Fragen und Feedback: nimmsel23+vitalos@gmail.com
+Entwickelt von einem Vitaltrainer aus Wien. Fragen und Feedback: nimmdaniel@gmail.com
 
 ## Console-Felder
 
@@ -51,7 +51,7 @@ Entwickelt von einem Vitaltrainer aus Wien. Fragen und Feedback: nimmsel23+vital
 | --- | --- |
 | App-Kategorie | Gesundheit & Fitness |
 | Tags (Vorschlag) | Gewohnheiten-Tracker, Journal, Fitness, Ernährung, Achtsamkeit |
-| Kontakt-E-Mail | nimmsel23+vitalos@gmail.com |
+| Kontakt-E-Mail | nimmdaniel@gmail.com |
 | Website | https://vitalos.web.app |
 | Datenschutzerklärung | https://vitalos.web.app/datenschutz |
 | Kontolöschung (Data Safety) | https://vitalos.web.app/konto-loeschen |
@@ -64,4 +64,4 @@ Entwickelt von einem Vitaltrainer aus Wien. Fragen und Feedback: nimmsel23+vital
 
 ## Release Notes versionCode 1 (≤ 500)
 
-Erste Testversion von VitalOS: Journal, „Dein Tag in vier Ebenen“, Fitness mit 6Pack und Skills, Ernährung und Atemübungen. Danke fürs Testen – Feedback gern an nimmsel23+vitalos@gmail.com.
+Erste Testversion von VitalOS: Journal, „Dein Tag in vier Ebenen“, Fitness mit 6Pack und Skills, Ernährung und Atemübungen. Danke fürs Testen – Feedback gern an nimmdaniel@gmail.com.

@@ -36,7 +36,7 @@
 
 - [x] Öffentliche Seiten `/datenschutz` und `/konto-loeschen` (statisches HTML in `prod/public` und `public`, Rewrites vor dem SPA-Fangnetz, Links auf Login, im Körperprofil und im Setup-Bereich Konto).
 - [x] Callable `deleteOwnAccount` in `prod/functions` löscht nur die Firestore-Bäume der aufrufenden uid und danach den Auth-Nutzer. Tests mit nachgebautem Firestore, kein Lauf gegen echte Daten.
-- [ ] Blocker: keine öffentliche Kontaktadresse im Repo. Platzhalter `KONTAKT-FOLGT@example.invalid`. C-014 ersetzt den Datenschutz-Wortlaut.
+- [x] Öffentliche Kontaktadresse: `nimmdaniel@gmail.com`. Ort des Verantwortlichen: 1030 Wien, Österreich, ohne Straße. Owner-Freigabe 2026-11-12. Der übrige Datenschutz-Wortlaut ist der Store-Text aus master (Stand 2026-11-12).
 - [ ] Blocker: Function-Deploy nach `vitalos-prod` gehört nicht zum Shell-Auto-Deploy. Ohne ihn hat der In-App-Knopf keine Serverwirkung. Nur ein neues Wegwerfkonto prüfen, nie bestehende Personenkonten.
 
 ## 2026-11-11 — C-015 Data Safety und AAB

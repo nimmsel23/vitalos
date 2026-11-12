@@ -2,6 +2,11 @@
 export const PRIVACY_URL = "https://vitalos.web.app/datenschutz";
 export const ACCOUNT_DELETION_URL = "https://vitalos.web.app/konto-loeschen";
 
-/** Öffentliche Kontakt-/Support-Adresse (Owner-Entscheid 2026-11-12). */
-export const CONTACT_EMAIL = "nimmsel23+vitalos@gmail.com";
+/**
+ * Öffentliche Kontaktadresse des Verantwortlichen.
+ * Freigabe Owner Daniel, 2026-11-12 (#21).
+ * Ort ohne Straße, weil keine angegeben wurde.
+ */
+export const CONTACT_EMAIL = "nimmdaniel@gmail.com";
+export const CONTACT_PLACE = "1030 Wien, Österreich";
 export const CONTACT_EMAIL_IS_PLACEHOLDER = false;

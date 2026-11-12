@@ -121,7 +121,7 @@ Live (Stand 2026-11-12):
 - Custom Domains: `vitalos.at`, `www.vitalos.at` → Firebase Hosting `daniel-vitaltrainer`
 - Legal/Produkt: `/vitalos/`, `/vitalos/datenschutz/`, Trainer-Root `/`, One-Pager `/landingpage/`
 - Shell-Spiegel: `https://vitalos.web.app/datenschutz` und `/konto-loeschen` (HTTP 200)
-- Inhalt noch mit Kontakt-Platzhalter (`KONTAKT-FOLGT@example.invalid`, C-014) auf Shell-Seite
+- Repo-Inhalt nennt `nimmdaniel@gmail.com` und 1030 Wien, Österreich (Owner 2026-11-12). Die Live-Seite auf `vitalos.web.app` zeigt das erst nach dem Shell-Hosting-Deploy. Ein Merge nach `master` startet `deploy-shell.yml` (Projekt `fitness-aos`). Dafür gibt es in diesem Auftrag keine eigene Hosting-Freigabe. Der übrige Wortlaut ist der Store-Text aus master (Datenschutz und Kontolöschung, Stand 2026-11-12).
 
 DNS (Referenz, gesetzt):
 

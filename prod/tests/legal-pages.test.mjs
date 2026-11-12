@@ -3,7 +3,7 @@ import assert from "node:assert/strict";
 import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
-import { ACCOUNT_DELETION_URL, CONTACT_EMAIL, CONTACT_EMAIL_IS_PLACEHOLDER, PRIVACY_URL } from "../src/cloud/legal.js";
+import { ACCOUNT_DELETION_URL, CONTACT_EMAIL, CONTACT_EMAIL_IS_PLACEHOLDER, CONTACT_PLACE, PRIVACY_URL } from "../src/cloud/legal.js";
 import { resolveHosting } from "../scripts/legal-hosting.mjs";
 
 const repo = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../..");
@@ -18,12 +18,15 @@ test("dieselbe HTML-Fassung liegt in der Produkt- und in der Shell-Quelle", () =
   }
 });
 
-test("Seiten nennen die echte Kontaktadresse und die tatsächlich genutzten Dienste", () => {
+test("Seiten nennen die öffentliche Kontaktadresse und die tatsächlich genutzten Dienste", () => {
   assert.equal(CONTACT_EMAIL_IS_PLACEHOLDER, false);
-  assert.equal(CONTACT_EMAIL, "nimmsel23+vitalos@gmail.com");
+  assert.equal(CONTACT_EMAIL, "nimmdaniel@gmail.com");
+  assert.equal(CONTACT_PLACE, "1030 Wien, Österreich");
   for (const page of ["prod/public/datenschutz/index.html", "prod/public/konto-loeschen/index.html"]) {
     const html = read(page);
-    assert.match(html, /nimmsel23\+vitalos@gmail\.com/);
+    assert.match(html, /nimmdaniel@gmail\.com/);
+    assert.match(html, /1030 Wien, Österreich/);
+    assert.doesNotMatch(html, /KONTAKT-FOLGT/);
     assert.doesNotMatch(html, /example\.invalid|C-014/);
     assert.doesNotMatch(html, /gemini-2\.5/i);
     assert.doesNotMatch(html, /<form/i);
@@ -43,7 +46,7 @@ test("Kontolöschung erklärt App-Weg und Weg ohne App", () => {
   assert.match(html, /Konto löschen/);
   assert.match(html, /LÖSCHEN/);
   assert.match(html, /Ohne App/);
-  assert.match(html, /mailto:nimmsel23\+vitalos@gmail\.com/);
+  assert.match(html, /mailto:nimmdaniel@gmail\.com/);
   assert.match(html, /Was gelöscht wird/);
 });
 
