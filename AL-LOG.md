@@ -121,3 +121,34 @@ _Vom AL ausfüllen (knapp & belegbar, je 1–3 Zeilen, Commit-/PR-Referenzen sta
 - Erledigt: C-002 Handoff Refresh (`3c55e958`) — APK/AAB bestätigt (`ad47e50d…`/`06cca969…`, `com.vitalos.app`, Meta `021016f`); leeres DoD-Protokoll; Slot **2026-11-17**; Guide#9/NEXT/RESULTS; Vorlauf 03:45 esbuild `fdd8b7fd` bleibt done.
 - Offen/Weiter: C-002 Rest Install+Login+Journal+Sync (Live/Emulator 17.11 oder früher via CTO); CTO esbuild Bump/Override; C-001b (`+cto`); Journal-Live-Rot → CTO. Fremde Dirt (portal/src/coordination) unberührt.
 - Blocker: C-002 — `adb devices` leer; kein Emulator im Timer (AVDs vorhanden, Start verboten).
+
+## 2026-11-12 (Donnerstag) — Abteilungsleiter-Lauf
+
+_Automatik (vos-al-log Vorlage 2026-11-12):_
+- Commits seit 2026-11-08: 9d2f41a docs: native store web build OK; AAB awaits JDK 21
+9f66c87 fix(lock): pnpm-lock.yaml an die Modul-package.json angepasst (vos-release)
+213f7ec docs(store): Google Fonts in Datenschutz; Opus-Rest Pins dokumentiert
+40a2481 chore(submodules): bump habits,journal,6pack after release
+e58a09f docs(org): Mentor-Rolle, CEO Mo+Fr; Store-Listing FINAL (C-014)
+440b4cd chore(submodules): bump fuel after release
+ba0abea fix(store): Fuel-Subnav deutsch + ohne KI-Frontdoors; Open Food Facts in Datenschutz/Data Safety
+ef20fdb chore(submodules): bump fuel,relax after release
+9441971 fix(store): Relax-Subnav ohne Owner-Tabs (Modul/Physio/Catalog), 'Statistik'
+c630e3e test(legal): Tests auf finale Rechtsseiten; Lösch-Fehlertext nennt Kontaktadresse
+0dd5fe7 fix(store): Observe-Kontrast + Game/Door aus Store-Builds
+4ae87fb feat(legal): Datenschutz + Kontolöschung store-tauglich, Kontakt nimmsel23+vitalos@gmail.com
+d141b0a chore: Dev-Dashboard/Portal-Inventar, PM-Drafts, Backlog-Stand, Submodule-Pins
+6239054 docs(cto): 2026-11-12 Runde — AL-Abnahme, Meta-Klassifikation, Nachtauftraege
+68a3bb9 docs(cto): Owner wants full CI automation; Gemini/Merge-Agent restored
+- Offene PRs: 37	fix(legal): Datenschutz-Link, Passwort zurücksetzen, 301-Redirect	codex/rr-login-legal	OPEN	2026-11-12T14:22:05Z
+23	Align privacy and Data Safety copy with the release build	cursor/privacy-copy-alignment-84a9	OPEN	2026-11-12T02:35:55Z
+22	docs(cpo): Issues-Steuerung und Store-Hygiene	docs/cpo-issues-store-hygiene	OPEN	2026-11-12T01:26:12Z
+- CI (letzte Läufe): completed	success	fix(legal): Datenschutz-Link, Passwort zurücksetzen, 301-Redirect	PR Preview (VitalOS Shell)	codex/rr-login-legal	pull_request	43237413850	1m35s	2026-11-12T14:27:42Z
+completed	success	Live Smoke (VitalOS)	Live Smoke (VitalOS)	master	workflow_run	43237271224	25s	2026-11-12T14:26:52Z
+completed	success	Live Smoke (VitalOS)	Live Smoke (VitalOS)	master	workflow_run	43237252949	48s	2026-11-12T14:26:45Z
+- Arbeitsbaum: sauber
+
+_Vom AL ausfüllen (knapp & belegbar, je 1–3 Zeilen, Commit-/PR-Referenzen statt Erzählung):_
+- Erledigt: C-015 Repo-Anteil — signiertes `app-release.aab` SHA-256 `682c7ed6557743a3b816bf01434a709f17149f530fef6c8b6b2c22921723865b` (jarsigner OK, CN VitalOS Product); Docs `prod/docs/DATA-SAFETY-ANSWERS.md` + Klickliste Punkt 13 „AAB lokal bereit“; TODO [x]; Org `5e9d0f4a` Tip-grün unberührt.
+- Offen/Weiter: Owner Play-Upload Punkt 13 + Firebase-Fingerprints; PR #37 legal / #23 privacy-copy / #22 CPO-docs; C-002 Emulator-Slot 2026-11-17; Live Smoke OK `43237271224`.
+- Blocker: C-002 kein adb-Gerät (Timer); Play-Console-Klicks bleiben Owner-Gate (kein Meta-Push).

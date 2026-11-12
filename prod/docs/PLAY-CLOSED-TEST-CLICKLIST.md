@@ -88,7 +88,7 @@ bereit zur Freigabe oder AAB offen. Der Console-Klick bleibt beim Owner.
 | 10 | Target audience and content: Altersgruppen angeben. Enthält die Zielgruppe Kinder, gilt die Families Policy. Vorher müssen Werbedeklaration, App-Zugang und Datenschutz-URL stehen. | Keine festgelegte Altersgruppe. `prod/docs/STORE-LISTING-DRAFT.md` lässt die Zielgruppe beim Kontoinhaber. Der Entwurf beschreibt ein Journal ohne Diagnose. | fehlt | PM/CPO (Vorschlag Erwachsene), Owner (Klick) |
 | 11 | App access / Sign-in details: funktionierende Zugangsdaten und kurze Schritte, damit die Prüfung den Login erreicht. Bis zu fünf Sätze. Sonderfälle (zweites Feld, Einmalcode) ins Feld „Any other instructions“. | Anleitung ohne Zugangsdaten in `prod/docs/DATA-SAFETY-ANSWERS.md`, Abschnitt „App-Zugang für die Prüfung“. Prüferweg: Anmeldebildschirm, E-Mail und Passwort, Button „Anmelden“. Nicht „Mit Google anmelden“. Der Owner legt das Konto in `vitalos-prod` an und trägt E-Mail und Passwort nur in der Console ein. Im Repo stehen die Platzhalter `<nur in der Play Console>`. | bereit zur Freigabe | Owner (Konto anlegen und in die Console schreiben) |
 | 12 | Werbedeklaration: Yes oder No. Yes bei Banner, Interstitial, Native Ads und Ad-SDKs. Ein schlichter „More Apps“-Hinweis ohne Werbeformat ist No. Eine falsche Angabe ist ein Policy-Verstoß. | Antwort No. Beleg und der genaue `rg`-Aufruf in `prod/docs/DATA-SAFETY-ANSWERS.md`, Abschnitt „Werbedeklaration: No“. Suche am 2026-11-11 in `prod/` ohne Docs, `node_modules`, `public` und Markdown: keine Treffer auf AdMob, AdSense und die genannten Ad-SDKs. Gradle hängt kein `play-services-ads` ein. | bereit zur Freigabe | Owner (Klick No) |
-| 13 | Signiertes Android App Bundle hochladen. `versionCode` höher als jeder schon hochgeladene Stand, `targetSdk` 36, Signatur mit dem Upload-Key (RSA mindestens 2048 Bit). Play App Signing übernimmt den App-Signaturschlüssel. Nach dem Upload die angezeigten SHA-1/SHA-256, bei Hybrid-Signing alle genannten Schlüssel, in Firebase unter `com.vitalos.app` eintragen. Den privaten Keystore nicht hochladen und nicht committen. | Config geprüft (C-015): `versionCode` 1, `versionName` `0.1.0`, `targetSdkVersion` 36, Release-Signatur nur bei vorhandener gitignorierter `prod/android/keystore.properties`. Kopierbares Verfahren im Abschnitt „AAB lokal bauen (C-015)“. Pfad: `prod/android/app/build/outputs/bundle/release/app-release.aab`. SHA-256: `<nach lokalem signiertem bundleRelease eintragen>`. Diese Prüfung hat das Bundle nicht gebaut. | AAB offen | Owner auf der Maschine mit Keystore (signiertes Bundle und Hash), danach Upload |
+| 13 | Signiertes Android App Bundle hochladen. `versionCode` höher als jeder schon hochgeladene Stand, `targetSdk` 36, Signatur mit dem Upload-Key (RSA mindestens 2048 Bit). Play App Signing übernimmt den App-Signaturschlüssel. Nach dem Upload die angezeigten SHA-1/SHA-256, bei Hybrid-Signing alle genannten Schlüssel, in Firebase unter `com.vitalos.app` eintragen. Den privaten Keystore nicht hochladen und nicht committen. | C-015 2026-11-12 AL: signiertes Bundle lokal (`versionCode` 1, `0.1.0`, `targetSdk` 36, CN VitalOS Product). Pfad `prod/android/app/build/outputs/bundle/release/app-release.aab`. SHA-256 Datei `682c7ed6557743a3b816bf01434a709f17149f530fef6c8b6b2c22921723865b`. Zertifikat-SHA-256 `3D:4F:62:E0:10:47:08:4E:51:75:A1:FE:67:C8:71:D0:4C:26:BB:7B:CC:30:1B:66:64:1A:45:CC:39:C6:EB:A7`. Upload + Console-Fingerprints in Firebase = Owner. | AAB lokal bereit | Owner (Play-Upload und Firebase-Fingerprints) |
 | 14 | Release auf dem Closed Track anlegen: Bundle, Release Notes, Länder aus Punkt 5, zur Prüfung senden, ausrollen. Danach den Status lesen. Der Opt-in-Link aus Punkt 2 erscheint bei „Published“. Der erste Link kann mehrere Stunden brauchen. | Kein Release, keine Release Notes, kein Console-Status im Repo. | fehlt | Owner |
 | 15 | Kontodatum prüfen. Liegt die Kontoeröffnung nach dem 13. November 2023: 12 Tester aus Punkt 2 müssen 14 aufeinanderfolgende Tage opted-in bleiben. Danach im Dashboard „Apply for production“. Liegt sie davor, gilt diese Testpflicht laut Google nicht. | Kein Kontodatum, keine Testerzahl und kein Opt-in-Nachweis im Repo. | fehlt | Owner |
 
@@ -125,15 +125,18 @@ das signierte Bundle, sobald `keystore.properties` vorliegt.
 
 Pfad: `prod/android/app/build/outputs/bundle/release/app-release.aab`
 
-SHA-256: `<nach lokalem signiertem bundleRelease eintragen>`
+SHA-256 (Datei, Stand 2026-11-12 10:52 CET, jarsigner verifiziert):
+`682c7ed6557743a3b816bf01434a709f17149f530fef6c8b6b2c22921723865b`
+
+Upload-Zertifikat SHA-256 (keytool, CN VitalOS Product):
+`3D:4F:62:E0:10:47:08:4E:51:75:A1:FE:67:C8:71:D0:4C:26:BB:7B:CC:30:1B:66:64:1A:45:CC:39:C6:EB:A7`
 
 Das Artefakt nicht committen (`*.aab` ist gitignored). Nach dem Upload die
 in der Console gezeigten SHA-1/SHA-256 in Firebase unter `com.vitalos.app`
 eintragen. Den privaten Keystore nicht hochladen.
 
-In der Prüfungsumgebung von C-015 fehlten Android-SDK, `node_modules`, die
-ausgecheckten App-Submodule, `product.env` und `keystore.properties`.
-`bundleRelease` wurde dort nicht gestartet.
+**2026-11-12 AL:** Lokales Bundle + Hash belegt; Play-Upload bleibt Owner.
+JDK 21 unter `~/.local/share/jvm/jdk-21` (Symlink auf `jdk-21.0.13+9`).
 
 ## Nur wenn die Console die Kachel zeigt
 

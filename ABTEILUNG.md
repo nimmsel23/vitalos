@@ -168,3 +168,10 @@ Inbox melden.
 - **Ausgeführte Aufgabe:** Guide #9 / Org `3c55e958` C-002 — APK/AAB-Pfad + SHA bestätigt (`ad47e50d…`/`06cca969…`, `com.vitalos.app`); leeres DoD-Protokoll (Install/Login/Journal/Sync = n/a); nächster Emulator-Slot **2026-11-17** (PM; CTO ggf. früher). Guide-Handoff/NEXT/RESULTS/AL-LOG; Task annotiert, nicht done.
 - **Offene Punkte & Blocker:** Blocker C-002 = kein Gerät. Offen: C-002 Live/Emulator-Rest, CTO esbuild-Fix, C-001b, Journal-Live-Rot. Fremde Dirt unberührt.
 - **Commit & Abschluss:** Commit auf `master` (Guide, NEXT, RESULTS, AL-LOG, ABTEILUNG). Kein Push, kein Install/Emulator/Gitlink-Touch.
+
+## Letzter Lauf — 2026-11-12 (~15:45 CET, Abteilungsleiter-Lauf; EINE Aufgabe: C-015 AAB/Data-Safety)
+
+- **Stand & Regelquellen:** Einstieg `abteilungsleiter brief vitalos` (Org `5e9d0f4a` +cto +lr Tip grün → kein Deploy; neue TODO C-015 Frist heute 20:00). HEAD vor Lauf `9d2f41a`. Branch `master`. JDK 21 unter `~/.local/share/jvm/jdk-21` vorhanden.
+- **Ausgeführte Aufgabe:** C-015 Repo-Anteil — signiertes `app-release.aab` verifiziert (SHA-256 `682c7ed6…`, jarsigner OK, CN VitalOS Product); SHA + Stand in `prod/docs/DATA-SAFETY-ANSWERS.md` und Klickliste Punkt 13 („AAB lokal bereit“); TODO [x]; NEXT/RESULTS/AL-LOG.
+- **Offene Punkte & Blocker:** Blocker C-002 = kein Gerät. Offen: Owner Play-Upload/Fingerprints; PRs #37/#23/#22; Org `5e9d0f4a` nur bei Tip-Rot. Kein Play-Upload, kein Meta-Push.
+- **Commit & Abschluss:** Commit auf `master` (DATA-SAFETY, Klickliste, TODO, NEXT, RESULTS, AL-LOG, ABTEILUNG). Kein Push, kein Store, kein Gitlink-Touch.

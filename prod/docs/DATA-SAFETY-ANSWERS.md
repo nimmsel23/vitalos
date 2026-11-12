@@ -207,7 +207,7 @@ und E-Mail berücksichtigt. Für die Prüfung ist er der falsche Weg: der Button
 nutzt das Web-Popup, und das Prüfergerät hätte dann das Google-Konto der
 prüfenden Person statt des vorbereiteten Kontos.
 
-## Release-Signatur, die hier nicht gebaut werden kann
+## Release-Signatur (lokal vorhanden, kein Play-Upload)
 
 `prod/android/app/build.gradle`: `versionCode` 1, `versionName` `"0.1.0"`.
 `signingConfigs.release` liest `prod/android/keystore.properties` nur, wenn
@@ -219,10 +219,19 @@ committet.
 `prod/android/variables.gradle`: `minSdkVersion` 24, `compileSdkVersion` 36,
 `targetSdkVersion` 36.
 
-Das signierte AAB entsteht auf der Maschine, die `product.env` und
-`keystore.properties` hat. Ablauf, Ausgabe und SHA-256-Platzhalter stehen in
+**Stand 2026-11-12 AL (C-015):** Signiertes Bundle lokal vorhanden.
+
+| Feld | Wert |
+| --- | --- |
+| Pfad | `prod/android/app/build/outputs/bundle/release/app-release.aab` |
+| Größe / mtime | 6 302 404 Bytes, 2026-11-12 10:52 CET |
+| SHA-256 (Datei) | `682c7ed6557743a3b816bf01434a709f17149f530fef6c8b6b2c22921723865b` |
+| Signatur | `jarsigner -verify` → JAR verifiziert; Alias/CN `VitalOS Product` (self-signed Upload-Key) |
+| Zertifikat SHA-256 | `3D:4F:62:E0:10:47:08:4E:51:75:A1:FE:67:C8:71:D0:4C:26:BB:7B:CC:30:1B:66:64:1A:45:CC:39:C6:EB:A7` |
+| Gültig | 2026-11-06 → 2054-03-24 |
+
+JDK 21 liegt unter `~/.local/share/jvm/jdk-21` (Gradle-Runner laut
+Klickliste). Ablauf unverändert in
 `prod/docs/PLAY-CLOSED-TEST-CLICKLIST.md`, Abschnitt „AAB lokal bauen (C-015)“.
-In der Umgebung dieser Prüfung fehlten Android-SDK, `node_modules`, die
-ausgecheckten App-Submodule, `prod/.product-config/product.env` und
-`keystore.properties`. Deshalb wurde `bundleRelease` hier nicht ausgeführt.
-Ein Lauf ohne diese Werte wäre kein Nachweis des Release-Builds.
+Kein Play-Upload und kein Firebase-Fingerprint-Eintrag aus diesem Auftrag —
+beides Owner nach Console-Upload.
