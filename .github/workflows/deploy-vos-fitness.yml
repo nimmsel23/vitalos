@@ -78,6 +78,14 @@ jobs:
         working-directory: vos-fitness
         run: npm run sync:sw
 
+      # Submodul-Platzhalter fitness-app/firebase.config.js hat apiKey:"".
+      # fitness-dev überschreibt die Datei in der eigenen CI aus FIREBASE_CONFIG.
+      # Hier liegt die öffentliche Web-Config schon in firebase.config.js (Client-Key).
+      # Pulse lenkt den relativen Import zusätzlich per Vite um; build:origin
+      # liest die Datei direkt, deshalb die Kopie vor beiden Builds.
+      - name: Öffentliche Firebase-Web-Config nach fitness-app
+        run: cp firebase.config.js fitness-app/firebase.config.js
+
       - name: Build VOS Fitness
         working-directory: vos-fitness
         env:
@@ -105,6 +113,9 @@ jobs:
             vos-fitness/firebase.json > /tmp/firebase.merged.json
           mv /tmp/firebase.merged.json vos-fitness/firebase.json
           jq -c '.hosting' vos-fitness/firebase.json
+
+      - name: Bundle ohne leeren Firebase-apiKey
+        run: node scripts/check-bundle-apikey.mjs vos-fitness/dist-firebase
 
       # Nur Hosting. Firestore-Rules-SSOT liegt im Root (deploy-shell.yml).
       - name: Deploy VOS Fitness to Firebase Hosting

@@ -49,6 +49,7 @@ function fixRolldownPreloadMarker() {
 module.exports = defineConfig(async ({ mode }) => {
   const { vosChangelog } = await import('../packages/mini-app-shell/vos-changelog-vite.mjs');
   const { miniAppSubmodulePlugin } = await import('../fitness-app/vite-miniapp-submodules.mjs');
+  const { publicFirebaseConfigRedirect } = await import('./public-firebase-config.mjs');
   const env = loadEnv(mode, process.cwd(), "");
   const appMode = process.env.VITE_APP_MODE || env.VITE_APP_MODE || "client";
   const outDir = appMode === "client" ? "./dist-firebase" : "./dist";
@@ -59,6 +60,10 @@ module.exports = defineConfig(async ({ mode }) => {
       "import.meta.env.VITE_APP_MODE": JSON.stringify(appMode),
     },
     plugins: [
+      publicFirebaseConfigRedirect({
+        fitnessRoot: FITNESS,
+        publicConfig: path.resolve(VITALOS, "firebase.config.js"),
+      }),
       planSubmoduleFallback(),
       miniAppSubmodulePlugin(FITNESS),
       vosChangelog({ appId: 'vos-fitness', appName: 'VOS Fitness', accent: '#60a5fa', releaseRoot: FITNESS }),
