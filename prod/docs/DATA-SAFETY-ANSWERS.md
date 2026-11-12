@@ -19,6 +19,7 @@ Der native Web-Build ist `pnpm run product:build:native`
 | Werden die abgefragten Nutzerdaten erhoben oder weitergegeben? | Ja, erhoben. Weitergabe an Dritte: Nein. |
 | Verschlüsselung bei der Übertragung | Ja, für alle erhobenen Arten (HTTPS/TLS zu Firebase). |
 | Können Nutzer die Löschung verlangen? | Ja. URL `https://vitalos.web.app/konto-loeschen` (C-013, auf master). |
+| Datenschutzerklärung | `https://vitalos.at/vitalos/datenschutz` |
 | Werbung | No. Kein Ad-SDK im Release-Build. |
 | Konto in der App | Ja. Prüferweg ist E-Mail und Passwort, nicht Google. |
 

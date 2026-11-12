@@ -23,11 +23,20 @@ export function findStatic(publicDir, urlPath) {
   return null;
 }
 
-/** Firebase Hosting: vorhandene Dateien vor Rewrites. Kein Auth. */
-export function resolveHosting(publicDir, rewrites, urlPath) {
+/** Firebase Hosting: Datei, dann Redirect, dann Rewrite. Kein Auth. */
+export function resolveHosting(publicDir, rewrites, urlPath, redirects = []) {
   const pathOnly = decodeURIComponent(urlPath.split("?")[0]) || "/";
   const file = findStatic(publicDir, pathOnly);
   if (file) return { status: 200, file, via: "static" };
+  for (const rule of redirects) {
+    if (!matches(rule.source, pathOnly)) continue;
+    return {
+      status: rule.type || 301,
+      file: null,
+      via: "redirect",
+      destination: rule.destination,
+    };
+  }
   for (const rule of rewrites) {
     if (!matches(rule.source, pathOnly)) continue;
     const destination = findStatic(publicDir, rule.destination);

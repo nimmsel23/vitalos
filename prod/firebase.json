@@ -8,9 +8,12 @@
     "public": "dist-firebase",
     "predeploy": ["node scripts/ci-deploy-guard.mjs"],
     "ignore": ["firebase.json", "**/.*", "**/node_modules/**"],
+    "redirects": [
+      { "source": "/datenschutz", "destination": "https://vitalos.at/vitalos/datenschutz", "type": 301 },
+      { "source": "/datenschutz/", "destination": "https://vitalos.at/vitalos/datenschutz", "type": 301 },
+      { "source": "/datenschutz/**", "destination": "https://vitalos.at/vitalos/datenschutz", "type": 301 }
+    ],
     "rewrites": [
-      { "source": "/datenschutz", "destination": "/datenschutz/index.html" },
-      { "source": "/datenschutz/", "destination": "/datenschutz/index.html" },
       { "source": "/konto-loeschen", "destination": "/konto-loeschen/index.html" },
       { "source": "/konto-loeschen/", "destination": "/konto-loeschen/index.html" },
       { "source": "**", "destination": "/index.html" }

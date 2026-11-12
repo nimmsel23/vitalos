@@ -2,6 +2,8 @@ import { useState, useEffect, useCallback, useRef } from 'react'
 import { RefreshCw, Zap } from 'lucide-react'
 import { useEscapeKey } from './hooks/useEscapeKey.js'
 import { watchAuth, signIn, signInEmail, signUpEmail, signOut, isLocalMode, auth, getUserProfile, registerShellDevice } from '@db'
+import { PRIVACY_URL } from '../prod/src/cloud/legal.js'
+import { PASSWORD_RESET_NEED_EMAIL, PASSWORD_RESET_SENT, passwordResetNotice } from '../prod/src/cloud/passwordReset.js'
 import { NAV_ITEMS, VALID_TABS, SUB_NAV } from './shell/NavigationItems.js'
 import Sidebar from './shell/layout/Sidebar.jsx'
 import MobileShell from './shell/layout/MobileShell.jsx'
@@ -78,6 +80,9 @@ export default function App() {
   const [authPassword, setAuthPassword] = useState('')
   const [authError, setAuthError]     = useState('')
   const [authRegistering, setAuthRegistering] = useState(false)
+  const [resetBusy, setResetBusy] = useState(false)
+  const [resetNotice, setResetNotice] = useState('')
+  const [resetError, setResetError] = useState('')
 
   useEffect(() => {
     if (isLocalMode()) { setAuthLoading(false); return }
@@ -425,6 +430,28 @@ export default function App() {
     }
   }
 
+  async function handlePasswordReset() {
+    const email = authEmail.trim()
+    setResetNotice('')
+    setResetError('')
+    if (!email) {
+      setResetError(PASSWORD_RESET_NEED_EMAIL)
+      return
+    }
+    setResetBusy(true)
+    try {
+      const { sendPasswordResetEmail } = await import('firebase/auth')
+      await sendPasswordResetEmail(auth, email)
+      setResetNotice(PASSWORD_RESET_SENT)
+    } catch (error) {
+      const outcome = passwordResetNotice(error)
+      if (outcome.ok) setResetNotice(outcome.message)
+      else setResetError(outcome.message)
+    } finally {
+      setResetBusy(false)
+    }
+  }
+
   if (authLoading) return (
     <div className="min-h-screen flex items-center justify-center bg-fit-bg">
     <div className="text-fit-dim text-xs font-black uppercase tracking-widest">…</div>
@@ -452,6 +479,11 @@ export default function App() {
             <button type="submit" className="vos-press h-12 w-full rounded-[14px] text-[16px] font-semibold" style={{ background: 'var(--accent)', color: '#0b0e14' }}>
               {authRegistering ? 'Account erstellen' : 'Anmelden'}
             </button>
+            <button type="button" onClick={handlePasswordReset} disabled={resetBusy} className="w-full text-center text-[14px] text-fit-dim hover:text-fit-accent disabled:opacity-60">
+              {resetBusy ? 'Wird gesendet …' : 'Passwort vergessen'}
+            </button>
+            {resetNotice && <p role="status" className="text-center text-[13px] text-fit-dim">{resetNotice}</p>}
+            {resetError && <p role="alert" className="text-center text-[13px] text-fit-red">{resetError}</p>}
           </form>
           <div className="my-5 flex items-center gap-3">
             <div className="h-px flex-1" style={{ background: 'color-mix(in srgb, var(--ink) 12%, transparent)' }} />
@@ -464,6 +496,9 @@ export default function App() {
           <button onClick={() => setAuthRegistering(!authRegistering)} className="mt-5 w-full text-[14px] text-fit-dim hover:text-fit-accent">
             {authRegistering ? 'Bereits einen Account? Anmelden' : 'Neu hier? Account erstellen'}
           </button>
+          <nav aria-label="Rechtliches" className="mt-6 flex justify-center">
+            <a className="text-[13px] text-fit-dim underline underline-offset-2 hover:text-fit-accent" href={PRIVACY_URL}>Datenschutz</a>
+          </nav>
         </div>
       </div>
     )

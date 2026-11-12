@@ -1,5 +1,5 @@
 /** Öffentliche Rechts-URLs der Play-Closed-Test-App. */
-export const PRIVACY_URL = "https://vitalos.web.app/datenschutz";
+export const PRIVACY_URL = "https://vitalos.at/vitalos/datenschutz";
 export const ACCOUNT_DELETION_URL = "https://vitalos.web.app/konto-loeschen";
 
 /**
