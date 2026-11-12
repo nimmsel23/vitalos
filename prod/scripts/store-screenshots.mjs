@@ -3,9 +3,9 @@
 // Baut die Produkt-Shell lokal (Edition store, Coach-Modus, kein Login)
 // und schreibt Feature Graphic plus Phone-Screenshots nach branding/store/.
 // Kein Deploy, kein Produktions-Login, keine echten Konten.
-import { spawn } from 'node:child_process'
-import { mkdir, readFile, writeFile, rm } from 'node:fs/promises'
-import { existsSync, readFileSync, writeFileSync, mkdirSync, symlinkSync, lstatSync } from 'node:fs'
+import { spawn, spawnSync } from 'node:child_process'
+import { mkdir, writeFile, rm } from 'node:fs/promises'
+import { existsSync, readFileSync, writeFileSync, mkdirSync, symlinkSync, lstatSync, unlinkSync, rmSync } from 'node:fs'
 import { dirname, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { setTimeout as delay } from 'node:timers/promises'
@@ -98,30 +98,65 @@ async function ensureFuelShared() {
   return link
 }
 
-function withDemoFirebaseConfig(fn) {
-  const file = resolve(PROD, '.product-config/firebase.config.js')
+const DEMO_FIREBASE_CONFIG = [
+  '// Screenshot-Lauf. Kein echtes Firebase-Projekt. Gitignored.',
+  'export const config = {',
+  '  apiKey: "screenshot-not-a-real-key",',
+  '  authDomain: "localhost",',
+  '  projectId: "demo-vitalos-screenshots",',
+  '  storageBucket: "demo-vitalos-screenshots.appspot.com",',
+  '  messagingSenderId: "000000000000",',
+  '  appId: "1:000000000000:web:screenshot",',
+  '};',
+  'export const firebaseConfig = config;',
+  'export const VAPID_KEY = "screenshot-not-a-real-vapid";',
+  '',
+].join('\n')
+
+let preview = null
+let restoreFirebase = () => {}
+let removeLinks = () => {}
+
+function freePreviewPort() {
+  const result = spawnSync('lsof', ['-ti', `tcp:${PREVIEW_PORT}`], { encoding: 'utf8' })
+  const pids = (result.stdout || '').split('\n').map((line) => Number(line)).filter((pid) => pid && pid !== process.pid)
+  for (const pid of pids) {
+    try { process.kill(pid, 'SIGKILL') } catch { /* already gone */ }
+  }
+}
+
+function stopPreview() {
+  if (preview?.pid) {
+    try { process.kill(-preview.pid, 'SIGKILL') } catch { /* group already gone */ }
+    try { preview.kill('SIGKILL') } catch { /* already gone */ }
+    preview = null
+  }
+  freePreviewPort()
+}
+
+function stopAll() {
+  try { restoreFirebase() } catch (error) { console.error(error) }
+  stopPreview()
+  try { removeLinks() } catch (error) { console.error(error) }
+}
+
+process.once('SIGINT', () => { stopAll(); process.exit(130) })
+process.once('SIGTERM', () => { stopAll(); process.exit(143) })
+
+function withDemoFirebaseConfig(fn, file = resolve(PROD, '.product-config/firebase.config.js')) {
   mkdirSync(dirname(file), { recursive: true })
-  const backup = existsSync(file) ? readFileSync(file) : null
-  const demo = [
-    '// Screenshot-Lauf. Kein echtes Firebase-Projekt. Gitignored.',
-    'export const config = {',
-    '  apiKey: "screenshot-not-a-real-key",',
-    '  authDomain: "localhost",',
-    '  projectId: "demo-vitalos-screenshots",',
-    '  storageBucket: "demo-vitalos-screenshots.appspot.com",',
-    '  messagingSenderId: "000000000000",',
-    '  appId: "1:000000000000:web:screenshot",',
-    '};',
-    'export const firebaseConfig = config;',
-    'export const VAPID_KEY = "screenshot-not-a-real-vapid";',
-    '',
-  ].join('\n')
-  writeFileSync(file, demo)
+  const hadFile = existsSync(file)
+  const backup = hadFile ? readFileSync(file) : null
+  writeFileSync(file, DEMO_FIREBASE_CONFIG)
+  restoreFirebase = () => {
+    if (hadFile) writeFileSync(file, backup)
+    else {
+      try { unlinkSync(file) } catch { /* already removed */ }
+    }
+  }
   return Promise.resolve()
     .then(fn)
-    .finally(() => {
-      if (backup) writeFileSync(file, backup)
-    })
+    .finally(() => restoreFirebase())
 }
 
 async function generateData() {
@@ -351,7 +386,7 @@ async function writeReadme(sha) {
     '',
     'Das Skript braucht Google Chrome, Python 3 mit Pillow (`python3 -m pip install pillow`) und Netz für den öffentlichen Fitness-Katalog `nimmsel23/fitness` (Übungsdaten, nicht im App-Submodul).',
     `Die Fuel-Shared-Module liegen im privaten Repo \`nimmsel23/backend\`. Fehlt das Checkout, stellt das Skript die letzte im \`fuel-app\`-Commit \`${FUEL_SHARED_COMMIT}\` enthaltene Fassung nur lokal für den Build bereit und verlinkt sie nicht ins Git.`,
-    'Die Firebase-Datei `prod/.product-config/firebase.config.js` wird für den Lauf durch eine Demo-Konfiguration ersetzt und danach wiederhergestellt. Es wird nirgends angemeldet.',
+    'Die Firebase-Datei `prod/.product-config/firebase.config.js` wird für den Lauf durch eine Demo-Konfiguration ersetzt. Lag sie schon vor, schreibt das Skript sie danach zurück, sonst löscht es sie. Es wird nirgends angemeldet.',
     'Fuel-Screenshots fehlen bewusst: ohne den Fuel-Server bleibt die Ansicht auf „FUEL LÄDT…“.',
     'Journal und Habits zeigen ohne Cloud-Anmeldung Fehler- oder Login-Hinweise und werden nicht aufgenommen.',
     '',
@@ -374,13 +409,20 @@ async function main() {
   const createdKb = await ensureFitnessKb()
   const fuelLink = await ensureFuelShared()
   const sha = await gitSha()
-  let preview
+  removeLinks = () => {
+    if (fuelLink && existsSync(fuelLink) && lstatSync(fuelLink).isSymbolicLink()) rmSync(fuelLink)
+    for (const link of createdKb) {
+      if (existsSync(link)) rmSync(link)
+    }
+  }
   try {
     await withDemoFirebaseConfig(async () => {
       await generateData()
       await run('pnpm', ['--dir', 'prod', 'exec', 'vite', 'build'], { env: productEnv() })
+      freePreviewPort()
       preview = spawn('pnpm', ['--dir', 'prod', 'exec', 'vite', 'preview', '--host', '127.0.0.1', '--port', String(PREVIEW_PORT), '--strictPort'], {
         cwd: REPO,
+        detached: true,
         stdio: 'ignore',
         env: productEnv(),
       })
@@ -404,18 +446,55 @@ async function main() {
     await writeReadme(sha)
     console.log(`Store-Grafiken stehen in ${STORE}`)
   } finally {
-    if (preview) preview.kill('SIGKILL')
-    if (fuelLink && existsSync(fuelLink)) {
-      const stat = lstatSync(fuelLink)
-      if (stat.isSymbolicLink()) await rm(fuelLink)
-    }
-    for (const link of createdKb) {
-      if (existsSync(link)) await rm(link)
-    }
+    stopAll()
   }
 }
 
-main().catch((error) => {
+async function checkCleanup() {
+  const tempConfig = '/tmp/vitalos-screenshot-firebase-check.js'
+  try { unlinkSync(tempConfig) } catch { /* absent */ }
+  let sawDemo = false
+  try {
+    await withDemoFirebaseConfig(async () => {
+      sawDemo = readFileSync(tempConfig).includes('screenshot-not-a-real-key')
+      throw new Error('boom')
+    }, tempConfig)
+  } catch (error) {
+    if (error.message !== 'boom') throw error
+  }
+  if (!sawDemo) throw new Error('Demo-Konfiguration wurde nicht geschrieben')
+  if (existsSync(tempConfig)) throw new Error('Demo-Konfiguration blieb liegen')
+  console.log('firebase restore ok')
+
+  freePreviewPort()
+  preview = spawn('pnpm', ['--dir', 'prod', 'exec', 'vite', 'preview', '--host', '127.0.0.1', '--port', String(PREVIEW_PORT), '--strictPort'], {
+    cwd: REPO,
+    detached: true,
+    stdio: 'ignore',
+    env: productEnv(),
+  })
+  let up = false
+  try {
+    for (let i = 0; i < 50; i++) {
+      try {
+        const res = await fetch(`http://127.0.0.1:${PREVIEW_PORT}/`)
+        if (res.status) { up = true; break }
+      } catch { /* starting */ }
+      await delay(200)
+    }
+    if (!up) throw new Error('vite preview did not start for cleanup check')
+  } finally {
+    stopPreview()
+  }
+  await delay(400)
+  const left = spawnSync('lsof', ['-ti', `tcp:${PREVIEW_PORT}`], { encoding: 'utf8' })
+  if ((left.stdout || '').trim()) throw new Error(`preview still listening: ${left.stdout.trim()}`)
+  console.log('preview process group stopped')
+}
+
+const entry = process.argv.includes('--check-cleanup') ? checkCleanup : main
+entry().catch((error) => {
   console.error(error)
+  stopAll()
   process.exit(1)
 })

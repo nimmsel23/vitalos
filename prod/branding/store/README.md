@@ -26,6 +26,6 @@ node prod/scripts/store-screenshots.mjs
 
 Das Skript braucht Google Chrome, Python 3 mit Pillow (`python3 -m pip install pillow`) und Netz für den öffentlichen Fitness-Katalog `nimmsel23/fitness` (Übungsdaten, nicht im App-Submodul).
 Die Fuel-Shared-Module liegen im privaten Repo `nimmsel23/backend`. Fehlt das Checkout, stellt das Skript die letzte im `fuel-app`-Commit `9b017ad^` enthaltene Fassung nur lokal für den Build bereit und verlinkt sie nicht ins Git.
-Die Firebase-Datei `prod/.product-config/firebase.config.js` wird für den Lauf durch eine Demo-Konfiguration ersetzt und danach wiederhergestellt. Es wird nirgends angemeldet.
+Die Firebase-Datei `prod/.product-config/firebase.config.js` wird für den Lauf durch eine Demo-Konfiguration ersetzt. Lag sie schon vor, schreibt das Skript sie danach zurück, sonst löscht es sie. Es wird nirgends angemeldet.
 Fuel-Screenshots fehlen bewusst: ohne den Fuel-Server bleibt die Ansicht auf „FUEL LÄDT…“.
 Journal und Habits zeigen ohne Cloud-Anmeldung Fehler- oder Login-Hinweise und werden nicht aufgenommen.
