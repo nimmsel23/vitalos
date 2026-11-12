@@ -1,3 +1,14 @@
+## 2026-11-12 — AL C-015 AAB-SHA + Data-Safety-Stand
+
+- Signiertes `app-release.aab` belegt (6,0M, 10:52 CET): SHA-256 Datei
+  `682c7ed6557743a3b816bf01434a709f17149f530fef6c8b6b2c22921723865b`;
+  jarsigner OK; CN VitalOS Product; Zertifikat-SHA-256
+  `3D:4F:62:E0:10:47:08:4E:51:75:A1:FE:67:C8:71:D0:4C:26:BB:7B:CC:30:1B:66:64:1A:45:CC:39:C6:EB:A7`.
+- Docs: `prod/docs/DATA-SAFETY-ANSWERS.md`, `prod/docs/PLAY-CLOSED-TEST-CLICKLIST.md`
+  Punkt 13 → „AAB lokal bereit“; TODO C-015 Repo-Anteil [x]. Kein Play-Upload.
+- Org `5e9d0f4a` unberührt (Tip grün laut CTO-Nachtauftrag). JDK 21 unter
+  `~/.local/share/jvm/jdk-21` vorhanden (früheres „kein JDK 21“ veraltet).
+
 ## 2026-11-12 — CPO-Rolle auf Issues/Store-Hygiene
 
 
