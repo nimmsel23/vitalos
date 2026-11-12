@@ -4,7 +4,7 @@ import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { ACCOUNT_DELETION_URL, CONTACT_EMAIL, CONTACT_EMAIL_IS_PLACEHOLDER, CONTACT_PLACE, PRIVACY_URL } from "../src/cloud/legal.js";
-import { PASSWORD_RESET_NEED_EMAIL, PASSWORD_RESET_SENT, passwordResetFailure } from "../src/cloud/passwordReset.js";
+import { PASSWORD_RESET_NEED_EMAIL, PASSWORD_RESET_SENT, passwordResetFailure, passwordResetNotice } from "../src/cloud/passwordReset.js";
 import { resolveHosting } from "../scripts/legal-hosting.mjs";
 
 const repo = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../..");
@@ -91,17 +91,22 @@ test("Login und Registrierung verlinken die Datenschutzerklärung und setzen das
   assert.match(shell, /href=\{PRIVACY_URL\}/);
   assert.match(shell, /Passwort vergessen/);
   assert.match(shell, /sendPasswordResetEmail/);
+  assert.match(shell, /passwordResetNotice/);
   assert.match(product, /<LegalLinks/);
   assert.match(product, /Passwort vergessen/);
   assert.match(product, /sendPasswordResetEmail/);
+  assert.match(product, /passwordResetNotice/);
   assert.match(read("prod/src/shell/LegalLinks.jsx"), /href=\{PRIVACY_URL\}/);
   assert.equal(passwordResetFailure({ code: "auth/invalid-email" }), "Diese E-Mail-Adresse ist ungültig.");
-  assert.equal(passwordResetFailure({ code: "auth/user-not-found" }), "Zu dieser E-Mail gibt es kein E-Mail-Konto.");
   assert.equal(passwordResetFailure({ code: "auth/too-many-requests" }), "Zu viele Versuche. Bitte später erneut versuchen.");
   assert.equal(passwordResetFailure({ code: "auth/network-request-failed" }), "Keine Verbindung. Bitte später erneut versuchen.");
   assert.match(passwordResetFailure({ code: "auth/internal-error" }), /nicht gesendet/);
   assert.equal(PASSWORD_RESET_NEED_EMAIL, "Bitte zuerst die E-Mail-Adresse eingeben.");
-  assert.match(PASSWORD_RESET_SENT, /Link zum Zurücksetzen/);
+  assert.equal(PASSWORD_RESET_SENT, "Falls ein Konto mit dieser E-Mail-Adresse existiert, erhältst du eine Nachricht zum Zurücksetzen.");
+  assert.deepEqual(passwordResetNotice(null), { ok: true, message: PASSWORD_RESET_SENT });
+  assert.deepEqual(passwordResetNotice({ code: "auth/user-not-found" }), { ok: true, message: PASSWORD_RESET_SENT });
+  assert.equal(passwordResetNotice({ code: "auth/invalid-email" }).ok, false);
+  assert.doesNotMatch(read("prod/src/cloud/passwordReset.js"), /kein E-Mail-Konto/);
 });
 
 test("Store-Doku nennt die kanonische Datenschutzerklärung", () => {

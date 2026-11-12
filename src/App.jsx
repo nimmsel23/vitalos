@@ -3,7 +3,7 @@ import { RefreshCw, Zap } from 'lucide-react'
 import { useEscapeKey } from './hooks/useEscapeKey.js'
 import { watchAuth, signIn, signInEmail, signUpEmail, signOut, isLocalMode, auth, getUserProfile, registerShellDevice } from '@db'
 import { PRIVACY_URL } from '../prod/src/cloud/legal.js'
-import { PASSWORD_RESET_NEED_EMAIL, PASSWORD_RESET_SENT, passwordResetFailure } from '../prod/src/cloud/passwordReset.js'
+import { PASSWORD_RESET_NEED_EMAIL, PASSWORD_RESET_SENT, passwordResetNotice } from '../prod/src/cloud/passwordReset.js'
 import { NAV_ITEMS, VALID_TABS, SUB_NAV } from './shell/NavigationItems.js'
 import Sidebar from './shell/layout/Sidebar.jsx'
 import MobileShell from './shell/layout/MobileShell.jsx'
@@ -444,7 +444,9 @@ export default function App() {
       await sendPasswordResetEmail(auth, email)
       setResetNotice(PASSWORD_RESET_SENT)
     } catch (error) {
-      setResetError(passwordResetFailure(error))
+      const outcome = passwordResetNotice(error)
+      if (outcome.ok) setResetNotice(outcome.message)
+      else setResetError(outcome.message)
     } finally {
       setResetBusy(false)
     }
