@@ -1,12 +1,9 @@
 <!DOCTYPE html>
 <html lang="de">
 <!--
-  C-013 Sachstand aus dem Release-Build (2026-11-11).
-  Der Wortlaut darf durch den Text aus Auftrag C-014
-  (prod/docs/STORE-LISTING-FINAL.md) ersetzt werden.
-  KONTAKT: Im Repo gibt es keine öffentliche Kontaktadresse.
-  KONTAKT-FOLGT@example.invalid ist ein Platzhalter und muss
-  vor der Play-Einreichung ersetzt werden.
+  Datenschutzerklärung VitalOS (com.vitalos.app) — Stand 2026-11-12.
+  Quelle der Fakten: C-013 Sachstand des Release-Builds, prod/docs/DATA-SAFETY-ANSWERS.md.
+  Kontakt per Owner-Entscheid 2026-11-12. Spiegel: prod/public/datenschutz/index.html (identisch halten).
 -->
 <head>
   <meta charset="utf-8">
@@ -20,46 +17,54 @@
     h1 { font-size: 1.8rem; line-height: 1.2; }
     h2 { font-size: 1.15rem; margin-top: 2rem; }
     a { color: inherit; }
-    code { font-family: ui-monospace, monospace; font-size: 0.92em; }
-    .notice { padding: 0.85rem 1rem; border: 1px solid color-mix(in srgb, CanvasText 25%, transparent); border-radius: 0.75rem; }
+    .muted { opacity: 0.75; font-size: 0.92em; }
     nav { display: flex; gap: 1rem; margin-top: 2rem; }
   </style>
 </head>
 <body>
   <main>
-    <h1>Datenschutz</h1>
-    <p>Diese Seite beschreibt, was die VitalOS-App <code>com.vitalos.app</code> im Produkt-Release-Build speichert. Sie ist ohne Anmeldung lesbar und setzt selbst keine Cookies.</p>
-    <p class="notice">Kontaktadresse: noch nicht festgelegt. Im Quelltext steht der Platzhalter <code>KONTAKT-FOLGT@example.invalid</code>. Das ist keine erreichbare Adresse. Auftrag C-014 ersetzt den Wortlaut und die Adresse. Diese Seite ist ein technischer Sachstand, keine Rechtsberatung.</p>
+    <h1>Datenschutzerklärung</h1>
+    <p class="muted">VitalOS: Journal &amp; Habits (Android-App <code>com.vitalos.app</code> und vitalos.web.app) · Stand: 12. November 2026</p>
 
-    <h2>Verantwortliche Stelle</h2>
-    <p>Betreiber der App VitalOS. Eine öffentliche Kontaktadresse ist im Projektstand noch nicht hinterlegt. Bis dahin gilt der Platzhalter oben.</p>
+    <h2>1. Verantwortlicher und Kontakt</h2>
+    <p>Verantwortlich für die Datenverarbeitung ist der Betreiber von VitalOS, Daniel (Vitaltrainer), Wien, Österreich.<br>
+    Kontakt für alle Datenschutzanfragen: <a href="mailto:nimmsel23+vitalos@gmail.com">nimmsel23+vitalos@gmail.com</a></p>
 
-    <h2>Welche Daten die App verarbeitet</h2>
-    <p>Die App speichert Kontodaten im Firebase-Projekt <code>vitalos-prod</code>. Laut Produkt-Runbook <code>prod/docs/FIREBASE.md</code> liegt Firestore <code>(default)</code> in der Region <code>eur3</code>. Diese öffentlichen Seiten liegen auf <code>https://vitalos.web.app</code> und enthalten kein Kontoformular.</p>
+    <h2>2. Welche Daten verarbeitet werden</h2>
     <ul>
-      <li>Konto: E-Mail-Adresse, Anzeigename, Firebase-Nutzer-ID. Bei E-Mail-Registrierung das Passwort nur als Hash bei Firebase Authentication, nicht im Klartext in der App. Bei Google-Anmeldung die Google-Kennung und, falls Google sie liefert, die Profilbild-URL.</li>
-      <li>Profil, das du einträgst: Geschlecht, Alter, Größe, Gewicht, Anzeigename. Geräte-Einträge unter <code>users/{uid}/devices</code>.</li>
-      <li>Inhalte, die du einträgst: Journal, Gewohnheiten, Training und Pläne, Ernährung, Supplements, Entspannung, Skills-Ereignisse, 6Pack-Fotos als JPEG-Daten in Firestore, Plan-Rückmeldungen und Coach-Nachrichten, soweit du sie nutzt.</li>
-      <li>Push: Firebase Cloud Messaging wird vorbereitet. Ein Token entsteht nur, wenn du Benachrichtigungen aktivierst, und liegt dann in den Firestore-Daten dieser Nutzer-ID.</li>
-      <li>Auf dem Gerät: Firebase-Auth-Sitzung, Firestore-Offline-Cache in IndexedDB, Einträge in <code>localStorage</code>.</li>
+      <li><strong>Konto:</strong> E-Mail-Adresse, Anzeigename, eine technische Nutzer-ID. Bei E-Mail-Registrierung speichert Firebase das Passwort nur als Hash. Bei Google-Anmeldung die Google-Kennung und, falls vorhanden, die Profilbild-URL.</li>
+      <li><strong>Profil, wenn du es ausfüllst:</strong> Geschlecht, Alter, Größe, Gewicht.</li>
+      <li><strong>Inhalte, die du einträgst:</strong> Journal, Gewohnheiten, Training und Pläne, Ernährung, Supplements, Entspannung, Skills, Fortschrittsfotos und Nachrichten an deinen Coach, soweit du diese Bereiche nutzt. Einige davon sind Gesundheitsdaten.</li>
+      <li><strong>Geräte:</strong> eine zufällige Geräte-ID je App-Installation und, nur wenn du Benachrichtigungen aktivierst, ein Push-Token.</li>
+      <li><strong>Auf deinem Gerät:</strong> Anmeldesitzung und ein Offline-Zwischenspeicher deiner Daten, damit die App ohne Netz funktioniert.</li>
+    </ul>
+    <p>VitalOS nutzt keine Werbung, kein Tracking, keine Analyse-Dienste und keine Standortdaten. Die Android-App ruft keine KI-Dienste auf.</p>
+
+    <h2>3. Zwecke und Rechtsgrundlagen</h2>
+    <ul>
+      <li>Bereitstellung des Kontos und Speichern deiner Einträge: Vertragserfüllung (Art. 6 Abs. 1 lit. b DSGVO).</li>
+      <li>Gesundheits- und Fitnessdaten: deine ausdrückliche Einwilligung (Art. 9 Abs. 2 lit. a DSGVO), die du durch das freiwillige Eintragen erteilst und jederzeit durch Löschen der Einträge oder des Kontos widerrufen kannst.</li>
+      <li>Erinnerungen per Push: Einwilligung (Art. 6 Abs. 1 lit. a DSGVO), widerrufbar in den Systemeinstellungen.</li>
     </ul>
 
-    <h2>Dienste im Release-Build</h2>
-    <ul>
-      <li>Firebase Authentication mit E-Mail/Passwort und Google-Anmeldung.</li>
-      <li>Cloud Firestore für die oben genannten Inhalte.</li>
-      <li>Firebase Cloud Messaging nur bei aktivierten Benachrichtigungen.</li>
-    </ul>
-    <p>Der Produkt-Release-Build setzt <code>vertexAI</code> auf <code>null</code> (<code>prod/src/cloud/firebase.js</code>, sobald <code>VITE_VOS_PRODUCT_BUILD=1</code>). Dieser Build ruft Gemini nicht auf. Im Produktquelltext und im Android-Gradle gibt es keinen Aufruf von Firebase Analytics, Crashlytics, Performance Monitoring oder einem Werbe-SDK. Das npm-Paket <code>firebase</code> bringt solche Module mit; dieser Build initialisiert sie nicht.</p>
+    <h2>4. Empfänger und Speicherort</h2>
+    <p>Die Daten liegen bei Google Firebase (Google Ireland Ltd.) in Rechenzentren der EU (Firestore-Region eur3). Eingesetzt werden Firebase Authentication, Cloud Firestore, Cloud Functions (Region europe-west1, nur für die Kontolöschung) und, falls aktiviert, Firebase Cloud Messaging. Google ist Auftragsverarbeiter; eine Übermittlung an Google LLC in die USA ist nicht ausgeschlossen und erfolgt auf Grundlage des EU-US Data Privacy Framework bzw. von Standardvertragsklauseln. Wir verkaufen keine Daten und geben sie an niemanden sonst weiter. Wenn du mit einem Coach zusammenarbeitest, sieht dieser nur die Daten, die du ihm in der App freigibst.</p>
 
-    <h2>Zweck und Empfänger</h2>
-    <p>Die Daten dienen dem Konto, dem Speichern deiner Einträge und optionalen Erinnerungen. Empfänger ist Google als Betreiber von Firebase Authentication, Cloud Firestore und Firebase Cloud Messaging. VitalOS verkauft die Daten nicht und schaltet keine Werbung.</p>
+    <h2>5. Speicherdauer</h2>
+    <p>Deine Daten bleiben gespeichert, bis du sie oder dein Konto löschst. Nach einer Kontolöschung werden Konto und alle personenbezogenen Inhalte sofort entfernt; es gibt kein eigenes Archiv. Technische Sicherungen bei Google werden nach deren Fristen überschrieben.</p>
 
-    <h2>Speicherdauer</h2>
-    <p>Die Inhalte bleiben gespeichert, bis das Konto gelöscht wird. VitalOS führt kein eigenes Archiv gelöschter Konten. Eine zusätzliche Aufbewahrungsfrist ist im Produkt nicht hinterlegt. Backups der Google-Infrastruktur liegen außerhalb dieses Repos und sind hier nicht mit einer Frist belegt.</p>
+    <h2>6. Deine Rechte</h2>
+    <p>Du hast das Recht auf Auskunft, Berichtigung, Löschung, Einschränkung der Verarbeitung, Datenübertragbarkeit und Widerspruch sowie auf Widerruf erteilter Einwilligungen. Schreib dazu an die Kontaktadresse oben. Du kannst dich außerdem bei der Österreichischen Datenschutzbehörde (<a href="https://www.dsb.gv.at">dsb.gv.at</a>) beschweren.</p>
 
-    <h2>Löschung</h2>
-    <p>Wie du das Konto in der App oder ohne Anmeldung löschst, steht auf der Seite <a href="/konto-loeschen">Konto löschen</a>.</p>
+    <h2>7. Konto löschen</h2>
+    <p>Du kannst dein Konto jederzeit direkt in der App löschen (Setup → Konto → „Konto löschen“) oder ohne App per E-Mail. Details: <a href="/konto-loeschen">Konto löschen</a>.</p>
+
+    <h2>8. Kein Medizinprodukt</h2>
+    <p>VitalOS ist ein Werkzeug zur Selbstbeobachtung und Alltagsorganisation. Es stellt keine Diagnosen und ersetzt keine ärztliche Beratung.</p>
+
+    <h2>9. Kinder</h2>
+    <p>VitalOS richtet sich an Erwachsene ab 18 Jahren.</p>
+
     <nav aria-label="Rechtliches">
       <a href="/konto-loeschen">Konto löschen</a>
       <a href="/">Zur App</a>
