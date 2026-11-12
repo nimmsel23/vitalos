@@ -1,5 +1,5 @@
 {
-  "generated": "2026-11-12T23:16:18+01:00",
+  "generated": "2026-11-12T23:44:38+01:00",
   "docs": [
     {
       "key": "status",
@@ -150,6 +150,42 @@
       "path": "../PM-DRAFT-C009-coaching-angebot.md",
       "label": "PM-DRAFT-C009-coaching-angebot",
       "group": "Entwurf"
+    },
+    {
+      "key": "board-business",
+      "path": "../boards/business.md",
+      "label": "Board · business Vault",
+      "group": "Boards"
+    },
+    {
+      "key": "board-coach",
+      "path": "../boards/coach.md",
+      "label": "Board · coach-dev",
+      "group": "Boards"
+    },
+    {
+      "key": "board-creator",
+      "path": "../boards/creator.md",
+      "label": "Board · creator",
+      "group": "Boards"
+    },
+    {
+      "key": "board-vitalos",
+      "path": "../boards/vitalos.md",
+      "label": "Board · vitalos Meta",
+      "group": "Boards"
+    },
+    {
+      "key": "board-vitaltrainer",
+      "path": "../boards/vitaltrainer.md",
+      "label": "Board · VitalTraining",
+      "group": "Boards"
+    },
+    {
+      "key": "board-workspace",
+      "path": "../boards/workspace.md",
+      "label": "Board · workspace Hub",
+      "group": "Boards"
     }
   ]
 }

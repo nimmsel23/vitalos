@@ -39,6 +39,9 @@ map_doc() {
     game/GAME-RUN-*.md)
       key="gamerun-$(echo "$base" | tr '[:upper:]' '[:lower:]' | tr -cd 'a-z0-9-')"
       label="$base"; group=Ritual ;;
+    boards/*)
+      key="board-$(echo "$base" | tr '[:upper:]' '[:lower:]' | tr -cd 'a-z0-9-')"
+      label="Board · $base"; group=Boards ;;
     PM-DRAFT-*)
       key="$(echo "$base" | tr '[:upper:]' '[:lower:]' | tr -cd 'a-z0-9-')"
       label="$base"; group=Entwurf ;;
@@ -59,9 +62,9 @@ TMP="$(mktemp)"
            VIBE-PROMPT.md README.md game/README.md; do
     [ -f "$ROOT/$f" ] && map_doc "$ROOT/$f"
   done
-  # Game-Rituale + PM-Drafts
+  # Game-Rituale + PM-Drafts + generierte Boards
   shopt -s nullglob
-  for f in "$ROOT"/game/TENT-*.md "$ROOT"/game/GAME-RUN-*.md "$ROOT"/PM-DRAFT-*.md; do
+  for f in "$ROOT"/game/TENT-*.md "$ROOT"/game/GAME-RUN-*.md "$ROOT"/PM-DRAFT-*.md "$ROOT"/boards/*.md; do
     map_doc "$f"
   done
 } | awk -F'\t' '!seen[$1]++' > "$TMP"

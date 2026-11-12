@@ -19,14 +19,14 @@ const FALLBACK_DOCS = [
   { key: "readme", path: "../README.md", label: "README", group: "Ritual" },
 ];
 
-/** Living-Board-Aufträge (vitalos#27); Status aus BOARDS.md-Tabelle wenn vorhanden. */
+/** Living Boards (vitalos#27); Inhalt in boards/<id>.md via gen-boards.py. */
 const BOARD_CARDS = [
-  { area: "workspace Hub", issue: 28, repo: "nimmsel23/workspace", cats: ["Team", "Wochenrhythmus", "Git/Siblings", "Automation", "Owner-Offen", "Outbound-Guard"] },
-  { area: "VitalTraining", issue: 29, repo: "nimmsel23/business-vitaltraining", cats: ["Offers", "Research", "B2B-Direkt", "Skills", "Website/CI", "Focus-Map"] },
-  { area: "creator", issue: 30, repo: "nimmsel23/business-creator", cats: ["Avatarin/BIP", "Content-KW", "Docs", "Ship-Log", "Eliminations"] },
-  { area: "business Vault", issue: 31, repo: "nimmsel23/obsidian-business", cats: ["Focus Map", "Frame", "Vault-Links", "Fristen", "Git-Drift"] },
-  { area: "vitalos Meta", issue: 32, repo: "nimmsel23/vitalos", cats: ["Submodule-Pins", "Store", "CI", "Org-Ritual", "Portal", "Release"] },
-  { area: "coach-dev", issue: 33, repo: "nimmsel23/coach-dev", cats: ["Auth", "Client-Scope", "Inspector", "Plan-Pin", "CI-Gate", "Acceptance"] },
+  { id: "workspace", area: "workspace Hub", issue: 28, repo: "nimmsel23/workspace", cats: ["Team", "Wochenrhythmus", "Git/Siblings", "Automation", "Owner-Offen", "Outbound-Guard"] },
+  { id: "vitaltrainer", area: "VitalTraining", issue: 29, repo: "nimmsel23/business-vitaltraining", cats: ["Offers", "Research", "B2B-Direkt", "Skills", "Website/CI", "Focus-Map"] },
+  { id: "creator", area: "creator", issue: 30, repo: "nimmsel23/business-creator", cats: ["Avatarin/BIP", "Content-KW", "Docs", "Ship-Log", "Eliminations"] },
+  { id: "business", area: "business Vault", issue: 31, repo: "nimmsel23/obsidian-business", cats: ["Focus Map", "Frame", "Vault-Links", "Fristen", "Git-Drift"] },
+  { id: "vitalos", area: "vitalos Meta", issue: 32, repo: "nimmsel23/vitalos", cats: ["Submodule-Pins", "Store", "CI", "Org-Ritual", "Portal", "Release"] },
+  { id: "coach", area: "coach-dev", issue: 33, repo: "nimmsel23/coach-dev", cats: ["Auth", "Client-Scope", "Inspector", "Plan-Pin", "CI-Gate", "Acceptance"] },
 ];
 
 let DOCS = FALLBACK_DOCS.slice();
@@ -609,24 +609,26 @@ function viewBoards() {
       </div>
     </header>
     <div class="apps">${BOARD_CARDS.map((b, n) => {
-      const status = st[b.area.toLowerCase()] || "Auftrag";
-      const url = `https://github.com/nimmsel23/vitalos/issues/${b.issue}`;
+      const status = st[b.area.toLowerCase()] || (state.text[`board-${b.id}`] ? "generiert" : "Auftrag");
+      const docKey = `board-${b.id}`;
       return `
-        <a class="app board-card rise" style="--i:${n};--hue:${HUES[n % HUES.length]};text-decoration:none;color:inherit" href="${esc(url)}" target="_blank" rel="noopener">
+        <button type="button" class="app board-card rise" style="--i:${n};--hue:${HUES[n % HUES.length]};text-align:left;cursor:pointer;border:0;width:100%" data-go="docs/${docKey}">
           <span class="glyph">#${b.issue}</span>
           <b>${esc(b.area)}</b>
           <span class="repo">${esc(b.repo)}</span>
           <p class="stand"><span class="tag">${esc(status)}</span></p>
           <p>${b.cats.map(esc).join(" · ")}</p>
-        </a>`;
+          <span class="go">Board lesen →</span>
+        </button>`;
     }).join("")}</div>
+    <p class="muted rise" ${r()}>Issues: ${BOARD_CARDS.map((b) => `<a href="https://github.com/nimmsel23/vitalos/issues/${b.issue}" target="_blank" rel="noopener">#${b.issue}</a>`).join(" · ")}</p>
     <section class="panel block rise" ${r()}>
       <div class="sec-title"><h2>Bridge-Dokument</h2><a class="src" href="#docs/boards">BOARDS.md →</a></div>
       <div class="md">${state.text.boards ? renderMd(section(state.text.boards, /^Verwandte Oberflächen/i) || state.text.boards.slice(0, 1200)) : `<p class="muted">BOARDS.md nicht lesbar.</p>`}</div>
     </section>
     <p class="muted rise" ${r()}>Epic <a href="https://github.com/nimmsel23/vitalos/issues/27" target="_blank" rel="noopener">vitalos#27</a>
       · Manifest ${manifestMeta.generated ? esc(manifestMeta.generated) : "—"} (${esc(manifestMeta.source)})
-      · neu indexieren: <code>./ui/gen-manifest.sh</code></p>
+      · regenerieren: <code>./ui/gen-boards.py</code></p>
   `;
 }
 

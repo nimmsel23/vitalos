@@ -18,7 +18,10 @@ Produkt-TODO/STATUS und Backlog.
 **UI starten:** `cd ~/vitalos/prod/coordination && python3 -m http.server 8765 --bind 127.0.0.1`
 dann http://127.0.0.1:8765/ui/ — liest die Markdown-Dateien live per `fetch`.
 
-Nach neuen `*.md` in `coordination/` (oder `game/`): `./ui/gen-manifest.sh` — schreibt `ui/manifest.json` (25+ Docs). Ansicht **Boards** (`#boards` / Taste `4`) zeigt Living-Board-Aufträge; Firebase-Hosting-Inventar bleibt `vos-portal` / `docs/DEV-DASHBOARD.md`.
+**Living Boards befüllen:** `./ui/gen-boards.py` schreibt `boards/{workspace,vitaltrainer,creator,business,vitalos,coach}.md` aus lokaler Repo-Evidenz und aktualisiert Manifest + `BOARDS.md`.  
+Nach weiteren `*.md`: `./ui/gen-manifest.sh`. Ansicht **Boards** (`#boards` / Taste `4`).  
+CI: `.github/workflows/living-boards.yml` (Mo + bei coordination-Push; ohne Sibling-Repos viele „fehlt“).  
+Firebase-Hosting-Inventar bleibt `vos-portal` / `docs/DEV-DASHBOARD.md`.
 
 Laufzeit-Logs der Runner liegen **nicht** hier, sondern unter
 `~/.local/state/vitalos-<rolle>/`.

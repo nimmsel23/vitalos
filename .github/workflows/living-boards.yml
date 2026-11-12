@@ -1,0 +1,43 @@
+# Regeneriert Living Boards aus lokaler Evidence.
+# Auf GitHub Actions fehlen Sibling-Repos → Kategorien mit „fehlt“ sind erwartet.
+# Voller Lauf: lokal `prod/coordination/ui/gen-boards.py`
+name: living-boards
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "15 5 * * 1" # Mo 05:15 UTC
+  push:
+    paths:
+      - "prod/coordination/**"
+      - ".github/workflows/living-boards.yml"
+      - ".gitmodules"
+jobs:
+  generate:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: recursive
+          fetch-depth: 1
+      - name: Generate boards
+        run: |
+          python3 prod/coordination/ui/gen-boards.py
+          python3 - <<'PY'
+          from pathlib import Path
+          root = Path("prod/coordination/boards")
+          assert root.exists() and any(root.glob("*.md")), "no boards written"
+          print("boards:", sorted(p.name for p in root.glob("*.md")))
+          PY
+      - name: Commit if changed
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add prod/coordination/boards prod/coordination/BOARDS.md prod/coordination/ui/manifest.json
+          if git diff --staged --quiet; then
+            echo "No board changes"
+          else
+            git commit -m "chore(coordination): refresh living boards [skip ci]"
+            git push
+          fi
