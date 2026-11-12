@@ -125,20 +125,20 @@ auswählen; ein Whole-Codebase-Deploy umfasst auch andere Functions.
 
 | URL | Quelle |
 | --- | --- |
-| `https://vitalos.web.app/datenschutz` | `public/datenschutz/index.html` und `prod/public/datenschutz/index.html` |
+| `https://vitalos.at/vitalos/datenschutz` | kanonische Datenschutzerklärung |
+| `https://vitalos.web.app/datenschutz` | Hosting-Redirect 301 auf die kanonische URL (`firebase.json` und `prod/firebase.json`). Keine lokale HTML-Seite mehr. |
 | `https://vitalos.web.app/konto-loeschen` | `public/konto-loeschen/index.html` und `prod/public/konto-loeschen/index.html` |
 
 `vitalos.web.app` veröffentlicht der bestehende Shell-Deploy
 (`.github/workflows/deploy-shell.yml`, Projekt `fitness-aos`, Root-`firebase.json`).
 Die Produkt-Hosting-Konfiguration `prod/firebase.json` (Site `vitalos-prod`)
-trägt dieselben Rewrites vor dem SPA-Fangnetz `**`. Statische Dateien
-gewinnt Hosting vor Rewrites. Der Service Worker der Shell lässt beide
-Pfade durch, damit er die App-Shell nicht mit der Rechtsseite überschreibt.
+trägt denselben Redirect und die Rewrites für `/konto-loeschen` vor dem
+SPA-Fangnetz `**`. Eine vorhandene Datei gewinnt vor dem Redirect; deshalb
+liegt unter `public/` und `prod/public/` keine Datenschutz-Seite mehr.
+Der Service Worker lässt `/datenschutz` und `/konto-loeschen` durch, damit
+er die App-Shell nicht darüberlegt.
 
-Der Wortlaut ist der Sachstand des Release-Builds (Firebase Authentication,
-Cloud Firestore, Google-Anmeldung, optionales Cloud Messaging; kein Gemini,
-kein Analytics-, Crash- oder Werbe-SDK im Produktcode). C-014 darf ihn
-ersetzen. Die öffentliche Kontaktadresse ist `nimmdaniel@gmail.com`.
+Die öffentliche Kontaktadresse ist `nimmdaniel@gmail.com`.
 Ort des Verantwortlichen: 1030 Wien, Österreich, ohne Straße
 (Owner-Freigabe 2026-11-12).
 

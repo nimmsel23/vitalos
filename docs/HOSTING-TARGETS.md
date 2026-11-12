@@ -120,8 +120,8 @@ nicht verifiziert ist. Stand **2026-11-12** (Owner):
 Live (Stand 2026-11-12):
 - Custom Domains: `vitalos.at`, `www.vitalos.at` → Firebase Hosting `daniel-vitaltrainer`
 - Legal/Produkt: `/vitalos/`, `/vitalos/datenschutz/`, Trainer-Root `/`, One-Pager `/landingpage/`
-- Shell-Spiegel: `https://vitalos.web.app/datenschutz` und `/konto-loeschen` (HTTP 200)
-- Repo-Inhalt nennt `nimmdaniel@gmail.com` und 1030 Wien, Österreich (Owner 2026-11-12). Die Live-Seite auf `vitalos.web.app` zeigt das erst nach dem Shell-Hosting-Deploy. Ein Merge nach `master` startet `deploy-shell.yml` (Projekt `fitness-aos`). Dafür gibt es in diesem Auftrag keine eigene Hosting-Freigabe. Der übrige Wortlaut ist der Store-Text aus master (Datenschutz und Kontolöschung, Stand 2026-11-12).
+- Shell-Spiegel: `https://vitalos.web.app/datenschutz` antwortet mit HTTP 301 auf `https://vitalos.at/vitalos/datenschutz`. `/konto-loeschen` bleibt HTTP 200.
+- Kontakt auf den verbleibenden Shell-Seiten: `nimmdaniel@gmail.com`, 1030 Wien, Österreich (Owner 2026-11-12). Der Redirect gilt erst nach dem Shell-Hosting-Deploy (`deploy-shell.yml`, Projekt `fitness-aos`). Dieser Auftrag deployed nicht.
 
 DNS (Referenz, gesetzt):
 

@@ -52,8 +52,9 @@ Entwickelt von einem Vitaltrainer aus Wien. Fragen und Feedback: nimmdaniel@gmai
 | App-Kategorie | Gesundheit & Fitness |
 | Tags (Vorschlag) | Gewohnheiten-Tracker, Journal, Fitness, Ernährung, Achtsamkeit |
 | Kontakt-E-Mail | nimmdaniel@gmail.com |
+| Ort | 1030 Wien, Österreich |
 | Website | https://vitalos.web.app |
-| Datenschutzerklärung | https://vitalos.web.app/datenschutz |
+| Datenschutzerklärung | https://vitalos.at/vitalos/datenschutz |
 | Kontolöschung (Data Safety) | https://vitalos.web.app/konto-loeschen |
 | Preis | Kostenlos (keine In-App-Käufe in versionCode 1) |
 | Zielgruppe | 18+ (keine Kinder; keine Families-Policy) |
