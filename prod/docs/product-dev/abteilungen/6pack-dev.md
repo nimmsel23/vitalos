@@ -63,10 +63,10 @@ Jede Linie und jeder AL darf eigene Shell-Hilfen (Skripte, Aliase, fish-Funktion
 
 Wiederholst du in deinem Repo-Alltag von Hand einen Schritt, den ein Skript, ein Werkzeug oder eine Konfiguration erledigen könnte, schreibe GENAU EINE Zeile ins AL-Log deines Laufs: `AUTOMATION: <Schritt> — <Vorschlag> — <geschätzte Ersparnis>`. Nur echte Beobachtungen aus dem eigenen Lauf, keine Erfindungen, keine Systemarchitektur-Träume, keine neue Taskfarm: Jede Automatisierung muss eine wiederkehrende Aufgabe LÖSCHEN. Die CTO-Linie aggregiert die Zeilen wöchentlich für die Door-War-Priorisierung.
 
-## CTO-Nachtauftrag (2026-11-11)
+## CTO-Nachtauftrag (2026-11-12)
 
-1. Freeze-Wartung 11.11. (`3be1c681`/`40aff0b1`) ok — kein neuer Blocker.
-2. Eingang TODO/NEXT sichten; Feature-Freeze bis 2027-02-07 (nur Bugfix/CI/Docs/
-   Deps Patch-Minor). Untracked APK nur melden, nicht committen.
-3. Nach journal-SSOT (`0e25e4c4`): automerge Retarget-Pattern spiegeln, falls
-   Dep-PRs mit base=master auftauchen.
+1. **Hit** Org `c1f9b6ce` Port: journal-SSOT Retarget in `automerge-pr.yml` spiegeln
+   (nur `dependabot/*`); falls keine Dep-PRs: Workflow-Diff + Dry-Check reicht als Beleg.
+2. Feature-Freeze bis 2027-02-07 (nur Bugfix/CI/Docs/Deps Patch-Minor).
+3. Untracked APK nur melden, nicht committen.
+

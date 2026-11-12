@@ -86,3 +86,10 @@ Jede Linie und jeder AL darf eigene Shell-Hilfen (Skripte, Aliase, fish-Funktion
 ## AUTOMATION-Zeile (Stehenderauftrag, Org-Task 18)
 
 Wiederholst du in deinem Repo-Alltag von Hand einen Schritt, den ein Skript, ein Werkzeug oder eine Konfiguration erledigen könnte, schreibe GENAU EINE Zeile ins AL-Log deines Laufs: `AUTOMATION: <Schritt> — <Vorschlag> — <geschätzte Ersparnis>`. Nur echte Beobachtungen aus dem eigenen Lauf, keine Erfindungen, keine Systemarchitektur-Träume, keine neue Taskfarm: Jede Automatisierung muss eine wiederkehrende Aufgabe LÖSCHEN. Die CTO-Linie aggregiert die Zeilen wöchentlich für die Door-War-Priorisierung.
+
+## CTO-Nachtauftrag (2026-11-12)
+
+1. **LR** Org `5e9d0f4a`: Meta product-check/Shell-Deploy-Welle 11.11. nur bei Tip-Rot nachziehen
+   (Log-Ursache); Tip laut CEO `43101590426`/`43101871067` gruen — kein Deploy.
+2. C-002 Rest weiter Owner/Live (Slot 17.11.); C-001b Fakt bleibt +cto/Owner.
+3. Kein Meta-Push ohne Owner-Gate; lokale AL-Commits ok.

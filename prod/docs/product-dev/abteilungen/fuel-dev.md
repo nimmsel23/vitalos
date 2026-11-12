@@ -60,11 +60,13 @@ Jede Linie und jeder AL darf eigene Shell-Hilfen (Skripte, Aliase, fish-Funktion
 
 Wiederholst du in deinem Repo-Alltag von Hand einen Schritt, den ein Skript, ein Werkzeug oder eine Konfiguration erledigen könnte, schreibe GENAU EINE Zeile ins AL-Log deines Laufs: `AUTOMATION: <Schritt> — <Vorschlag> — <geschätzte Ersparnis>`. Nur echte Beobachtungen aus dem eigenen Lauf, keine Erfindungen, keine Systemarchitektur-Träume, keine neue Taskfarm: Jede Automatisierung muss eine wiederkehrende Aufgabe LÖSCHEN. Die CTO-Linie aggregiert die Zeilen wöchentlich für die Door-War-Priorisierung.
 
-## CTO-Nachtauftrag (2026-11-11)
+## CTO-Nachtauftrag (2026-11-12)
 
-1. **Hit** Org `c545486f`: Teilergebnis Push — lokalen AL-Docs-Stack
-   (+5/−1 vs origin/dev, Tip `5186437`) rebasen/ff und auf `origin/dev`
-   pushen; `scripts/portal.mjs` dirty nicht anfassen; Check nach Push belegen.
-2. Org `6a0eeebc` bleibt pending bis echter Dependabot-PR-Merge-Beleg (0 offene
-   Dep-PRs ist kein Merge-Beleg). Stabilitaet weiter beobachten/annotieren.
-3. Feature-Freeze: nur Bugfix/CI/Docs/Deps; iOS-Login Live `a87a883` nicht ohne CEO.
+1. **Hit** Org `a28fea24` (+betta): Dependabot #25/#26 Check rot wegen `SYNC_TOKEN`/CI.md S7
+   (Checkout `backend` auf dependabot `pull_request`). Check so heilen, dass Dep-PRs
+   gruen werden (Preview/Secret-Gate skippen ODER fleet-`SYNC_TOKEN`); danach AutoMerge-Squash
+   = Merge-Beleg fuer `6a0eeebc`.
+2. **Hit** Org `c1f9b6ce` Port: journal-SSOT Retarget (`375e122`) in `automerge-pr.yml`
+   spiegeln (nur `dependabot/*`, base=master→dev).
+3. Feature-Freeze: nur Bugfix/CI/Docs/Deps; iOS-Login Live nicht ohne CEO.
+

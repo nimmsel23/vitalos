@@ -13,7 +13,7 @@ Stehbild strafft, Überschriften behalten, Neuerscheinendes einsortieren.
 wie möglich. **Einzige Ausnahme: `vitalos/prod`.** Neue CI/Infra nur bei
 echtem Schmerz; sonst weglassen. SOT: `.dotfiles/docs/CI.md` (Kopf).
 
-Stand: 2026-11-11, ca. 08:15 CET (AL 9/9 cursor OK; Live-Smoke 42799838824=setup-node transient, Tip gruen; Engine-Pin cursor off→auto; Teilergebnisse fuel/relax unpushed → Hits c545486f/ed94e4cd; automerge-retarget 0e25e4c4; Details state-CTO.md).
+Stand: 2026-11-12, ca. 10:30 CET (AL 02:x 3/3 cursor OK + 11.11.-Nachmittag 6/6; Meta product-check/Shell-Welle Tip gruen; fuel Dep #25/#26 SYNC_TOKEN Hit a28fea24; automerge-Port c1f9b6ce; gh Auth invalid; Details state-CTO.md).
 
 ## Derzeitiges Systembild (Tageszyklus)
 
