@@ -19,6 +19,9 @@ import { NAV_ITEMS as FITNESS_NAV_ITEMS } from '@constants/NavigationItems.js'
 // Owner-Builds (core) behalten beide Tabs.
 export const STORE_BUILD = ['store', 'observe', 'operate'].includes(import.meta.env?.VITE_VOS_EDITION)
 const OWNER_ONLY_TABS = new Set(['game', 'door'])
+// Relax: Entspannungstrainer-Ausbildung (Modul), Physio-Simulation und Substanz-Katalog
+// (braucht /relax-api) sind Owner-Inhalte — relax-dev 207322b gated die Views ebenfalls.
+export const RELAX_OWNER_TABS = new Set(['ausbildung', 'physio', 'catalog'])
 
 export const NAV_ITEMS = [
   { id: 'home',     label: 'Journal', Icon: NotebookPen },
@@ -94,10 +97,10 @@ export const SUB_NAV = {
     { id: 'session',    label: 'Praxis',  Icon: MoonStar },
     { id: 'atem',       label: 'Atem',    Icon: Wind },
     { id: 'journal', label: 'Journal', Icon: NotebookPen },
-    { id: 'stats',   label: 'Stats',   Icon: BarChart3 },
+    { id: 'stats',   label: STORE_BUILD ? 'Statistik' : 'Stats', Icon: BarChart3 },
     { id: 'physio',  label: 'Physio',  Icon: Zap },
     { id: 'catalog', label: 'Catalog', Icon: Microscope },
-  ],
+  ].filter(({ id }) => !(STORE_BUILD && RELAX_OWNER_TABS.has(id))),
 }
 
 // Gruppierte Karten fürs Fitness-AppGate (App.jsx HomeFitnessGate +
