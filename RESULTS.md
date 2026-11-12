@@ -8,6 +8,7 @@
 - `~/.vos` Mentor-Commit nach Rebase gepusht (`743c965`).
 - Codex-Coach: Rotation→Plan gepusht; ARCHITECTURE nachgezogen (`aa1b6029`); Check/Deploy grün.
 - plan-dev: thin-results Destillat + WorkoutTimerCard-Restore + esbuild für @db-Hook (`f41aa343`).
+- Native Store-Webbuild mit product.env OK (`prod/dist-native`). AAB-Rebuild blockiert: kein JDK 21 (nur 17/27); bestehendes AAB 10:52 CET.
 - fitness-dev: Biome-Fix `build-kb-data` → Check grün (`5e9c9ce`).
 
 - `prod/coordination/CPO.md`: Lage aus Issues/PRs, Gate-Schließen, PM-Steuerung, Store-Kette.
