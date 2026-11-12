@@ -1,11 +1,18 @@
 import { ChevronLeft, ChevronRight, Eye, Keyboard, Shield, Target, Zap } from "lucide-react";
-import { NAV_ITEMS, SUB_NAV, flattenMenuItems } from '@shell/NavigationItems';
+import { NAV_ITEMS, STORE_BUILD, SUB_NAV, flattenMenuItems } from '@shell/NavigationItems';
 import ContextMenuButton from '@vos-shell-ui/ContextMenuButton.jsx';
 import { isLocalMode } from "@db";
 import { getProductEdition } from '../productEdition.js'
 
 // Apps mit Direktwahl per Rechtsklick/Long-Press (Untereinträge aus SUB_NAV)
 const MENU_APPS = { door: 'Door – 4 P', game: 'Game – Maps & Door' }
+
+// Store-Build: nie. Die Produkt-Rules setzen isCoach() fest auf false;
+// es gibt dort keine Coach-Rolle, und eine E-Mail-Teilzeichenkette ist keine.
+function showCoachButton(user, localMode) {
+  if (STORE_BUILD) return false
+  return Boolean(localMode || user?.uid === '59ole36uNpNwml5H6VDYCXyCME92')
+}
 
 export default function Sidebar({ tab, navigate, pinned, setPinned, children, user, subNav, subTab, onSubTab, onKeyboardHelp, edition = 'core' }) {
   const hasSubNav = Array.isArray(subNav) && subNav.length > 0
@@ -54,7 +61,7 @@ export default function Sidebar({ tab, navigate, pinned, setPinned, children, us
             )
           })}
 
-          {(isLocalMode() || user?.email?.includes('alpha') || user?.uid === '59ole36uNpNwml5H6VDYCXyCME92') && (
+          {showCoachButton(user, isLocalMode()) && (
             <button key="coach" onClick={() => navigate('coach')} title="Coach" aria-label="Coach" aria-current={tab === 'coach' ? 'page' : undefined}
               className={`flex items-center rounded-xl border transition-all duration-200 ${pinned ? 'w-full gap-3 px-4 py-2.5' : 'p-2.5'} ${tab === 'coach' ? 'border-red-500/30 bg-red-500/16 text-red-200 shadow-lg shadow-red-500/10 backdrop-blur' : 'border-transparent text-fit-dim hover:border-red-500/20 hover:bg-red-500/10 hover:text-red-200'}`}>
               <Shield size={16} className={`shrink-0 ${tab === 'coach' ? 'stroke-[3]' : ''}`} />

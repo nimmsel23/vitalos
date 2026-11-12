@@ -6,13 +6,15 @@ import Learn from '@view/learn/index.jsx'
 import Coach from './CoachApp.jsx'
 import Inbox from '@view/inbox/index.js'
 import ExerciseInsightModal from '@fitness-components/ExerciseInsightModal.jsx'
-import { buildFitnessGateItems } from '@shell/NavigationItems.js'
+import { STORE_BUILD, buildFitnessGateItems } from './NavigationItems.js'
 import { getAnatomy, getAllMuscles, getPlan } from '@db'
 import FitnessAppGate from './FitnessAppGate.jsx'
 import PulseLog from '@pulse/PulseLog.jsx'
 
 function resolveFitnessRoute(id) {
-  if (!id || id === 'gate') return { tab: 'gate', sessionSubTab: null, reviewSubTab: null, learnSubTab: null }
+  if (!id || id === 'gate' || (STORE_BUILD && (id === 'inbox' || id === 'coach'))) {
+    return { tab: 'gate', sessionSubTab: null, reviewSubTab: null, learnSubTab: null }
+  }
   if (id === 'session') return { tab: 'session', sessionSubTab: null, reviewSubTab: null, learnSubTab: null }
   if (id === 'today') return { tab: 'session', sessionSubTab: null, reviewSubTab: null, learnSubTab: null }
   if (id === 'timer' || id === 'skills' || id === 'plan' || id === 'history') {
@@ -128,8 +130,8 @@ export default function FitnessApp({ user, recentDays, coverageThreshold, gender
               {tab === 'review'  && <WeeklyReview onOpenSession={onOpenSession} onInspectExercise={inspectExercise} muscleLanguage={muscleLanguage} taxonomy={taxonomy} gender={gender} recentDays={recentDays} subTab={activeReviewSubTab} onSubNav={setReviewSubTab} />}
               {tab === 'learn'   && <Learn subTab={activeLearnSubTab} onInspectExercise={inspectExercise} muscleLanguage={muscleLanguage} taxonomy={taxonomy} />}
               {tab === 'pulse'   && <PulseLog embedded user={user} onOpenMore={() => setTab('gate')} />}
-              {tab === 'inbox'   && <Inbox />}
-              {tab === 'coach'   && <Coach onInspectExercise={inspectExercise} />}
+              {tab === 'inbox' && !STORE_BUILD && <Inbox />}
+              {tab === 'coach' && !STORE_BUILD && <Coach onInspectExercise={inspectExercise} />}
             </div>
           </div>
         </div>

@@ -8,7 +8,7 @@ import GameApp from './GameApp.jsx'
 import JournalApp from './JournalApp.jsx'
 import RelaxApp from './RelaxApp.jsx'
 import CoachApp from './CoachApp.jsx'
-import { VALID_TABS } from './NavigationItems.js'
+import { STORE_BUILD, VALID_TABS } from './NavigationItems.js'
 import SettingsApp from './SettingsApp.jsx'
 import { HomeFitnessGate } from './HomeGates.jsx'
 import { FuelFrontdoorScreen, FUEL_FRONTDOOR_KEYS } from './FuelFrontdoors.jsx'
@@ -33,7 +33,7 @@ export default function ShellAppRouter({ tab, fitnessProps, fuelTab, setFuelTab,
       {tab === 'game' && VALID_TABS.has('game') && <GameApp user={user} subTab={gameTab} onSubTab={setGameTab} />}
       {tab === 'relax' && <RelaxApp subTab={relaxTab} onSubTab={setRelaxTab} onOpenSession={openSession} runtimeDate={runtimeDate} onRuntimeDateChange={onRuntimeDateChange} />}
       {tab === 'settings' && <SettingsApp {...settingsProps} compact={compact} />}
-      {tab === 'coach' && <div className={`${compact ? 'p-4' : 'p-4 sm:p-8 lg:p-12'} max-w-[1600px] mx-auto`}><CoachApp /></div>}
+      {tab === 'coach' && !STORE_BUILD && <div className={`${compact ? 'p-4' : 'p-4 sm:p-8 lg:p-12'} max-w-[1600px] mx-auto`}><CoachApp /></div>}
     </>
   )
 }

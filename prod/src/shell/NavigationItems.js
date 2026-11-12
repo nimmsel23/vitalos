@@ -40,8 +40,9 @@ export const NAV_ITEMS = [
 
 // 'coach' ist absichtlich nicht in NAV_ITEMS (eigener, bedingt sichtbarer
 // Sidebar-Button außerhalb der Haupt-Nav-Schleife, siehe Sidebar.jsx) — muss
-// aber trotzdem als gültiger Tab gelten, sonst verwirft navigate() den Klick.
-export const VALID_TABS = new Set(['hub', 'journal', ...NAV_ITEMS.map(i => i.id), 'coach'])
+// im privaten Build als gültiger Tab gelten, sonst verwirft navigate() den Klick.
+// Store-Builds lassen den Tab weg: #coach fällt auf den Hub zurück.
+export const VALID_TABS = new Set(['hub', 'journal', ...NAV_ITEMS.map(i => i.id), ...(STORE_BUILD ? [] : ['coach'])])
 
 // Die Shell nutzt dieselbe Fitness-Subnav-Struktur wie fitness-app selbst,
 // damit neue Untertabs nicht erneut manuell nachgezogen werden muessen.
