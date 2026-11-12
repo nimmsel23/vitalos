@@ -21,8 +21,6 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: write
-    env:
-      BOARDS_HOME: ${{ runner.temp }}/siblings
     steps:
       - uses: actions/checkout@v4
         with:
@@ -33,6 +31,8 @@ jobs:
           GH_TOKEN: ${{ secrets.SYNC_TOKEN }}
         run: |
           set -e
+          export BOARDS_HOME="$RUNNER_TEMP/siblings"
+          echo "BOARDS_HOME=$BOARDS_HOME" >> "$GITHUB_ENV"
           clone() { # repo zielpfad branch
             git clone --quiet --depth 20 --branch "$3" \
               "https://x-access-token:${GH_TOKEN}@github.com/nimmsel23/$1.git" "$BOARDS_HOME/$2" \
