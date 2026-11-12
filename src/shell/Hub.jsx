@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { ChevronRight, CheckSquare, Compass, DoorOpen, Settings2, Zap } from 'lucide-react'
+import { ChevronRight, CheckSquare, Compass, DoorOpen, Settings2, Trophy, Zap } from 'lucide-react'
 import { getSession, getPlan, getRelaxStatsSummary } from '@db'
 import { localToday } from '@utils'
 import { VOS_APPS } from './VitalOSApps.js'
@@ -67,6 +67,7 @@ const SECONDARY_LINKS = [
   { id: 'habits',   label: 'Habits', Icon: CheckSquare, color: '#a3e635' },
   { id: 'door',     label: 'Door',   Icon: DoorOpen,    color: '#fbbf24' },
   { id: 'game',     label: 'Game',   Icon: Compass,     color: '#f87171' },
+  { id: 'skills',   label: 'Skills', Icon: Trophy,      color: '#c8ff00' },
   { id: 'sixpack',  label: '6Pack',  Icon: Zap,         color: '#facc15' },
   { id: 'settings', label: 'Setup',  Icon: Settings2,   color: '#94a3b8' },
 ]

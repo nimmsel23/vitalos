@@ -57,11 +57,9 @@ Jede Linie und jeder AL darf eigene Shell-Hilfen (Skripte, Aliase, fish-Funktion
 
 Wiederholst du in deinem Repo-Alltag von Hand einen Schritt, den ein Skript, ein Werkzeug oder eine Konfiguration erledigen könnte, schreibe GENAU EINE Zeile ins AL-Log deines Laufs: `AUTOMATION: <Schritt> — <Vorschlag> — <geschätzte Ersparnis>`. Nur echte Beobachtungen aus dem eigenen Lauf, keine Erfindungen, keine Systemarchitektur-Träume, keine neue Taskfarm: Jede Automatisierung muss eine wiederkehrende Aufgabe LÖSCHEN. Die CTO-Linie aggregiert die Zeilen wöchentlich für die Door-War-Priorisierung.
 
-## CTO-Nachtauftrag (2026-11-11)
+## CTO-Nachtauftrag (2026-11-12)
 
-1. **Hit** Org `0e25e4c4` / Tracking `c1f9b6ce`: In `automerge-pr.yml` vor dem
-   Squash Dependabot-PRs mit `base=master` auf `base=dev` retargeten (CI.md
-   Fallensteller). Check-Beleg im AL-LOG; kein Draft-#42-Touch.
-2. [x] Client-Haertung `eeb9d722` + Semver Live `d48d852d` (10./11.11.) — erledigt.
-3. Draft Merge-Agent **#42** (base=master) nicht mergen/rebasen — Draft ≠ Policy.
-4. Owner-Regel: keine PR-/Merge-Sperre; rote Dep-PRs fixen+squash, nicht parken.
+1. [x] Retarget-SSOT `0e25e4c4` / `375e122` (12.11.) — erledigt; Tracking-Port `c1f9b6ce` liegt bei den anderen Automerges.
+2. Draft Merge-Agent **#42** (base=master) nicht mergen/rebasen.
+3. Feature-Freeze: nur Bugfix/CI/Docs/Deps; Owner-Regel keine PR-/Merge-Sperre.
+

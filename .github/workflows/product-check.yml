@@ -22,7 +22,7 @@ jobs:
       - uses: actions/checkout@v5
         with:
           fetch-depth: 0
-      - name: Private Skills submodule access
+      - name: Skills submodule (public)
         uses: ./.github/actions/skills-submodule-auth
         with:
           deploy-key: ${{ secrets.SKILLS_DEPLOY_KEY }}
@@ -31,8 +31,11 @@ jobs:
           GH_TOKEN: ${{ secrets.GH_SUBMODULE_TOKEN || github.token }}
         run: |
           git config --global url."https://x-access-token:${GH_TOKEN}@github.com/".insteadOf "git@github.com:"
-          git submodule sync --recursive
-          git submodule update --init --recursive
+          git submodule sync
+          # Kein --recursive: journal-app pinnt aos-core4, aos-door, aos-game
+          # und aos-voice außerhalb von src/. Der Produkt-Build importiert sie
+          # nicht, und das CI-Token kann die Repos nicht lesen.
+          git submodule update --init
       - uses: actions/setup-node@v5
         with:
           node-version: 22
@@ -71,7 +74,7 @@ jobs:
         if: steps.gate.outputs.present == 'true'
         with:
           fetch-depth: 0
-      - name: Private Skills submodule access
+      - name: Skills submodule (public)
         if: steps.gate.outputs.present == 'true'
         uses: ./.github/actions/skills-submodule-auth
         with:
@@ -82,8 +85,11 @@ jobs:
           GH_TOKEN: ${{ secrets.GH_SUBMODULE_TOKEN || github.token }}
         run: |
           git config --global url."https://x-access-token:${GH_TOKEN}@github.com/".insteadOf "git@github.com:"
-          git submodule sync --recursive
-          git submodule update --init --recursive
+          git submodule sync
+          # Kein --recursive: journal-app pinnt aos-core4, aos-door, aos-game
+          # und aos-voice außerhalb von src/. Der Produkt-Build importiert sie
+          # nicht, und das CI-Token kann die Repos nicht lesen.
+          git submodule update --init
 
       # KB-SOT ist nimmsel23/fitness (öffentlich); fitness-dev hat fitness/catalog/kb seit 710fd66 nicht mehr.
       # Gleiches Muster wie fitness-dev check.yml / deploy-master.yml / preview-dev.yml.

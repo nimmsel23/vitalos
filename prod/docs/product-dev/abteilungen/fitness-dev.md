@@ -64,11 +64,11 @@ Jede Linie und jeder AL darf eigene Shell-Hilfen (Skripte, Aliase, fish-Funktion
 
 Wiederholst du in deinem Repo-Alltag von Hand einen Schritt, den ein Skript, ein Werkzeug oder eine Konfiguration erledigen könnte, schreibe GENAU EINE Zeile ins AL-Log deines Laufs: `AUTOMATION: <Schritt> — <Vorschlag> — <geschätzte Ersparnis>`. Nur echte Beobachtungen aus dem eigenen Lauf, keine Erfindungen, keine Systemarchitektur-Träume, keine neue Taskfarm: Jede Automatisierung muss eine wiederkehrende Aufgabe LÖSCHEN. Die CTO-Linie aggregiert die Zeilen wöchentlich für die Door-War-Priorisierung.
 
-## CTO-Nachtauftrag (2026-11-11)
+## CTO-Nachtauftrag (2026-11-12)
 
-1. [x] Biome-Hit `175b5162` + bp3dMap/`build:kb-data` (11.11., Tip `09c0953`,
-   Check `42951630568` gruen) — erledigt.
-2. **LR** Org `903f1fbe`: Haupt-Checkout hinter `origin/dev` syncen (vos-al-log
-   Prefill zeigte lokal leere Tagessektion obwohl origin gefuellt). Kein
-   Produktcode; nach Pull AL-LOG 11.11. verifizieren.
-3. Fremdes WIP im Checkout nicht anfassen; Arbeit nur im Temp-Worktree.
+1. **Hit** Org `c1f9b6ce` Port: journal-SSOT Retarget in `automerge-pr.yml` spiegeln
+   (nur `dependabot/*`, base=master→dev); Check belegen.
+2. Feature-Freeze bis 2027-02-07 (nur Bugfix/CI/Docs/Deps). Fremdes WIP unberührt;
+   Arbeit im Temp-Worktree.
+3. Checkout vor Prefill `git merge --ff-only origin/dev` (Prefill-Falle).
+

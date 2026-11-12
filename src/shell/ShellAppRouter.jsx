@@ -12,7 +12,7 @@ import SettingsApp from './SettingsApp.jsx'
 import { HomeFitnessGate } from './HomeGates.jsx'
 import { FuelFrontdoorScreen, FUEL_FRONTDOOR_KEYS } from './FuelFrontdoors.jsx'
 
-export default function ShellAppRouter({ tab, fitnessProps, fuelTab, setFuelTab, relaxTab, setRelaxTab, doorTab, setDoorTab, gameTab, setGameTab, homeGate, onHomeGateSelect, onHomeGateDismiss, user, settingsProps, openSession, compact, muscleLanguage, taxonomy, runtimeDate, onRuntimeDateChange, navigate }) {
+export default function ShellAppRouter({ tab, fitnessProps, fuelTab, setFuelTab, relaxTab, setRelaxTab, doorTab, setDoorTab, gameTab, setGameTab, homeGate, onHomeGateSelect, onHomeGateDismiss, user, settingsProps, openSession, compact, muscleLanguage, taxonomy, runtimeDate, onRuntimeDateChange, navigate, sixpackRoute = '', onSixpackRoute, skillsRoute = '', onSkillsRoute }) {
   return (
     <>
       {tab === 'home' && (
@@ -22,8 +22,8 @@ export default function ShellAppRouter({ tab, fitnessProps, fuelTab, setFuelTab,
         </div>
       )}
       {tab === 'fitness' && <FitnessApp {...fitnessProps} user={user} />}
-      {tab === 'sixpack' && <SixPackApp user={user} onNavigate={navigate} />}
-      {tab === 'skills' && <SkillsApp user={user} />}
+      {tab === 'sixpack' && <SixPackApp user={user} route={sixpackRoute} onRouteChange={onSixpackRoute} onNavigate={navigate} />}
+      {tab === 'skills' && <SkillsApp user={user} route={skillsRoute} onRouteChange={onSkillsRoute} onNavigate={navigate} />}
       {tab === 'fuel' && FUEL_FRONTDOOR_KEYS.has(fuelTab) && <FuelFrontdoorScreen frontdoorKey={fuelTab} navigate={navigate} />}
       {tab === 'fuel' && !FUEL_FRONTDOOR_KEYS.has(fuelTab) && <FuelWrapper user={user} subTab={fuelTab} onSubTab={setFuelTab} onNavigateShell={navigate} embedded />}
       {tab === 'journal' && <JournalApp onOpenSession={openSession} onNavigateShell={navigate} runtimeDate={runtimeDate} onRuntimeDateChange={onRuntimeDateChange} />}

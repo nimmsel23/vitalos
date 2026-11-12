@@ -4,7 +4,7 @@ export const ACCOUNT_DELETION_URL = "https://vitalos.web.app/konto-loeschen";
 
 /**
  * Öffentliche Kontaktadresse des Verantwortlichen.
- * Freigabe Owner Daniel, 2026-11-12.
+ * Freigabe Owner Daniel, 2026-11-12 (#21).
  * Ort ohne Straße, weil keine angegeben wurde.
  */
 export const CONTACT_EMAIL = "nimmdaniel@gmail.com";

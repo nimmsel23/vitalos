@@ -7,10 +7,11 @@ Produkt-TODO/STATUS und Backlog.
 | --- | --- |
 | `ORG.md` | Rollenroster (CEO, COO, CPO, CTO, PM, AL) + Berichtslinie |
 | `ORACLE.md` | AlphaOS-Guidance (Door 4P, Game 4F, Tent) |
-| `PRODUCT.md` | Produktzusammensetzung |
+| `PRODUCT.md` | Produktzusammensetzung (+ Link Dev-Dashboard) |
 | `CPO.md` / `CTO.md` | Rollenanker |
 | `TODO.md` / `STATUS.md` | Produkt-/Android-Linien-Lage |
 | `game/` | Frame/Freedom/Focus/Fire + Tent |
+| Meta `docs/DEV-DASHBOARD.md` / `portal/` | Hosting-Apps Dev-Dashboard (CTO pflegt, PM liest) |
 
 Laufzeit-Logs der Runner liegen **nicht** hier, sondern unter
 `~/.local/state/vitalos-<rolle>/`.

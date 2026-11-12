@@ -10,6 +10,21 @@ import { NAV_ITEMS as FITNESS_NAV_ITEMS } from '@constants/NavigationItems.js'
 // Hash-Routen der Door-/Game-Tabs: #door/<potential|plan|production|profit> (Door v1),
 // #game/<fire|focus|freedom|frame|voice> und #game/door/<phase> (Door v2). Rechtsklick/Long-Press
 // auf Door oder Game öffnet die Direktwahl (SUB_NAV.door / SUB_NAV.game, flattenMenuItems).
+// Store-Builds (Play/Observe/Operate) zeigen keine Owner-Werkzeuge (2026-11-12):
+// - game: Fire/Focus/Freedom/Frame + Taskwarrior = AlphaOS des Owners; SCOPE-OBSERVE-V1
+//   „keine Gamification im MVP“.
+// - door: läuft derzeit nur über Google Tasks (sensibler OAuth-Scope → Warnschirm
+//   „nicht verifizierte App“ für Tester/Play-Prüfung). Zurück, sobald Door ohne
+//   Google Tasks (Firestore-nativ) funktioniert.
+// Owner-Builds (core) behalten beide Tabs.
+export const STORE_BUILD = ['store', 'observe', 'operate'].includes(import.meta.env?.VITE_VOS_EDITION)
+const OWNER_ONLY_TABS = new Set(['game', 'door'])
+// Relax: Entspannungstrainer-Ausbildung (Modul), Physio-Simulation und Substanz-Katalog
+// (braucht /relax-api) sind Owner-Inhalte — relax-dev 207322b gated die Views ebenfalls.
+export const FUEL_AI_TABS = new Set(['shutter', 'tagesfaden'])
+const storeLabel = (store, owner) => (STORE_BUILD ? store : owner)
+export const RELAX_OWNER_TABS = new Set(['ausbildung', 'physio', 'catalog'])
+
 export const NAV_ITEMS = [
   { id: 'home',     label: 'Journal', Icon: NotebookPen },
   { id: 'fitness',  label: 'Fitness', Icon: Dumbbell, standaloneUrl: 'https://fitness-vos.web.app' },
@@ -21,7 +36,7 @@ export const NAV_ITEMS = [
   { id: 'door',     label: 'Door',    Icon: DoorOpen },
   { id: 'game',     label: 'Game',    Icon: Compass },
   { id: 'settings', label: 'Setup',   Icon: Settings2 },
-]
+].filter(({ id }) => !(STORE_BUILD && OWNER_ONLY_TABS.has(id)))
 
 // 'coach' ist absichtlich nicht in NAV_ITEMS (eigener, bedingt sichtbarer
 // Sidebar-Button außerhalb der Haupt-Nav-Schleife, siehe Sidebar.jsx) — muss
@@ -45,17 +60,18 @@ export const SUB_NAV = {
     { id: 'log',           label: 'Log',           Icon: NotebookPen },
     // Schnelleinstiege (fuel-app Frontdoors) und Log-Ansichten als eigene Untertabs;
     // tapboard/shutter/tagesfaden rendert ShellAppRouter über FuelFrontdoors.jsx.
-    { id: 'tapboard',      label: 'Tap Board',     Icon: Grid3x3 },
+    // Store-Build: deutsche Labels; Shutter/Tagesfaden (KI) sind dort aus (fuel-dev d02cf0b).
+    { id: 'tapboard',      label: storeLabel('Schnellwahl', 'Tap Board'),          Icon: Grid3x3 },
     { id: 'shutter',       label: 'Shutter',       Icon: Camera },
     { id: 'tagesfaden',    label: 'Tagesfaden',    Icon: MessageSquareText },
-    { id: 'log-dashboard', label: 'Log-Dashboard', Icon: LayoutGrid },
-    { id: 'log-timeline',  label: 'Timeline',      Icon: GitCommitVertical },
-    { id: 'food',          label: 'Food',          Icon: UtensilsCrossed },
+    { id: 'log-dashboard', label: storeLabel('Tagesübersicht', 'Log-Dashboard'),  Icon: LayoutGrid },
+    { id: 'log-timeline',  label: storeLabel('Tagesverlauf', 'Timeline'),         Icon: GitCommitVertical },
+    { id: 'food',          label: storeLabel('Lebensmittel', 'Food'),             Icon: UtensilsCrossed },
     { id: 'pots',          label: 'Töpfe',         Icon: CookingPot },
     { id: 'kitchen',       label: 'Küche',         Icon: Refrigerator },
-    { id: 'supplements',   label: 'Supps',         Icon: Pill },
-    { id: 'micros',        label: 'Mikros',        Icon: Microscope },
-  ],
+    { id: 'supplements',   label: storeLabel('Nahrungsergänzung', 'Supps'),       Icon: Pill },
+    { id: 'micros',        label: storeLabel('Mikronährstoffe', 'Mikros'),        Icon: Microscope },
+  ].filter(({ id }) => !(STORE_BUILD && FUEL_AI_TABS.has(id))),
   // Die 4 P's des Door-Frameworks (Door v1: journal-app/src/views/door/DoorView.jsx)
   door: [
     { id: 'potential',  label: 'Potential',  Icon: Flame },
@@ -84,10 +100,10 @@ export const SUB_NAV = {
     { id: 'session',    label: 'Praxis',  Icon: MoonStar },
     { id: 'atem',       label: 'Atem',    Icon: Wind },
     { id: 'journal', label: 'Journal', Icon: NotebookPen },
-    { id: 'stats',   label: 'Stats',   Icon: BarChart3 },
+    { id: 'stats',   label: STORE_BUILD ? 'Statistik' : 'Stats', Icon: BarChart3 },
     { id: 'physio',  label: 'Physio',  Icon: Zap },
     { id: 'catalog', label: 'Catalog', Icon: Microscope },
-  ],
+  ].filter(({ id }) => !(STORE_BUILD && RELAX_OWNER_TABS.has(id))),
 }
 
 // Gruppierte Karten fürs Fitness-AppGate (App.jsx HomeFitnessGate +

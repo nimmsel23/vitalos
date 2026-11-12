@@ -73,10 +73,10 @@ Dein Lauf startet bis auf Weiteres als persistente interaktive Session im kitty 
 
 Wiederholst du in deinem Repo-Alltag von Hand einen Schritt, den ein Skript, ein Werkzeug oder eine Konfiguration erledigen könnte, schreibe GENAU EINE Zeile ins AL-Log deines Laufs: `AUTOMATION: <Schritt> — <Vorschlag> — <geschätzte Ersparnis>`. Nur echte Beobachtungen aus dem eigenen Lauf, keine Erfindungen, keine Systemarchitektur-Träume, keine neue Taskfarm: Jede Automatisierung muss eine wiederkehrende Aufgabe LÖSCHEN. Die CTO-Linie aggregiert die Zeilen wöchentlich für die Door-War-Priorisierung.
 
-## CTO-Nachtauftrag (2026-11-11)
+## CTO-Nachtauftrag (2026-11-12)
 
-1. [x] Dependabot backend/fuel `49499dfb` (10.11.) — erledigt; Tip `74ef91ba`
-   Check/Pages gruen (Deploy-seed `66a908a4`).
-2. Eingang TODO/NEXT + Org-Queue sichten; Feature-Freeze (nur Bugfix/CI/Docs/
-   Deps). Fremde Inbox/Chat-WIP und Submodule-Dirty nicht stagen.
-3. Kitty-Pilot unveraendert: headless Standard; Pilot nur bei lebendem @kitty.
+1. **Hit** Org `c1f9b6ce` Port falls `automerge-pr.yml` existiert — sonst Dep-PRs manuell
+   base=dev halten (coach ohne PR-AutoMerge-Historie beachten).
+2. Feature-Freeze: nur Bugfix/CI/Docs/Deps. Fremde Inbox/Chat-WIP und Submodule-Dirty nicht stagen.
+3. Kitty-Pilot: headless Standard; Pilot nur bei lebendem @kitty.
+

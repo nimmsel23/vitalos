@@ -123,7 +123,7 @@ Aktive Arbeitsliste (max. 5 Punkte) für das vitalos Meta-Repo.
 ## 2026-11-01 (Standalone-Deploy, vos-ship)
 
 - [ ] Prüfen, ob der Shell-Deploy zu `8c511df` grün wurde (`gh run list -R nimmsel23/vitalos --limit 2`); beim Sessionende lief er noch. Die zwei roten `npm_and_yarn`-Einträge bei `bc92f31` sind Dependabot, schon vorher da.
-- [ ] 6Pack-Push in der Shell ist aus (`SixPackApp.jsx`, Notlösung). Richtig: `6pack-dev` bietet ein Push-Modul ohne eigene Firebase-Instanz (App/Firestore als Parameter) über `dev` → `master` → `vitalos` an, danach importiert die Shell es.
+- [x] 6Pack-Push in der Shell: `SixPackEmbed` registriert über die Shell-Firebase-App (`src/shell/SixPackApp.jsx`, Service Worker `/sixpack-messaging-sw.js`, Scope `/sixpack-push/`). Gerätetest (Token, Hintergrund, Auth-Reihenfolge) steht aus. Die Submodule zeigen bis zum Merge von 6pack-dev#46 und skills-dev#21 auf die Draft-Heads, danach auf `master`.
 - [ ] `habits-dev` (`a6f8e1a`, nur `dev`) ist nicht released; `coach-dev` auf `master` ist ein Altstand (dort arbeitet eine andere Session). Weitere Repos mit `@vos/cross-app-aliases` nach dem Muster prüfen.
 - [ ] `plan-dev`: Entfernung des verschachtelten `6pack-dev` (`b208e32`, plus `docs/DEPLOY.md`-Hinweis) liegt nur auf `dev`, nicht auf `master`/`vitalos`. `vos-ship plan` erst starten, wenn die andere Plan-Session fertig ist: `dev` enthält deren Commit `58ee478` (Klienten-Feedback, `firestore.rules.part`, Rules noch nicht freigegeben) und uncommittete Änderungen im Arbeitsordner; Nutzer hat nicht entschieden, ob trotzdem released wird.
 - [ ] Mögliche Umzugs-Folgefehler nach `~/dev` (Symlinks, Lockfile-`link:`-Pfade) in weiteren Repos/Worktrees; `vos-release` fängt nur die bekannten Fälle ab. Ein Umzug der `-app`-Checkouts (z. B. `~/.local/vitalos/`) wurde bewusst nicht gebaut, vorher wäre ein lesendes Inventar der Pfad-Abhängigkeiten (`/opt`-Ketten, systemd-Units, Release-Skripte) nötig.
@@ -183,7 +183,7 @@ Aktive Arbeitsliste (max. 5 Punkte) für das vitalos Meta-Repo.
 - [ ] Alte eingebettete Kopien `fitness-app/src/views/{Plan,Skills,SixPack}` sind tote Doppel (Build nutzt immer die Submodule) — archivieren statt löschen, vorher Aufrufer prüfen.
 - [ ] Journal-Tags für Plan/Production (Idee: `+q1`–`+q4`, `+hit`) nicht gebaut, Verhalten ungeklärt; `+potential`/`+door` feuern im lokalen Coach-Build nicht (Hooks fehlen in `fitness-app`-Journal-Schicht).
 - [ ] Door-Zeile im „Mehr"-Sheet (Mobil) hat noch keine Direktwahl.
-- [ ] CI `Deploy Skills PWA`: Abruf von `api.github.com/meta` lieferte 403 (Rate-Limit); Workflow `skills-submodule-auth` ggf. mit Token oder Retry versehen.
+- [x] `skills-submodule-auth` richtet keinen SSH-Deploy-Key mehr ein und ruft `api.github.com/meta` nicht mehr auf. `skills-dev` ist öffentlich; der folgende Checkout klont per HTTPS + Token.
 
 ## 2026-10-23 (journal-rules / CI)
 
@@ -201,7 +201,7 @@ Aktive Arbeitsliste (max. 5 Punkte) für das vitalos Meta-Repo.
 
 - [ ] Entscheidung offen: Soll die Shell `PulseApp` aus `vos-fitness` rendern (neuer Fitness-Tab oder Ersatz für `FitnessApp.jsx`)? Koppelt die Shell an `vos-fitness`, dessen Zweck die Shell-Unabhängigkeit war.
 - [ ] Klären, was `vos-training` als Session-Tab in `vos-fitness` sein soll (Ordner/Repo existiert nicht; evtl. `@view/session` aus fitness-app).
-- [ ] `standaloneUrl` in der Shell-Navigation ist nur für fitness/fuel/relax gesetzt — für 6pack, plan, coach, skills ergänzen? Site-Namen stehen in den jeweiligen `firebase.json`.
+- [ ] `standaloneUrl` in der Shell-Navigation: Fitness, Fuel, Relax, Skills und 6Pack (`https://vos-6pack.web.app`) sind gesetzt. Plan und Coach weiter offen.
 - [ ] `vos-fitness`: Pre-Push-Hook und CI deployen bei Änderungen unter `vos-fitness/` doppelt — Hook-Deploy ggf. entfernen.
 
 ## 2026-10-17
@@ -224,3 +224,5 @@ Historische Review-Feststellungen aus den Oktober-Sessions wurden konsolidiert:
 - **Verifikation & Tests:** Fehlende Browser-/Gerätetests für migrierte Schemata (Profile, Geräte) und UI-Features (Pulse, Hub) wurden in den nachfolgenden Testläufen (u. a. Emulator-Runden 1 & 2 für Fokus Stufe 0/1) adressiert.
 - **Rules & Auth:** Firestore-Rules für Journal, Coach und TractionDaily wurden per modulspezifischem Rules-Build und zentralem Deploy (41319760105) verifiziert.
 - **CI/CD & Submodule:** Lockfile-Synchronisation und Standalone-Deploy-Pfade (vos-ship, vos-release) wurden etabliert; redundante Pre-Push-Deploys zugunsten von CI-Pipelines deaktiviert.
+
+- [ ] #21 Kontaktadresse mergen; deleteOwnAccount auf vitalos-prod (Owner-Terminal falls nötig)

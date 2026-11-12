@@ -62,3 +62,9 @@ Jede Linie und jeder AL darf eigene Shell-Hilfen (Skripte, Aliase, fish-Funktion
 ## AUTOMATION-Zeile (Stehenderauftrag, Org-Task 18)
 
 Wiederholst du in deinem Repo-Alltag von Hand einen Schritt, den ein Skript, ein Werkzeug oder eine Konfiguration erledigen könnte, schreibe GENAU EINE Zeile ins AL-Log deines Laufs: `AUTOMATION: <Schritt> — <Vorschlag> — <geschätzte Ersparnis>`. Nur echte Beobachtungen aus dem eigenen Lauf, keine Erfindungen, keine Systemarchitektur-Träume, keine neue Taskfarm: Jede Automatisierung muss eine wiederkehrende Aufgabe LÖSCHEN. Die CTO-Linie aggregiert die Zeilen wöchentlich für die Door-War-Priorisierung.
+
+## CTO-Nachtauftrag (2026-11-12)
+
+1. **Hit** Org `c1f9b6ce` Port: journal-SSOT Retarget in `automerge-pr.yml` spiegeln
+   (nur `dependabot/*`, base=master→dev).
+2. Feature-Freeze: nur Bugfix/CI/Docs/Deps. Fremdes WIP unberührt.

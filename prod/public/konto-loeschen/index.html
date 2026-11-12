@@ -1,12 +1,9 @@
 <!DOCTYPE html>
 <html lang="de">
 <!--
-  C-013 Sachstand aus dem Release-Build (2026-11-11).
-  Der Wortlaut darf durch den Text aus Auftrag C-014
-  (prod/docs/STORE-LISTING-FINAL.md) ersetzt werden.
-  KONTAKT: nimmdaniel@gmail.com
-  Ort des Verantwortlichen: 1030 Wien, Österreich (ohne Straße).
-  Freigabe Owner Daniel, 2026-11-12.
+  Kontolöschung VitalOS (com.vitalos.app) — Stand 2026-11-12. Für Play Data Safety (Lösch-URL).
+  Spiegel: prod/public/konto-loeschen/index.html (identisch halten).
+  Technik: Callable deleteOwnAccount (prod/functions, europe-west1) löscht nur die uid des Aufrufers.
 -->
 <head>
   <meta charset="utf-8">
@@ -20,51 +17,39 @@
     h1 { font-size: 1.8rem; line-height: 1.2; }
     h2 { font-size: 1.15rem; margin-top: 2rem; }
     a { color: inherit; }
-    code { font-family: ui-monospace, monospace; font-size: 0.92em; }
-    .notice { padding: 0.85rem 1rem; border: 1px solid color-mix(in srgb, CanvasText 25%, transparent); border-radius: 0.75rem; }
     nav { display: flex; gap: 1rem; margin-top: 2rem; }
-    ol li, ul li { margin: 0.35rem 0; }
   </style>
 </head>
 <body>
   <main>
-    <h1>Konto löschen</h1>
-    <p>Du kannst das VitalOS-Konto der App <code>com.vitalos.app</code> in der App löschen. Dieselbe Bitte geht auch ohne Anmeldung und ohne die App neu zu installieren. Diese Seite verlangt kein Login und setzt keine Cookies.</p>
-    <p class="notice">Kontakt für die Löschung ohne Anmeldung: <a href="mailto:nimmdaniel@gmail.com">nimmdaniel@gmail.com</a>. Ort des Betreibers: 1030 Wien, Österreich. Auftrag C-014 darf den übrigen Wortlaut ersetzen.</p>
+    <h1>VitalOS-Konto löschen</h1>
+    <p>Du kannst dein Konto der App „VitalOS: Journal &amp; Habits“ (<code>com.vitalos.app</code>) jederzeit löschen, in der App oder ohne App per E-Mail.</p>
 
     <h2>In der App</h2>
     <ol>
       <li>App öffnen und anmelden.</li>
-      <li>Den Tab Setup öffnen.</li>
-      <li>Im Bereich Konto auf „Konto löschen“ tippen.</li>
-      <li>Bei E-Mail-Anmeldung das Passwort eingeben. Bei Google-Anmeldung die Google-Abfrage bestätigen. Die App meldet dich dafür erneut an.</li>
+      <li>Tab <strong>Setup</strong> öffnen.</li>
+      <li>Im Bereich <strong>Konto</strong> auf „Konto löschen“ tippen.</li>
+      <li>Zur Sicherheit erneut bestätigen (Passwort bzw. Google-Anmeldung).</li>
       <li><code>LÖSCHEN</code> eintippen und „Endgültig löschen“ tippen.</li>
     </ol>
-    <p>Die App ruft die Cloud Function <code>deleteOwnAccount</code> im Projekt <code>vitalos-prod</code> auf (Region <code>europe-west1</code>). Die Function nimmt nur die Nutzer-ID aus der Anmeldung, nie eine fremde ID aus der Anfrage. Sie löscht die Firestore-Dokumente dieser ID und danach das Firebase-Auth-Konto. Anschließend entfernt die App die lokale Kopie auf dem Gerät.</p>
-    <p>Der Knopf wirkt erst, nachdem diese Function in <code>vitalos-prod</code> veröffentlicht ist. Der Shell-Deploy von <code>vitalos.web.app</code> veröffentlicht sie nicht mit.</p>
 
-    <h2>Ohne Anmeldung</h2>
-    <p>Wenn du die App nicht mehr öffnen kannst, schreibst du an <a href="mailto:nimmdaniel@gmail.com">nimmdaniel@gmail.com</a>. Nenne die E-Mail-Adresse des Kontos und den Satz „Bitte Konto löschen“. Der Betreiber (1030 Wien, Österreich) löscht dann dasselbe: das Auth-Konto und die Firestore-Daten dieser Nutzer-ID.</p>
+    <h2>Ohne App</h2>
+    <p>Schreib eine E-Mail an <a href="mailto:nimmdaniel@gmail.com?subject=Bitte%20Konto%20l%C3%B6schen">nimmdaniel@gmail.com</a> mit dem Betreff „Bitte Konto löschen“ und schick sie von der E-Mail-Adresse deines Kontos (oder nenne sie). Der Betreiber sitzt in 1030 Wien, Österreich. Wir löschen das Konto innerhalb von 30 Tagen, in der Regel innerhalb weniger Tage, und bestätigen dir das per E-Mail.</p>
 
     <h2>Was gelöscht wird</h2>
     <ul>
-      <li>Das Firebase-Auth-Konto (E-Mail oder Google-Verknüpfung, Anzeigename).</li>
-      <li><code>users/{uid}</code> einschließlich Profil und Geräte.</li>
-      <li><code>journal/{uid}</code>, <code>fitness/{uid}</code> einschließlich Training, Plänen und Push-Einstellungen.</li>
-      <li><code>nutrition/{uid}</code>, <code>supplements/{uid}</code>, <code>relax/{uid}</code>.</li>
-      <li><code>skillsUsers/{uid}</code>, <code>sixpackSelfies/{uid}</code>, <code>planResponses/{uid}</code>, <code>coachConversations/{uid}</code>, <code>roles/{uid}</code>.</li>
+      <li>Dein Konto (E-Mail bzw. Google-Verknüpfung, Anzeigename).</li>
+      <li>Dein Profil und deine Geräte-Einträge.</li>
+      <li>Alle deine Inhalte: Journal, Gewohnheiten, Training und Pläne, Ernährung, Supplements, Entspannung, Skills, Fortschrittsfotos, Coach-Nachrichten.</li>
+      <li>Beim Weg in der App zusätzlich die lokale Kopie auf deinem Gerät.</li>
     </ul>
 
     <h2>Was bleibt</h2>
     <ul>
-      <li>Geteilte Kataloge ohne Personenbezug: <code>fitness/kb</code>, <code>nutrition/public</code>, <code>skillsCatalogs</code>, <code>knowledge</code>. Die Function fasst diese Pfade nicht an.</li>
-      <li>Daten anderer Konten.</li>
-      <li>VitalOS speichert gelöschte Konten nicht in einem eigenen Archiv. Eine zusätzliche Aufbewahrungsfrist ist im Produkt nicht hinterlegt. Backups der Google-Infrastruktur liegen außerhalb dieses Repos und sind hier nicht mit einer Frist belegt.</li>
+      <li>Allgemeine Kataloge ohne Personenbezug (z. B. Übungs- und Lebensmitteldatenbank).</li>
+      <li>Es gibt keine Aufbewahrungsfrist und kein Archiv gelöschter Konten. Technische Sicherungen bei Google werden nach deren Fristen überschrieben.</li>
     </ul>
-    <p>Vor einer erfolgreichen Löschung bleiben die Daten gespeichert. Nach der Bestätigung der Function sind Auth-Konto und die genannten Firestore-Bäume dieser Nutzer-ID entfernt. Die lokale Kopie auf dem Gerät löscht der In-App-Weg mit. Wer nur den E-Mail-Weg nutzt, entfernt die App oder die Website-Daten des Browsers selbst.</p>
-
-    <h2>Prüfung mit einem Wegwerfkonto</h2>
-    <p>Lege ein neues Konto an, das noch niemandem gehört. Schreibe einen kurzen Journaleintrag. Lösche das Konto über Setup. Prüfe danach in der Firebase-Console von <code>vitalos-prod</code>, dass der Auth-Nutzer und <code>users/{uid}</code> fehlen. Bestehende Personenkonten nicht verwenden und die Löschung nicht gegen Produktionsdaten ausführen, solange nur ein Test gemeint ist.</p>
 
     <nav aria-label="Rechtliches">
       <a href="/datenschutz">Datenschutz</a>

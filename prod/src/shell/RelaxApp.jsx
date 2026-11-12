@@ -18,6 +18,7 @@ import PhysioTimelineView from '@relax/views/PhysioTimeline.jsx'
 import SubstanceCatalogView from '@relax/views/SubstanceCatalog.jsx'
 import './relax-scope.css'
 import { relaxApiBase } from '../cloud/productRuntime.js'
+import { STORE_BUILD, RELAX_OWNER_TABS } from './NavigationItems.js'
 
 // Muss vor dem ersten lazy-Import der Views gesetzt sein — relax' api.js
 // liest window.__RELAX_API_BASE__ auf Modulebene.
@@ -33,10 +34,10 @@ const TABS = [
   { id: 'ausbildung', label: 'Modul',   Icon: GraduationCap, View: AusbildungView },
   { id: 'session',    label: 'Praxis',  Icon: MoonStar,      View: SessionView },
   { id: 'atem',       label: 'Atem',    Icon: Wind,          View: BreathView },
-  { id: 'stats',   label: 'Stats',   Icon: BarChart3, View: StatsView },
+  { id: 'stats',   label: STORE_BUILD ? 'Statistik' : 'Stats', Icon: BarChart3, View: StatsView },
   { id: 'physio',  label: 'Physio',  Icon: Zap,       View: PhysioTimelineView },
   { id: 'catalog', label: 'Catalog', Icon: Beaker,    View: SubstanceCatalogView },
-]
+].filter(({ id }) => !(STORE_BUILD && RELAX_OWNER_TABS.has(id)))
 
 export default function RelaxApp({ subTab = 'dash', onSubTab, onOpenSession, runtimeDate, onRuntimeDateChange }) {
   const [tab, setTab] = useState(subTab || 'dash')

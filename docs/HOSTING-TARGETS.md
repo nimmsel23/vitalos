@@ -98,12 +98,14 @@ AlphaOS (`game-aos`, `door-aos`, …) bleibt **außerhalb** dieses Vertrags (Pro
 ## OAuth-Verifizierung & 10-URI-Limit (Owner-Gate)
 
 Google blockiert **>10 Redirect-URIs**, solange der OAuth-Zustimmungsbildschirm
-nicht verifiziert ist (bereits vor ~2 Wochen aufgelaufen). Deshalb:
+nicht verifiziert ist. Stand **2026-11-12** (Owner):
 
-1. **Kurzfristig:** Familien-Sites + `/mini/*` → wenige Origins (unter die 10).
-2. **Danach:** Branding/Consent erneut einreichen mit **eigener Domain** +
-   öffentlicher Datenschutzerklärung auf dieser Domain.
-3. **Dann erst:** beliebig viele `vos-*`-URIs + Credentials-API-Zugang.
+| Schritt | Status |
+|---|---|
+| 1. Familien-Sites + `/mini/*` (weniger Origins) | erledigt / laufend |
+| 2. Consent/Branding auf `vitalos.at` + Privacy + Verifizierung | **done** |
+| 3. OAuth-URI-Batch + Firebase Auth Domains (Kanon) | **done** |
+| 4. Credentials-API (programmatische URI-Pflege) | optional, offen |
 
 **Marken-/OAuth-Domain = Firebase Landing, nicht ChatGPT-Sites.**
 
@@ -112,26 +114,23 @@ nicht verifiziert ist (bereits vor ~2 Wochen aufgelaufen). Deshalb:
 | Host | Firebase-Projekt `daniel-vitaltrainer`, Site `daniel-vitaltrainer` |
 | Quellrepo | `~/dev/coach-dev/website` (`nimmsel23/daniel-vitaltrainer-firebase`) |
 | Parallel-URL | `https://daniel-vitaltrainer.web.app` (gleiche Inhalte) |
+| Privacy | `https://vitalos.at/vitalos/datenschutz/` |
 | Nicht | `vitalos.nimmdaniel.chatgpt.site`, Shell `vitalos.web.app` als Domain-Anker |
 
-Vorhanden (Stand 2026-11-11):
-- Custom Domains in Firebase angelegt: `vitalos.at`, `www.vitalos.at` (Cert/DNS noch pending)
-- Legal live auf Firebase: `/datenschutz`, `/impressum`, `/vitalos`
+Live (Stand 2026-11-12):
+- Custom Domains: `vitalos.at`, `www.vitalos.at` → Firebase Hosting `daniel-vitaltrainer`
+- Legal/Produkt: `/vitalos/`, `/vitalos/datenschutz/`, Trainer-Root `/`, One-Pager `/landingpage/`
 - Shell-Spiegel: `https://vitalos.web.app/datenschutz` und `/konto-loeschen` (HTTP 200)
-- Repo-Inhalt nennt `nimmdaniel@gmail.com` und 1030 Wien, Österreich (Owner 2026-11-12). Die Live-Seite auf `vitalos.web.app` zeigt das erst nach dem Shell-Hosting-Deploy. Ein Merge nach `master` startet `deploy-shell.yml` (Projekt `fitness-aos`). Dafür gibt es in diesem Auftrag keine eigene Hosting-Freigabe. C-014 darf den übrigen Wortlaut ersetzen.
+- Repo-Inhalt nennt `nimmdaniel@gmail.com` und 1030 Wien, Österreich (Owner 2026-11-12). Die Live-Seite auf `vitalos.web.app` zeigt das erst nach dem Shell-Hosting-Deploy. Ein Merge nach `master` startet `deploy-shell.yml` (Projekt `fitness-aos`). Dafür gibt es in diesem Auftrag keine eigene Hosting-Freigabe. Der übrige Wortlaut ist der Store-Text aus master (Datenschutz und Kontolöschung, Stand 2026-11-12).
 
-Noch Owner (DNS bei atdomain/hostdomains — CF-Sites-A-Records ersetzen):
+DNS (Referenz, gesetzt):
 
 | Name | Typ | Wert |
 |---|---|---|
 | `@` / `vitalos.at` | A | `199.36.158.100` |
-| `_acme-challenge.vitalos.at` | TXT | `IQUUmVD_c7vvt2d6mzlRIdhJJR_kMiIAs7DtdwtOJR4` |
 | `www` | A | `199.36.158.100` |
-| `_acme-challenge.www.vitalos.at` | TXT | `FNg5KejKt7IBJZu-Utl-2GKh4g8oPVi3HbWR2cJJlNE` |
-
-Alte Cloudflare-Sites-IPs (`162.159…` / `172.66…`) entfernen. Nach Propagierung:
-`https://vitalos.at/datenschutz`, `/impressum`, `/vitalos` prüfen → Consent-Screen
-auf `vitalos.at` → Verifizierung einreichen → OAuth-URI-Batch + Credentials-API.
+| `@` | TXT | `hosting-site=daniel-vitaltrainer` |
+| `_acme-challenge` / `_acme-challenge.www` | TXT | ACME (Firebase) |
 
 ## Auth-Contract (gilt für jede Kanon-Site)
 

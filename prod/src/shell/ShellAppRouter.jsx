@@ -8,6 +8,7 @@ import GameApp from './GameApp.jsx'
 import JournalApp from './JournalApp.jsx'
 import RelaxApp from './RelaxApp.jsx'
 import CoachApp from './CoachApp.jsx'
+import { VALID_TABS } from './NavigationItems.js'
 import SettingsApp from './SettingsApp.jsx'
 import { HomeFitnessGate } from './HomeGates.jsx'
 import { FuelFrontdoorScreen, FUEL_FRONTDOOR_KEYS } from './FuelFrontdoors.jsx'
@@ -28,8 +29,8 @@ export default function ShellAppRouter({ tab, fitnessProps, fuelTab, setFuelTab,
       {tab === 'fuel' && !FUEL_FRONTDOOR_KEYS.has(fuelTab) && <FuelWrapper user={user} subTab={fuelTab} onSubTab={setFuelTab} onNavigateShell={navigate} embedded />}
       {tab === 'journal' && <JournalApp user={user} onOpenSession={openSession} onNavigateShell={navigate} runtimeDate={runtimeDate} onRuntimeDateChange={onRuntimeDateChange} edition={edition} />}
       {tab === 'habits' && <HabitsApp key={user?.uid || 'guest'} user={user} runtimeDate={runtimeDate} onRuntimeDateChange={onRuntimeDateChange} onNavigateShell={navigate} onOpenSession={openSession} />}
-      {tab === 'door' && <DoorApp subTab={doorTab} onSubTab={setDoorTab} />}
-      {tab === 'game' && <GameApp user={user} subTab={gameTab} onSubTab={setGameTab} />}
+      {tab === 'door' && VALID_TABS.has('door') && <DoorApp subTab={doorTab} onSubTab={setDoorTab} />}
+      {tab === 'game' && VALID_TABS.has('game') && <GameApp user={user} subTab={gameTab} onSubTab={setGameTab} />}
       {tab === 'relax' && <RelaxApp subTab={relaxTab} onSubTab={setRelaxTab} onOpenSession={openSession} runtimeDate={runtimeDate} onRuntimeDateChange={onRuntimeDateChange} />}
       {tab === 'settings' && <SettingsApp {...settingsProps} compact={compact} />}
       {tab === 'coach' && <div className={`${compact ? 'p-4' : 'p-4 sm:p-8 lg:p-12'} max-w-[1600px] mx-auto`}><CoachApp /></div>}

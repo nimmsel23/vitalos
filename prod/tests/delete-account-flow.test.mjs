@@ -47,6 +47,6 @@ test("ohne Serverbestätigung bleibt die lokale Kopie stehen", async () => {
   assert.equal(cleared, false);
   const missingFunction = deletionErrorMessage({ code: "functions/not-found" });
   assert.match(missingFunction, /nimmdaniel@gmail\.com/);
-  assert.match(missingFunction, /Weg ohne App/);
+  assert.match(missingFunction, /wir löschen das Konto/);
   assert.doesNotMatch(missingFunction, /Kontaktadresse fehlt/);
 });

@@ -59,10 +59,10 @@ Jede Linie und jeder AL darf eigene Shell-Hilfen (Skripte, Aliase, fish-Funktion
 
 Wiederholst du in deinem Repo-Alltag von Hand einen Schritt, den ein Skript, ein Werkzeug oder eine Konfiguration erledigen könnte, schreibe GENAU EINE Zeile ins AL-Log deines Laufs: `AUTOMATION: <Schritt> — <Vorschlag> — <geschätzte Ersparnis>`. Nur echte Beobachtungen aus dem eigenen Lauf, keine Erfindungen, keine Systemarchitektur-Träume, keine neue Taskfarm: Jede Automatisierung muss eine wiederkehrende Aufgabe LÖSCHEN. Die CTO-Linie aggregiert die Zeilen wöchentlich für die Door-War-Priorisierung.
 
-## CTO-Nachtauftrag (2026-11-11)
+## CTO-Nachtauftrag (2026-11-12)
 
-1. **Hit** Org `ed94e4cd`: Teilergebnis Push — lokale Commits inkl. `dde8813`
-   Gemini-Repair-Align (+11 vs origin/dev) auf `origin/dev` bringen
-   (rebase/ff + push); Check belegen; fremdes WIP unberührt.
-2. Feature-Freeze: nur Bugfix/CI/Docs/Deps; Store-Umbau Variante A nur mit CEO.
+1. **LR** Org `d5c6a0f7`: Haupt-Checkout ff auf `origin/dev` (8 hinterher seit Gemini-Probe
+   `2acf731`→`8ae9b6c`); Prefill sonst leere AL-LOG-Sektion.
+2. Feature-Freeze: nur Bugfix/CI/Docs/Deps; Store-Umbau Variante A nur mit CEO-+go.
 3. Alert `#24` deepmerge weiter beobachten (kein Upstream-Patch).
+
