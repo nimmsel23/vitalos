@@ -1,5 +1,15 @@
 ## 2026-11-12 — CPO-Rolle auf Issues/Store-Hygiene
 
+
+## 2026-11-12 — Opus-Rest: Pins + Google Fonts + Codex-Coach
+
+- `vos-release --yes journal 6pack habits` → Meta `40a2481` (habits Store-Build auf master via FF).
+- Datenschutz + DATA-SAFETY: Google Fonts genannt (Journal/Door CSS).
+- `~/.vos` Mentor-Commit nach Rebase gepusht (`743c965`).
+- Codex-Coach: Rotation→Plan gepusht; ARCHITECTURE nachgezogen (`aa1b6029`); Check/Deploy grün.
+- plan-dev: thin-results Destillat + WorkoutTimerCard-Restore + esbuild für @db-Hook (`f41aa343`).
+- fitness-dev: Biome-Fix `build-kb-data` → Check grün (`5e9c9ce`).
+
 - `prod/coordination/CPO.md`: Lage aus Issues/PRs, Gate-Schließen, PM-Steuerung, Store-Kette.
 - Spiegel in `~/.vos/cpo` Skills/README/INTERPLAY (vos-Commit).
 

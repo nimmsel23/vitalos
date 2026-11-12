@@ -32,6 +32,9 @@ Open Food Facts (2026-11-12, fuel-dev d02cf0b): Lebensmittel-Textsuche und
 Barcode-Abfrage senden nur Suchbegriff/Barcode-Nummer (plus technisch die IP)
 an openfoodfacts.org — keine Konto- oder Gesundheitsdaten. Das ist keine
 Weitergabe einer Data-Safety-Datenart; in der Datenschutzerklärung genannt.
+Google Fonts (2026-11-12): Journal/Door-CSS lädt Archivo/Martian Mono von
+fonts.googleapis.com — nur Schrift-CSS/Dateien + IP, keine Kontodaten; in der
+Datenschutzerklärung genannt.
 KI: Fuel (`AI_ENABLED`), Relax und Shell rufen im Store-Build keine KI auf.
 
 Lösch-Function `deleteOwnAccount` ist seit 2026-11-12 in `vitalos-prod`
