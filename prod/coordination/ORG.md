@@ -68,6 +68,7 @@ Aufnahme macht ihre Empfehlungen nicht automatisch zu Org-Regeln.
 | PM-Skill | `vitalos-pm` (+ desk); `moc-pm.md` | 1 Move/Tag; Owner Freitag optional. |
 | AL | Repo-Guide; `vitalos-al` | 2×/Tag systemd. |
 | Oracle | `vitalos-oracle` | Door/Game/Tent — Werkzeug. |
+| Mentor | `~/.vos/mentor/README.md`; Skill `vitaltrainer-advisor` | NEU 2026-11-12: berät/unterweist Owner als Vitaltrainer/Solopreneur, Fr 09:30, 1 Mail/Woche (`mentor-run`). |
 | vos / WebApps | Perplexity & Co. | Basically vos; Output = Commit/`+org`. |
 
 CTO-Lauf: `cto-run` 08:15. `ceo-run` :05 nur bei altem Heartbeat.
@@ -117,7 +118,7 @@ nach Inhalt zuordnen; nicht mechanisch alle Runbook-Inhalte verschieben.
   AL-Pool **cursor→claude→codex** (Vibe pausiert). Skill-SSOT: `~/.vos`.
   vos/WebApps = Research-Schicht (OWNER-CONTRACT B). Owner-Gates: `+org`.
   roadmap 07:45, thin-results, emulator-test 13:00 (RAM-Gate 2500MB).
-  Lokaler `ceo-run` stuendlich :05 (Live-Heartbeat pausiert; Reduktion auf
+  Lokaler `ceo-run` Mo+Fr 07:05 (seit 2026-11-12, vorher stuendlich) (Live-Heartbeat pausiert; Reduktion auf
   woechentlich als Owner-Input vorgemerkt). ceo-digest 23:45 lokal
   (herzschlag-UNABHAENGIG), ci-scan 20-Min.
 - Globale Org-Task-DB: TASKRC=~/.local/state/vitalos-org/taskrc — Rollen
