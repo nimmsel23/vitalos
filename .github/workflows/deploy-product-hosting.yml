@@ -39,7 +39,10 @@ jobs:
         run: |
           git config --global url."https://x-access-token:${{ secrets.GH_SUBMODULE_TOKEN || secrets.GITHUB_TOKEN }}@github.com/".insteadOf "git@github.com:"
           git submodule sync
-          git submodule update --init --recursive
+          # Kein --recursive: journal-app pinnt aos-core4, aos-door, aos-game
+          # und aos-voice außerhalb von src/. Der Produkt-Build importiert sie
+          # nicht, und das CI-Token kann die Repos nicht lesen.
+          git submodule update --init
 
       # KB-SOT ist nimmsel23/fitness (öffentlich); fitness-dev hat fitness/catalog/kb seit 710fd66 nicht mehr.
       # Gleiches Muster wie fitness-dev check.yml / deploy-master.yml / preview-dev.yml.
