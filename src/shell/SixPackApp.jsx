@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import SixPackEmbed from '../../6pack-app/embed.jsx'
 import { enableSixpackPush } from '../../6pack-app/push.js'
 import { app as firebaseApp, auth, db } from '@cloud/firebase.js'
@@ -74,11 +74,31 @@ export default function SixPackApp({ user, onNavigate, route = '', onRouteChange
   )
 }
 
+// 6Packs Home teilt die Höhe 50/50 (flex-1 basis-0). Ohne feste Höhe fällt das
+// Menü (Eat, Track, …) auf 0px, sobald der Shell-Header Platz wegnimmt.
+function useViewportRemainder() {
+  const ref = useRef(null)
+  const [height, setHeight] = useState('100dvh')
+  useEffect(() => {
+    const el = ref.current
+    if (!el) return undefined
+    const measure = () => {
+      const top = Math.max(0, el.getBoundingClientRect().top)
+      setHeight(`calc(100dvh - ${top}px)`)
+    }
+    measure()
+    window.addEventListener('resize', measure)
+    return () => window.removeEventListener('resize', measure)
+  }, [])
+  return [ref, height]
+}
+
 function SixPackScreen({ uid, route, onRouteChange, onNavigate, onWorkoutComplete, enablePush }) {
+  const [frameRef, height] = useViewportRemainder()
   return (
     // Theme nur hier scoped — das Embed schreibt documentElement in der Shell nicht.
-    <div data-theme="sixpack" className="min-h-[100dvh] overflow-y-auto bg-[var(--bg)] text-[var(--ink)]">
-      <div className="mx-auto max-w-xl px-4 py-4">
+    <div ref={frameRef} data-theme="sixpack" className="overflow-hidden bg-[var(--bg)] text-[var(--ink)]" style={{ height }}>
+      <div className="mx-auto h-full max-w-xl px-4 py-4 [&>section]:h-full">
         <SixPackEmbed
           key={uid || 'anonymous'}
           uid={uid}
