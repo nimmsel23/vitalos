@@ -29,6 +29,7 @@ jobs:
       - name: Checkout siblings
         env:
           GH_TOKEN: ${{ secrets.SYNC_TOKEN }}
+          GIT_LFS_SKIP_SMUDGE: "1" # Board liest keine LFS-Blobs (coach-dev fma.owl)
         run: |
           set -e
           export BOARDS_HOME="$RUNNER_TEMP/siblings"
