@@ -10,6 +10,16 @@ import { NAV_ITEMS as FITNESS_NAV_ITEMS } from '@constants/NavigationItems.js'
 // Hash-Routen der Door-/Game-Tabs: #door/<potential|plan|production|profit> (Door v1),
 // #game/<fire|focus|freedom|frame|voice> und #game/door/<phase> (Door v2). Rechtsklick/Long-Press
 // auf Door oder Game öffnet die Direktwahl (SUB_NAV.door / SUB_NAV.game, flattenMenuItems).
+// Store-Builds (Play/Observe/Operate) zeigen keine Owner-Werkzeuge (2026-11-12):
+// - game: Fire/Focus/Freedom/Frame + Taskwarrior = AlphaOS des Owners; SCOPE-OBSERVE-V1
+//   „keine Gamification im MVP“.
+// - door: läuft derzeit nur über Google Tasks (sensibler OAuth-Scope → Warnschirm
+//   „nicht verifizierte App“ für Tester/Play-Prüfung). Zurück, sobald Door ohne
+//   Google Tasks (Firestore-nativ) funktioniert.
+// Owner-Builds (core) behalten beide Tabs.
+export const STORE_BUILD = ['store', 'observe', 'operate'].includes(import.meta.env?.VITE_VOS_EDITION)
+const OWNER_ONLY_TABS = new Set(['game', 'door'])
+
 export const NAV_ITEMS = [
   { id: 'home',     label: 'Journal', Icon: NotebookPen },
   { id: 'fitness',  label: 'Fitness', Icon: Dumbbell, standaloneUrl: 'https://fitness-vos.web.app' },
@@ -21,7 +31,7 @@ export const NAV_ITEMS = [
   { id: 'door',     label: 'Door',    Icon: DoorOpen },
   { id: 'game',     label: 'Game',    Icon: Compass },
   { id: 'settings', label: 'Setup',   Icon: Settings2 },
-]
+].filter(({ id }) => !(STORE_BUILD && OWNER_ONLY_TABS.has(id)))
 
 // 'coach' ist absichtlich nicht in NAV_ITEMS (eigener, bedingt sichtbarer
 // Sidebar-Button außerhalb der Haupt-Nav-Schleife, siehe Sidebar.jsx) — muss

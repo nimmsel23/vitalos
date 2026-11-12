@@ -158,3 +158,19 @@ html[data-vos-edition="operate"] .app-shell > div > main { padding-top: .35rem; 
 @media (prefers-reduced-motion: reduce) {
   .observe-navigation *, .observe-navigation *::before, .observe-navigation *::after { scroll-behavior: auto !important; }
 }
+
+/* Observe-Kontrast (2026-11-12): Module (fuel/journal/door/habits) setzen helle
+   Textklassen für dunkle Themes (text-slate-100 …). Auf der hellen Observe-Haut
+   wären sie unsichtbar. Regeln:
+   1. Echt dunkle Flächen setzen ihre helle Schrift selbst (Vererbung innen bleibt korrekt).
+   2. Helle Textklassen außerhalb dunkler Flächen → --ink / --muted.
+   3. Elemente mit eigenem deckendem oder dunklem Hintergrund (Buttons, Badges) bleiben. */
+html[data-vos-edition="observe"] :is([data-theme="sixpack"], .relax-scope, [class*="bg-black"], [class*="bg-slate-9"], [class*="bg-slate-8"], [class*="bg-zinc-9"], [class*="bg-gray-9"], [class*="bg-neutral-9"], [class*="bg-[#0"], [class*="bg-[#1"]) {
+  color: #f1f5f9;
+}
+html[data-vos-edition="observe"] :is(.text-white, .text-slate-50, .text-slate-100, .text-slate-200, .text-zinc-100, .text-gray-100):not(:is([data-theme="sixpack"], .relax-scope, [class*="bg-black"], [class*="bg-slate-9"], [class*="bg-slate-8"], [class*="bg-zinc-9"], [class*="bg-gray-9"], [class*="bg-neutral-9"], [class*="bg-[#0"], [class*="bg-[#1"]) *):not(:is([data-theme="sixpack"], .relax-scope, [class*="bg-black"], [class*="bg-slate-9"], [class*="bg-slate-8"], [class*="bg-zinc-9"], [class*="bg-gray-9"], [class*="bg-neutral-9"], [class*="bg-[#0"], [class*="bg-[#1"])):not([class*="bg-"]:not([class*="/"])) {
+  color: var(--ink);
+}
+html[data-vos-edition="observe"] :is(.text-slate-300, .text-slate-400, .text-zinc-400, .text-gray-400):not(:is([data-theme="sixpack"], .relax-scope, [class*="bg-black"], [class*="bg-slate-9"], [class*="bg-slate-8"], [class*="bg-zinc-9"], [class*="bg-gray-9"], [class*="bg-neutral-9"], [class*="bg-[#0"], [class*="bg-[#1"]) *):not(:is([data-theme="sixpack"], .relax-scope, [class*="bg-black"], [class*="bg-slate-9"], [class*="bg-slate-8"], [class*="bg-zinc-9"], [class*="bg-gray-9"], [class*="bg-neutral-9"], [class*="bg-[#0"], [class*="bg-[#1"])):not([class*="bg-"]:not([class*="/"])) {
+  color: var(--muted);
+}

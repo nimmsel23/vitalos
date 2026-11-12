@@ -3,7 +3,7 @@ import { ChevronRight, CheckSquare, Compass, DoorOpen, Settings2, Zap } from 'lu
 import { getSession, getPlan, getRelaxStatsSummary } from '@db'
 import { localToday } from '@utils'
 import { VOS_APPS } from './VitalOSApps.js'
-import { SUB_NAV, flattenMenuItems } from './NavigationItems.js'
+import { SUB_NAV, VALID_TABS, flattenMenuItems } from './NavigationItems.js'
 import FuelHubStat from './FuelHubStat.jsx'
 import { FitnessTodayWidget, FuelTodayCard } from './Dashboard.jsx'
 import ContextMenuButton from '@vos-shell-ui/ContextMenuButton.jsx'
@@ -69,7 +69,7 @@ const SECONDARY_LINKS = [
   { id: 'game',     label: 'Game',   Icon: Compass,     color: '#f87171' },
   { id: 'sixpack',  label: '6Pack',  Icon: Zap,         color: '#facc15' },
   { id: 'settings', label: 'Setup',  Icon: Settings2,   color: '#94a3b8' },
-]
+].filter(({ id }) => VALID_TABS.has(id))
 
 const TILE_HINTS = {
   fitness: 'Training & Review',
