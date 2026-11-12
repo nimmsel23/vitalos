@@ -18,8 +18,10 @@ import subprocess
 import sys
 from pathlib import Path
 
-HOME = Path.home()
+# BOARDS_HOME: Basis der Sibling-Repos (CI checkt sie nach $RUNNER_TEMP/siblings aus).
+HOME = Path(os.environ.get("BOARDS_HOME") or Path.home())
 COORD = Path(__file__).resolve().parents[1]
+VITALOS_ROOT = COORD.parents[1]
 BOARDS_DIR = COORD / "boards"
 UI = COORD / "ui"
 BOARDS_INDEX = COORD / "BOARDS.md"
@@ -58,7 +60,7 @@ AREAS = [
         "title": "vitalos Meta",
         "issue": 32,
         "repo": "nimmsel23/vitalos",
-        "root": HOME / "vitalos",
+        "root": VITALOS_ROOT,
     },
     {
         "id": "coach",

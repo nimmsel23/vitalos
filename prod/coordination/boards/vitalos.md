@@ -1,6 +1,6 @@
 # Dashboard — vitalos Meta
 
-Generated: 2026-11-12T23:44:38+01:00 · SHA: `9673723` · Issue: [#32](https://github.com/nimmsel23/vitalos/issues/32) · Repo: `nimmsel23/vitalos`
+Generated: 2026-11-13T00:44:07+01:00 · SHA: `385bcee` · Issue: [#32](https://github.com/nimmsel23/vitalos/issues/32) · Repo: `nimmsel23/vitalos`
 
 Refresh: `prod/coordination/ui/gen-boards.py` (+ optional Hook/Action).
 
@@ -8,15 +8,15 @@ Refresh: `prod/coordination/ui/gen-boards.py` (+ optional Hook/Action).
 
 ## 1. Submodule-Pins (Kurz)
 
-- `fitness-app: `5e9c9ce``
+- `fitness-app: `e729fd9``
 - `fuel-app: `5417f59``
 - `journal-app: `cab4817``
 - `habit-app: `0bf7d47``
 - `learn-app: `e5b867fa``
 - `relax-app: `cadeefb``
-- `6pack-app: `20ced77``
-- `plan-app: `f41aa343``
-- `skills-app: `0395efa``
+- `6pack-app: `c703a5d``
+- `plan-app: `f6d2669e``
+- `skills-app: `b6bff75``
 
 
 ## 2. Store / Legal Docs
@@ -46,6 +46,9 @@ Refresh: `prod/coordination/ui/gen-boards.py` (+ optional Hook/Action).
 
 ## 6. Release-Train / Ship-Log
 
+- `385bcee fix(shell): Fuel-Standalone-Link auf vos-fuel.web.app`
+- `cf9060d chore(submodules): bump skills,fitness,6pack,plan after release`
+- `e121c5a feat(coordination): Living Boards Generator aus Repo-Evidenz`
 - `9673723 feat(coordination): Lagezelt — Manifest, mehr Docs, Boards-Ansicht`
 - `c89d815 feat(coordination): Lagezelt-UI für die Koordinations-Docs`
 - `24e3fef Store-Build: Inbox und Coach sperren (#38)`
@@ -53,7 +56,4 @@ Refresh: `prod/coordination/ui/gen-boards.py` (+ optional Hook/Action).
 - `43e54e3 docs(al): C-015 Commit-Refs in AL-LOG/ABTEILUNG`
 - `f6d657a docs(al): C-015 AAB SHA-256 und Data-Safety-Stand (2026-11-12)`
 - `7457fac docs: auto-update NEXT.md`
-- `44ebaf7 docs: auto-update RESULTS.md`
-- `20e6846 docs: auto-update TODO.md`
-- `c0cf1ca chore(deps): bump fast-xml-parser from 5.11.2 to 5.12.0 in /functions (#39)`
 

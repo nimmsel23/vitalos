@@ -1,35 +1,56 @@
-# Regeneriert Living Boards aus lokaler Evidence.
-# Auf GitHub Actions fehlen Sibling-Repos → Kategorien mit „fehlt“ sind erwartet.
-# Voller Lauf: lokal `prod/coordination/ui/gen-boards.py`
+# Regeneriert Living Boards (#27–#33) aus Repo-Evidenz.
+# Sibling-Repos werden per SYNC_TOKEN nach $RUNNER_TEMP/siblings ausgecheckt,
+# gen-boards.py liest sie über BOARDS_HOME. Keine rekursiven Submodule
+# (journal-app hängt an privaten aos-*-Repos, die das Board nicht braucht).
 name: living-boards
 on:
   workflow_dispatch:
   schedule:
     - cron: "15 5 * * 1" # Mo 05:15 UTC
   push:
+    branches: [master]
     paths:
       - "prod/coordination/**"
-      - ".github/workflows/living-boards.yml"
       - ".gitmodules"
+      - ".github/workflows/living-boards.yml"
+concurrency:
+  group: living-boards
+  cancel-in-progress: true
 jobs:
   generate:
     runs-on: ubuntu-latest
     permissions:
       contents: write
+    env:
+      BOARDS_HOME: ${{ runner.temp }}/siblings
     steps:
       - uses: actions/checkout@v4
         with:
-          submodules: recursive
-          fetch-depth: 1
+          fetch-depth: 20
+
+      - name: Checkout siblings
+        env:
+          GH_TOKEN: ${{ secrets.SYNC_TOKEN }}
+        run: |
+          set -e
+          clone() { # repo zielpfad branch
+            git clone --quiet --depth 20 --branch "$3" \
+              "https://x-access-token:${GH_TOKEN}@github.com/nimmsel23/$1.git" "$BOARDS_HOME/$2" \
+              || { echo "::warning::$1 nicht klonbar — Board zeigt 'fehlt'"; return 0; }
+            git -C "$BOARDS_HOME/$2" remote set-url origin "https://github.com/nimmsel23/$1.git"
+          }
+          mkdir -p "$BOARDS_HOME/dev"
+          clone workspace              workspace    master
+          clone business-vitaltraining vitaltrainer master
+          clone business-creator       creator      master
+          clone obsidian-business      business     master
+          clone coach-dev              dev/coach-dev dev
+
       - name: Generate boards
         run: |
           python3 prod/coordination/ui/gen-boards.py
-          python3 - <<'PY'
-          from pathlib import Path
-          root = Path("prod/coordination/boards")
-          assert root.exists() and any(root.glob("*.md")), "no boards written"
-          print("boards:", sorted(p.name for p in root.glob("*.md")))
-          PY
+          ls prod/coordination/boards/*.md
+
       - name: Commit if changed
         run: |
           git config user.name "github-actions[bot]"
@@ -39,5 +60,6 @@ jobs:
             echo "No board changes"
           else
             git commit -m "chore(coordination): refresh living boards [skip ci]"
+            git pull --rebase --quiet
             git push
           fi
