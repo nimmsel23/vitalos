@@ -22,16 +22,16 @@ VitalOS verbindet persönliches Journaling mit Gewohnheiten und einer Tagesüber
 
 **Observe und Operate**
 
-VitalOS bietet einen gemeinsamen Skill Stack mit zwei Editionen. Observe ist der Einstieg. Operate erweitert das Kontingent für KI-gestütztes Smart Logging. Manuelles Journaling und die übrigen Skills sollen unabhängig davon zugänglich bleiben.
+VitalOS bietet einen gemeinsamen Skill Stack mit zwei Editionen. Observe ist der Einstieg. Operate ist die zweite Edition. Dieser Release-Build erweitert kein Kontingent für KI-gestütztes Smart Logging und ruft Gemini nicht auf, weil im Produkt-Build `vertexAI` null ist. Manuelles Journaling und die übrigen Skills sollen unabhängig davon zugänglich bleiben.
 
 Die App ist ein Werkzeug zur Selbstbeobachtung und Alltagsorganisation. Sie stellt keine medizinische Diagnose und ersetzt keine persönliche Beratung.
 
 ## Vor Veröffentlichung verifizieren
 
-- [ ] Bezeichnung, Editionen und Smart-Log-Kontingente stimmen mit dem finalen Produkt und Server-Entitlement überein.
+- [ ] Bezeichnung und Editionen stimmen mit dem finalen Produkt überein. Dieser Release-Build setzt `vertexAI` auf null und erweitert kein Gemini- oder Smart-Log-Kontingent.
 - [ ] Anmeldung, Wiederherstellung und Kontolöschung sind im Release-Build verfügbar.
 - [ ] Offline-Verhalten und Synchronisierung sind auf Android und iOS getestet.
-- [ ] KI-Verarbeitung, Datenübermittlung und Anbieterangaben entsprechen der tatsächlichen Implementierung und Datenschutzerklärung.
+- [ ] Angaben zu KI und Datenübermittlung entsprechen der Implementierung und der Datenschutzerklärung. Dieser Build ruft Gemini nicht auf.
 - [ ] Screenshots stammen aus dem geprüften Build und verwenden Beispieldaten.
 - [x] Öffentliche Kontaktadresse und Ort: `nimmdaniel@gmail.com`, 1030 Wien, Österreich, ohne Straße (Owner 2026-11-12).
 - [ ] Anbieteridentität über die Kontaktangabe hinaus, Zielgruppe, Altersfreigabe und Veröffentlichungsländer vom Kontoinhaber bestätigt.

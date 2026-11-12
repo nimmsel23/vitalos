@@ -49,7 +49,8 @@ die Console eintragen, wenn `https://vitalos.web.app/konto-loeschen` ohne
 Login antwortet. Die Löschung muss das Firebase-Auth-Konto und die
 uid-gebundenen Firestore-Bäume umfassen: `users/{uid}`, `fitness/{uid}`,
 `nutrition/{uid}`, `supplements/{uid}`, `relax/{uid}`, `journal/{uid}`,
-`skillsUsers/{uid}`, `planResponses/{uid}`, `sixpackSelfies/{uid}`.
+`skillsUsers/{uid}`, `planResponses/{uid}`, `sixpackSelfies/{uid}`,
+`roles/{uid}`, `coachConversations/{uid}`.
 
 ## Was der Release-Build ist
 
@@ -81,10 +82,13 @@ Native Plugins im Android-Projekt (`prod/android/app/capacitor.build.gradle`,
 Die Anmeldung, die der Button wirklich aufruft, ist der Re-Export aus
 `fitness-app` `src/lib/db/firestore/core.js`: E-Mail über
 `signInWithEmailAndPassword` / `createUserWithEmailAndPassword`, Google über
-`signInWithPopup` mit Fallback `signInWithRedirect`. Der native Aufruf
-`FirebaseAuthentication.signInWithGoogle` steht nur in der nicht verdrahteten
-Datei `prod/src/cloud/db.firestore.js`. Das Plugin liegt im APK, der
-Anmeldebutton ruft es in diesem Release nicht auf.
+`signInWithPopup` mit Fallback `signInWithRedirect`. Der Anmeldebutton ruft
+`FirebaseAuthentication.signInWithGoogle` in diesem Release nicht auf.
+Die native Kontolöschung ruft `FirebaseAuthentication.signInWithGoogle` bei der erneuten Anmeldung auf
+(`prod/src/cloud/deleteAccount.js`, `reauthenticateCurrentUser`, wenn
+`Capacitor.isNativePlatform()`). Dieselbe Funktion steht außerdem in der
+nicht verdrahteten Datei `prod/src/cloud/db.firestore.js`. Das Plugin liegt
+im APK.
 
 ## Datenarten, die anzukreuzen sind
 
@@ -95,10 +99,10 @@ beim Benutzen eines Bereichs. Alle Zeilen: erhoben Ja, weitergegeben Nein,
 
 | Play-Art | Pflicht oder optional | Zweck | Wohin es geht |
 | --- | --- | --- | --- |
-| Personenbezogene Daten → E-Mail-Adresse | Pflicht | App-Funktionalität, Kontoverwaltung | Firebase Authentication. Beide Anmeldewege führen eine E-Mail. |
+| Personenbezogene Daten → E-Mail-Adresse | Pflicht | App-Funktionalität, Kontoverwaltung | Firebase Authentication. Beide Anmeldewege führen eine E-Mail. `ProfileSection.jsx` schreibt die Adresse zusätzlich ins Feld `email` auf `users/{uid}`. |
 | Personenbezogene Daten → Nutzer-IDs | Pflicht | App-Funktionalität, Kontoverwaltung | Firebase-UID. Hängt an jedem Firestore-Dokument unter der UID. |
 | Personenbezogene Daten → Name | Optional | App-Funktionalität, Kontoverwaltung | Anzeigename aus dem Google-Konto oder aus dem Körperprofil (`users/{uid}`, Feld `displayName`). E-Mail-Kontozwang enthält keinen Namen. Die Profilbild-URL des Google-Kontos (`photoURL`) bleibt im Auth-Profil und wird nur angezeigt. |
-| Gesundheit und Fitness → Gesundheitsdaten | Optional | App-Funktionalität | Körperprofil in `users/{uid}` und `users/{uid}/meta/profile`: Geschlecht, Alter, Größe, Gewicht (`prod/src/shell/Settings/ProfileSection.jsx`, `prod/src/shell/db/settings.js`). Ernährung und Supplements unter `nutrition/{uid}` und `supplements/{uid}`. |
+| Gesundheit und Fitness → Gesundheitsdaten | Optional | App-Funktionalität | Körperprofil in `users/{uid}` und `users/{uid}/meta/profile`: Geschlecht, Alter, Größe, Gewicht (`prod/src/shell/Settings/ProfileSection.jsx`, `prod/src/shell/db/settings.js`). Dieselbe Speicherung schreibt auf `users/{uid}` die Felder `email`, `split`, `defaultLocation`, `cycleLength`, `recentDays` und `coverageThreshold`. `defaultLocation` ist eine Zeichenkette aus den Einstellungen, keine Standortberechtigung. Ernährung und Supplements unter `nutrition/{uid}` und `supplements/{uid}`. |
 | Gesundheit und Fitness → Fitnessdaten | Optional | App-Funktionalität | Training unter `fitness/{uid}` (Sessions, Plan), Gewohnheiten und Habit-Records, Relax-Sitzungen unter `relax/{uid}/sessions` (Datum, Einträge, Minuten), Skill-Ereignisse unter `skillsUsers/{uid}/events`, 6Pack-Programm über `getSixpackProgram` / `saveSixpackProgram`. |
 | App-Aktivitäten → Sonstige vom Nutzer erstellte Inhalte | Optional | App-Funktionalität | Journaltext unter `fitness/{uid}/journal` (`journal-app` `src/lib/db/journal.js`: `date`, `text`, `tags`). Door-, Game- und Voice-Einträge, Plan-Text, Freitextnotizen. Die Suche liest diese Einträge im Client und legt kein eigenes Suchprotokoll an. |
 | Geräte- oder andere IDs | Pflicht, sobald ein Konto benutzt wird | App-Funktionalität | Nach dem Login schreibt `registerShellDevice` (`prod/src/shell/db/settings.js`, Aufruf in `prod/src/App.jsx`) `users/{uid}/devices/{id}`: zufällige UUID plus grobes Label wie „Android · Chrome“, dazu `last_seen_at`. Das FCM-Token unter `fitness/{uid}/settings/push` entsteht nur, wenn die Person Push einschaltet (`prod/src/hooks/usePushNotifications.js`). |
@@ -137,7 +141,7 @@ eine eigene Zeile.
 
 | Play-Art | Warum sie in diesem Release fehlt |
 | --- | --- |
-| Standort, ungefähr und genau | `AndroidManifest.xml` hat keine Standortberechtigung. Der Session-Start in `fitness-app` `src/views/Session/useSessionGateController.js` würde bei einem Fix Breite und Länge in die Session schreiben und an Overpass/Nominatim senden. Ohne Manifest-Recht liefert das WebView keinen Fix. Kommt die Berechtigung später ins Manifest, wird Standort zur Pflichtzeile. |
+| Standort, ungefähr und genau | `AndroidManifest.xml` hat keine Standortberechtigung. Das Profilfeld `defaultLocation` ist eine Zeichenkette aus den Einstellungen, keine Standortberechtigung. Der Session-Start in `fitness-app` `src/views/Session/useSessionGateController.js` würde bei einem Fix Breite und Länge in die Session schreiben und an Overpass/Nominatim senden. Ohne Manifest-Recht liefert das WebView keinen Fix. Kommt die Berechtigung später ins Manifest, wird Standort zur Pflichtzeile. |
 | Fotos und Videos | Die Shell mountet `SixPackPromiseCard`, nicht `SelfiesScreen`. Der Selfie-Upload nach `sixpackSelfies/{uid}/photos` (JPEG-Data-URL) hängt an `6pack-app/SixPackApp.jsx` und ist im Release-Tab nicht eingehängt. Der Fuel-Scan bricht vor dem Netzaufruf ab. Das Manifest hat kein `CAMERA`. |
 | Audio, Dateien, Kontakte, SMS | Keine Berechtigung, kein Aufruf. |
 | Kalender | `journal-app` `src/lib/google/auth.js` kennt Kalender- und Tasks-Scopes. Im Produktbuild ist `allowPopupFallback` aus (`VITE_VOS_PRODUCT_BUILD !== "1"` ist falsch). Die Link-Functions `googleLink*` sind nicht nach `vitalos-prod` deployt. Ohne Token liest `gcal.js` keinen Kalender. |
