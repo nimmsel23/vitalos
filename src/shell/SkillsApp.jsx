@@ -1,30 +1,48 @@
-import { useCallback, useEffect, useState } from 'react'
-import SkillsCard from '../../skills-app/SkillsCard.jsx'
-import DesignHost from '../../skills-app/designs/DesignHost.jsx'
+import { useCallback, useEffect, useRef, useState } from 'react'
+import SkillsEmbed from '../../skills-app/embed.jsx'
 import DesignSwitcher from '../../skills-app/designs/DesignSwitcher.jsx'
-import { DESIGNS, readDesign, saveDesign } from '../../skills-app/designs/index.js'
-import { useProgress } from '../../skills-app/data/useProgress.js'
+import { readDesign, saveDesign } from '../../skills-app/designs/index.js'
+import { getUid } from '@db'
 import { logWorkoutAsSession } from '../../fitness-app/src/lib/logExternalWorkout.js'
-import '@vos-skills/skills.css'
+import ErrorBoundary from '../components/common/ErrorBoundary.jsx'
 
-const SKILLS_WORKOUT_COMPLETE_EVENT = 'skills:workout-completed'
-
-export default function SkillsApp() {
+export default function SkillsApp({ user, route = '', onRouteChange, onNavigate }) {
+  const uid = user?.uid || (() => { try { return getUid() } catch { return null } })()
+  const published = route || ''
   const [design, setDesign] = useState(readDesign)
-  const { status, pending, user, error, storageWarning } = useProgress()
-  const variant = DESIGNS.find((item) => item.id === design)
-  const onWorkoutComplete = useCallback((workout) => logWorkoutAsSession(workout).catch((error) => {
-    console.error('Skills-Workout konnte nicht ins Fitness-Session-Log geschrieben werden:', error)
-  }), [])
+  // Shell-getriebene Routen nicht zurückspiegeln (Ping-Pong-Fix, wie FuelWrapper).
+  const shellSyncTargetRef = useRef(null)
+  const loggedRuns = useRef(new Set())
 
   useEffect(() => {
-    const handleWorkoutComplete = (event) => {
-      if (event.detail?.source !== 'skills') return
-      onWorkoutComplete(event.detail)
+    shellSyncTargetRef.current = published
+  }, [published])
+
+  const handleRouteChange = useCallback((next) => {
+    const normalized = next || ''
+    if (shellSyncTargetRef.current === normalized) {
+      shellSyncTargetRef.current = null
+      return
     }
-    window.addEventListener(SKILLS_WORKOUT_COMPLETE_EVENT, handleWorkoutComplete)
-    return () => window.removeEventListener(SKILLS_WORKOUT_COMPLETE_EVENT, handleWorkoutComplete)
-  }, [onWorkoutComplete])
+    shellSyncTargetRef.current = null
+    if (normalized !== published) onRouteChange?.(normalized)
+  }, [onRouteChange, published])
+
+  // toHostWorkout setzt runId = sessionId. logWorkoutAsSession schreibt damit
+  // genau ein Session-Dokument; Wiederholung überschreibt dasselbe.
+  // Mit onWorkoutComplete senden die Designs kein skills:workout-completed mehr.
+  const onWorkoutComplete = useCallback((workout) => {
+    const runId = workout?.runId
+    const runKey = runId ? `${workout.source || 'skills'}:${runId}` : ''
+    if (runKey) {
+      if (loggedRuns.current.has(runKey)) return
+      loggedRuns.current.add(runKey)
+    }
+    logWorkoutAsSession(workout).catch((error) => {
+      if (runKey) loggedRuns.current.delete(runKey)
+      console.error('Skills-Workout konnte nicht ins Fitness-Session-Log geschrieben werden:', error)
+    })
+  }, [])
 
   function changeDesign(id) {
     saveDesign(id)
@@ -33,15 +51,33 @@ export default function SkillsApp() {
   }
 
   return (
-    <main data-theme="skills" className="relative min-h-[100dvh] overflow-y-auto px-4 py-4 text-fit-ink">
-      {variant
-        ? <DesignHost key={variant.id} design={variant} />
-        : <div className="mx-auto max-w-xl"><SkillsCard onWorkoutComplete={onWorkoutComplete} /></div>}
-      <div className="mx-auto max-w-xl px-2 py-4 text-xs" role="status" aria-live="polite">
-        {status}{pending > 0 && user ? ` · ${pending} ausstehend` : ''}
-        {(error || storageWarning) && <p role="alert" className="mt-2">{error || storageWarning}</p>}
-      </div>
-      <DesignSwitcher value={design} onChange={changeDesign} />
+    <ErrorBoundary>
+      <SkillsScreen
+        uid={uid}
+        route={published}
+        design={design}
+        onRouteChange={handleRouteChange}
+        onNavigate={onNavigate}
+        onWorkoutComplete={onWorkoutComplete}
+        onDesign={changeDesign}
+      />
+    </ErrorBoundary>
+  )
+}
+
+function SkillsScreen({ uid, route, design, onRouteChange, onNavigate, onWorkoutComplete, onDesign }) {
+  return (
+    <main data-theme="skills" className="relative min-h-[100dvh] overflow-y-auto text-fit-ink">
+      <SkillsEmbed
+        uid={uid}
+        embedded
+        route={route}
+        onRouteChange={onRouteChange}
+        onNavigate={onNavigate}
+        onWorkoutComplete={onWorkoutComplete}
+        design={design}
+      />
+      <DesignSwitcher value={design} onChange={onDesign} />
     </main>
   )
 }

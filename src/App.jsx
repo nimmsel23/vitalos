@@ -14,109 +14,10 @@ import ShellHeader from './shell/ShellHeader.jsx'
 import { useShellSettings } from './shell/store.js'
 import ShellAppRouter from './shell/ShellAppRouter.jsx'
 import { HomeHubGate } from './shell/HomeGates.jsx'
-import { localISO } from './shell/runtimeDate.js'
+import { readHashState, buildHashState } from './shell/hashState.js'
 
 const DAY_START = 8
 const DAY_END   = 20
-
-function localToday() {
-  return localISO()
-}
-
-const DATE_LIKE = /^\d{4}-\d{2}-\d{2}$/
-const FITNESS_DIRECT_ROUTES = new Set([
-  'today', 'session', 'plan', 'history',
-  'review', 'report', 'muscles', 'readiness', 'strength', 'verlauf',
-  'learn', 'exercises', 'anatomy', 'quiz',
-  'inbox',
-])
-const FUEL_DIRECT_ROUTES = new Set(['log', 'food', 'supplements', 'micros'])
-const RELAX_DIRECT_ROUTES = new Set(['dash', 'ausbildung', 'atem', 'stats', 'physio', 'catalog'])
-const FITNESS_DATE_ROUTES = new Set(['session'])
-
-function resolveHashDate(value) {
-  if (value === 'today') return localToday()
-  if (!DATE_LIKE.test(value || '')) return null
-  const date = new Date(`${value}T12:00:00`)
-  return localISO(date) === value ? value : null
-}
-
-function readHashState() {
-  const raw = window.location.hash.replace(/^#\/?/, '')
-  if (!raw) return { tab: 'home', subTab: 'hub', date: null }
-  const [mainTab = 'home', second = null, third = null] = raw.split('/')
-  const subTab = second && !DATE_LIKE.test(second) && second !== 'today' ? second : null
-  const date = resolveHashDate(second) || resolveHashDate(third)
-
-  // Legacy Fitness deep links for the extracted apps now open their own
-  // top-level Shell routes.
-  if (mainTab === 'timer' || (mainTab === 'fitness' && second === 'timer')) {
-    return { tab: 'sixpack', subTab: null, date: null }
-  }
-  if (mainTab === 'fitness' && second === 'skills') {
-    return { tab: 'skills', subTab: null, date: null }
-  }
-
-  if (FITNESS_DIRECT_ROUTES.has(mainTab)) {
-    return {
-      tab: 'fitness',
-      subTab: mainTab === 'session' && !second ? 'session' : mainTab,
-      date: mainTab === 'session' || mainTab === 'today' ? (date || localToday()) : date,
-    }
-  }
-
-  if (FUEL_DIRECT_ROUTES.has(mainTab)) {
-    return { tab: 'fuel', subTab: mainTab, date: date || null }
-  }
-
-  if (RELAX_DIRECT_ROUTES.has(mainTab)) {
-    return { tab: 'relax', subTab: mainTab, date: date || null }
-  }
-
-  if (mainTab === 'game' && second === 'door') return { tab: 'game', subTab: third ? `door/${third}` : 'door/potential', date: null }
-
-  const fitnessSessionDate = mainTab === 'fitness' && subTab === 'session' ? (date || localToday()) : date
-  if (mainTab === 'hub') return { tab: 'home', subTab: 'hub', date: null }
-  if (mainTab === 'dashboard') return { tab: 'home', subTab: null }
-  if (mainTab === 'learn') return { tab: 'fitness', subTab: 'learn' }
-  if (mainTab === 'journal') return { tab: 'home', subTab: null, date: date || null }
-  if (mainTab === 'fitness' && subTab === 'settings') return { tab: 'settings', subTab: null }
-  if (mainTab === 'fuel' && subTab === 'journal') return { tab: 'home', subTab: null, date: date || null }
-  if (mainTab === 'fuel' && subTab === 'habits') return { tab: 'habits', subTab: null }
-  if (mainTab === 'fuel' && subTab === 'settings') return { tab: 'settings', subTab: null }
-  return {
-    tab: VALID_TABS.has(mainTab) ? mainTab : 'hub',
-    subTab: subTab || null,
-    date: fitnessSessionDate || null,
-  }
-}
-
-function buildHashState({ tab, subTab = null, date = null }) {
-  if (tab === 'fitness' && subTab) {
-    const parts = [subTab]
-    if (FITNESS_DATE_ROUTES.has(subTab) && date) parts.push(date)
-    return `#${parts.join('/')}`
-  }
-  if (tab === 'fuel' && subTab) {
-    const parts = [subTab]
-    if (date) parts.push(date === localToday() ? 'today' : date)
-    return `#${parts.join('/')}`
-  }
-  if (tab === 'relax' && subTab && RELAX_DIRECT_ROUTES.has(subTab)) {
-    const parts = [subTab]
-    if (date) parts.push(date)
-    return `#${parts.join('/')}`
-  }
-  if (tab === 'home' && !subTab) {
-    const parts = ['journal']
-    if (date) parts.push(date)
-    return `#${parts.join('/')}`
-  }
-  const parts = [tab]
-  if (subTab) parts.push(subTab)
-  if (date) parts.push(date)
-  return `#${parts.join('/')}`
-}
 
 export default function App() {
   const initialHashState = readHashState()
@@ -150,6 +51,12 @@ export default function App() {
     const { tab: hashTab, subTab } = initialHashState
     return hashTab === 'game' && subTab ? subTab : 'fire'
   })
+  const [sixpackRoute, setSixpackRoute] = useState(() => (
+    initialHashState.tab === 'sixpack' ? (initialHashState.subTab || '') : ''
+  ))
+  const [skillsRoute, setSkillsRoute] = useState(() => (
+    initialHashState.tab === 'skills' ? (initialHashState.subTab || '') : ''
+  ))
   const [sessionDate,   setSessionDate]   = useState(() => (
     initialHashState.tab === 'fitness' && initialHashState.subTab === 'session'
       ? initialHashState.date
@@ -319,11 +226,15 @@ export default function App() {
         ? buildHashState({ tab, subTab: doorTab || 'potential' })
       : tab === 'game'
         ? buildHashState({ tab, subTab: gameTab || 'fire' })
+      : tab === 'sixpack'
+        ? buildHashState({ tab, subTab: sixpackRoute || null })
+      : tab === 'skills'
+        ? buildHashState({ tab, subTab: skillsRoute || null })
       : tab === 'journal' || tab === 'habits'
         ? buildHashState({ tab, date: runtimeDate })
         : buildHashState({ tab })
     if (window.location.hash !== nextHash) history.pushState(null, '', nextHash)
-  }, [tab, fitnessTab, homeGate, fuelTab, relaxTab, doorTab, gameTab, runtimeDate, sessionDate])
+  }, [tab, fitnessTab, homeGate, fuelTab, relaxTab, doorTab, gameTab, sixpackRoute, skillsRoute, runtimeDate, sessionDate])
 
   useEffect(() => {
     function syncFromLocation() {
@@ -342,6 +253,8 @@ export default function App() {
       if (nextTab === 'relax') setRelaxTab(subTab || 'dash')
       if (nextTab === 'door') setDoorTab(subTab || 'potential')
       if (nextTab === 'game') setGameTab(subTab || 'fire')
+      if (nextTab === 'sixpack') setSixpackRoute(subTab || '')
+      if (nextTab === 'skills') setSkillsRoute(subTab || '')
     }
 
     window.addEventListener('popstate', syncFromLocation)
@@ -395,6 +308,8 @@ export default function App() {
     if (id === 'relax') {
       setRelaxTab(subTab || relaxTab || 'dash')
     }
+    if (id === 'sixpack' && subTab != null) setSixpackRoute(subTab)
+    if (id === 'skills' && subTab != null) setSkillsRoute(subTab)
     setTab(id)
   }
 
@@ -611,9 +526,9 @@ export default function App() {
       const shellHeader = <ShellHeader tab={tab} subTab={shellSubTab} runtimeDate={runtimeDate} setRuntimeDate={changeHeaderDate} subNav={shellSubNav} onSubTab={shellSubTabSetter} onNavigateDomain={navigateToDomainDate} />
       const mobileShellHeader = <ShellHeader tab={tab} subTab={shellSubTab} runtimeDate={runtimeDate} setRuntimeDate={changeHeaderDate} compact subNav={shellSubNav} onSubTab={shellSubTabSetter} onNavigateDomain={navigateToDomainDate} />
       const shellViews = <ShellAppRouter tab={tab} fitnessProps={fitnessProps} fuelTab={fuelTab} setFuelTab={setFuelTab} muscleLanguage={muscleLanguage} taxonomy={taxonomy}
-      user={user} settingsProps={settingsProps} openSession={openSession} runtimeDate={runtimeDate} onRuntimeDateChange={setRuntimeDate} navigate={navigate} relaxTab={relaxTab} setRelaxTab={setRelaxTab} doorTab={doorTab} setDoorTab={setDoorTab} gameTab={gameTab} setGameTab={setGameTab} homeGate={homeGate} onHomeGateSelect={handleHomeGateSelect} onHomeGateDismiss={() => setHomeGate(null)} />
+      user={user} settingsProps={settingsProps} openSession={openSession} runtimeDate={runtimeDate} onRuntimeDateChange={setRuntimeDate} navigate={navigate} relaxTab={relaxTab} setRelaxTab={setRelaxTab} doorTab={doorTab} setDoorTab={setDoorTab} gameTab={gameTab} setGameTab={setGameTab} homeGate={homeGate} onHomeGateSelect={handleHomeGateSelect} onHomeGateDismiss={() => setHomeGate(null)} sixpackRoute={sixpackRoute} onSixpackRoute={setSixpackRoute} skillsRoute={skillsRoute} onSkillsRoute={setSkillsRoute} />
       const compactShellViews = <ShellAppRouter tab={tab} fitnessProps={fitnessProps} fuelTab={fuelTab} setFuelTab={setFuelTab} muscleLanguage={muscleLanguage} taxonomy={taxonomy}
-      user={user} settingsProps={settingsProps} openSession={openSession} compact runtimeDate={runtimeDate} onRuntimeDateChange={setRuntimeDate} navigate={navigate} relaxTab={relaxTab} setRelaxTab={setRelaxTab} doorTab={doorTab} setDoorTab={setDoorTab} gameTab={gameTab} setGameTab={setGameTab} homeGate={homeGate} onHomeGateSelect={handleHomeGateSelect} onHomeGateDismiss={() => setHomeGate(null)} />
+      user={user} settingsProps={settingsProps} openSession={openSession} compact runtimeDate={runtimeDate} onRuntimeDateChange={setRuntimeDate} navigate={navigate} relaxTab={relaxTab} setRelaxTab={setRelaxTab} doorTab={doorTab} setDoorTab={setDoorTab} gameTab={gameTab} setGameTab={setGameTab} homeGate={homeGate} onHomeGateSelect={handleHomeGateSelect} onHomeGateDismiss={() => setHomeGate(null)} sixpackRoute={sixpackRoute} onSixpackRoute={setSixpackRoute} skillsRoute={skillsRoute} onSkillsRoute={setSkillsRoute} />
       const hubGate = tab === 'home' && homeGate === 'hub'
         ? <HomeHubGate onSelect={navigate} onDismiss={() => setHomeGate(null)} runtimeDate={runtimeDate} openSession={openSession} />
         : null

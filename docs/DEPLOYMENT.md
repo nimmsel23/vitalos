@@ -220,9 +220,9 @@ Shell-Code im Meta-Repo verweist mit Pfaden wie `../../fitness-app/src/lib/…` 
 importierte Datei, bricht der Shell-Build erst nach dem Push — obwohl das Modul-Release grün ist. Vorfall 2026-11-01:
 `fitness-dev` entfernte `src/lib/sixpackPush.js` (6Pack-Push gehört nur der 6Pack-App), `src/shell/SixPackApp.jsx`
 importierte sie weiter → `Could not resolve …`, `Deploy VitalOS Shell` rot (Live-Shell blieb auf dem letzten grünen
-Stand). Fix: Import und `enablePush` aus der Shell entfernt (die 6Pack-Karte zeigt einen Hinweis).
-`6pack-dev/standaloneSync.js::enableSixpackPush` ist **nicht** für die Shell geeignet (eigene Firebase-Instanz, doppelt das
-Bundle); die saubere Lösung ist ein shell-taugliches Push-Modul aus `6pack-dev` (Release dort vor dem Shell-Import).
+Stand). Der Shell-Wrapper mountet seitdem `6pack-app/embed.jsx` (`SixPackEmbed`) und übergibt die Shell-Firebase-App
+an `enableSixpackPush` (`6pack-app/push.js`, keine zweite `initializeApp`). Der Messaging-Service-Worker liegt unter
+`/sixpack-messaging-sw.js` (Scope `/sixpack-push/`). `standaloneSync.js` bleibt der Standalone-Weg.
 
 ## Hook-Tipps
 
@@ -255,8 +255,8 @@ Die Pre-Push-Hooks (journal, fuel, habits, fitness, relax) zeigen beim Push von 
   `master` klären (Paket im Lockfile / Aliase über `siblingDir()`).
 - **`plan-dev`-Release:** Fix liegt auf `dev` (`8097ef5`), `master` fehlt noch; auf `dev` warten 13 Feature-Commits mit.
 - **Option C:** vor dem Meta-`master`-Push prüfen, dass alle App-Importe der Shell am neuen Pointer existieren.
-- **6Pack-Push in der Shell:** shell-taugliches Push-Modul aus `6pack-dev` bereitstellen; bis dahin ist `enablePush` in
-  `src/shell/SixPackApp.jsx` aus.
+- **6Pack-Push in der Shell:** `SixPackEmbed` registriert Push auf der Shell-Firebase-App. Offen ist der Gerätetest
+  (Token, Hintergrund, Auth-Reihenfolge), nicht mehr das fehlende Modul.
 - **`deploy-vos-fitness.yml`** prüfen und ggf. abschalten (Altlast).
 - `vos-ship` in einem echten Release (nicht nur `--dry-run`) erproben.
 

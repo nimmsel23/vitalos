@@ -30,7 +30,7 @@ jobs:
             exit 1
           fi
 
-      - name: Private Skills submodule access
+      - name: Skills submodule (public)
         uses: ./.github/actions/skills-submodule-auth
         with:
           deploy-key: ${{ secrets.SKILLS_DEPLOY_KEY }}

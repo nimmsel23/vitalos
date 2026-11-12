@@ -138,6 +138,13 @@ Der wirksame Fix war deshalb:
 Kurz: das Problem war eine doppelte Navigation-Synchronisation, nicht einfach
 „zu viel Hashing“.
 
+Dieselbe Regel gilt für die Embed-Routen von 6Pack und Skills
+(`#sixpack/<route>`, `#skills/<skillId>`). `SixPackApp.jsx` und
+`SkillsApp.jsx` merken sich eine von der Shell gesetzte Route in
+`shellSyncTargetRef` und schicken genau diese Route nicht per
+`onRouteChange` zurück. Ein Reload auf dem Hash öffnet dieselbe Ansicht;
+die Embeds schreiben `location.hash` und `documentElement` nicht.
+
 ## Mobile-Redesign (2026-10-11)
 
 Ziel: iOS-native Optik statt „alles UPPERCASE + font-black + tracking“.

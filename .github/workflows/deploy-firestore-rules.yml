@@ -33,7 +33,7 @@ jobs:
         if: inputs.seed_skills_catalog
         with:
           node-version: 22
-      - name: Private Skills submodule access
+      - name: Skills submodule (public)
         if: inputs.seed_skills_catalog
         uses: ./.github/actions/skills-submodule-auth
         with:
