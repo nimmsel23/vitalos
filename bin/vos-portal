@@ -1,6 +1,8 @@
 #!/usr/bin/env bash
-# vos-portal — Registry + Portal neu erzeugen: docs/apps.{json,html} je Repo, portal/{registry.json,index.html} hier.
-# Verteilt zuerst die Skript-Kopie (scripts/portal.mjs) in alle Repos aus portal/repos.json. --check: nur prüfen.
+# vos-portal — Dev-Dashboard neu erzeugen: docs/apps.{json,html} je Repo,
+# portal/{registry.json,index.html,dev-status.json}, docs/dev-dashboard.html (Pages).
+# Verteilt zuerst scripts/portal.mjs in alle Repos aus portal/repos.json. --check: nur prüfen.
+# Doku/Ownership: docs/DEV-DASHBOARD.md (CTO pflegt, PM liest).
 set -euo pipefail
 meta="$(cd "$(dirname "$0")/.." && pwd)"; root="${VOS_DEV_ROOT:-$HOME/dev}"
 for r in $(jq -r '.[]' "$meta/portal/repos.json"); do

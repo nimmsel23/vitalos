@@ -1,8 +1,22 @@
 {
+  "generatedAt": "2026-11-11T11:17:02.951Z",
   "repos": [
     {
       "repo": "fitness-dev",
       "apps": [
+        {
+          "id": "learn",
+          "kind": "main",
+          "name": "Fitness Centre",
+          "short": "Fitness",
+          "description": "",
+          "accent": "#e8a020",
+          "site": "learn-vos",
+          "url": "https://learn-vos.web.app",
+          "tab": null,
+          "bundledAuthDomain": "fitness-aos.firebaseapp.com",
+          "repo": "fitness-dev"
+        },
         {
           "id": "client",
           "kind": "main",
@@ -13,6 +27,10 @@
           "site": "fitness-aos",
           "url": "https://fitness-aos.web.app",
           "tab": null,
+          "bundledAuthDomain": "fitness-aos.firebaseapp.com",
+          "authMode": "project-domain",
+          "loginGate": "soft",
+          "note": "Bundled authDomain fitness-aos.firebaseapp.com; Session kann Login-Bug kaschieren",
           "repo": "fitness-dev"
         },
         {
@@ -26,6 +44,10 @@
           "url": "https://vos-training.web.app",
           "tab": "session",
           "planned": false,
+          "bundledAuthDomain": "fitness-aos.firebaseapp.com",
+          "authMode": "project-domain",
+          "loginGate": "hard",
+          "note": "Wie Fitness-Minis: authDomain noch Projekt-Domain — OAuth URI bekannt, iOS-Risiko wie vor Fuel-Fix",
           "repo": "fitness-dev"
         },
         {
@@ -39,6 +61,7 @@
           "url": "https://vos-logbuch.web.app",
           "tab": "session",
           "planned": false,
+          "bundledAuthDomain": "fitness-aos.firebaseapp.com",
           "repo": "fitness-dev"
         },
         {
@@ -52,6 +75,7 @@
           "url": "https://vos-review.web.app",
           "tab": "review",
           "planned": false,
+          "bundledAuthDomain": "fitness-aos.firebaseapp.com",
           "repo": "fitness-dev"
         },
         {
@@ -65,6 +89,7 @@
           "url": "https://vos-atlas.web.app",
           "tab": "atlas",
           "planned": false,
+          "bundledAuthDomain": "fitness-aos.firebaseapp.com",
           "repo": "fitness-dev"
         },
         {
@@ -78,6 +103,7 @@
           "url": "https://vos-touren.web.app",
           "tab": "touren",
           "planned": false,
+          "bundledAuthDomain": "fitness-aos.firebaseapp.com",
           "repo": "fitness-dev"
         },
         {
@@ -91,6 +117,7 @@
           "url": "https://vos-setup.web.app",
           "tab": "settings",
           "planned": false,
+          "bundledAuthDomain": "fitness-aos.firebaseapp.com",
           "repo": "fitness-dev"
         },
         {
@@ -104,6 +131,7 @@
           "url": "https://vos-anamnese.web.app",
           "tab": "anamnese",
           "planned": false,
+          "bundledAuthDomain": "fitness-aos.firebaseapp.com",
           "repo": "fitness-dev"
         },
         {
@@ -117,9 +145,12 @@
           "url": "https://vos-fokus.web.app",
           "tab": "focus",
           "planned": false,
+          "bundledAuthDomain": "fitness-aos.firebaseapp.com",
           "repo": "fitness-dev"
         }
-      ]
+      ],
+      "pages": "https://nimmsel23.github.io/fitness-dev/",
+      "bundledAuthDomain": "fitness-aos.firebaseapp.com"
     },
     {
       "repo": "fuel-dev",
@@ -134,6 +165,11 @@
           "site": "fuel-os",
           "url": "https://fuel-os.web.app",
           "tab": null,
+          "bundledAuthDomain": "fitness-aos.firebaseapp.com",
+          "authMode": "project-domain",
+          "loginGate": "soft",
+          "note": "Angenehmes Soft-Gate (Cloud Login); eigener Hosting-Stand, nicht Fuel-Master-Deploy",
+          "rot": "Login/Abnahme unklar — nicht vom iOS-Login-PR überschrieben",
           "repo": "fuel-dev"
         },
         {
@@ -146,6 +182,11 @@
           "site": "fuel-vos",
           "url": "https://fuel-vos.web.app",
           "tab": null,
+          "bundledAuthDomain": "fitness-aos.firebaseapp.com",
+          "authMode": "same-origin",
+          "loginGate": "soft",
+          "note": "Runtime authDomain=Host nach a87a883; braucht OAuth redirect URIs in GCP",
+          "rot": "redirect_uri_mismatch bis OAuth-Client URIs gesetzt",
           "repo": "fuel-dev"
         },
         {
@@ -159,6 +200,11 @@
           "url": "https://vos-fuel-log.web.app",
           "tab": null,
           "planned": false,
+          "bundledAuthDomain": "fitness-aos.firebaseapp.com",
+          "authMode": "same-origin",
+          "loginGate": "hard",
+          "note": "SoloShell Login-Pflicht blockiert Offline",
+          "rot": "400 redirect_uri_mismatch — OAuth redirect URI fehlt",
           "repo": "fuel-dev"
         },
         {
@@ -172,6 +218,10 @@
           "url": "https://vos-fuel-supplements.web.app",
           "tab": null,
           "planned": false,
+          "bundledAuthDomain": "fitness-aos.firebaseapp.com",
+          "authMode": "same-origin",
+          "loginGate": "hard",
+          "rot": "400 redirect_uri_mismatch — OAuth redirect URI fehlt",
           "repo": "fuel-dev"
         },
         {
@@ -185,6 +235,10 @@
           "url": "https://vos-fuel-mikros.web.app",
           "tab": null,
           "planned": false,
+          "bundledAuthDomain": "fitness-aos.firebaseapp.com",
+          "authMode": "same-origin",
+          "loginGate": "hard",
+          "rot": "400 redirect_uri_mismatch — OAuth redirect URI fehlt",
           "repo": "fuel-dev"
         },
         {
@@ -198,9 +252,15 @@
           "url": "https://vos-fuel-protokoll.web.app",
           "tab": null,
           "planned": false,
+          "bundledAuthDomain": "fitness-aos.firebaseapp.com",
+          "authMode": "same-origin",
+          "loginGate": "hard",
+          "rot": "400 redirect_uri_mismatch — OAuth redirect URI fehlt",
           "repo": "fuel-dev"
         }
-      ]
+      ],
+      "pages": "https://nimmsel23.github.io/fuel-dev/",
+      "bundledAuthDomain": "fitness-aos.firebaseapp.com"
     },
     {
       "repo": "plan-dev",
@@ -215,9 +275,12 @@
           "site": "vos-plan",
           "url": "https://vos-plan.web.app",
           "tab": null,
+          "bundledAuthDomain": "fitness-aos.firebaseapp.com",
           "repo": "plan-dev"
         }
-      ]
+      ],
+      "pages": "https://nimmsel23.github.io/plan-dev/",
+      "bundledAuthDomain": "fitness-aos.firebaseapp.com"
     },
     {
       "repo": "6pack-dev",
@@ -232,9 +295,12 @@
           "site": "vos-6pack",
           "url": "https://vos-6pack.web.app",
           "tab": null,
+          "bundledAuthDomain": null,
           "repo": "6pack-dev"
         }
-      ]
+      ],
+      "pages": "https://nimmsel23.github.io/6pack-dev/",
+      "bundledAuthDomain": null
     },
     {
       "repo": "skills-dev",
@@ -249,9 +315,15 @@
           "site": "vos-skills",
           "url": "https://vos-skills.web.app",
           "tab": null,
+          "bundledAuthDomain": "fitness-aos.firebaseapp.com",
+          "authMode": "project-domain",
+          "loginGate": "local-first",
+          "note": "authDomain fitness-aos.firebaseapp.com; Offline als guest ohne Login; Sync optional",
           "repo": "skills-dev"
         }
-      ]
+      ],
+      "pages": "https://nimmsel23.github.io/skills-dev/",
+      "bundledAuthDomain": "fitness-aos.firebaseapp.com"
     },
     {
       "repo": "learn-dev",
@@ -266,9 +338,12 @@
           "site": "learn-vos",
           "url": "https://learn-vos.web.app",
           "tab": null,
+          "bundledAuthDomain": "fitness-aos.firebaseapp.com",
           "repo": "learn-dev"
         }
-      ]
+      ],
+      "pages": "https://nimmsel23.github.io/learn-dev/",
+      "bundledAuthDomain": "fitness-aos.firebaseapp.com"
     },
     {
       "repo": "relax-dev",
@@ -283,9 +358,12 @@
           "site": "relax-vos",
           "url": "https://relax-vos.web.app",
           "tab": null,
+          "bundledAuthDomain": "fitness-aos.firebaseapp.com",
           "repo": "relax-dev"
         }
-      ]
+      ],
+      "pages": "https://nimmsel23.github.io/relax-dev/",
+      "bundledAuthDomain": "fitness-aos.firebaseapp.com"
     },
     {
       "repo": "journal-dev",
@@ -301,6 +379,7 @@
           "url": "https://journal-vos.web.app",
           "tab": "journal",
           "planned": false,
+          "bundledAuthDomain": "fitness-aos.firebaseapp.com",
           "repo": "journal-dev"
         },
         {
@@ -314,6 +393,7 @@
           "url": "https://vos-journal.web.app",
           "tab": "journal-v2",
           "planned": false,
+          "bundledAuthDomain": "fitness-aos.firebaseapp.com",
           "repo": "journal-dev"
         },
         {
@@ -327,6 +407,7 @@
           "url": "https://vos-door.web.app",
           "tab": "door-v2",
           "planned": false,
+          "bundledAuthDomain": "fitness-aos.firebaseapp.com",
           "repo": "journal-dev"
         },
         {
@@ -340,6 +421,7 @@
           "url": "https://vos-voice.web.app",
           "tab": "voice-v2",
           "planned": false,
+          "bundledAuthDomain": "fitness-aos.firebaseapp.com",
           "repo": "journal-dev"
         },
         {
@@ -353,6 +435,7 @@
           "url": "https://vos-game.web.app",
           "tab": "game-v2",
           "planned": false,
+          "bundledAuthDomain": "fitness-aos.firebaseapp.com",
           "repo": "journal-dev"
         },
         {
@@ -366,6 +449,21 @@
           "url": "https://vos-tent.web.app",
           "tab": "tent-v2",
           "planned": false,
+          "bundledAuthDomain": "fitness-aos.firebaseapp.com",
+          "repo": "journal-dev"
+        },
+        {
+          "id": "habits",
+          "kind": "solo",
+          "name": "Habits",
+          "short": "Habits",
+          "description": "Habits Solo: Journal-v2-Modus habits (#v2/habits), Flavor-Build wie Door/Voice",
+          "accent": "#fb923c",
+          "site": "habit-vos",
+          "url": "https://habit-vos.web.app",
+          "tab": "journal-v2",
+          "planned": false,
+          "bundledAuthDomain": "fitness-aos.firebaseapp.com",
           "repo": "journal-dev"
         },
         {
@@ -373,12 +471,13 @@
           "kind": "solo",
           "name": "Habits v1",
           "short": "Habits v1",
-          "description": "Habit-Tracking (v1), bisher Tab in Journal v1",
+          "description": "Habit-Tracking (v1), bisher Tab in Journal v1 — Legacy-Shell apps/habits nicht mehr Hosting-Quelle",
           "accent": "#a78bfa",
           "site": null,
           "url": null,
           "tab": null,
           "planned": true,
+          "bundledAuthDomain": "fitness-aos.firebaseapp.com",
           "repo": "journal-dev"
         },
         {
@@ -392,6 +491,7 @@
           "url": null,
           "tab": null,
           "planned": true,
+          "bundledAuthDomain": "fitness-aos.firebaseapp.com",
           "repo": "journal-dev"
         },
         {
@@ -405,19 +505,21 @@
           "url": null,
           "tab": null,
           "planned": true,
+          "bundledAuthDomain": "fitness-aos.firebaseapp.com",
           "repo": "journal-dev"
         },
         {
           "id": "habits-v2",
           "kind": "solo",
-          "name": "Habits v2",
-          "short": "Habits v2",
-          "description": "Habits im Raster-Design, bisher Ansicht #v2/habits in Journal v2",
+          "name": "Habits v2 (Tab)",
+          "short": "Habits v2 (Tab)",
+          "description": "Habits-Modus in Journal v2 / habit-vos Solo — gleiche View wie Flavor habits",
           "accent": "#1738ff",
           "site": null,
           "url": null,
           "tab": null,
           "planned": true,
+          "bundledAuthDomain": "fitness-aos.firebaseapp.com",
           "repo": "journal-dev"
         },
         {
@@ -431,6 +533,7 @@
           "url": "https://vos-game.web.app/frame/",
           "tab": "game-v2",
           "planned": false,
+          "bundledAuthDomain": "fitness-aos.firebaseapp.com",
           "repo": "journal-dev"
         },
         {
@@ -444,6 +547,7 @@
           "url": "https://vos-game.web.app/freedom/",
           "tab": "game-v2",
           "planned": false,
+          "bundledAuthDomain": "fitness-aos.firebaseapp.com",
           "repo": "journal-dev"
         },
         {
@@ -457,6 +561,7 @@
           "url": "https://vos-game.web.app/focus/",
           "tab": "game-v2",
           "planned": false,
+          "bundledAuthDomain": "fitness-aos.firebaseapp.com",
           "repo": "journal-dev"
         },
         {
@@ -470,9 +575,32 @@
           "url": "https://vos-game.web.app/fire/",
           "tab": "game-v2",
           "planned": false,
+          "bundledAuthDomain": "fitness-aos.firebaseapp.com",
           "repo": "journal-dev"
         }
-      ]
+      ],
+      "pages": "https://nimmsel23.github.io/journal-dev/",
+      "bundledAuthDomain": "fitness-aos.firebaseapp.com"
+    },
+    {
+      "repo": "habits-dev",
+      "apps": [
+        {
+          "id": "habit-vos",
+          "kind": "main",
+          "name": "habit-vos",
+          "short": "habit-vos",
+          "description": "",
+          "accent": "#888",
+          "site": "habit-vos",
+          "url": "https://habit-vos.web.app",
+          "tab": null,
+          "bundledAuthDomain": "fitness-aos.firebaseapp.com",
+          "repo": "habits-dev"
+        }
+      ],
+      "pages": "https://nimmsel23.github.io/habits-dev/",
+      "bundledAuthDomain": "fitness-aos.firebaseapp.com"
     }
   ]
 }

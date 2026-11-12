@@ -171,16 +171,16 @@ Geraeteprotokoll — kein Owner-Gate fuer den Nachweis selbst.
 
 ## P1 — Fuel-iOS-Login
 
-**Produktziel:** Fuel Mini-App-Login funktioniert auf iOS auf dem Niveau der
-Fitness Mini Apps. Der aktuelle Schritt ist Diagnose und belegter Fixvorschlag;
-Umsetzung eines konkreten Fixes braucht danach die CEO-Entscheidung.
+**Produktziel:** Fuel Mini-App-Login funktioniert auf iOS (und Soft-Gate wie
+fuel-os / local-first wie skills — Offline nicht hinter Login-Mauer).
 
-**Stand:** Die Diagnose ist im Fuel-Task dokumentiert und abgeschlossen.
-Alle acht Firebase-Auth-Domains der vier Fuel-Mini-App-Sites sind vorhanden;
-Login-Codepfade entsprechen weitgehend Fitness. Historischer iPad-Befund:
-Google-Popup erfolgreich, App bleibt abgemeldet; frischer Repro und Fehlercode
-fehlen. Kein kausaler Fix belegt. Ein erneuter Geraetetest und moegliche
-SDK-Angleichung warten auf CEO-Entscheid; keine Codeaenderung erfolgt.
+**Stand 2026-11-11:** Code-Fix `a87a883` (same-origin authDomain) ist auf
+fuel-vos + `vos-fuel-*` live. Firebase Authorized Domains ok. Live-Fehler jetzt
+`400 redirect_uri_mismatch` — GCP OAuth-Client braucht Redirect-URIs
+`https://<site>.web.app/__/auth/handler` (Console, Owner). Skills bleibt
+Referenz (project-domain + offline ohne Login). Inventar/ROT:
+[Dev-Dashboard](https://nimmsel23.github.io/vitalos/dev-dashboard.html) /
+`portal/dev-status.json` (CTO).
 
 ## P2 — Produktqualitaet
 

@@ -1,32 +1,52 @@
-# C-009 — Patreon / Coaching-Angebotsentwurf (2 Stufen)
+# C-009 — Coaching / Patreon-Angebot (Freitag-fertig, nicht live)
 
-Stand: PM 2026-11-09. Owner-Entscheid Freitag; Preise = Vorschlag, kein Final.
+Stand: PM 2026-11-12. Preise = PM-Vorschlag zur Entscheidung Freitag, kein Final.
+Kein Konto anlegen, kein Versand, kein Payment unter der Woche.
 
 ## Stufe 1 — Journal-Begleitung (asynchron)
 
-- Nutzen: Jemand strukturiert Fitness/Fuel/Relax über Freitext-Journal mit
-  leichter Begleitung, ohne tägliche Calls.
+- Nutzen: Fitness/Fuel/Relax über Freitext-Journal strukturieren, ohne
+  tägliche Calls — ideal neben Trainer-Alltag.
 - Leistung: wöchentlicher Check der Einträge + 1 schriftliches Feedback;
-  Zugriff auf Observe-Kern (sobald Closed Test läuft).
-- Preisvorschlag: [Owner ergänzt] / Monat — bewusst unter 1:1-Coaching.
-- Kapazität: max. 8 Personen parallel (asynchron machbar neben Trainer-Alltag).
+  Zugang Observe-Kern sobald Closed Test läuft.
+- Preisvorschlag PM: **59 € / Monat** (Einstieg; Band 49–69 €).
+- Kapazität: max. **8** parallel.
+- Startpfad: WhatsApp/Mail → Rechnung/Überweisung oder später Patreon-Tier
+  „Journal-Begleitung“.
 
-## Stufe 2 — Locked-in Coaching (täglich / eng)
+## Stufe 2 — Locked-in Coaching (eng / Wien + App)
 
-- Nutzen: One2One als Vital-/Fitnesstrainer Wien — Klarheit, Training,
-  Ernährung, Entspannung; App als Betriebsystem dazwischen.
-- Leistung: fester Kontakt-Rhythmus (z. B. 3×/Woche Check-in oder 1× Call +
-  Chat), persönlicher Plan, App-Operate-Funktionen wenn freigeschaltet.
-- Preisvorschlag: [Owner ergänzt] / Monat oder 10er-Block PT + App-Zugang.
-- Kapazität: max. 3–4 Locked-in gleichzeitig (Qualität vor Menge).
+- Nutzen: One2One als Vital-/Fitnesstrainer Wien; App als Betriebssystem
+  zwischen den Terminen.
+- Leistung: fester Rhythmus (z. B. 1× Call/Woche + Chat) oder klassischer
+  10er-Block PT; persönlicher Plan; Operate-Funktionen wenn freigeschaltet.
+- Preisvorschlag PM:
+  - **10er-Block PT + App-Zugang: 450 €** (an bestehende PT-Logik angelehnt), oder
+  - **249 € / Monat** Locked-in (Call+Chat, ohne klassischen Studio-10er).
+- Kapazität: max. **3–4** gleichzeitig.
 
 ## Gruppentraining (hypothetisch, Spur a)
 
-- Option später: kleine Gruppe Wien (4–6) + gemeinsames Journal-Ritual.
-- Noch kein Bau, keine Preise — nur Platzhalter für Freitag-Gespräch.
+- Später: kleine Gruppe Wien (4–6) + gemeinsames Journal-Ritual.
+- Soft-Vorschlag nur fürs Freitag-Gespräch: **25 € / Person / Einheit**
+  oder **99 € / Monat** Gruppe — noch kein Bau, kein Angebotstext live.
 
-## Empfehlung PM
+## Patreon vs. Direkt (c2) — PM-Empfehlung
 
-Zuerst Stufe 1 textfertig + Closed Test (d), parallel 1–2 Pilot-Slots Stufe 2
-aus dem bestehenden Klienten-/Trainerumfeld. Patreon vs. Direktangebot (c2)
-Freitag entscheiden — nicht unter der Woche blockieren.
+1. **Jetzt Direkt** (WhatsApp + Rechnung): Stufe 1 textfertig anbieten,
+   1–2 Pilot-Slots Stufe 2 aus bestehendem Umfeld — passt zu Wien/Trainer,
+   keine neue Plattform-Pflege diese Woche.
+2. **Patreon** erst wenn Stufe 1 stabil läuft und du öffentliche Marke/Abo
+   willst (Personal Brand / f). Freitag nur Ja/Nein-Richtung, kein Setup.
+
+## Freitag-Entscheidung in einem Blick
+
+| Frage | PM-Empfehlung |
+| --- | --- |
+| Stufe 1 Preis? | 59 €/Monat starten |
+| Stufe 2? | 450 € 10er+App **oder** 249 €/Monat — eine Variante wählen |
+| Kanal? | Direkt jetzt; Patreon später |
+| Gruppe? | nur merken, nicht starten |
+| Versand Tester C-006? | ja Freitag, parallel, ohne Play-Pflicht |
+
+Owner streicht/ändert Zahlen Freitag — Texte sind entscheidungsreif.
