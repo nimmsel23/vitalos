@@ -118,7 +118,7 @@ Vorhanden (Stand 2026-11-11):
 - Custom Domains in Firebase angelegt: `vitalos.at`, `www.vitalos.at` (Cert/DNS noch pending)
 - Legal live auf Firebase: `/datenschutz`, `/impressum`, `/vitalos`
 - Shell-Spiegel: `https://vitalos.web.app/datenschutz` und `/konto-loeschen` (HTTP 200)
-- Inhalt noch mit Kontakt-Platzhalter (`KONTAKT-FOLGT@example.invalid`, C-014)
+- Repo-Inhalt nennt `nimmdaniel@gmail.com` und 1030 Wien, Österreich (Owner 2026-11-12). Die Live-Seite auf `vitalos.web.app` zeigt das erst nach dem Shell-Hosting-Deploy. Ein Merge nach `master` startet `deploy-shell.yml` (Projekt `fitness-aos`). Dafür gibt es in diesem Auftrag keine eigene Hosting-Freigabe. C-014 darf den übrigen Wortlaut ersetzen.
 
 Noch Owner (DNS bei atdomain/hostdomains — CF-Sites-A-Records ersetzen):
 

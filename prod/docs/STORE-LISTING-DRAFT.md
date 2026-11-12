@@ -33,9 +33,10 @@ Die App ist ein Werkzeug zur Selbstbeobachtung und Alltagsorganisation. Sie stel
 - [ ] Offline-Verhalten und Synchronisierung sind auf Android und iOS getestet.
 - [ ] KI-Verarbeitung, Datenübermittlung und Anbieterangaben entsprechen der tatsächlichen Implementierung und Datenschutzerklärung.
 - [ ] Screenshots stammen aus dem geprüften Build und verwenden Beispieldaten.
-- [ ] Support-Adresse, Anbieteridentität, Zielgruppe, Altersfreigabe und Veröffentlichungsländer vom Kontoinhaber bestätigt.
+- [x] Öffentliche Kontaktadresse und Ort: `nimmdaniel@gmail.com`, 1030 Wien, Österreich, ohne Straße (Owner 2026-11-12).
+- [ ] Anbieteridentität über die Kontaktangabe hinaus, Zielgruppe, Altersfreigabe und Veröffentlichungsländer vom Kontoinhaber bestätigt.
 - [ ] Premium-Zahlung und Store-Abrechnung entsprechen den am Einreichungstag geltenden Apple- und Google-Regeln.
 
 ## Kontoinhaber-Bestätigung erforderlich
 
-App-Name und Kurzbeschreibung, Anbietername, Support-URL/E-Mail, Datenschutzerklärung, Zielgruppe, Altersfreigabe, Regionen, Preis und Abo-Zeitraum sowie sämtliche Aussagen über KI und Datennutzung.
+App-Name und Kurzbeschreibung, Anbietername, Datenschutzerklärung, Zielgruppe, Altersfreigabe, Regionen, Preis und Abo-Zeitraum sowie sämtliche Aussagen über KI und Datennutzung. Die öffentliche Support-E-Mail ist `nimmdaniel@gmail.com`, der Ort 1030 Wien, Österreich, ohne Straße (Owner 2026-11-12).

@@ -138,8 +138,9 @@ Pfade durch, damit er die App-Shell nicht mit der Rechtsseite überschreibt.
 Der Wortlaut ist der Sachstand des Release-Builds (Firebase Authentication,
 Cloud Firestore, Google-Anmeldung, optionales Cloud Messaging; kein Gemini,
 kein Analytics-, Crash- oder Werbe-SDK im Produktcode). C-014 darf ihn
-ersetzen. Eine öffentliche Kontaktadresse steht nicht im Repo. Der
-Platzhalter `KONTAKT-FOLGT@example.invalid` ist nicht zustellbar.
+ersetzen. Die öffentliche Kontaktadresse ist `nimmdaniel@gmail.com`.
+Ort des Verantwortlichen: 1030 Wien, Österreich, ohne Straße
+(Owner-Freigabe 2026-11-12).
 
 Die Kontolöschung in der App ruft `deleteOwnAccount` auf
 (`prod/functions/index.js`, Region `europe-west1`). Die Function liest die

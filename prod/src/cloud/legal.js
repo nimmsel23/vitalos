@@ -3,9 +3,10 @@ export const PRIVACY_URL = "https://vitalos.web.app/datenschutz";
 export const ACCOUNT_DELETION_URL = "https://vitalos.web.app/konto-loeschen";
 
 /**
- * Im Repo gibt es keine öffentliche Kontaktadresse.
- * example.invalid ist absichtlich nicht zustellbar und muss vor der
- * Store-Einreichung ersetzt werden (Auftrag C-014).
+ * Öffentliche Kontaktadresse des Verantwortlichen.
+ * Freigabe Owner Daniel, 2026-11-12.
+ * Ort ohne Straße, weil keine angegeben wurde.
  */
-export const CONTACT_EMAIL = "KONTAKT-FOLGT@example.invalid";
-export const CONTACT_EMAIL_IS_PLACEHOLDER = true;
+export const CONTACT_EMAIL = "nimmdaniel@gmail.com";
+export const CONTACT_PLACE = "1030 Wien, Österreich";
+export const CONTACT_EMAIL_IS_PLACEHOLDER = false;

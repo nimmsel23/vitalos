@@ -3,7 +3,7 @@ import assert from "node:assert/strict";
 import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
-import { ACCOUNT_DELETION_URL, CONTACT_EMAIL, CONTACT_EMAIL_IS_PLACEHOLDER, PRIVACY_URL } from "../src/cloud/legal.js";
+import { ACCOUNT_DELETION_URL, CONTACT_EMAIL, CONTACT_EMAIL_IS_PLACEHOLDER, CONTACT_PLACE, PRIVACY_URL } from "../src/cloud/legal.js";
 import { resolveHosting } from "../scripts/legal-hosting.mjs";
 
 const repo = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../..");
@@ -18,13 +18,17 @@ test("dieselbe HTML-Fassung liegt in der Produkt- und in der Shell-Quelle", () =
   }
 });
 
-test("Seiten nennen Platzhalter, C-014 und die tatsächlich genutzten Dienste", () => {
-  assert.equal(CONTACT_EMAIL_IS_PLACEHOLDER, true);
-  assert.equal(CONTACT_EMAIL, "KONTAKT-FOLGT@example.invalid");
+test("Seiten nennen die öffentliche Kontaktadresse, C-014 und die tatsächlich genutzten Dienste", () => {
+  assert.equal(CONTACT_EMAIL_IS_PLACEHOLDER, false);
+  assert.equal(CONTACT_EMAIL, "nimmdaniel@gmail.com");
+  assert.equal(CONTACT_PLACE, "1030 Wien, Österreich");
   for (const page of ["prod/public/datenschutz/index.html", "prod/public/konto-loeschen/index.html"]) {
     const html = read(page);
     assert.match(html, /C-014/);
-    assert.match(html, /KONTAKT-FOLGT@example\.invalid/);
+    assert.match(html, /nimmdaniel@gmail\.com/);
+    assert.match(html, /1030 Wien, Österreich/);
+    assert.doesNotMatch(html, /KONTAKT-FOLGT/);
+    assert.doesNotMatch(html, /example\.invalid/);
     assert.match(html, /Firebase Authentication|Firebase-Auth/);
     assert.match(html, /Cloud Firestore|Firestore/);
     assert.match(html, /Google-Anmeldung|Google-Verknüpfung/);
