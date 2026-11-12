@@ -149,6 +149,6 @@ completed	success	Live Smoke (VitalOS)	Live Smoke (VitalOS)	master	workflow_run	
 - Arbeitsbaum: sauber
 
 _Vom AL ausfüllen (knapp & belegbar, je 1–3 Zeilen, Commit-/PR-Referenzen statt Erzählung):_
-- Erledigt: C-015 Repo-Anteil — signiertes `app-release.aab` SHA-256 `682c7ed6557743a3b816bf01434a709f17149f530fef6c8b6b2c22921723865b` (jarsigner OK, CN VitalOS Product); Docs `prod/docs/DATA-SAFETY-ANSWERS.md` + Klickliste Punkt 13 „AAB lokal bereit“; TODO [x]; Org `5e9d0f4a` Tip-grün unberührt.
+- Erledigt: C-015 Repo-Anteil — `77c6fca` (+ TODO/NEXT/RESULTS `7ffb5a5`/`731c929`/`91430b2`); AAB SHA-256 `682c7ed6557743a3b816bf01434a709f17149f530fef6c8b6b2c22921723865b` (jarsigner OK); Klickliste #13 „AAB lokal bereit“; Org `5e9d0f4a` Tip-grün unberührt.
 - Offen/Weiter: Owner Play-Upload Punkt 13 + Firebase-Fingerprints; PR #37 legal / #23 privacy-copy / #22 CPO-docs; C-002 Emulator-Slot 2026-11-17; Live Smoke OK `43237271224`.
 - Blocker: C-002 kein adb-Gerät (Timer); Play-Console-Klicks bleiben Owner-Gate (kein Meta-Push).
