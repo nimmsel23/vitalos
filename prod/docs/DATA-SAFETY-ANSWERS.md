@@ -28,6 +28,16 @@ Das ist Auftragsverarbeitung für die App-Funktion. Die Produkt-Rules setzen
 `isCoach()` auf `false` (`prod/firestore.product.rules`); ein Coach liest die
 Produktdaten nicht. Es gibt keinen Verkauf und keine Werbenutzung.
 
+Open Food Facts (2026-11-12, fuel-dev d02cf0b): Lebensmittel-Textsuche und
+Barcode-Abfrage senden nur Suchbegriff/Barcode-Nummer (plus technisch die IP)
+an openfoodfacts.org — keine Konto- oder Gesundheitsdaten. Das ist keine
+Weitergabe einer Data-Safety-Datenart; in der Datenschutzerklärung genannt.
+KI: Fuel (`AI_ENABLED`), Relax und Shell rufen im Store-Build keine KI auf.
+
+Lösch-Function `deleteOwnAccount` ist seit 2026-11-12 in `vitalos-prod`
+(europe-west1) live und per Wegwerfkonto End-to-End geprüft (HTTP 200, Auth +
+`users/`/`journal/` weg).
+
 Die Lösch-URL und den In-App-Weg liefert C-013 (Seite
 `prod/public/konto-loeschen/index.html`, Callable `deleteOwnAccount` in
 `prod/functions`). Die Function geht nicht mit dem Shell-Deploy raus. Die URL erst in
@@ -179,6 +189,10 @@ So legt der Owner das Prüferkonto an:
 
 Platzhalter, absichtlich ohne Werte: Nutzername `<nur in der Play Console>`,
 Passwort `<nur in der Play Console>`.
+
+**Stand 2026-11-12:** Das Prüferkonto ist angelegt (`vitalos-prod`, E-Mail/Passwort,
+Anmeldung im Store-Build verifiziert). Zugangsdaten liegen lokal in
+`prod/.product-config/play-reviewer.txt` (gitignored) — von dort in die Console kopieren.
 
 Text für das Feld „Anweisungen“ (keine Geheimnisse):
 

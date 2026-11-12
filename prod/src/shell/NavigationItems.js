@@ -21,6 +21,8 @@ export const STORE_BUILD = ['store', 'observe', 'operate'].includes(import.meta.
 const OWNER_ONLY_TABS = new Set(['game', 'door'])
 // Relax: Entspannungstrainer-Ausbildung (Modul), Physio-Simulation und Substanz-Katalog
 // (braucht /relax-api) sind Owner-Inhalte — relax-dev 207322b gated die Views ebenfalls.
+export const FUEL_AI_TABS = new Set(['shutter', 'tagesfaden'])
+const storeLabel = (store, owner) => (STORE_BUILD ? store : owner)
 export const RELAX_OWNER_TABS = new Set(['ausbildung', 'physio', 'catalog'])
 
 export const NAV_ITEMS = [
@@ -58,17 +60,18 @@ export const SUB_NAV = {
     { id: 'log',           label: 'Log',           Icon: NotebookPen },
     // Schnelleinstiege (fuel-app Frontdoors) und Log-Ansichten als eigene Untertabs;
     // tapboard/shutter/tagesfaden rendert ShellAppRouter über FuelFrontdoors.jsx.
-    { id: 'tapboard',      label: 'Tap Board',     Icon: Grid3x3 },
+    // Store-Build: deutsche Labels; Shutter/Tagesfaden (KI) sind dort aus (fuel-dev d02cf0b).
+    { id: 'tapboard',      label: storeLabel('Schnellwahl', 'Tap Board'),          Icon: Grid3x3 },
     { id: 'shutter',       label: 'Shutter',       Icon: Camera },
     { id: 'tagesfaden',    label: 'Tagesfaden',    Icon: MessageSquareText },
-    { id: 'log-dashboard', label: 'Log-Dashboard', Icon: LayoutGrid },
-    { id: 'log-timeline',  label: 'Timeline',      Icon: GitCommitVertical },
-    { id: 'food',          label: 'Food',          Icon: UtensilsCrossed },
+    { id: 'log-dashboard', label: storeLabel('Tagesübersicht', 'Log-Dashboard'),  Icon: LayoutGrid },
+    { id: 'log-timeline',  label: storeLabel('Tagesverlauf', 'Timeline'),         Icon: GitCommitVertical },
+    { id: 'food',          label: storeLabel('Lebensmittel', 'Food'),             Icon: UtensilsCrossed },
     { id: 'pots',          label: 'Töpfe',         Icon: CookingPot },
     { id: 'kitchen',       label: 'Küche',         Icon: Refrigerator },
-    { id: 'supplements',   label: 'Supps',         Icon: Pill },
-    { id: 'micros',        label: 'Mikros',        Icon: Microscope },
-  ],
+    { id: 'supplements',   label: storeLabel('Nahrungsergänzung', 'Supps'),       Icon: Pill },
+    { id: 'micros',        label: storeLabel('Mikronährstoffe', 'Mikros'),        Icon: Microscope },
+  ].filter(({ id }) => !(STORE_BUILD && FUEL_AI_TABS.has(id))),
   // Die 4 P's des Door-Frameworks (Door v1: journal-app/src/views/door/DoorView.jsx)
   door: [
     { id: 'potential',  label: 'Potential',  Icon: Flame },
