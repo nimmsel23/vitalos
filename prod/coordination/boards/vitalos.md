@@ -1,6 +1,6 @@
 # Dashboard — vitalos Meta
 
-Generated: 2026-11-12T23:46:08+00:00 · SHA: `120f219` · Issue: [#32](https://github.com/nimmsel23/vitalos/issues/32) · Repo: `nimmsel23/vitalos`
+Generated: 2026-11-12T23:47:06+00:00 · SHA: `59b8862` · Issue: [#32](https://github.com/nimmsel23/vitalos/issues/32) · Repo: `nimmsel23/vitalos`
 
 Refresh: `prod/coordination/ui/gen-boards.py` (+ optional Hook/Action).
 
@@ -8,15 +8,15 @@ Refresh: `prod/coordination/ui/gen-boards.py` (+ optional Hook/Action).
 
 ## 1. Submodule-Pins (Kurz)
 
-- `fitness-app: `120f219``
-- `fuel-app: `120f219``
-- `journal-app: `120f219``
-- `habit-app: `120f219``
-- `learn-app: `120f219``
-- `relax-app: `120f219``
-- `6pack-app: `120f219``
-- `plan-app: `120f219``
-- `skills-app: `120f219``
+- `fitness-app: `59b8862``
+- `fuel-app: `59b8862``
+- `journal-app: `59b8862``
+- `habit-app: `59b8862``
+- `learn-app: `59b8862``
+- `relax-app: `59b8862``
+- `6pack-app: `59b8862``
+- `plan-app: `59b8862``
+- `skills-app: `59b8862``
 
 
 ## 2. Store / Legal Docs
@@ -46,6 +46,8 @@ Refresh: `prod/coordination/ui/gen-boards.py` (+ optional Hook/Action).
 
 ## 6. Release-Train / Ship-Log
 
+- `59b8862 fix(ci): living-boards klont Siblings ohne LFS-Smudge`
+- `9acac9c chore(coordination): refresh living boards [skip ci]`
 - `120f219 fix(ci): BOARDS_HOME per GITHUB_ENV setzen (runner.temp im Job-env unzulässig)`
 - `b9da22f fix(ci): living-boards checkt Sibling-Repos aus statt rekursiver Submodule`
 - `385bcee fix(shell): Fuel-Standalone-Link auf vos-fuel.web.app`
@@ -54,6 +56,4 @@ Refresh: `prod/coordination/ui/gen-boards.py` (+ optional Hook/Action).
 - `9673723 feat(coordination): Lagezelt — Manifest, mehr Docs, Boards-Ansicht`
 - `c89d815 feat(coordination): Lagezelt-UI für die Koordinations-Docs`
 - `24e3fef Store-Build: Inbox und Coach sperren (#38)`
-- `c3f2ad9 docs(privacy): align policy and data safety with the release build (#23)`
-- `43e54e3 docs(al): C-015 Commit-Refs in AL-LOG/ABTEILUNG`
 
