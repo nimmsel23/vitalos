@@ -2,8 +2,7 @@ import { useState, useEffect, useCallback, useRef } from 'react'
 import { RefreshCw, Zap } from 'lucide-react'
 import { useEscapeKey } from './hooks/useEscapeKey.js'
 import { watchAuth, signIn, signInEmail, signUpEmail, signOut, isLocalMode, auth, getUserProfile, registerShellDevice } from '@db'
-import { PASSWORD_RESET_NEED_EMAIL, PASSWORD_RESET_SENT, passwordResetNotice } from './cloud/passwordReset.js'
-import { NAV_ITEMS, VALID_TABS, SUB_NAV } from './shell/NavigationItems.js'
+import { NAV_ITEMS, STORE_BUILD, VALID_TABS, SUB_NAV } from './shell/NavigationItems.js'
 import Sidebar from './shell/layout/Sidebar.jsx'
 import ObserveNavigation from './shell/layout/ObserveNavigation.jsx'
 import MobileShell from './shell/layout/MobileShell.jsx'
@@ -33,7 +32,7 @@ const FITNESS_DIRECT_ROUTES = new Set([
   'today', 'session', 'plan', 'history',
   'review', 'report', 'muscles', 'readiness', 'strength', 'verlauf',
   'learn', 'exercises', 'anatomy', 'quiz',
-  'inbox',
+  ...(STORE_BUILD ? [] : ['inbox']),
 ])
 const FUEL_DIRECT_ROUTES = new Set(['log', 'food', 'supplements', 'micros'])
 const RELAX_DIRECT_ROUTES = new Set(['dash', 'ausbildung', 'atem', 'stats', 'physio', 'catalog'])
@@ -79,6 +78,11 @@ function readHashState() {
   }
 
   if (mainTab === 'game' && second === 'door') return { tab: 'game', subTab: third ? `door/${third}` : 'door/potential', date: null }
+  // tab 'hub' rendert die Shell nicht. Der sichtbare Hub ist home + subTab hub,
+  // wie #hub und navigate('hub').
+  if (STORE_BUILD && (mainTab === 'inbox' || mainTab === 'coach')) {
+    return { tab: 'home', subTab: 'hub', date: null }
+  }
 
   const fitnessSessionDate = mainTab === 'fitness' && subTab === 'session' ? (date || localToday()) : date
   if (mainTab === 'hub') return { tab: 'home', subTab: 'hub', date: null }

@@ -145,7 +145,7 @@ eine eigene Zeile.
 | Fotos und Videos | Die Shell mountet `SixPackPromiseCard`, nicht `SelfiesScreen`. Der Selfie-Upload nach `sixpackSelfies/{uid}/photos` (JPEG-Data-URL) hängt an `6pack-app/SixPackApp.jsx` und ist im Release-Tab nicht eingehängt. Der Fuel-Scan bricht vor dem Netzaufruf ab. Das Manifest hat kein `CAMERA`. |
 | Audio, Dateien, Kontakte, SMS | Keine Berechtigung, kein Aufruf. |
 | Kalender | `journal-app` `src/lib/google/auth.js` kennt Kalender- und Tasks-Scopes. Im Produktbuild ist `allowPopupFallback` aus (`VITE_VOS_PRODUCT_BUILD !== "1"` ist falsch). Die Link-Functions `googleLink*` sind nicht nach `vitalos-prod` deployt. Ohne Token liest `gcal.js` keinen Kalender. |
-| Nachrichten | Kein Nutzerchat im Store-Pfad. Der Coach-Eintrag ist in der Shell auf Local-Mode, eine Alpha-E-Mail oder eine feste UID beschränkt. |
+| Nachrichten | Kein Nutzerchat im Store-Pfad. `#inbox`, `#fitness/inbox`, `#coach` und `#fitness/coach` öffnen dort keine Inbox und keinen Coach; der Coach-Button erscheint im Store-Build nicht. |
 | Finanzdaten | Kein Play-Billing und kein Zahlungs-SDK. Door/Game speichert Planstext, keine Kartendaten. |
 | App-Interaktionen, Absturzprotokolle, Diagnose | Kein `getAnalytics`, kein Crashlytics, kein Performance-Aufruf, kein Sentry in `prod/src` und in den Pins von Journal, Fitness und Fuel. `@firebase/analytics`, `@firebase/performance` und `web-vitals` stehen als Pakete in `prod/package.json`, weil das Firebase-Meta-Paket sie mitbringt. Der Release-Code importiert sie nicht. Ein ungenutztes Paket ist keine Erhebung. |
 | Installierte Apps | `prod/src/focus/usageStats.js` ist ein Adapter ohne eingebundenes Plugin. Im Android-Baum gibt es kein `PACKAGE_USAGE_STATS` und keine Kotlin-Quelle dafür. |
