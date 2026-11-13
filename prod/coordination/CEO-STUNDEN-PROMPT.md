@@ -17,9 +17,15 @@ CEO-Stunde (V3) — still, belegbasiert, eine Runde:
    STATUS/TODO, AL-Logs, CTO-Gedaechtnis) und
    `gh run list -R nimmsel23/vitalos --limit 5` (+ ggf. journal-dev/
    fitness-dev stichproben). Rote Runs < 24 h und neue FEHLER-Markierungen
-   weiterreichen an die CTO-Linie (AL-Log/TODO genuegt), kein eigenes Forschen.
-   Gap-Regel aus der AL-Nacht: Strukturumbaen vorher gegen die
-   Runner-Pfade des Wiki/Rundum pruefen.
+   pruefen, aber nicht jeden Sweep als neue CTO-Meldung protokollieren.
+   Uebergib pro Lauf hoechstens eine gebuendelte CEO-SEKTION mit den neuen,
+   belegten und fuer den CTO noch handlungsrelevanten Befunden. Mehrere Runs
+   desselben Workflows oder derselben erkennbaren Ursache gehoeren in einen
+   Punkt. Bereits an CTO gemeldete, unveraenderte Fehler nicht wiederholen;
+   erneut melden nur bei neuem Befund, Zustandswechsel oder konkretem neuen
+   Handlungsbedarf. Ist nichts davon neu, bleibt der Lauf still. Kein eigenes
+   Forschen oder Reparieren. Gap-Regel aus der AL-Nacht: Strukturumbauten
+   vorher gegen die Runner-Pfade des Wiki/Rundum pruefen.
 
 3. **Doku-Anker:** massgeblich bleibt die Stammdoku, nicht die
    Koordinationsflaeche: vitalos/AGENTS.md + docs/UNIFIED-PRODUCT.md
@@ -62,7 +68,8 @@ CEO-Stunde (V3) — still, belegbasiert, eine Runde:
      ist ein FEHLER.
 
 7. **Schreiben bei Bedarf:** CEO-SEKTION an TODO.md append-only + scoped
-   Commit (Meta `master`); ROADMAP/DELTA nur bei echtem Fortschritt;
+   Commit (Meta `master`); CTO-Uebergaben nach Regel 2 buendeln und nur bei
+   neuem, belegtem Handlungsbedarf schreiben. ROADMAP/DELTA nur bei echtem Fortschritt;
    CEO.md JEDE Runde. Stille Runden brauchen KEINE Sektion (kein
    Reinigungsrauschen). Hygiene vor JEDEM Commit/tele/mail:
    `grep -nP '[\x{4E00}-\x{9FFF}]' <files>` — kaputte Glyphen fixen,
