@@ -1,6 +1,6 @@
 # Dashboard — coach-dev
 
-Generated: 2026-11-12T23:47:47+00:00 · SHA: `1e84fe5` · Issue: [#33](https://github.com/nimmsel23/vitalos/issues/33) · Repo: `nimmsel23/coach-dev`
+Generated: 2026-11-13T00:11:23+00:00 · SHA: `c5f3a8e` · Issue: [#33](https://github.com/nimmsel23/vitalos/issues/33) · Repo: `nimmsel23/coach-dev`
 
 Refresh: `prod/coordination/ui/gen-boards.py` (+ optional Hook/Action).
 
@@ -9,16 +9,16 @@ Refresh: `prod/coordination/ui/gen-boards.py` (+ optional Hook/Action).
 ## 1. Auth & access (recent log hits)
 
 - auth-ish commits in last 15: **3**
+- `c5f3a8e feat(ci): Living Dashboard als GitHub Page, pages-docs.yml archiviert`
+- `2ccd6ac chore(ci): pages-docs.yml archivieren — Dashboard-Workflow baut docs/ mit`
 - `1e84fe5 fix(ci): Dependabot base=master→dev Retarget vor Squash (Org c1f9b6ce)`
 - `aa1b602 docs(coach): AssignPlan routes through pinned Plan TrainingPlans`
 - `c5087e4 refactor(coach): route legacy rotations through the pinned Plan workspace`
-- `e491a2b docs: auto-update RESULTS.md`
-- `b6448a7 fix(coach): preserve client profiles when discovery refresh fails`
 
 
 ## 2. Client scope
 
-- client/habit/insight hits: **4**
+- client/habit/insight hits: **2**
 
 
 ## 3. Inspector / notes
@@ -33,7 +33,7 @@ Refresh: `prod/coordination/ui/gen-boards.py` (+ optional Hook/Action).
 
 ## 5. CI gate
 
-- test/ci hits: **2**
+- test/ci hits: **4**
 
 
 ## 6. Open acceptance (RESULTS.md)
