@@ -1,3 +1,16 @@
+## 2026-11-13 — Lagezelt-UI für prod/coordination
+
+Die alte HTML-UI über den Koordinations-Markdowns wurde als „Lagezelt“ neu gebaut: statisches Dashboard ohne Abhängigkeiten, liest STATUS/TODO/ORG/PRODUCT/PRODUKT-BACKLOG live per `fetch`. Commit `c89d815` (lokal zuerst `4e58b6e`, inzwischen auf `origin/master`).
+
+- **`prod/coordination/ui/index.html`**: Fünf Ansichten (Lage, Rollen, Produkt, Logbuch, Dokumente) mit nummerierter Navigation, Hell-/Dunkel-Schema (System oder Taste `t`).
+- **`prod/coordination/ui/styles.css`**: Neues Theme (dunkel als Default), Mobil-Layout bei 390px geprüft (Sidebar-Überlauf behoben).
+- **`prod/coordination/ui/app.js`**: Hash-Routing, Tasten `1`–`5` und `/`, Neuladen bei Fokus und jede Minute. Lage = Rangfolge aus STATUS → OFFEN, Funkverkehr (neueste TODO/STATUS-Einträge mit Rollen-Chips), Lieferstatus P0–P2. Logbuch sortiert nach Datum (die alte UI zeigte als „letzte“ CEO-Sektionen die ältesten), mit Suche und Rollenfilter. Heading-Parser überspringt Code-Fences, Tabellen-Parser liest nur die erste Tabelle eines Abschnitts.
+- **`prod/coordination/README.md`**: Startbefehl jetzt `python3 -m http.server 8765 --bind 127.0.0.1` (STATUS.md ist lokal-privat und wäre sonst im Netzwerk lesbar); `ui/`-Zeile auf „Lagezelt“ aktualisiert. `ui/app.js.bak` gelöscht.
+- **Submodule-Pointer**: Der pre-commit-Hook hat `6pack-app` (`dbddbd2` → `20ced77`) und `skills-app` (`6073486` → `0395efa`) automatisch mit in den UI-Commit gelegt (Stand der Store-Agenten; Lockfile war synchron).
+- **Verifikation**: Screenshots aller Ansichten mit `thorium-browser-avx2 --headless` (Desktop 1440px, Mobil per 390px-iframe); Playwright-MCP findet kein Chrome unter `/opt/google/chrome/chrome`, `thorium-browser` steht nicht im PATH.
+
+---
+
 ## 2026-11-12 — AL C-015 AAB-SHA + Data-Safety-Stand
 
 - Signiertes `app-release.aab` belegt (6,0M, 10:52 CET): SHA-256 Datei

@@ -28,6 +28,11 @@ Stand CTO-Runde 2026-11-09.
 - [ ] C-001b Closed-Test-Track (`+cto`): Existenz-Fakt an CEO; Owner-Klickliste C-010.
 
 
+## 2026-11-13 (Lagezelt-UI prod/coordination)
+
+- [ ] Lagezelt-Parser (`prod/coordination/ui/app.js`) hängen an der Markdown-Struktur: `## OFFEN`/`IST-STAND` in STATUS.md, Rollentabelle in ORG.md, P0–P2 im PRODUKT-BACKLOG, datierte `## `-Abschnitte in TODO/STATUS. Bei Umbau dieser Dateien die UI mit prüfen (`python3 -m http.server 8765 --bind 127.0.0.1`, `/ui/`).
+- [ ] Playwright-MCP ist hier unbrauchbar (kein Chrome unter `/opt/google/chrome/chrome`); UI-Checks laufen über `thorium-browser-avx2 --headless`. Entweder Playwright auf einen vorhandenen Browser umstellen oder dabei bleiben — nicht entschieden.
+
 ## 2026-11-09 — Branch-Modell (nach Shell-Pin auf master)
 
 - [x] Meta: `.gitmodules` `branch=master`, Pins auf `origin/master`, Tooling/Doku nachgezogen.
@@ -227,3 +232,7 @@ Historische Review-Feststellungen aus den Oktober-Sessions wurden konsolidiert:
 - **CI/CD & Submodule:** Lockfile-Synchronisation und Standalone-Deploy-Pfade (vos-ship, vos-release) wurden etabliert; redundante Pre-Push-Deploys zugunsten von CI-Pipelines deaktiviert.
 
 - [ ] #21 Kontaktadresse mergen; deleteOwnAccount auf vitalos-prod (Owner-Terminal falls nötig)
+
+**Gemini-Review (potenzielle blinde Flecken, 2026-11-13):**
+*   **Fehlende explizite Verifikation des `fetch`-Verhaltens:** Obwohl der Server an `127.0.0.1` gebunden wurde, wird nicht explizit bestätigt, dass die UI die Markdown-Dateien auch tatsächlich erfolgreich von diesem lokalen Ursprung abruft (Screenshots prüfen primär das Layout).
+*   **Inkonsistente Portnummer beim Aufräumen:** Der `pkill`-Befehl versucht, einen Server auf Port `8766` zu beenden, obwohl der in der README und für die UI vorgesehene Port `8765` ist.
