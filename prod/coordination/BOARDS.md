@@ -5,7 +5,7 @@ Epic: https://github.com/nimmsel23/vitalos/issues/27
 
 Living Boards sind **keine** Ersatz-STATUS.md. Sie ergänzen die Org-Lage mit area-weiten, selbst-aktualisierenden Kategorien.
 
-Zuletzt generiert: 2026-11-13T14:34:37+00:00
+Zuletzt generiert: 2026-11-13T14:44:54+00:00
 
 ## Boards
 

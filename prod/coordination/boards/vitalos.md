@@ -1,6 +1,6 @@
 # Dashboard — vitalos Meta
 
-Generated: 2026-11-13T14:34:37+00:00 · SHA: `3a82f9d` · Issue: [#32](https://github.com/nimmsel23/vitalos/issues/32) · Repo: `nimmsel23/vitalos`
+Generated: 2026-11-13T14:44:54+00:00 · SHA: `629ee88` · Issue: [#32](https://github.com/nimmsel23/vitalos/issues/32) · Repo: `nimmsel23/vitalos`
 
 Refresh: `prod/coordination/ui/gen-boards.py` (+ optional Hook/Action).
 
@@ -8,15 +8,15 @@ Refresh: `prod/coordination/ui/gen-boards.py` (+ optional Hook/Action).
 
 ## 1. Submodule-Pins (Kurz)
 
-- `fitness-app: `3a82f9d``
-- `fuel-app: `3a82f9d``
-- `journal-app: `3a82f9d``
-- `habit-app: `3a82f9d``
-- `learn-app: `3a82f9d``
-- `relax-app: `3a82f9d``
-- `6pack-app: `3a82f9d``
-- `plan-app: `3a82f9d``
-- `skills-app: `3a82f9d``
+- `fitness-app: `629ee88``
+- `fuel-app: `629ee88``
+- `journal-app: `629ee88``
+- `habit-app: `629ee88``
+- `learn-app: `629ee88``
+- `relax-app: `629ee88``
+- `6pack-app: `629ee88``
+- `plan-app: `629ee88``
+- `skills-app: `629ee88``
 
 
 ## 2. Store / Legal Docs
@@ -46,6 +46,8 @@ Refresh: `prod/coordination/ui/gen-boards.py` (+ optional Hook/Action).
 
 ## 6. Release-Train / Ship-Log
 
+- `629ee88 coordination: Lagezelt-Sidebar sagt „Org-Dashboard“ statt „Org-Cockpit“ (Owner-Wunsch)`
+- `44214fa chore(coordination): refresh living boards [skip ci]`
 - `3a82f9d Merge remote-tracking branch 'origin/master'`
 - `1e28931 chore(submodules): bump skills,6pack,plan after release`
 - `8215ce0 chore(coordination): refresh living boards [skip ci]`
@@ -54,6 +56,4 @@ Refresh: `prod/coordination/ui/gen-boards.py` (+ optional Hook/Action).
 - `412f3c1 chore(pins): fitness/6pack/skills/plan auf master-HEAD (KW46) (#40)`
 - `704efde docs(pm): C-006 Test-APK vom 12.11. ohne Signatur-Beleg — Fertig-Kriterium vor Versand`
 - `a5bbc4e docs(ceo): verify CI findings and route structure doc drift`
-- `5a33e2a Merge remote-tracking branch 'origin/master'`
-- `0a0e615 chore(submodules): bump fuel,relax after release`
 
