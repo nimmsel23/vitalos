@@ -1,6 +1,6 @@
 # Dashboard — vitalos Meta
 
-Generated: 2026-11-12T23:47:47+00:00 · SHA: `129c059` · Issue: [#32](https://github.com/nimmsel23/vitalos/issues/32) · Repo: `nimmsel23/vitalos`
+Generated: 2026-11-13T00:11:23+00:00 · SHA: `9f64107` · Issue: [#32](https://github.com/nimmsel23/vitalos/issues/32) · Repo: `nimmsel23/vitalos`
 
 Refresh: `prod/coordination/ui/gen-boards.py` (+ optional Hook/Action).
 
@@ -8,15 +8,15 @@ Refresh: `prod/coordination/ui/gen-boards.py` (+ optional Hook/Action).
 
 ## 1. Submodule-Pins (Kurz)
 
-- `fitness-app: `129c059``
-- `fuel-app: `129c059``
-- `journal-app: `129c059``
-- `habit-app: `129c059``
-- `learn-app: `129c059``
-- `relax-app: `129c059``
-- `6pack-app: `129c059``
-- `plan-app: `129c059``
-- `skills-app: `129c059``
+- `fitness-app: `9f64107``
+- `fuel-app: `9f64107``
+- `journal-app: `9f64107``
+- `habit-app: `9f64107``
+- `learn-app: `9f64107``
+- `relax-app: `9f64107``
+- `6pack-app: `9f64107``
+- `plan-app: `9f64107``
+- `skills-app: `9f64107``
 
 
 ## 2. Store / Legal Docs
@@ -46,6 +46,9 @@ Refresh: `prod/coordination/ui/gen-boards.py` (+ optional Hook/Action).
 
 ## 6. Release-Train / Ship-Log
 
+- `9f64107 chore(portal): vos-portal = App-Links/APK-Downloads, Org-Dashboards getrennt`
+- `dd3b4ec docs: auto-update RESULTS.md NEXT.md (pre-compact)`
+- `4907fca chore(coordination): refresh living boards [skip ci]`
 - `129c059 docs(coordination): Boards-SSOT ist GitHub origin, lokaler Lauf nur Vorschau`
 - `426616c chore(coordination): refresh living boards [skip ci]`
 - `59b8862 fix(ci): living-boards klont Siblings ohne LFS-Smudge`
@@ -53,7 +56,4 @@ Refresh: `prod/coordination/ui/gen-boards.py` (+ optional Hook/Action).
 - `120f219 fix(ci): BOARDS_HOME per GITHUB_ENV setzen (runner.temp im Job-env unzulässig)`
 - `b9da22f fix(ci): living-boards checkt Sibling-Repos aus statt rekursiver Submodule`
 - `385bcee fix(shell): Fuel-Standalone-Link auf vos-fuel.web.app`
-- `cf9060d chore(submodules): bump skills,fitness,6pack,plan after release`
-- `e121c5a feat(coordination): Living Boards Generator aus Repo-Evidenz`
-- `9673723 feat(coordination): Lagezelt — Manifest, mehr Docs, Boards-Ansicht`
 
