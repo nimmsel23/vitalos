@@ -67,6 +67,6 @@ Wiederholst du in deinem Repo-Alltag von Hand einen Schritt, den ein Skript, ein
    gruen werden (Preview/Secret-Gate skippen ODER fleet-`SYNC_TOKEN`); danach AutoMerge-Squash
    = Merge-Beleg fuer `6a0eeebc`.
 2. **Hit** Org `c1f9b6ce` Port: journal-SSOT Retarget (`375e122`) in `automerge-pr.yml`
-   spiegeln (nur `dependabot/*`, base=master→dev).
+   spiegeln (nur `dependabot/*`, base=master→dev). **Erledigt 2026-11-13:** Fuel `eb99892` → origin/dev; YAML/Shell und isolierte gh-Prüffälle grün; echter PR-Retarget noch ausstehend.
 3. Feature-Freeze: nur Bugfix/CI/Docs/Deps; iOS-Login Live nicht ohne CEO.
 
