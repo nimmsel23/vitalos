@@ -1,6 +1,6 @@
 # Dashboard — coach-dev
 
-Generated: 2026-11-13T13:03:39+00:00 · SHA: `4dd1d66` · Issue: [#33](https://github.com/nimmsel23/vitalos/issues/33) · Repo: `nimmsel23/coach-dev`
+Generated: 2026-11-13T14:34:37+00:00 · SHA: `4dd1d66` · Issue: [#33](https://github.com/nimmsel23/vitalos/issues/33) · Repo: `nimmsel23/coach-dev`
 
 Refresh: `prod/coordination/ui/gen-boards.py` (+ optional Hook/Action).
 

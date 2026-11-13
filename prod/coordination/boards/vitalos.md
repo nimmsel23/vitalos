@@ -1,6 +1,6 @@
 # Dashboard — vitalos Meta
 
-Generated: 2026-11-13T13:03:39+00:00 · SHA: `9053bb0` · Issue: [#32](https://github.com/nimmsel23/vitalos/issues/32) · Repo: `nimmsel23/vitalos`
+Generated: 2026-11-13T14:34:37+00:00 · SHA: `3a82f9d` · Issue: [#32](https://github.com/nimmsel23/vitalos/issues/32) · Repo: `nimmsel23/vitalos`
 
 Refresh: `prod/coordination/ui/gen-boards.py` (+ optional Hook/Action).
 
@@ -8,15 +8,15 @@ Refresh: `prod/coordination/ui/gen-boards.py` (+ optional Hook/Action).
 
 ## 1. Submodule-Pins (Kurz)
 
-- `fitness-app: `9053bb0``
-- `fuel-app: `9053bb0``
-- `journal-app: `9053bb0``
-- `habit-app: `9053bb0``
-- `learn-app: `9053bb0``
-- `relax-app: `9053bb0``
-- `6pack-app: `9053bb0``
-- `plan-app: `9053bb0``
-- `skills-app: `9053bb0``
+- `fitness-app: `3a82f9d``
+- `fuel-app: `3a82f9d``
+- `journal-app: `3a82f9d``
+- `habit-app: `3a82f9d``
+- `learn-app: `3a82f9d``
+- `relax-app: `3a82f9d``
+- `6pack-app: `3a82f9d``
+- `plan-app: `3a82f9d``
+- `skills-app: `3a82f9d``
 
 
 ## 2. Store / Legal Docs
@@ -46,14 +46,14 @@ Refresh: `prod/coordination/ui/gen-boards.py` (+ optional Hook/Action).
 
 ## 6. Release-Train / Ship-Log
 
+- `3a82f9d Merge remote-tracking branch 'origin/master'`
+- `1e28931 chore(submodules): bump skills,6pack,plan after release`
+- `8215ce0 chore(coordination): refresh living boards [skip ci]`
 - `9053bb0 feat(coordination): Lagezelt verlinkt die anderen Dashboards, Rangfolge wieder sichtbar`
 - `23d0979 docs(pages): App-Link-Sammlung heißt jetzt apps.html, nicht Dev-Dashboard`
 - `412f3c1 chore(pins): fitness/6pack/skills/plan auf master-HEAD (KW46) (#40)`
+- `704efde docs(pm): C-006 Test-APK vom 12.11. ohne Signatur-Beleg — Fertig-Kriterium vor Versand`
+- `a5bbc4e docs(ceo): verify CI findings and route structure doc drift`
 - `5a33e2a Merge remote-tracking branch 'origin/master'`
 - `0a0e615 chore(submodules): bump fuel,relax after release`
-- `92751df docs(al): Tip-Rot Pages Docs 43335029283 als transienten Artefakt-Race belegt`
-- `fac1b6a docs(fuel): mark Dependabot retarget port complete`
-- `276449a chore(coordination): refresh living boards [skip ci]`
-- `9f64107 chore(portal): vos-portal = App-Links/APK-Downloads, Org-Dashboards getrennt`
-- `dd3b4ec docs: auto-update RESULTS.md NEXT.md (pre-compact)`
 
