@@ -1,12 +1,12 @@
 #!/usr/bin/env node
-// vos-portal — Dev-Dashboard + App-Registry der VitalOS-Hosting-Apps.
-// Keine Abhängigkeiten; schreibt docs/ bzw. portal/ (+ docs/dev-dashboard.html im Meta).
+// vos-portal — App-Links + APK-Downloads (KEIN Dashboard).
+// Keine Abhängigkeiten; schreibt docs/ bzw. portal/ (+ docs/dev-dashboard.html als Pages-Spiegel).
 //
 //   node scripts/vos-portal.mjs                  Repo = cwd → docs/apps.json + docs/apps.html
 //   node scripts/vos-portal.mjs --repo <dir>     dasselbe für ein anderes Repo
 //   node scripts/vos-portal.mjs --all [<root>]   alle Repos aus portal/repos.json (Default ~/dev):
 //                                                je Repo docs/apps.*; Meta: portal/{registry,index}.html
-//                                                + docs/dev-dashboard.html (GitHub-Pages-Spiegel)
+//                                                + docs/dev-dashboard.html (GitHub-Pages-Spiegel, Dateiname historisch)
 //   --check                                      schreibt nichts, Exit 1 wenn veraltet (CI / CTO-Runde)
 //
 // Quellen je Repo (nichts doppelt pflegen):
@@ -18,8 +18,8 @@
 // Overlay (kuratiert, CTO/PM):
 //   portal/dev-status.json  by site|id|repo → { authMode, loginGate, note, rot }
 //
-// Ownership: CTO hält Dashboard aktuell (`vos-portal --all` / `--check` in der Tagesrunde).
-// PM nutzt es als Produkt-Inventar (Links in PRODUCT.md / PRODUKT-BACKLOG).
+// Ownership: CTO hält App-Links + APK-Downloads aktuell (`vos-portal --all` / `--check`).
+// PM liest als Surface-Inventar (PRODUCT.md). Echte Org-Dashboards: vos-dev-dashboards.web.app
 // Skript-Kopie je Repo: scripts/portal.mjs (verteilt von ~/vitalos/bin/vos-portal).
 
 import fs from "node:fs";
@@ -168,7 +168,8 @@ function navLinks(extra = []) {
     ["Backlog", "https://github.com/nimmsel23/vitalos/blob/master/prod/coordination/PRODUKT-BACKLOG.md"],
     ["CTO", "https://github.com/nimmsel23/vitalos/blob/master/prod/coordination/CTO.md"],
     ["Meta Pages", "https://nimmsel23.github.io/vitalos/"],
-    ["Dev-Dashboard", "https://nimmsel23.github.io/vitalos/dev-dashboard.html"],
+    ["App-Links (Portal)", "https://nimmsel23.github.io/vitalos/dev-dashboard.html"],
+    ["Org-Dashboards", "https://vos-dev-dashboards.web.app"],
     ...extra,
   ];
   return `<nav class="links">${links.map(([label, href]) => `<a href="${esc(href)}" target="_blank" rel="noopener">${esc(label)}</a>`).join("")}</nav>`;
@@ -199,8 +200,8 @@ function emitRepo(dir, metaStatus = null) {
   write(
     path.join(dir, "docs/apps.html"),
     page(
-      `${r.repo} — Dev-Dashboard`,
-      `${r.apps.length} Hosting-Apps aus mini-app.json / miniapps.json / .firebaserc`,
+      `${r.repo} — App-Links`,
+      `${r.apps.length} Hosting-Apps / Surfaces (kein Dashboard — nur Links)`,
       sections,
       {
         extraNav: [["Repo Pages", r.pages], ["apps.json", "./apps.json"]],
@@ -231,8 +232,8 @@ if (flag("--all")) {
   const total = all.reduce((n, r) => n + r.apps.length, 0);
   const rotCount = all.reduce((n, r) => n + r.apps.filter((a) => a.rot).length, 0);
   const dash = page(
-    "VitalOS Dev-Dashboard",
-    `${total} Apps in ${all.length} Repos · ${rotCount} mit ROT-Vermerk · CTO hält aktuell (vos-portal --all), PM liest als Produkt-Inventar`,
+    "VitalOS App-Links",
+    `${total} Apps in ${all.length} Repos · ${rotCount} mit ROT-Vermerk · Portal = App-Links + APK-Downloads (kein Dashboard) · Org-Boards: vos-dev-dashboards.web.app`,
     all.map((r) => ({ title: `${r.repo} (${r.pages})`, apps: r.apps })),
     {
       withRepo: true,
