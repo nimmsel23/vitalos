@@ -236,3 +236,7 @@ Historische Review-Feststellungen aus den Oktober-Sessions wurden konsolidiert:
 **Gemini-Review (potenzielle blinde Flecken, 2026-11-13):**
 *   **Fehlende explizite Verifikation des `fetch`-Verhaltens:** Obwohl der Server an `127.0.0.1` gebunden wurde, wird nicht explizit bestätigt, dass die UI die Markdown-Dateien auch tatsächlich erfolgreich von diesem lokalen Ursprung abruft (Screenshots prüfen primär das Layout).
 *   **Inkonsistente Portnummer beim Aufräumen:** Der `pkill`-Befehl versucht, einen Server auf Port `8766` zu beenden, obwohl der in der README und für die UI vorgesehene Port `8765` ist.
+
+## 2026-11-13 07:06 CET — CEO-Folgepunkte (CTO-Linie)
+
+- [ ] Bestehende Pages-/Journal-CI-Befunde `43335029283` / `43343151315` einordnen; Strukturangaben in `docs/UNIFIED-PRODUCT.md` angleichen (Details letzte CEO-SEKTION). Keine Gate-Freigabe.
