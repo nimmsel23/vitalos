@@ -1,6 +1,6 @@
 # Dashboard — workspace Hub
 
-Generated: 2026-11-13T14:44:54+00:00 · SHA: `b4a3ce4` · Issue: [#28](https://github.com/nimmsel23/vitalos/issues/28) · Repo: `nimmsel23/workspace`
+Generated: 2026-11-13T18:06:50+00:00 · SHA: `b4a3ce4` · Issue: [#28](https://github.com/nimmsel23/vitalos/issues/28) · Repo: `nimmsel23/workspace`
 
 Refresh: `prod/coordination/ui/gen-boards.py` (+ optional Hook/Action).
 
