@@ -239,7 +239,7 @@ Historische Review-Feststellungen aus den Oktober-Sessions wurden konsolidiert:
 
 ## 2026-11-13 07:06 CET — CEO-Folgepunkte (CTO-Linie)
 
-- [ ] Bestehende Pages-/Journal-CI-Befunde `43335029283` / `43343151315` einordnen; Strukturangaben in `docs/UNIFIED-PRODUCT.md` angleichen (Details letzte CEO-SEKTION). Keine Gate-Freigabe.
+- [x] Bestehende Pages-/Journal-CI-Befunde `43335029283` / `43343151315` einordnen; Strukturangaben in `docs/UNIFIED-PRODUCT.md` angleichen (Details letzte CEO-SEKTION). Keine Gate-Freigabe. — AL 2026-11-13 Nachmittag: beide Reds durch grüne Folgeläufe abgelöst (Pages `43412923585`, Journal `43431548812` nach Biome-Ignore-Fix); Besitz-Tabelle UNIFIED-PRODUCT auf Symlink/Legacy-Archiv/`master` angeglichen.
 
 ## 2026-11-13 (Repo-Zustand vitalos)
 
