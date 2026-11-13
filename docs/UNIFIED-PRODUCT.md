@@ -9,10 +9,11 @@
 | `~/vitalos/*-app` | einmalige, gepinnte App-Integration für beide Shells |
 | `~/dev/*-dev` | eigentliche App-Entwicklung; teilweise Worktrees der App-Repos |
 | Root `pnpm-workspace.yaml`, `pnpm-lock.yaml` | gemeinsamer Workspace und Abhängigkeitsstand |
-| `~/vitalos-prod` | erhaltener Alt-Checkout; keine Quelle der neuen Produkt-Builds |
+| `~/vitalos-prod` | lokaler Symlink auf `~/vitalos/prod` (kein eigener Checkout) |
+| `~/vitalos-prod-legacy-2026-11-07` | archivierter Alt-Checkout; keine Quelle der Produkt-Builds |
 
-Der Haupt-Checkout enthält den Umbau auf `dev-product`. Die bestehende private
-`master`-Linie, ältere Dev-Arbeit und andere Worktrees bleiben erhalten.
+Der Haupt-Checkout arbeitet auf `master`. Der frühere Umbau-Zweig `dev-product`
+ist nach `master` gemergt (`2fe70f3`) und entfernt (siehe `AGENTS.md`).
 `prod/` wird weder ignoriert noch als eigenes Repository geführt. Eine Änderung
 am gemeinsamen App-Pin gilt für beide Varianten; Unterschiede im Verhalten
 werden ausdrücklich in Shell, Adaptern oder Produkt-Buildmodus umgesetzt.
@@ -205,8 +206,8 @@ Merge dieser alten Linie ist dafür nicht erforderlich. Die weitere Arbeit
 betrifft Abhängigkeiten, native Synchronisierung und Produktartefakte.
 Noch nicht dokumentierte Ergebnisse dürfen nicht als bereits erledigt gelten.
 
-Der Alt-Checkout und dortige Artefakte bleiben bis zur vollständigen Ablösung
-erhalten. Der systemd-Dienst `vitalos-thin-results` wurde am 2026-11-06 auf
+Der Alt-Checkout (`~/vitalos-prod-legacy-2026-11-07`) und dortige Artefakte
+bleiben bis zur vollständigen Ablösung erhalten. Der systemd-Dienst `vitalos-thin-results` wurde am 2026-11-06 auf
 das Meta-Repo umgestellt (Unit zeigt auf `/home/alpha/vitalos`, Skripte auf
 `prod/scripts/`, Meta-Wurzel wird aus der Skriptlage aufgelöst; Digest wie
 zuvor `docs/AUTO-DOC.md`, nur Doku-Commits, kein Push). Ein vollständiges
