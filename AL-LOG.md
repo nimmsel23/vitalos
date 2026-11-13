@@ -152,3 +152,32 @@ _Vom AL ausfüllen (knapp & belegbar, je 1–3 Zeilen, Commit-/PR-Referenzen sta
 - Erledigt: C-015 Repo-Anteil — `77c6fca` (+ TODO/NEXT/RESULTS `7ffb5a5`/`731c929`/`91430b2`); AAB SHA-256 `682c7ed6557743a3b816bf01434a709f17149f530fef6c8b6b2c22921723865b` (jarsigner OK); Klickliste #13 „AAB lokal bereit“; Org `5e9d0f4a` Tip-grün unberührt.
 - Offen/Weiter: Owner Play-Upload Punkt 13 + Firebase-Fingerprints; PR #37 legal / #23 privacy-copy / #22 CPO-docs; C-002 Emulator-Slot 2026-11-17; Live Smoke OK `43237271224`.
 - Blocker: C-002 kein adb-Gerät (Timer); Play-Console-Klicks bleiben Owner-Gate (kein Meta-Push).
+
+## 2026-11-13 (Freitag) — Abteilungsleiter-Lauf
+
+_Automatik (vos-al-log Vorlage 2026-11-13):_
+- Commits seit 2026-11-08: fac1b6a docs(fuel): mark Dependabot retarget port complete
+9f64107 chore(portal): vos-portal = App-Links/APK-Downloads, Org-Dashboards getrennt
+dd3b4ec docs: auto-update RESULTS.md NEXT.md (pre-compact)
+4907fca chore(coordination): refresh living boards [skip ci]
+129c059 docs(coordination): Boards-SSOT ist GitHub origin, lokaler Lauf nur Vorschau
+426616c chore(coordination): refresh living boards [skip ci]
+59b8862 fix(ci): living-boards klont Siblings ohne LFS-Smudge
+9acac9c chore(coordination): refresh living boards [skip ci]
+120f219 fix(ci): BOARDS_HOME per GITHUB_ENV setzen (runner.temp im Job-env unzulässig)
+b9da22f fix(ci): living-boards checkt Sibling-Repos aus statt rekursiver Submodule
+385bcee fix(shell): Fuel-Standalone-Link auf vos-fuel.web.app
+cf9060d chore(submodules): bump skills,fitness,6pack,plan after release
+e121c5a feat(coordination): Living Boards Generator aus Repo-Evidenz
+9673723 feat(coordination): Lagezelt — Manifest, mehr Docs, Boards-Ansicht
+c89d815 feat(coordination): Lagezelt-UI für die Koordinations-Docs
+- Offene PRs: (keine offenen PRs / gh nicht verfuegbar)
+- CI (letzte Läufe): completed	success	Live Smoke (VitalOS)	Live Smoke (VitalOS)	master	workflow_run	43335225083	31s	2026-11-13T00:12:41Z
+completed	success	chore(portal): vos-portal = App-Links/APK-Downloads, Org-Dashboards g…	living-boards	master	push	43335029427	14s	2026-11-13T00:11:14Z
+completed	success	chore(portal): vos-portal = App-Links/APK-Downloads, Org-Dashboards g…	Deploy VitalOS Shell	master	push	43335029301	1m23s	2026-11-13T00:11:14Z
+- Arbeitsbaum: sauber
+
+_Vom AL ausfüllen (knapp & belegbar, je 1–3 Zeilen, Commit-/PR-Referenzen statt Erzählung):_
+- Erledigt: Org `5e9d0f4a` Tip-Rot-Ursache gezogen — einziges Rot am Tip `fac1b6a`/`9f64107` ist `Pages Docs` `43335029283`: `deploy-pages@v4` „No artifacts named github-pages“, obwohl `upload-pages-artifact` grün + Artefakt gelistet → transienter GitHub-Artefakt-Race, Einzelfall (9 Vorläufe grün, Workflow unverändert). Shell `43335029301`/Product `43335029293`/Live Smoke `43335225083` grün.
+- Offen/Weiter: Rerun `43335029283` (CTO/Owner, 1 Klick; kein AL-Deploy) — bis dahin zeigt Pages `docs/DEV-DASHBOARD.md` vor `9f64107`; Pages-Abschaltung bleibt Owner-Gate (`378427eb`). C-002 Emulator-Slot 2026-11-17. Org-Annotation `5e9d0f4a` nicht gesetzt (Task-Write ohne Freigabe).
+- Blocker: C-002 kein adb-Gerät (Timer); sonst keine.
