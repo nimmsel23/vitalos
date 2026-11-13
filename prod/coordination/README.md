@@ -29,3 +29,11 @@ Laufzeit-Logs der Runner liegen **nicht** hier, sondern unter
 
 Historischer Pfad `prod/migration/unified-product/coordination/` ist nur noch
 ein Symlink hierher (Merge-Rest der Checkout-Konsolidierung Nov 2026).
+
+**Lagezelt als Dienst (seit 2026-11-13):** `lagezelt.service` (User-Unit aus `~/.dotfiles/config/systemd/user/`)
+serviert diesen Ordner dauerhaft auf `http://127.0.0.1:8765/ui/` — kein Handstart mehr nötig. Am Handy übers
+Tailnet: `https://ideapad.tail7a15d6.ts.net:8443/lagezelt/ui/` (`tailscale serve --https=8443 --set-path /lagezelt
+http://127.0.0.1:8765`, tailnet only, nicht gefunnelt). Bleibt bewusst lokal/privat (liest das gitignorierte
+`STATUS.md`); kein Firebase/Pages. Git und Deploys laufen über CI — das Lagezelt verlinkt dorthin (Sidebar
+„Dashboards & Git“: Org-Cockpit, Master/Coaching, CEO, Entwicklung, App-Links, offene PRs, CI). `gen-manifest.sh`
+listet `STATUS.md` immer, auch wenn CI das Manifest aus einem frischen Klon erzeugt.

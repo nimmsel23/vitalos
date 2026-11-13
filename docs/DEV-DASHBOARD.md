@@ -34,3 +34,9 @@ Der Dateiname `DEV-DASHBOARD.md` / `dev-dashboard.html` ist historisch — Inhal
 - `gate:hard` — Login-Mauer, Offline ohne Session tot
 - `gate:soft` / `local-first` — App ohne Login nutzbar, Cloud optional
 - `rot` — offener Betriebsblocker (Text im Overlay)
+
+## Umbenennung (Owner 2026-11-13)
+
+Es gibt genau **ein** Entwicklungsdashboard: https://nimmsel23.github.io/vitalos/ (`docs/index.html`, „VitalOS · Entwicklungsdashboard“, Quelle `Vitaltrainer/website/vitalos-dashboard`, siehe [PAGES-DASHBOARD.md](./PAGES-DASHBOARD.md)).
+Diese Seite hier ist die **App-Link- und APK-Sammlung** und heißt ab jetzt auch so: https://nimmsel23.github.io/vitalos/apps.html (Titel „VitalOS App-Links“).
+`docs/dev-dashboard.html` bleibt nur als Weiterleitung auf `apps.html`, damit alte Links funktionieren.

@@ -60,7 +60,9 @@ TMP="$(mktemp)"
            CEO-STRATEGY-DELTA.md CEO-ARCHITECTURE-STATUS.md CEO-DEPARTMENTS-KONZEPT.md \
            DESIGN-CLOUD-CTO.md P2-WEEKLY-BESTANDSAUFNAHME.md CEO-STUNDEN-PROMPT.md \
            VIBE-PROMPT.md README.md game/README.md; do
-    [ -f "$ROOT/$f" ] && map_doc "$ROOT/$f"
+    # STATUS.md ist gitignored (nur lokal); trotzdem immer listen, sonst fehlt die Rangfolge,
+    # wenn CI das Manifest aus einem frischen Klon erzeugt. Die UI meldet „nicht lesbar“, falls sie fehlt.
+    if [ -f "$ROOT/$f" ] || [ "$f" = STATUS.md ]; then map_doc "$ROOT/$f"; fi
   done
   # Game-Rituale + PM-Drafts + generierte Boards
   shopt -s nullglob
