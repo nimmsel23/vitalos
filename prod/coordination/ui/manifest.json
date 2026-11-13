@@ -1,6 +1,12 @@
 {
-  "generated": "2026-11-13T00:11:23+00:00",
+  "generated": "2026-11-13T14:02:55+01:00",
   "docs": [
+    {
+      "key": "status",
+      "path": "../STATUS.md",
+      "label": "Status",
+      "group": "Lage"
+    },
     {
       "key": "todo",
       "path": "../TODO.md",
@@ -148,13 +154,13 @@
     {
       "key": "board-business",
       "path": "../boards/business.md",
-      "label": "Board · business Vault",
+      "label": "Board · business",
       "group": "Boards"
     },
     {
       "key": "board-coach",
       "path": "../boards/coach.md",
-      "label": "Board · coach-dev",
+      "label": "Board · coach",
       "group": "Boards"
     },
     {
@@ -166,19 +172,19 @@
     {
       "key": "board-vitalos",
       "path": "../boards/vitalos.md",
-      "label": "Board · vitalos Meta",
+      "label": "Board · vitalos",
       "group": "Boards"
     },
     {
       "key": "board-vitaltrainer",
       "path": "../boards/vitaltrainer.md",
-      "label": "Board · VitalTraining",
+      "label": "Board · vitaltrainer",
       "group": "Boards"
     },
     {
       "key": "board-workspace",
       "path": "../boards/workspace.md",
-      "label": "Board · workspace Hub",
+      "label": "Board · workspace",
       "group": "Boards"
     }
   ]
