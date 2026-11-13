@@ -46,6 +46,22 @@ Copy für Tester nach „ja“:
 
 Play Closed-Test-Link später optional — nicht Versandblocker für Freitag.
 
+## PM-Abnahme 2026-11-13 — APK vor dem Teilen (Rot, Linie erledigt das)
+
+Die APK, die jetzt im Ordner liegt (Bau 12.11. 10:52, 8 151 754 B,
+SHA-256 `e160a2ffafa8374f4dc421d23b40020fc45f03f27513a8459af8354438a191a8`),
+ist nirgends mit Signatur belegt. Dokumentiert sind nur ältere Bauten.
+Risiko für Tester: Wurde sie ohne `ANDROID_USER_HOME=$HOME/.android`
+gebaut, trägt sie den nicht registrierten Debug-Schlüssel (`2C:E6:…`) —
+Installation klappt, **Google-Login scheitert**. Genau der zweite Schritt
+der Einladung.
+
+Fertig heißt (Linie/AL, nicht Owner): `apksigner verify --print-certs`
+auf genau diese Datei zeigt SHA-1 `8A:07:CC:FA:…:9E:9D` — oder neu bauen
+mit der Variable — und Hash + Signer hier eine Zeile drunter eintragen.
+Erst dann gilt der private Link als versandfertig. Ohne diese Zeile: nur
+Simon & Matthias einladen und dazusagen, dass Login evtl. noch hakt.
+
 ## Offen nur beim Owner (kein Org-Gate)
 
 - Finale Namensliste (Ziel 10–15, Start ok mit Simon & Matthias + Umfeld).
