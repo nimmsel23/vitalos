@@ -1,6 +1,6 @@
 # Dashboard — vitalos Meta
 
-Generated: 2026-11-13T18:06:50+00:00 · SHA: `c689176` · Issue: [#32](https://github.com/nimmsel23/vitalos/issues/32) · Repo: `nimmsel23/vitalos`
+Generated: 2026-11-14T17:59:10+00:00 · SHA: `8588ff6` · Issue: [#32](https://github.com/nimmsel23/vitalos/issues/32) · Repo: `nimmsel23/vitalos`
 
 Refresh: `prod/coordination/ui/gen-boards.py` (+ optional Hook/Action).
 
@@ -8,15 +8,15 @@ Refresh: `prod/coordination/ui/gen-boards.py` (+ optional Hook/Action).
 
 ## 1. Submodule-Pins (Kurz)
 
-- `fitness-app: `c689176``
-- `fuel-app: `c689176``
-- `journal-app: `c689176``
-- `habit-app: `c689176``
-- `learn-app: `c689176``
-- `relax-app: `c689176``
-- `6pack-app: `c689176``
-- `plan-app: `c689176``
-- `skills-app: `c689176``
+- `fitness-app: `8588ff6``
+- `fuel-app: `8588ff6``
+- `journal-app: `8588ff6``
+- `habit-app: `8588ff6``
+- `learn-app: `8588ff6``
+- `relax-app: `8588ff6``
+- `6pack-app: `8588ff6``
+- `plan-app: `8588ff6``
+- `skills-app: `8588ff6``
 
 
 ## 2. Store / Legal Docs
@@ -46,14 +46,14 @@ Refresh: `prod/coordination/ui/gen-boards.py` (+ optional Hook/Action).
 
 ## 6. Release-Train / Ship-Log
 
-- `c689176 coordination: Lagezelt-Sidebar verlinkt Dashboard-Index und Coaching-Seite getrennt`
-- `8f6b03a docs(pages): Entwicklungsdashboard aus Vitaltrainer aa6acf6`
-- `b30ed40 chore(coordination): refresh living boards [skip ci]`
-- `629ee88 coordination: Lagezelt-Sidebar sagt „Org-Dashboard“ statt „Org-Cockpit“ (Owner-Wunsch)`
-- `44214fa chore(coordination): refresh living boards [skip ci]`
-- `3a82f9d Merge remote-tracking branch 'origin/master'`
-- `1e28931 chore(submodules): bump skills,6pack,plan after release`
-- `8215ce0 chore(coordination): refresh living boards [skip ci]`
-- `9053bb0 feat(coordination): Lagezelt verlinkt die anderen Dashboards, Rangfolge wieder sichtbar`
-- `23d0979 docs(pages): App-Link-Sammlung heißt jetzt apps.html, nicht Dev-Dashboard`
+- `8588ff6 chore(submodules): 6pack/fuel/journal/plan/relax/skills auf master (AL-LOG.md entfernt)`
+- `9d14cf0 Merge remote-tracking branch 'origin/master'`
+- `a0dd1c6 clean up & pointer bumps`
+- `88ac3bf feat: unify app settings and embed 6Pack in Core Skills`
+- `60f959e feat(product): import native health profile after login`
+- `ddae86e chore(submodules): fitness-app auf fitness-dev master c3f9a6e4 (#42)`
+- `6b51bb3 Remove duplicate Fitness app shortcuts`
+- `2d08d9d Label experimental theme section simply`
+- `fc1814c Move themes under experimental settings`
+- `609aaf5 docs(al): Session 4af6f88b nachdokumentiert — PRs, Worktree-Leichen, Dependabot-Bestand`
 
