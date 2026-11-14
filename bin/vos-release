@@ -398,8 +398,11 @@ restore_symlinks_matching_incoming() {
 # Der Agent löst nur die Konflikte und committet den Merge — kein Push (macht das Skript danach).
 AGENT_TIMEOUT="${VOS_RELEASE_AGENT_TIMEOUT:-900}"
 resolve_with_agent() {
-    local module="$1" repo="$2" log pid spin='|/-\' i=0 elapsed=0
-    local prompt="In $repo läuft ein git merge (master → dev) mit Konflikten. Löse ALLE Konflikte so, dass die Absicht beider Seiten erhalten bleibt, dann 'git add' der Dateien und 'git commit --no-edit'. Nichts anderes ändern, nicht pushen, keine Branches wechseln. Keine Erklärungen, antworte am Ende nur mit OK."
+    local module="$1" repo="$2" log pid spin='|/-\' i=0 elapsed=0 conflicts allowed touched extra
+    conflicts="$("$REAL_GIT" -C "$repo" diff --name-only --diff-filter=U)"
+    # Erlaubt sind nur Dateien, die der Merge ohnehin anfasst (Konflikte + automatisch gemergte).
+    allowed="$( { "$REAL_GIT" -C "$repo" diff --name-only --cached HEAD; echo "$conflicts"; } | sort -u)"
+    local prompt="In $repo läuft ein git merge (master → dev) mit Konflikten in GENAU diesen Dateien: $(echo $conflicts). Löse nur diese Konflikte so, dass die Absicht beider Seiten erhalten bleibt, dann 'git add' dieser Dateien und 'git commit --no-edit'. Keine anderen Dateien ändern, nicht pushen, keine Branches wechseln. Keine Erklärungen, antworte am Ende nur mit OK."
     [[ "$DRY_RUN" -eq 1 ]] && { info "[dry-run] Agent würde Konflikte lösen"; return 0; }
     log="$(mktemp -t "vos-release-$module-agent.XXXX.log")"
     if command -v claude >/dev/null 2>&1; then
@@ -424,6 +427,13 @@ resolve_with_agent() {
     printf '\r%*s\r' 60 '' >&2
     if [[ -n "$("$REAL_GIT" -C "$repo" diff --name-only --diff-filter=U)" ]] || "$REAL_GIT" -C "$repo" rev-parse -q --verify MERGE_HEAD >/dev/null; then
         error "[$module] Agent fertig, aber Merge nicht abgeschlossen (Log: $log)"
+        return 1
+    fi
+    touched="$("$REAL_GIT" -C "$repo" diff --name-only HEAD^1 HEAD | sort -u)"
+    extra="$(comm -23 <(echo "$touched") <(echo "$allowed"))"
+    if [[ -n "$extra" ]]; then
+        error "[$module] Agent hat Dateien außerhalb des Merges geändert: $(echo $extra) (Log: $log)"
+        "$REAL_GIT" -C "$repo" reset -q --hard origin/dev
         return 1
     fi
     success "[$module] Merge-Konflikt gelöst"
@@ -455,8 +465,13 @@ promote_dev() {
             error "[$module] Merge-Konflikt $master → dev — Agent konnte ihn nicht lösen, bitte von Hand"
             return 1
         fi
+        # Vom Agenten gelöst: nur auf dev (Preview-CI läuft drüber), live erst beim nächsten Lauf per FF.
+        run "$REAL_GIT" -C "$repo" push --no-verify origin "HEAD:refs/heads/dev"
+        run "$REAL_GIT" -C "$repo" fetch -q origin dev "$master"
+        warn "[$module] Agent-Merge nur auf dev — geht beim nächsten vos-release live; Shell pinnt jetzt noch den alten $master"
+        return 0
     fi
-    run "$REAL_GIT" -C "$repo" push --no-verify origin "HEAD:refs/heads/dev" "HEAD:refs/heads/$master"
+    run "$REAL_GIT" -C "$repo" push --atomic --no-verify origin "HEAD:refs/heads/dev" "HEAD:refs/heads/$master"
     run "$REAL_GIT" -C "$repo" fetch -q origin dev "$master"
 }
 
