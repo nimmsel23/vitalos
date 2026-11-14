@@ -9,8 +9,8 @@ export default function AppearanceSection({
   return (
     <section className="bg-fit-bg2 p-6 rounded-3xl border border-fit-line space-y-6">
        <div>
-          <h4 className="text-sm font-black text-fit-ink uppercase tracking-widest">Theme-Experimente</h4>
-          <p className="mt-1 text-xs text-fit-dim">Experimentelle Themes aus der Fitness-App.</p>
+          <h4 className="text-sm font-black text-fit-ink uppercase tracking-widest">Themes</h4>
+          <p className="mt-1 text-xs text-fit-dim">Themes aus der Fitness-App.</p>
        </div>
 
        <div className="space-y-8">
