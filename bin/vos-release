@@ -126,8 +126,8 @@ Modules:
   der Fitness-Build nimmt die Nachbar-Checkouts). Jedes Modul wird einzeln ausgeliefert.
 
 Behavior:
-  - Weg: dev -> master (Auto-Promote / vos-release-pr, Standalone-Live) -> dieses Skript (Shell-Pin).
-  - Pro Modul: fetch origin/master, *-app detached auf diesen Tip setzen (kein Merge, kein Push ins Modul-Repo).
+  - Weg: origin/dev wird per Fast-Forward nach master geschoben (kein PR), dann Shell-Pin.
+  - Pro Modul: dev -> master (FF-Push), dann *-app detached auf origin/master setzen.
   - Am Ende: Submodul-Pointer im Meta-Repo committen und master pushen (deploy-shell.yml).
 
 Interactive:
@@ -394,6 +394,35 @@ restore_symlinks_matching_incoming() {
     done < <("$REAL_GIT" -C "$repo" diff --name-only)
 }
 
+# Owner 2026-11-14: alles, was auf dev gepusht ist, geht mit — kein PR. origin/dev wird per
+# Fast-Forward direkt nach origin/master geschoben. Hat master Commits, die dev fehlen,
+# wird master erst selbst in dev gemergt (nur ein echter Konflikt stoppt). --no-verify: Deploy macht die CI, nicht der Hook.
+promote_dev() {
+    local module="$1" repo="$2" master="$3" ahead
+    "$REAL_GIT" -C "$repo" fetch -q origin dev "$master" 2>/dev/null || { warn "[$module] kein origin/dev — nur Pin"; return 0; }
+    ahead="$("$REAL_GIT" -C "$repo" rev-list --count "origin/$master..origin/dev")"
+    if [[ "$ahead" -eq 0 ]]; then
+        info "[$module] dev ist schon auf $master"
+        return 0
+    fi
+    if "$REAL_GIT" -C "$repo" merge-base --is-ancestor "origin/$master" origin/dev; then
+        info "[$module] dev → $master: $ahead Commit(s) per Fast-Forward"
+        run "$REAL_GIT" -C "$repo" push --no-verify origin "origin/dev:refs/heads/$master"
+        return 0
+    fi
+    # master hat Commits, die dev fehlen: master selbst in dev mergen und weiter — ohne Rückfrage.
+    # Nur ein echter Merge-Konflikt stoppt das Modul.
+    info "[$module] $master hat Commits, die dev fehlen — merge $master in dev, dann dev → $master"
+    run "$REAL_GIT" -C "$repo" checkout -q --detach origin/dev
+    if ! run "$REAL_GIT" -C "$repo" merge --no-edit -m "merge($master): $master → dev (vos-release)" "origin/$master"; then
+        "$REAL_GIT" -C "$repo" merge --abort 2>/dev/null || true
+        error "[$module] Merge-Konflikt $master → dev — bitte von Hand lösen"
+        return 1
+    fi
+    run "$REAL_GIT" -C "$repo" push --no-verify origin "HEAD:refs/heads/dev" "HEAD:refs/heads/$master"
+    run "$REAL_GIT" -C "$repo" fetch -q origin dev "$master"
+}
+
 merge_module() {
     local module="$1"
     local submodule="${SUBMODULE_DIRS[$module]}"
@@ -412,6 +441,8 @@ merge_module() {
         info "[$module] pnpm-lock.yaml: reine link:-Umschreibung im Worktree wird vor dem Pin zurückgesetzt"
         run "$REAL_GIT" -C "$submodule" checkout -- pnpm-lock.yaml
     fi
+
+    promote_dev "$module" "$submodule" "$source_branch"
 
     run "$REAL_GIT" -C "$submodule" fetch origin "$source_branch"
     tip="$("$REAL_GIT" -C "$submodule" rev-parse --short "origin/$source_branch")"
