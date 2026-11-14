@@ -404,7 +404,7 @@ resolve_with_agent() {
     log="$(mktemp -t "vos-release-$module-agent.XXXX.log")"
     if command -v claude >/dev/null 2>&1; then
         info "[$module] Merge-Konflikt → claude löst ihn headless"
-        (cd "$repo" && timeout "$AGENT_TIMEOUT" claude -p "$prompt" --add-dir "$repo" \
+        (cd "$repo" && timeout "$AGENT_TIMEOUT" claude -p "$prompt" --model sonnet --add-dir "$repo" \
             --allowedTools "Read" "Edit" "Write" "Grep" "Glob" "Bash(git status*)" "Bash(git diff*)" "Bash(git add*)" "Bash(git commit*)" "Bash(git log*)" "Bash(git show*)" \
             --disallowedTools "Bash(git push*)" >"$log" 2>&1) &
     elif command -v codex >/dev/null 2>&1; then
