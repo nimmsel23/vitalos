@@ -9,6 +9,7 @@
     "predeploy": ["node scripts/ci-deploy-guard.mjs"],
     "ignore": ["firebase.json", "**/.*", "**/node_modules/**"],
     "redirects": [
+      { "source": "/@(6pack|sixpack)", "destination": "/#sixpack", "type": 302 },
       { "source": "/datenschutz", "destination": "https://vitalos.at/vitalos/datenschutz", "type": 301 },
       { "source": "/datenschutz/", "destination": "https://vitalos.at/vitalos/datenschutz", "type": 301 },
       { "source": "/datenschutz/**", "destination": "https://vitalos.at/vitalos/datenschutz", "type": 301 }
