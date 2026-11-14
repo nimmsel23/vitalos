@@ -44,9 +44,18 @@ export const NAV_ITEMS = [
 // Store-Builds lassen den Tab weg. #coach öffnet in readHashState den sichtbaren Hub.
 export const VALID_TABS = new Set(['hub', 'journal', ...NAV_ITEMS.map(i => i.id), ...(STORE_BUILD ? [] : ['coach'])])
 
+// 6Pack (`timer`) und Skills sind eigene Shell-Apps und duerfen innerhalb
+// der eingebetteten Fitness-App nicht nochmals als Unterbereiche erscheinen.
+const FITNESS_TOP_LEVEL_APPS = new Set(['timer', 'skills'])
+const SHELL_FITNESS_NAV_ITEMS = FITNESS_NAV_ITEMS.map((item) => (
+  item.id === 'session' && Array.isArray(item.sub)
+    ? { ...item, sub: item.sub.filter(({ id }) => !FITNESS_TOP_LEVEL_APPS.has(id)) }
+    : item
+))
+
 // Die Shell nutzt dieselbe Fitness-Subnav-Struktur wie fitness-app selbst,
-// damit neue Untertabs nicht erneut manuell nachgezogen werden muessen.
-const FITNESS_SIDEBAR_NAV = FITNESS_NAV_ITEMS
+// abgesehen von Unterbereichen, die als eigene Shell-Apps gerendert werden.
+const FITNESS_SIDEBAR_NAV = SHELL_FITNESS_NAV_ITEMS
   .filter(({ id }) => id === 'session' || id === 'review' || id === 'learn')
   .map((item) => ({
     ...item,
@@ -114,9 +123,9 @@ export const SUB_NAV = {
 // Zugehörigkeit. Jetzt in Gruppen mit Section-Label, Reihenfolge folgt dem
 // Workflow (jetzt trainieren -> danach auswerten -> zum Nachschlagen lernen).
 export function buildFitnessGateItems() {
-  const session = FITNESS_NAV_ITEMS.find((item) => item.id === 'session')
-  const review  = FITNESS_NAV_ITEMS.find((item) => item.id === 'review')
-  const learn   = FITNESS_NAV_ITEMS.find((item) => item.id === 'learn')
+  const session = SHELL_FITNESS_NAV_ITEMS.find((item) => item.id === 'session')
+  const review  = SHELL_FITNESS_NAV_ITEMS.find((item) => item.id === 'review')
+  const learn   = SHELL_FITNESS_NAV_ITEMS.find((item) => item.id === 'learn')
 
   return [
     {

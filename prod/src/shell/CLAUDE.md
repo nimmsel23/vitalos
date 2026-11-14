@@ -12,6 +12,10 @@ SOT für alles was vitalos-spezifisch ist. Nichts hier wird aus Sub-Repos kopier
 | `Hub.jsx` | Landing-Screen (Tab `'hub'`, Default) — Tempel-Kachelgrid mit Live-Stats pro Tempel, KEIN Fitness-Dashboard |
 | `themes.js` | Theme-Registry SSOT (`DARK_THEMES`/`LIGHT_THEMES`/`THEMES`, nur `bg`+`accent`) — jedes CSS-Theme aus `src/styles/themes/*.css` muss hier registriert sein, sonst im Picker unsichtbar |
 
+In der Shell sind 6Pack (`timer`) und Skills eigene Apps. `NavigationItems.js`
+filtert diese Einträge deshalb aus Fitness-Untermenüs und dem Fitness-Gate;
+die Standalone-Fitness-App behält ihre eigene Navigation.
+
 **Hub.jsx ist NICHT das Fitness-Dashboard** (Verwechslungsgefahr historisch:
 `shell/Dashboard.jsx` bündelte früher 1:1 `src/fitness/Dashboard.jsx` +
 `FuelDashboardWidget` und wurde nie wirklich gerendert — der `@view/dashboard`-
