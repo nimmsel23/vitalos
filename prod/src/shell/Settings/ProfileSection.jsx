@@ -4,6 +4,7 @@ import { useUser } from '../../contexts/UserContext';
 import { useShellSettings } from '../store.js';
 import { updateUserProfile } from '@db';
 import LegalLinks from '../LegalLinks.jsx';
+import HealthProfileImport from './HealthProfileImport.jsx';
 
 const inputCls = "w-full bg-fit-bg2 border border-fit-line rounded-xl px-4 py-3 text-sm font-bold text-fit-ink focus:border-fit-accent outline-none transition-colors";
 
@@ -72,6 +73,8 @@ export default function ProfileSection() {
       <div className="text-[10px] font-black uppercase tracking-widest text-fit-dim">{user.email}</div>
       </div>
       </div>
+
+      <HealthProfileImport key={user.uid} user={user} />
 
       {/* Name für den Coach (Volle Breite) */}
       <div>

@@ -19,6 +19,7 @@ import { localISO } from './shell/runtimeDate.js'
 import { getEditionEntryTab, getRuntimeEdition, getProductEdition, PRODUCT_EDITION } from './shell/productEdition.js'
 import EditionModeSwitch from './shell/EditionModeSwitch.jsx'
 import LegalLinks from './shell/LegalLinks.jsx'
+import HealthOnboarding from './shell/HealthOnboarding.jsx'
 
 const DAY_START = 8
 const DAY_END   = 20
@@ -240,6 +241,8 @@ export default function App() {
     return () => media.removeEventListener('change', syncViewport)
   }, [])
 
+  const [profileReadyUid, setProfileReadyUid] = useState(null)
+
   // Settings state — SSOT ist der Shell-Store (src/shell/store.js)
   const {
     theme, themeMode, circDark, circLight,
@@ -286,9 +289,11 @@ export default function App() {
   // Shell-Store übernehmen — SSOT bleibt der Store, Firestore ist Backup/Sync.
   useEffect(() => {
     if (!user?.uid || isLocalMode()) return
+    let active = true
+    setProfileReadyUid(null)
     registerShellDevice()
     getUserProfile(user.uid).then(p => {
-      if (!p) return
+      if (!active || !p) return
       const s = useShellSettings.getState()
       if (p.gender) s.setGender(p.gender)
       if (p.age) s.setAge(p.age)
@@ -299,7 +304,8 @@ export default function App() {
       if (p.cycleLength) s.setCycleLength(p.cycleLength)
       if (p.recentDays) s.setRecentDays(p.recentDays)
       if (p.coverageThreshold) s.setCoverageThreshold(p.coverageThreshold)
-    }).catch(() => {})
+    }).catch(() => {}).finally(() => { if (active) setProfileReadyUid(user.uid) })
+    return () => { active = false }
   }, [user])
 
   const setFuelSetting = useFuelStore(s => s.setSetting)
@@ -728,6 +734,7 @@ export default function App() {
         )}
 
         <div className={`flex-1 min-w-0 transition-all duration-500 ease-in-out ${showSidebar ? (sidebarPinned ? 'lg:ml-[304px]' : 'lg:ml-[108px]') : ''}`}>
+        {user?.uid && profileReadyUid === user.uid && <HealthOnboarding key={user.uid} user={user} />}
         {showObserveNavigation && <ObserveNavigation tab={tab} edition={edition} navigate={navigate} />}
         {PRODUCT_EDITION.id === 'store' && showShellHeader && <div className="mx-4 mt-2 flex justify-end"><EditionModeSwitch edition={edition} onChange={setEdition} /></div>}
         {isDesktopViewport ? (

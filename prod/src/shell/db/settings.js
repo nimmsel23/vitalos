@@ -4,7 +4,7 @@
  * Shell-eigen: users/{uid} und fitness/{uid}/settings/push
  */
 
-import { doc, getDoc, setDoc, serverTimestamp } from "firebase/firestore";
+import { doc, getDoc, setDoc, writeBatch, serverTimestamp } from "firebase/firestore";
 import { db } from "../../cloud/firebase.js";
 import { getUid } from "./fitness.js";
 
@@ -12,7 +12,7 @@ import { getUid } from "./fitness.js";
 // Gemeinsames Profil (app-übergreifend, fuel/fitness/vitalos): users/{uid}/meta/profile —
 // nur Felder mit gleicher Bedeutung in jeder App. Alles andere (Anamnese, split, …)
 // bleibt im Root-Dokument users/{uid}, das weiterhin mitgeschrieben wird.
-const SHARED_PROFILE_FIELDS = ["gender", "age", "heightCm", "weightKg", "chronicConditions", "medications"];
+const SHARED_PROFILE_FIELDS = ["gender", "age", "birthDate", "heightCm", "weightKg", "chronicConditions", "medications"];
 
 function pickShared(data) {
   const out = {};
@@ -45,17 +45,16 @@ export async function getUserProfile(uid) {
 
 export async function updateUserProfile(uid, data) {
   try {
-    await setDoc(doc(db, "users", uid), {
-      ...data,
-      updated_at: serverTimestamp(),
-    }, { merge: true });
+    if (!uid || uid !== getUid()) return false;
+    const batch = writeBatch(db);
+    batch.set(doc(db, "users", uid), { ...data, updated_at: serverTimestamp() }, { merge: true });
     const shared = pickShared(data);
     if (Object.keys(shared).length) {
-      await setDoc(doc(db, "users", uid, "meta", "profile"), {
-        ...shared,
-        updated_at: serverTimestamp(),
+      batch.set(doc(db, "users", uid, "meta", "profile"), {
+        ...shared, updated_at: serverTimestamp(),
       }, { merge: true });
     }
+    await batch.commit();
     return true;
   } catch (e) {
     console.error("updateUserProfile failed:", e);

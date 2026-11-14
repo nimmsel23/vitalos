@@ -45,6 +45,8 @@ jobs:
         run: node prod/scripts/check-shared-layout.mjs
       - name: Check product Firebase boundaries
         run: node prod/scripts/check-product-boundaries.mjs
+      - name: Test native health profile import
+        run: node --test prod/src/native/healthProfile.test.mjs
       - name: Record source manifest
         run: node prod/scripts/release-manifest.mjs > "$RUNNER_TEMP/product-source.json"
       - uses: actions/upload-artifact@v4

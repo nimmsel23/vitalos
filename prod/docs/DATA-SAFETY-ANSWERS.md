@@ -6,7 +6,7 @@ Closed-Test-Release. Dieses Dokument füllt die Console nicht aus, lädt kein
 Bundle hoch und legt kein Konto an.
 
 App: Android/Capacitor, `applicationId` `com.vitalos.app`, `versionCode` 1,
-`versionName` `0.1.0`, `minSdk` 24, `targetSdk` 36, `compileSdk` 36.
+`versionName` `0.1.0`, `minSdk` 26, `targetSdk` 36, `compileSdk` 36.
 Produktprojekt der Daten: Firebase `vitalos-prod`.
 Der native Web-Build ist `pnpm run product:build:native`
 (`VITE_VOS_PRODUCT_BUILD=1`, `VITE_VOS_EDITION=store`,
@@ -76,8 +76,20 @@ Gepinnte App-Stände, an denen die Schreibpfade gelesen wurden:
 Native Plugins im Android-Projekt (`prod/android/app/capacitor.build.gradle`,
 `prod/android/capacitor.settings.gradle`): `capacitor-android`,
 `@capacitor-firebase/authentication` 8.6.0, `@capacitor/local-notifications`
-8.3.1. Das Manifest `prod/android/app/src/main/AndroidManifest.xml` enthält
-`INTERNET` und `POST_NOTIFICATIONS`.
+8.3.1 sowie `@capgo/capacitor-health` 8.12.1. Das Manifest `prod/android/app/src/main/AndroidManifest.xml` enthält
+`INTERNET`, `POST_NOTIFICATIONS` sowie ausschließlich die Health-Rechte
+`READ_HEIGHT`, `READ_WEIGHT`, `READ_HEALTH_DATA_HISTORY`. Fremde Health-
+Berechtigungen aus dem Adapter werden per Manifest-Merger entfernt.
+
+Neu seit 2026-11-14 (noch kein Store-Upload): freiwilliger einmaliger
+Profilimport nach Login und in Einstellungen. Größe/Gewicht, auf iOS
+optional Geburtsdatum/Alter, werden erst nach Vorschau und Bestätigung
+in Firebase gespeichert. Herkunft und Messdatum liegen in
+`users/{uid}.healthProfileImport`. Kein Hintergrundsync, kein Health-Write.
+Die lokale Rationale liegt in `prod/public/privacypolicy.html`. Vor dem
+nächsten Store-Upload müssen die öffentliche Datenschutzerklärung und
+die Health-Connect-/Data-Safety-Angaben diesen Import abdecken.
+Details und Geräteabnahme: [NATIVE-HEALTH-PROFILE.md](NATIVE-HEALTH-PROFILE.md).
 
 Die Anmeldung, die der Button wirklich aufruft, ist der Re-Export aus
 `fitness-app` `src/lib/db/firestore/core.js`: E-Mail über
@@ -102,7 +114,7 @@ beim Benutzen eines Bereichs. Alle Zeilen: erhoben Ja, weitergegeben Nein,
 | Personenbezogene Daten → E-Mail-Adresse | Pflicht | App-Funktionalität, Kontoverwaltung | Firebase Authentication. Beide Anmeldewege führen eine E-Mail. `ProfileSection.jsx` schreibt die Adresse zusätzlich ins Feld `email` auf `users/{uid}`. |
 | Personenbezogene Daten → Nutzer-IDs | Pflicht | App-Funktionalität, Kontoverwaltung | Firebase-UID. Hängt an jedem Firestore-Dokument unter der UID. |
 | Personenbezogene Daten → Name | Optional | App-Funktionalität, Kontoverwaltung | Anzeigename aus dem Google-Konto oder aus dem Körperprofil (`users/{uid}`, Feld `displayName`). E-Mail-Kontozwang enthält keinen Namen. Die Profilbild-URL des Google-Kontos (`photoURL`) bleibt im Auth-Profil und wird nur angezeigt. |
-| Gesundheit und Fitness → Gesundheitsdaten | Optional | App-Funktionalität | Körperprofil in `users/{uid}` und `users/{uid}/meta/profile`: Geschlecht, Alter, Größe, Gewicht (`prod/src/shell/Settings/ProfileSection.jsx`, `prod/src/shell/db/settings.js`). Dieselbe Speicherung schreibt auf `users/{uid}` die Felder `email`, `split`, `defaultLocation`, `cycleLength`, `recentDays` und `coverageThreshold`. `defaultLocation` ist eine Zeichenkette aus den Einstellungen, keine Standortberechtigung. Ernährung und Supplements unter `nutrition/{uid}` und `supplements/{uid}`. |
+| Gesundheit und Fitness → Gesundheitsdaten | Optional | App-Funktionalität | Körperprofil in `users/{uid}` und `users/{uid}/meta/profile`: Geschlecht, Alter, optional Geburtsdatum, Größe, Gewicht (`prod/src/shell/Settings/ProfileSection.jsx`, `prod/src/shell/db/settings.js`). Dieselbe Speicherung schreibt auf `users/{uid}` die Felder `email`, `split`, `defaultLocation`, `cycleLength`, `recentDays` und `coverageThreshold`. `defaultLocation` ist eine Zeichenkette aus den Einstellungen, keine Standortberechtigung. Ernährung und Supplements unter `nutrition/{uid}` und `supplements/{uid}`. |
 | Gesundheit und Fitness → Fitnessdaten | Optional | App-Funktionalität | Training unter `fitness/{uid}` (Sessions, Plan), Gewohnheiten und Habit-Records, Relax-Sitzungen unter `relax/{uid}/sessions` (Datum, Einträge, Minuten), Skill-Ereignisse unter `skillsUsers/{uid}/events`, 6Pack-Programm über `getSixpackProgram` / `saveSixpackProgram`. |
 | App-Aktivitäten → Sonstige vom Nutzer erstellte Inhalte | Optional | App-Funktionalität | Journaltext unter `fitness/{uid}/journal` (`journal-app` `src/lib/db/journal.js`: `date`, `text`, `tags`). Door-, Game- und Voice-Einträge, Plan-Text, Freitextnotizen. Die Suche liest diese Einträge im Client und legt kein eigenes Suchprotokoll an. |
 | Geräte- oder andere IDs | Pflicht, sobald ein Konto benutzt wird | App-Funktionalität | Nach dem Login schreibt `registerShellDevice` (`prod/src/shell/db/settings.js`, Aufruf in `prod/src/App.jsx`) `users/{uid}/devices/{id}`: zufällige UUID plus grobes Label wie „Android · Chrome“, dazu `last_seen_at`. Das FCM-Token unter `fitness/{uid}/settings/push` entsteht nur, wenn die Person Push einschaltet (`prod/src/hooks/usePushNotifications.js`). |

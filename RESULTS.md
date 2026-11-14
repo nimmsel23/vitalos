@@ -1,3 +1,10 @@
+## 2026-11-14 — Native Health-Profilübernahme
+
+- Produkt-Shell: freiwilliger Import nach Login, wiederholbar im Körperprofil; Vorschau mit Messdatum, Verwerfen/Überspringen und explizite Cloud-Bestätigung. Fehlende Werte überschreiben nichts. Android Health Connect: Größe/Gewicht; iOS HealthKit: zusätzlich optional Geburtsdatum/Alter in einer Freigabe. Keine Schritte, Health-Schreibrechte oder laufende Synchronisierung.
+- Nativer Adapter 8.12.1 im gemeinsamen Lockfile; Android-Berechtigungen auf READ_HEIGHT/WEIGHT/HISTORY begrenzt, minSdk 26. iOS-Bridge, HealthKit-Entitlement/Capability und lokale Datenschutz-Rationale eingebunden. Profil-/Shared-Profile-Speicherung atomar mit UID-Prüfung; veraltete Cloud-Hydration nach Accountwechsel verworfen.
+- Prüfung: 7 Importtests + 8 bestehende Legal-Tests PASS; UI-/Persistenz-Smokes mit gemockten Bridges (390px, Vorschau ohne Write, Verwerfen, Fehler/Retry, UID/Batch) PASS; Produkt-Web-Build, Firebase-Isolation, Capacitor-Sync beider Plattformen und Android assembleDebug PASS. Zusammengeführtes Manifest enthält genau die drei vorgesehenen Health-READ-Rechte. Importtests in Produkt-CI aufgenommen.
+- Grenze: strikter Shared-Layout-Check scheitert am bereits abweichenden relax-app-Gitlink; mehrere fremde App-Checkouts/Koordinationsdateien sind dirty. Buildbeleg gilt für aktuellen Arbeitsbaum, nicht für ausschließlich gepinnte Apps. Fremde Pointer bleiben unverändert. Kein Gerät angeschlossen; kein echter Health-/Cloud-Roundtrip, kein Xcode-Build, kein Upload/Push/Deploy. Details: prod/docs/NATIVE-HEALTH-PROFILE.md.
+
 ## 2026-11-14 — AL: Session 4af6f88b nachdokumentiert (Worktrees/Branches/PRs/Dependabot)
 
 - PRs: 0 offen; #23/#38 merged 2026-11-12 22:12, #22 closed. Meta-Tip-CI grün (`43498191100` Shell, `43498190998` Product, `43498445520` Smoke).

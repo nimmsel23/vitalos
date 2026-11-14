@@ -240,3 +240,13 @@ Fehlende Nachweise bleiben offen, auch wenn ein früherer Teilschritt grün war.
 
 Die externen Seiten wurden für diese reine Doku-Überarbeitung nicht neu geprüft.
 Der historische Plan bleibt als datierte Entscheidungsgrundlage erhalten.
+
+
+## 2026-11-14: nativer Profilimport aus Health
+
+[Native Health Profile](NATIVE-HEALTH-PROFILE.md): Größe/Gewicht, auf iOS
+optional Geburtsdatum/Alter, nach Login und erneut im Körperprofil.
+Android minSdk jetzt 26; nur Health-READ_HEIGHT/WEIGHT/HISTORY, kein Write.
+Entitlements und Rationale sind vorbereitet. Vor nächstem Upload die
+Health-Erklärungen/öffentliche Datenschutzseite und Buildnummern nachziehen.
+Geräte-Roundtrip und Xcode-Build sind eigene, noch offene Nachweise.
