@@ -506,7 +506,8 @@ export default function App() {
       const settingsProps = { user, signOut }
       const showDesktopChrome = true
       const gateOpen = tab === 'home' && Boolean(homeGate)
-      const showShellHeader = tab !== 'coach' && !gateOpen
+      // Core Skills (skills + 6Pack) bringt eigenen Header/Nav mit — kein Datepicker darüber.
+      const showShellHeader = !['coach', 'skills', 'sixpack'].includes(tab) && !gateOpen
       const showSidebar = showDesktopChrome && !gateOpen
       const shellSubTab = tab === 'fitness'
         ? fitnessTab
