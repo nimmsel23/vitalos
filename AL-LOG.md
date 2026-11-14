@@ -186,3 +186,33 @@ _Nachlauf ~15:45 (Claude):_
 - Erledigt: CEO-Folgepunkt 13.11. 07:06 — Pages `43335029283` abgelöst durch `43412923585` grün (Rerun obsolet); Journal `43343151315` abgelöst durch `43431548812` grün (Biome-Ignore-Fix journal-dev). `docs/UNIFIED-PRODUCT.md` Besitz: Symlink/Legacy-Archiv/`master` statt Alt-Checkout/`dev-product`.
 - Offen/Weiter: Org `5e9d0f4a` aus AL-Sicht schließbar (Tip grün, beide Reds erledigt) → CTO. Lokal 1/1 divergiert vs `origin/master` (`44214fa`) — Merge/Push = Owner. C-002 Slot 2026-11-17.
 - Blocker: C-002 kein adb-Gerät (Timer); sonst keine.
+
+## 2026-11-14 (Samstag) — Abteilungsleiter-Lauf
+
+_Automatik (vos-al-log Vorlage 2026-11-14):_
+- Commits seit 2026-11-08: 3e346a8 docs(ceo): bundle CTO CI handoffs
+9d83927 docs(unified-product): Besitz-Abschnitt auf Symlink/master angeglichen; AL CI-Reds eingeordnet
+2c36746 docs: auto-update NEXT.md
+db4b6a6 docs: auto-update NEXT.md (pre-compact)
+3a82f9d Merge remote-tracking branch 'origin/master'
+1e28931 chore(submodules): bump skills,6pack,plan after release
+8215ce0 chore(coordination): refresh living boards [skip ci]
+9053bb0 feat(coordination): Lagezelt verlinkt die anderen Dashboards, Rangfolge wieder sichtbar
+23d0979 docs(pages): App-Link-Sammlung heißt jetzt apps.html, nicht Dev-Dashboard
+412f3c1 chore(pins): fitness/6pack/skills/plan auf master-HEAD (KW46) (#40)
+704efde docs(pm): C-006 Test-APK vom 12.11. ohne Signatur-Beleg — Fertig-Kriterium vor Versand
+a5bbc4e docs(ceo): verify CI findings and route structure doc drift
+5a33e2a Merge remote-tracking branch 'origin/master'
+0a0e615 chore(submodules): bump fuel,relax after release
+92751df docs(al): Tip-Rot Pages Docs 43335029283 als transienten Artefakt-Race belegt
+- Offene PRs: (keine offenen PRs / gh nicht verfuegbar)
+- CI (letzte Läufe): completed	success	Live Smoke (VitalOS)	Live Smoke (VitalOS)	master	workflow_run	43498445520	35s	2026-11-13T20:06:27Z
+completed	success	ci: Gitlink-Bumps lösen Product-Check aus (#41)	Deploy VitalOS Shell	master	push	43498191100	1m30s	2026-11-13T20:04:52Z
+completed	success	ci: Gitlink-Bumps lösen Product-Check aus (#41)	Product shared-source preparation	master	push	43498190998	1m29s	2026-11-13T20:04:52Z
+- Arbeitsbaum: 1 uncommittete Pfade
+
+_Vom AL ausfüllen (knapp & belegbar, je 1–3 Zeilen, Commit-/PR-Referenzen statt Erzählung):_
+- Erledigt: NEXT-Punkt Session 4af6f88b nachdokumentiert (NEXT/RESULTS): 0 offene PRs (#23/#38 merged, #22 closed); 6 verwaiste, saubere Worktrees (`/tmp/pr-merge-vitalos-{22,23,38}`, `scratchpad/vitalos-{apps,master,zelt}`); Dependabot 43 offen (10 high). Tip-CI grün (`43498191100`/`43498190998`/`43498445520`).
+- Offen/Weiter: CEO-Go für Worktree-Bereinigung der 6 Leichen und für Branch-Archiv (`codex/coach-unread-index`, `feat/vos-ship-functions`). CTO: Dependabot vite/zod/`prod/functions`-Lock. Org `5e9d0f4a` schließbar (CTO). Lokal 4 voraus / 7 hinterher vs `origin/master` → Owner.
+- Blocker: C-002 kein adb-Gerät (Slot 2026-11-17); sonst keine.
+AUTOMATION: Worktree-Leichen nach PR-Merge von Hand suchen — `vos-overview` um Worktree-Liste mit PR-Status (merged/closed + sauber) ergänzen — ~10 Min/Woche.
