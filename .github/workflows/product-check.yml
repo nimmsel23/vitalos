@@ -6,6 +6,13 @@ on:
     branches: [master]
     paths:
       - 'prod/**'
+      # Pin-Bumps (Gitlinks) lösen den Product-Check mit aus — reine
+      # Submodule-Änderungen landen sonst ungetestet auf master.
+      - 'fitness-app'
+      - '6pack-app'
+      - 'skills-app'
+      - 'plan-app'
+      - 'fuel-app'
       - '.github/workflows/product-check.yml'
       - '.github/workflows/deploy-product-hosting.yml'
       - 'pnpm-lock.yaml'

@@ -1,6 +1,6 @@
 # Dashboard — coach-dev
 
-Generated: 2026-11-13T13:03:39+00:00 · SHA: `4dd1d66` · Issue: [#33](https://github.com/nimmsel23/vitalos/issues/33) · Repo: `nimmsel23/coach-dev`
+Generated: 2026-11-13T18:06:50+00:00 · SHA: `6ab48cf` · Issue: [#33](https://github.com/nimmsel23/vitalos/issues/33) · Repo: `nimmsel23/coach-dev`
 
 Refresh: `prod/coordination/ui/gen-boards.py` (+ optional Hook/Action).
 
@@ -9,11 +9,11 @@ Refresh: `prod/coordination/ui/gen-boards.py` (+ optional Hook/Action).
 ## 1. Auth & access (recent log hits)
 
 - auth-ish commits in last 15: **0**
+- `6ab48cf „Cockpit“ heißt jetzt durchgehend „Dashboard“ (Owner-Wunsch)`
 - `4dd1d66 docs(server): Org-Cockpit-API /api/org (Routen, Ablage, Laptop-/Tailnet-Zugang, Schutz)`
 - `2d790cb fix(api): /api/org erkennt Tailnet-Absender hinter tailscale serve`
 - `589f08e feat(api): /api/org übers Tailnet für Owner-Konten`
 - `bef9804 feat(api): /api/org für das Org-Cockpit (nur lokal, Antworten nach workspace)`
-- `d5a6879 docs: auto-update RESULTS.md NEXT.md (pre-compact)`
 
 
 ## 2. Client scope
