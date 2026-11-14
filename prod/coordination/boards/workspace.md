@@ -1,6 +1,6 @@
 # Dashboard — workspace Hub
 
-Generated: 2026-11-13T18:06:50+00:00 · SHA: `b4a3ce4` · Issue: [#28](https://github.com/nimmsel23/vitalos/issues/28) · Repo: `nimmsel23/workspace`
+Generated: 2026-11-14T17:59:10+00:00 · SHA: `5f8733a` · Issue: [#28](https://github.com/nimmsel23/vitalos/issues/28) · Repo: `nimmsel23/workspace`
 
 Refresh: `prod/coordination/ui/gen-boards.py` (+ optional Hook/Action).
 
@@ -37,7 +37,7 @@ Berichte (ohne Vorlage): **0** — keine.
 ## master...origin/master
 ```
 
-SHA `b4a3ce4`
+SHA `5f8733a`
 
 - `creator: ok → /home/runner/work/_temp/siblings/creator`
 - `vitaltrainer: ok → /home/runner/work/_temp/siblings/vitaltrainer`
