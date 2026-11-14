@@ -394,46 +394,39 @@ restore_symlinks_matching_incoming() {
     done < <("$REAL_GIT" -C "$repo" diff --name-only)
 }
 
-# Merge-Konflikt: verfügbaren Agenten headless starten (claude, sonst codex), währenddessen Spinner.
+# Merge-Konflikt: verfügbaren Agenten headless starten (claude, sonst codex), stumm, nur Spinner + [OK].
 # Der Agent löst nur die Konflikte und committet den Merge — kein Push (macht das Skript danach).
 AGENT_TIMEOUT="${VOS_RELEASE_AGENT_TIMEOUT:-900}"
 resolve_with_agent() {
-    local module="$1" repo="$2" log pid spin='|/-\' i=0 elapsed=0 shown=0 size
-    local prompt="In $repo läuft ein git merge (master → dev) mit Konflikten. Löse ALLE Konflikte so, dass die Absicht beider Seiten erhalten bleibt, dann 'git add' der Dateien und 'git commit --no-edit'. Nichts anderes ändern, nicht pushen, keine Branches wechseln."
+    local module="$1" repo="$2" log pid spin='|/-\' i=0 elapsed=0
+    local prompt="In $repo läuft ein git merge (master → dev) mit Konflikten. Löse ALLE Konflikte so, dass die Absicht beider Seiten erhalten bleibt, dann 'git add' der Dateien und 'git commit --no-edit'. Nichts anderes ändern, nicht pushen, keine Branches wechseln. Keine Erklärungen, antworte am Ende nur mit OK."
     [[ "$DRY_RUN" -eq 1 ]] && { info "[dry-run] Agent würde Konflikte lösen"; return 0; }
     log="$(mktemp -t "vos-release-$module-agent.XXXX.log")"
     if command -v claude >/dev/null 2>&1; then
-        info "[$module] Merge-Konflikt → starte claude headless (Log: $log)"
+        info "[$module] Merge-Konflikt → claude löst ihn headless"
         (cd "$repo" && timeout "$AGENT_TIMEOUT" claude -p "$prompt" --add-dir "$repo" \
             --allowedTools "Read" "Edit" "Write" "Grep" "Glob" "Bash(git status*)" "Bash(git diff*)" "Bash(git add*)" "Bash(git commit*)" "Bash(git log*)" "Bash(git show*)" \
             --disallowedTools "Bash(git push*)" >"$log" 2>&1) &
     elif command -v codex >/dev/null 2>&1; then
-        info "[$module] Merge-Konflikt → starte codex headless (Log: $log)"
+        info "[$module] Merge-Konflikt → codex löst ihn headless"
         (timeout "$AGENT_TIMEOUT" codex exec --full-auto -C "$repo" "$prompt" >"$log" 2>&1) &
     else
         error "[$module] kein Agent (claude/codex) verfügbar"
         return 1
     fi
     pid=$!
-    # Agent-Ausgabe live ins Terminal, Spinner immer in der letzten Zeile.
+    # Agent bleibt stumm (Ausgabe nur ins Log), im Terminal nur der Spinner.
     while kill -0 "$pid" 2>/dev/null; do
-        size=$(stat -c %s "$log" 2>/dev/null || echo 0)
-        if (( size > shown )); then
-            printf '\r%*s\r' 60 '' >&2
-            tail -c +$((shown + 1)) "$log" | head -c $((size - shown)) >&2
-            shown=$size
-        fi
         printf '\r[%s] Agent löst Konflikte … %ds ' "${spin:i++%4:1}" "$elapsed" >&2
         sleep 1; elapsed=$((elapsed + 1))
     done
     wait "$pid" || true
     printf '\r%*s\r' 60 '' >&2
-    tail -c +$((shown + 1)) "$log" >&2
     if [[ -n "$("$REAL_GIT" -C "$repo" diff --name-only --diff-filter=U)" ]] || "$REAL_GIT" -C "$repo" rev-parse -q --verify MERGE_HEAD >/dev/null; then
         error "[$module] Agent fertig, aber Merge nicht abgeschlossen (Log: $log)"
         return 1
     fi
-    success "[$module] Agent hat den Merge gelöst ($("$REAL_GIT" -C "$repo" log --oneline -1))"
+    success "[$module] Merge-Konflikt gelöst"
 }
 
 # Owner 2026-11-14: alles, was auf dev gepusht ist, geht mit — kein PR. origin/dev wird per
