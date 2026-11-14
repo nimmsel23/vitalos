@@ -66,7 +66,6 @@ Aufnahme macht ihre Empfehlungen nicht automatisch zu Org-Regeln.
 | CTO-Skill | `~/.vos/cto/.skills/vitalos-cto` | `cto-run` 08:15; `~/product-engineering`. |
 | CPO-Skill | `vitalos-cpo` (+ desk) | Was/Discovery; `~/pm-skills`, `~/pm-brain`. |
 | PM-Skill | `vitalos-pm` (+ desk); `moc-pm.md` | 1 Move/Tag; Owner Freitag optional. |
-| AL | Repo-Guide; `vitalos-al` | 2×/Tag systemd. |
 | Oracle | `vitalos-oracle` | Door/Game/Tent — Werkzeug. |
 | Mentor | `~/.vos/mentor/README.md`; Skill `vitaltrainer-advisor` | NEU 2026-11-12: berät/unterweist Owner als Vitaltrainer/Solopreneur, Fr 09:30, 1 Mail/Woche (`mentor-run`). |
 | vos / WebApps | Perplexity & Co. | Basically vos; Output = Commit/`+org`. |
@@ -81,7 +80,7 @@ CTO-Lauf: `cto-run` 08:15. `ceo-run` :05 nur bei altem Heartbeat.
 | Claude / ChatGPT / Codex | Skills bei Bedarf; AL-Failover |
 | Perplexity / Grok / ChatGPT-Web / Claude-Web | **vos-Schicht** — Git, kein TW/Shell |
 
-Org = Laptop + Taskwarrior + Shell. vos/WebApps ≠ Org-Abteilung.
+Org = Cloud-Workspaces + GitHub + Taskwarrior, wo lokal nötig. Die Geschäftsrollen brauchen keinen dauerhaft belasteten Laptop-Agenten.
 
 Org-Rollen priorisieren ueber Taskwarrior-Urgency in der Org-DB (Tags
 `+ceo`/`+cpo`/`+cto`/…). Das ist **Agenten-Arbeit**, nicht Daniels **Fire
