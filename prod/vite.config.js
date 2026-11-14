@@ -3,7 +3,7 @@ import react from '@vitejs/plugin-react'
 import { vosChangelog } from './packages/mini-app-shell/vos-changelog-vite.mjs'
 import tailwindcss from 'tailwindcss'
 import { resolve, dirname, relative, isAbsolute, sep } from 'path'
-import { existsSync, statSync } from 'fs'
+import { existsSync, statSync, readFileSync } from 'fs'
 import { fileURLToPath } from 'url'
 import { crossAppAliases } from '@vos/cross-app-aliases'
 import { miniAppSubmodulePlugin } from '../fitness-app/vite-miniapp-submodules.mjs'
@@ -196,6 +196,12 @@ export default defineConfig(({ mode }) => {
       'import.meta.env.VITE_VOS_EDITION': JSON.stringify(productEdition),
     },
     plugins: [
+      { name: 'app-settings-messaging-workers', generateBundle() {
+        for (const [fileName, source] of [
+          ['sixpack-messaging-sw.js', resolve(SIXPACK_APP, 'public/sixpack-messaging-sw.js')],
+          ['journal-messaging-sw.js', resolve(JOURNAL_DEV, 'public/journal-messaging-sw.js')],
+        ]) this.emitFile({ type: 'asset', fileName, source: readFileSync(source) })
+      } },
       // Muss vor den Submodul-Resolvern laufen, damit Produkt-Firebase-Configs
       // auch dann umgeleitet werden, wenn ein nachfolgender Plugin-Hook sie zuerst sieht.
       firebaseRedirect,

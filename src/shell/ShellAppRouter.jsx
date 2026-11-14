@@ -1,6 +1,5 @@
 import FitnessApp from './FitnessApp.jsx'
-import SixPackApp from './SixPackApp.jsx'
-import SkillsApp from './SkillsApp.jsx'
+import CoreSkillsApp from '../../prod/src/shell/CoreSkillsApp.jsx'
 import FuelWrapper from './FuelWrapper.jsx'
 import HabitsApp from './HabitsApp.jsx'
 import DoorApp from './DoorApp.jsx'
@@ -22,8 +21,8 @@ export default function ShellAppRouter({ tab, fitnessProps, fuelTab, setFuelTab,
         </div>
       )}
       {tab === 'fitness' && <FitnessApp {...fitnessProps} user={user} />}
-      {tab === 'sixpack' && <SixPackApp user={user} route={sixpackRoute} onRouteChange={onSixpackRoute} onNavigate={navigate} />}
-      {tab === 'skills' && <SkillsApp user={user} route={skillsRoute} onRouteChange={onSkillsRoute} onNavigate={navigate} />}
+      {tab === 'sixpack' && <CoreSkillsApp user={user} initialRoute={`sixpack/${sixpackRoute}`} onRouteChange={next => next.startsWith('sixpack') ? onSixpackRoute?.(next.replace(/^sixpack\/?/, '')) : navigate('skills', next)} onNavigate={navigate} />}
+      {tab === 'skills' && <CoreSkillsApp user={user} initialRoute={skillsRoute} onRouteChange={onSkillsRoute} onNavigate={navigate} />}
       {tab === 'fuel' && FUEL_FRONTDOOR_KEYS.has(fuelTab) && <FuelFrontdoorScreen frontdoorKey={fuelTab} navigate={navigate} />}
       {tab === 'fuel' && !FUEL_FRONTDOOR_KEYS.has(fuelTab) && <FuelWrapper user={user} subTab={fuelTab} onSubTab={setFuelTab} onNavigateShell={navigate} embedded />}
       {tab === 'journal' && <JournalApp onOpenSession={openSession} onNavigateShell={navigate} runtimeDate={runtimeDate} onRuntimeDateChange={onRuntimeDateChange} />}

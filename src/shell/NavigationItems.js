@@ -13,8 +13,7 @@ import { NAV_ITEMS as FITNESS_NAV_ITEMS } from '@constants/NavigationItems.js'
 export const NAV_ITEMS = [
   { id: 'home',     label: 'Journal', Icon: NotebookPen },
   { id: 'fitness',  label: 'Fitness', Icon: Dumbbell, standaloneUrl: 'https://fitness-vos.web.app' },
-  { id: 'sixpack',  label: '6Pack',   Icon: Zap, standaloneUrl: 'https://vos-6pack.web.app' },
-  { id: 'skills',   label: 'Skills',  Icon: Trophy, standaloneUrl: 'https://vos-skills.web.app' },
+  { id: 'skills',   label: 'Core Skills',  Icon: Trophy, standaloneUrl: 'https://vos-skills.web.app' },
   { id: 'fuel',     label: 'Fuel',    Icon: Flame, standaloneUrl: 'https://vos-fuel.web.app' },
   { id: 'relax',    label: 'Relax',   Icon: MoonStar, standaloneUrl: 'https://relax-vos.web.app' },
   { id: 'habits',   label: 'Habits',  Icon: CheckSquare },
@@ -26,7 +25,7 @@ export const NAV_ITEMS = [
 // 'coach' ist absichtlich nicht in NAV_ITEMS (eigener, bedingt sichtbarer
 // Sidebar-Button außerhalb der Haupt-Nav-Schleife, siehe Sidebar.jsx) — muss
 // aber trotzdem als gültiger Tab gelten, sonst verwirft navigate() den Klick.
-export const VALID_TABS = new Set(['hub', 'journal', ...NAV_ITEMS.map(i => i.id), 'coach'])
+export const VALID_TABS = new Set(['hub', 'journal', 'sixpack', ...NAV_ITEMS.map(i => i.id), 'coach'])
 
 // Die Shell nutzt dieselbe Fitness-Subnav-Struktur wie fitness-app selbst,
 // damit neue Untertabs nicht erneut manuell nachgezogen werden muessen.

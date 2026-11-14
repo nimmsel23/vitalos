@@ -1,7 +1,6 @@
 import assert from 'node:assert/strict';
 import { spawnSync } from 'node:child_process';
 import { readFile } from 'node:fs/promises';
-import { existsSync } from 'node:fs';
 import test from 'node:test';
 import { fileURLToPath } from 'node:url';
 import { buildHashState, readHashState } from '../src/shell/hashState.js';
@@ -57,40 +56,28 @@ test('existing shell hashes keep their tabs', async () => {
   const nav = await readFile(new URL('../src/shell/NavigationItems.js', import.meta.url), 'utf8');
   const block = nav.slice(nav.indexOf('export const NAV_ITEMS'), nav.indexOf('export const VALID_TABS'));
   const ids = [...block.matchAll(/id:\s*'([^']+)'/g)].map((match) => match[1]);
-  assert.ok(ids.includes('skills') && ids.includes('sixpack'));
+  assert.ok(ids.includes('skills') && !ids.includes('sixpack'));
+  assert.equal(withHash('#sixpack/track', () => readHashState()).tab, 'sixpack');
+  for (const app of ['skills', 'sixpack', 'relax', 'journal', 'habits', 'plan', 'learn']) {
+    assert.equal(withHash(`#${app}/settings`, () => readHashState()).tab, 'settings');
+  }
   for (const id of ids) {
     const state = withHash(`#${id}`, () => readHashState());
     assert.equal(state.tab, id, `#${id}`);
   }
 });
 
-test('shell wrappers mount the embed entries and do not paint the document', async () => {
-  const sixpack = await readFile(new URL('../src/shell/SixPackApp.jsx', import.meta.url), 'utf8');
-  const skills = await readFile(new URL('../src/shell/SkillsApp.jsx', import.meta.url), 'utf8');
-  const vite = await readFile(new URL('../vite.config.js', import.meta.url), 'utf8');
-  const nav = await readFile(new URL('../src/shell/NavigationItems.js', import.meta.url), 'utf8');
-  const hub = await readFile(new URL('../src/shell/Hub.jsx', import.meta.url), 'utf8');
-  const more = await readFile(new URL('../src/shell/layout/MobileNav.jsx', import.meta.url), 'utf8');
-  for (const source of [sixpack, skills]) {
-    assert.doesNotMatch(source, /document\.documentElement/);
-    assert.doesNotMatch(source, /location\.hash\s*=/);
-    assert.doesNotMatch(source, /history\.(push|replace)State/);
-    assert.match(source, /shellSyncTargetRef/);
-    assert.match(source, /<ErrorBoundary>/);
-    assert.match(source, /onWorkoutComplete=\{onWorkoutComplete\}/);
-    assert.match(source, /uid=\{uid\}/);
+test('both shells mount Core Skills with both complete embeds and shared Setup', async () => {
+  const source = await readFile(new URL('../prod/src/shell/CoreSkillsApp.jsx', import.meta.url), 'utf8');
+  assert.doesNotMatch(source, /document\.documentElement|location\.hash\s*=|history\.(push|replace)State/);
+  for (const contract of ['SkillsEmbed', 'SixPackEmbed', 'PersistenceStatus', 'loadRemoteProgram={loadProgram}', 'saveRemoteProgram={saveProgram}', 'onWorkoutComplete={complete}', 'localReminders={nativeReminderDelivery}', 'data-theme="skills"', '<ErrorBoundary>']) assert.ok(source.includes(contract), contract);
+  const settings = await readFile(new URL('../src/shell/Settings/AppSettingsSections.jsx', import.meta.url), 'utf8');
+  for (const id of ['skills', 'fuel', 'journal', 'habits', 'relax']) assert.ok(settings.includes(`id="${id}"`), id);
+  for (const path of ['../src/shell/ShellAppRouter.jsx', '../prod/src/shell/ShellAppRouter.jsx']) {
+    const router = await readFile(new URL(path, import.meta.url), 'utf8');
+    assert.match(router, /tab === 'skills' && <CoreSkillsApp/);
+    assert.match(router, /tab === 'sixpack' && <CoreSkillsApp/);
   }
-  assert.match(sixpack, /SixPackEmbed/);
-  assert.match(sixpack, /firebaseApp=\{firebaseApp\}/);
-  assert.match(sixpack, /loadRemoteProgram=\{loadProgram\}/);
-  assert.match(sixpack, /onNavigate=\{onNavigate\}/);
-  assert.match(skills, /SkillsEmbed/);
-  assert.match(skills, /design=\{design\}/);
-  assert.match(skills, /onNavigate=\{onNavigate\}/);
-  assert.match(vite, /skills-app\/data\/cloud\.js|SKILLS_CLOUD/);
-  assert.match(nav, /id: 'sixpack'[\s\S]*standaloneUrl: 'https:\/\/vos-6pack\.web\.app'/);
-  assert.match(hub, /id: 'skills'/);
-  assert.match(more, /MORE_IDS = \[[^\]]*'skills'/);
 });
 
 function runNode(args) {
@@ -100,10 +87,6 @@ function runNode(args) {
   }
 }
 
-test('embedded 6Pack and Skills leave documentElement theme and hash alone', () => {
-  if (!existsSync(new URL('../6pack-app/sixpackData.generated.js', import.meta.url))) {
-    runNode(['6pack-app/build-data.mjs']);
-  }
-  runNode(['--test', '--test-force-exit', '6pack-app/scripts/test-embed.mjs']);
+test('embedded Skills leaves documentElement theme and hash alone', () => {
   runNode(['--test', '--test-force-exit', 'skills-app/tests/embed.test.mjs']);
 });

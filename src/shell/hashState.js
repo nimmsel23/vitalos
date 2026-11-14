@@ -57,6 +57,7 @@ export function readHashState() {
   if (mainTab === 'fitness' && second === 'skills') {
     return { tab: 'skills', subTab: skillFromQuery || null, date: null }
   }
+  if (['skills', 'sixpack', 'relax', 'journal', 'habits', 'plan', 'learn'].includes(mainTab) && ['settings', 'setup'].includes(second)) return { tab: 'settings', subTab: null, date: null }
   if (mainTab === 'sixpack') {
     const route = segments.slice(1).filter(Boolean).join('/')
     return { tab: 'sixpack', subTab: route || null, date: null }

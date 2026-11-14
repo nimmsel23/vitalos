@@ -40,8 +40,11 @@ function writeServiceWorkers(outDir) {
   if (!product) return;
   if (!outDir) throw new Error("Pass the built output directory after --write-service-workers");
   const serializedConfig = JSON.stringify(product.config);
-  for (const name of ["firebase-messaging-sw.js", "vitalos-messaging-sw.js"]) {
-    const source = fs.readFileSync(path.join(ROOT, "public", name), "utf8");
+  for (const name of ["firebase-messaging-sw.js", "vitalos-messaging-sw.js", "sixpack-messaging-sw.js", "journal-messaging-sw.js"]) {
+    const sourcePath = name === "sixpack-messaging-sw.js" ? path.join(ROOT, "../6pack-app/public", name)
+      : name === "journal-messaging-sw.js" ? path.join(ROOT, "../journal-app/public", name)
+      : path.join(ROOT, "public", name);
+    const source = fs.readFileSync(sourcePath, "utf8");
     const replacement = `firebase.initializeApp(${serializedConfig});`;
     const output = source.replace(/firebase\.initializeApp\(\{[\s\S]*?\}\);/, replacement);
     if (output === source) throw new Error(`Could not replace Firebase config in ${name}`);

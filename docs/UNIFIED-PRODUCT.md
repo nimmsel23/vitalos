@@ -216,3 +216,26 @@ Branch-Backup des Alt-Checkouts liegt gitignored unter
 der Checkout selbst bleibt bis zur Klärung seiner lokal-exklusiven Commits
 und uncommitteten Änderungen unangetastet. Keine Dienste als Nebenwirkung
 von Quell- oder Doku-Arbeiten neu starten.
+
+## Core Skills und gemeinsames App-Setup (2026-11-14)
+
+Produkt- und private Shell zeigen Skills und die vollständige eingebettete
+6Pack-Oberfläche gemeinsam als **Core Skills**. Die frühere 6Pack-Hauptroute
+bleibt als Altlink erreichbar; die Produkt-Shell kanonisiert sie nach
+`#skills/sixpack/...`. Die importierte UI läuft im Skills-CSS-Wrapper.
+Workout-Callbacks, Programmspeicher und die Firebase-Instanz bleiben beim Host.
+Store-Beschränkungen der App bleiben erhalten.
+
+Das gemeinsame Setup enthält die vorhandenen Fitness-/Profil-/Trainings- und
+Darstellungseinstellungen sowie vollständiges Fuel-Setup, Journal-Darstellung
+und Erinnerungen, Habit-Erinnerungen, Relax-Setup und Core Skills/6Pack-Setup.
+Die Sektionen mounten erst beim Öffnen. Konto-/Sync-/Import-/Lösch-/Rechtsinfos
+von Skills erscheinen nur im Setup, nicht unter der Trainingsoberfläche.
+Die jeweiligen Komponenten und Speicherverträge stammen weiterhin aus den Apps.
+Plan und Learn verwenden die gemeinsamen Fitness-/Darstellungseinstellungen.
+
+Skills, 6Pack, Plan und Learn erhalten Standalone-Setup-URLs; Journal und sein
+Habits-Flavor teilen `#settings`. App-Quelländerungen liegen in den Dev-Repos.
+Die Meta-Gitlinks werden dafür nicht auf unveröffentlichte lokale Commits gesetzt.
+Builds gegen aktuelle Arbeitscheckouts ersetzen weder den Release der Quellen
+noch einen gepinnten CI-Build, Login-/Gerätetest oder Hosting-/Store-Deploy.

@@ -67,7 +67,6 @@ const SECONDARY_LINKS = [
   { id: 'habits',   label: 'Habits', Icon: CheckSquare, color: '#a3e635' },
   { id: 'door',     label: 'Door',   Icon: DoorOpen,    color: '#fbbf24' },
   { id: 'game',     label: 'Game',   Icon: Compass,     color: '#f87171' },
-  { id: 'sixpack',  label: '6Pack',  Icon: Zap,         color: '#facc15' },
   { id: 'settings', label: 'Setup',  Icon: Settings2,   color: '#94a3b8' },
 ].filter(({ id }) => VALID_TABS.has(id))
 

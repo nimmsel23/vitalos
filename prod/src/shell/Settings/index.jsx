@@ -10,7 +10,7 @@ import NotificationsSection from "./NotificationsSection";
 import UpdateSection from "./UpdateSection";
 // Domain-Sektionen — fertig aus den Sub-Repos importiert (kein Doppel-Code)
 import TrainingSection from "@view/fitness-settings/TrainingSection.jsx";
-import FuelGoalsSection from "@fuel/views/Settings/GoalsSection.jsx";
+import AppSettingsSections from "../../../../src/shell/Settings/AppSettingsSections.jsx";
 
 export default function Settings({ user, signOut }) {
   // Alle User-Settings kommen aus dem Shell-Store (SSOT) statt per Prop-Drilling.
@@ -122,6 +122,8 @@ export default function Settings({ user, signOut }) {
        <AccountSection user={user} signOut={signOut} />
 
        <ProfileSection />
+       <AppSettingsSections user={user} />
+
 
        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
           <TrainingSection
@@ -137,7 +139,6 @@ export default function Settings({ user, signOut }) {
             swCheckResult={swCheckResult} swLastChecked={swLastChecked}
             onSwCheck={handleSwCheck} onSwApply={handleSwApply}
           />
-          <FuelGoalsSection className="card p-8 space-y-4 border-t-4 border-t-orange-400 text-fit-ink" />
           {!isLocalMode() && <NotificationsSection user={user} />}
        </div>
 

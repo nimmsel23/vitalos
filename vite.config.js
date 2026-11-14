@@ -195,6 +195,7 @@ export default defineConfig(({ mode }) => {
       })
     },
     generateBundle() {
+      this.emitFile({ type: 'asset', fileName: 'journal-messaging-sw.js', source: readFileSync(resolve(__dirname, 'journal-app/public/journal-messaging-sw.js')) })
       if (!existsSync(sixpackMessagingSw)) return
       this.emitFile({
         type: 'asset',

@@ -28,8 +28,7 @@ export const RELAX_OWNER_TABS = new Set(['ausbildung', 'physio', 'catalog'])
 export const NAV_ITEMS = [
   { id: 'home',     label: 'Journal', Icon: NotebookPen },
   { id: 'fitness',  label: 'Fitness', Icon: Dumbbell, standaloneUrl: 'https://fitness-vos.web.app' },
-  { id: 'sixpack',  label: '6Pack',   Icon: Zap },
-  { id: 'skills',   label: 'Skills',  Icon: Trophy, standaloneUrl: 'https://vos-skills.web.app' },
+  { id: 'skills',   label: 'Core Skills',  Icon: Trophy, standaloneUrl: 'https://vos-skills.web.app' },
   { id: 'fuel',     label: 'Fuel',    Icon: Flame, standaloneUrl: 'https://fuel-vos.web.app' },
   { id: 'relax',    label: 'Relax',   Icon: MoonStar, standaloneUrl: 'https://relax-vos.web.app' },
   { id: 'habits',   label: 'Habits',  Icon: CheckSquare },
@@ -42,7 +41,7 @@ export const NAV_ITEMS = [
 // Sidebar-Button außerhalb der Haupt-Nav-Schleife, siehe Sidebar.jsx) — muss
 // im privaten Build als gültiger Tab gelten, sonst verwirft navigate() den Klick.
 // Store-Builds lassen den Tab weg. #coach öffnet in readHashState den sichtbaren Hub.
-export const VALID_TABS = new Set(['hub', 'journal', ...NAV_ITEMS.map(i => i.id), ...(STORE_BUILD ? [] : ['coach'])])
+export const VALID_TABS = new Set(['hub', 'journal', 'sixpack', ...NAV_ITEMS.map(i => i.id), ...(STORE_BUILD ? [] : ['coach'])])
 
 // 6Pack (`timer`) und Skills sind eigene Shell-Apps und duerfen innerhalb
 // der eingebetteten Fitness-App nicht nochmals als Unterbereiche erscheinen.

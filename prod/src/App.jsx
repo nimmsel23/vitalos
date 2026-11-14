@@ -53,6 +53,12 @@ function readHashState() {
   const subTab = second && !DATE_LIKE.test(second) && second !== 'today' ? second : null
   const date = resolveHashDate(second) || resolveHashDate(third)
 
+  if (['fitness', 'fuel', 'skills', 'sixpack', 'relax', 'habits', 'journal', 'plan', 'learn'].includes(mainTab) && ['settings', 'setup'].includes(second)) {
+    return { tab: 'settings', subTab: mainTab, date: null }
+  }
+  if (mainTab === 'sixpack') return { tab: 'skills', subTab: ['sixpack', ...raw.split('/').slice(1)].join('/'), date: null }
+  if (mainTab === 'skills') return { tab: 'skills', subTab: raw.split('/').slice(1).join('/'), date: null }
+
   // Legacy Fitness deep links for the extracted apps now open their own
   // top-level Shell routes.
   if (mainTab === 'timer' || (mainTab === 'fitness' && second === 'timer')) {
@@ -138,6 +144,7 @@ function initialRuntimeEdition() {
 
 export default function App() {
   const initialHashState = readHashState()
+  const [skillsRoute, setSkillsRoute] = useState(() => initialHashState.tab === 'skills' ? initialHashState.subTab || '' : '')
   const [edition, setEdition] = useState(initialRuntimeEdition)
   const deepLinkDatePending = useRef(Boolean(initialHashState.date))
   const [isDesktopViewport, setIsDesktopViewport] = useState(() => {
@@ -362,7 +369,9 @@ export default function App() {
       deepLinkDatePending.current = false
       if (initialHashState.date && initialHashState.date !== runtimeDate) return
     }
-    const nextHash = tab === 'fitness'
+    const nextHash = tab === 'skills'
+      ? buildHashState({ tab, subTab: skillsRoute })
+      : tab === 'fitness'
       ? buildHashState({ tab, subTab: fitnessTab, date: fitnessTab === 'session' ? (sessionDate || runtimeDate) : null })
       : tab === 'home'
         ? buildHashState({ tab, subTab: homeGate, date: homeGate ? null : runtimeDate })
@@ -378,12 +387,13 @@ export default function App() {
         ? buildHashState({ tab, date: runtimeDate })
         : buildHashState({ tab })
     if (window.location.hash !== nextHash) history.pushState(null, '', nextHash)
-  }, [tab, fitnessTab, homeGate, fuelTab, relaxTab, doorTab, gameTab, runtimeDate, sessionDate])
+  }, [tab, skillsRoute, fitnessTab, homeGate, fuelTab, relaxTab, doorTab, gameTab, runtimeDate, sessionDate])
 
   useEffect(() => {
     function syncFromLocation() {
       const { tab: nextTab, subTab, date } = readHashState()
       setTab(nextTab)
+      if (nextTab === 'skills') setSkillsRoute(subTab || '')
       if (nextTab === 'home') setHomeGate(subTab || null)
       if (nextTab === 'home' && date) setRuntimeDate(date)
       if (nextTab === 'fitness') setFitnessTab(subTab || null)
@@ -408,6 +418,8 @@ export default function App() {
   }, [])
 
   function navigate(id, subTab = null) {
+    if (id === 'sixpack') { id = 'skills'; subTab = subTab ? `sixpack/${subTab}` : 'sixpack' }
+    if (id === 'skills') setSkillsRoute(subTab || '')
     if (id === 'journal') {
       setHomeGate(null)
       setTab('home')
@@ -700,9 +712,9 @@ export default function App() {
             : null
       const shellHeader = <ShellHeader tab={tab} subTab={shellSubTab} runtimeDate={runtimeDate} setRuntimeDate={changeHeaderDate} subNav={shellSubNav} onSubTab={shellSubTabSetter} onNavigateDomain={navigateToDomainDate} />
       const mobileShellHeader = <ShellHeader tab={tab} subTab={shellSubTab} runtimeDate={runtimeDate} setRuntimeDate={changeHeaderDate} compact subNav={shellSubNav} onSubTab={shellSubTabSetter} onNavigateDomain={navigateToDomainDate} />
-      const shellViews = <ShellAppRouter tab={tab} edition={edition} fitnessProps={fitnessProps} fuelTab={fuelTab} setFuelTab={setFuelTab} muscleLanguage={muscleLanguage} taxonomy={taxonomy}
+      const shellViews = <ShellAppRouter skillsRoute={skillsRoute} setSkillsRoute={setSkillsRoute} tab={tab} edition={edition} fitnessProps={fitnessProps} fuelTab={fuelTab} setFuelTab={setFuelTab} muscleLanguage={muscleLanguage} taxonomy={taxonomy}
       user={user} settingsProps={settingsProps} openSession={openSession} runtimeDate={runtimeDate} onRuntimeDateChange={setRuntimeDate} navigate={navigate} relaxTab={relaxTab} setRelaxTab={setRelaxTab} doorTab={doorTab} setDoorTab={setDoorTab} gameTab={gameTab} setGameTab={setGameTab} homeGate={homeGate} onHomeGateSelect={handleHomeGateSelect} onHomeGateDismiss={() => setHomeGate(null)} />
-      const compactShellViews = <ShellAppRouter tab={tab} edition={edition} fitnessProps={fitnessProps} fuelTab={fuelTab} setFuelTab={setFuelTab} muscleLanguage={muscleLanguage} taxonomy={taxonomy}
+      const compactShellViews = <ShellAppRouter skillsRoute={skillsRoute} setSkillsRoute={setSkillsRoute} tab={tab} edition={edition} fitnessProps={fitnessProps} fuelTab={fuelTab} setFuelTab={setFuelTab} muscleLanguage={muscleLanguage} taxonomy={taxonomy}
       user={user} settingsProps={settingsProps} openSession={openSession} compact runtimeDate={runtimeDate} onRuntimeDateChange={setRuntimeDate} navigate={navigate} relaxTab={relaxTab} setRelaxTab={setRelaxTab} doorTab={doorTab} setDoorTab={setDoorTab} gameTab={gameTab} setGameTab={setGameTab} homeGate={homeGate} onHomeGateSelect={handleHomeGateSelect} onHomeGateDismiss={() => setHomeGate(null)} />
       const hubGate = tab === 'home' && homeGate === 'hub'
         ? <HomeHubGate onSelect={navigate} onDismiss={() => setHomeGate(null)} runtimeDate={runtimeDate} openSession={openSession} />

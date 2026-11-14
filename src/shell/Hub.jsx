@@ -68,7 +68,6 @@ const SECONDARY_LINKS = [
   { id: 'door',     label: 'Door',   Icon: DoorOpen,    color: '#fbbf24' },
   { id: 'game',     label: 'Game',   Icon: Compass,     color: '#f87171' },
   { id: 'skills',   label: 'Skills', Icon: Trophy,      color: '#c8ff00' },
-  { id: 'sixpack',  label: '6Pack',  Icon: Zap,         color: '#facc15' },
   { id: 'settings', label: 'Setup',  Icon: Settings2,   color: '#94a3b8' },
 ]
 
