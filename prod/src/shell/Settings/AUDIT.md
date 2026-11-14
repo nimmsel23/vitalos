@@ -1,16 +1,16 @@
 # Audit: Settings
 
 ## Zweck
-Konfigurationsansicht für Appearance, Training-Präferenzen, SW-Updates, Firestore-Sync und Diagnose — alle Settings leben als lifted State im App-Root und werden als Props durchgereicht.
+Konfigurationsansicht für Profil, Training, Fuel-Ziele, SW-Updates und Diagnose. Theme-Auswahl ist als experimentelle Funktion im Advanced-Bereich eingeordnet.
 
 ## Komponenten
 
 | Datei | Zweck | Zeilen |
 |-------|-------|--------|
 | `index.jsx` | Orchestrierung: hält SW-State + Firestore-State, fetcht Health/Wger/Firestore beim Mount, rendert Sections | 138 |
-| `AppearanceSection.jsx` | Theme-Picker (manual/circadian), Layout-Scale-Slider, Sidebar-Toggle | 146 |
+| `AppearanceSection.jsx` | Experimenteller Theme-Picker (manual/circadian), eingebettet in `AdvancedSection` | — |
 | `TrainingSection.jsx` | Split/Gender/Location/MuscleLanguage-Picker, Analyse-Sliders (collapsible), SW-Update-Panel, Advanced-Toggle | 177 |
-| `AdvancedSection.jsx` | Swipe-Navigation, Dashboard-Highlighter-Modus, Firestore-Status-Badge | 73 |
+| `AdvancedSection.jsx` | Swipe-Navigation, Desktop-Sidebar, Muskel-Terminologie, Theme-Experimente, Account-Metadaten | — |
 | `LocalDevSection.jsx` | Firestore-Sync-Button, Node-API/wger/Storage-Diagnose — nur sichtbar wenn `isLocalMode()` | 64 |
 
 ## Datenfluss
@@ -35,10 +35,9 @@ Konfigurationsansicht für Appearance, Training-Präferenzen, SW-Updates, Firest
 `layoutScale/setLayoutScale`, `gender/setGender`, `split/setSplit`, `cycleLength/setCycleLength`, `defaultLocation/setDefaultLocation`, `recentDays/setRecentDays`, `coverageThreshold/setCoverageThreshold`, `showAdvanced/setShowAdvanced`, `dashboardHighlighter/setDashboardHighlighter`, `themeMode/setModeState`, `circLight/setCircLight`, `circDark/setCircDark`, `themes/theme/setThemeState`, `sidebarPinned/setSidebarPinned`, `muscleLanguage/setMuscleLanguage`, `swipeEnabled/setSwipeEnabled`
 
 **Props-Weitergabe:**
-- `AppearanceSection` — bekommt alles Appearance-relevante (sidebarPinned, layoutScale, themeMode, circLight/Dark, themes/theme)
 - `TrainingSection` — bekommt Training-Prefs + SW-State + SW-Handler-Callbacks
 - `LocalDevSection` — bekommt firestoreStatus, syncing, onSync, health, wger
-- `AdvancedSection` — bekommt swipeEnabled, dashboardHighlighter, firestoreStatus (Status-only, kein Sync-Button)
+- `AdvancedSection` — bekommt Theme-Optionen plus Layout-/Navigationsoptionen und User
 
 ## Inline-Code (Extraktionskandidaten)
 

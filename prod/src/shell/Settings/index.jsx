@@ -2,7 +2,6 @@ import { useState, useEffect } from "react";
 import { api, isLocalMode } from "@db";
 import { useShellSettings } from "../store.js";
 import { THEMES } from "../themes.js";
-import AppearanceSection from "./AppearanceSection";
 import AdvancedSection from "./AdvancedSection";
 import LocalDevSection from "./LocalDevSection";
 import AccountSection from "./AccountSection";
@@ -125,12 +124,6 @@ export default function Settings({ user, signOut }) {
        <ProfileSection />
 
        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-          <AppearanceSection
-            themeMode={themeMode} setModeState={setModeState}
-            circLight={circLight} setCircLight={setCircLight}
-            circDark={circDark} setCircDark={setCircDark}
-            themes={themes} theme={theme} setThemeState={setThemeState}
-          />
           <TrainingSection
             split={split} setSplit={setSplit}
             gender={anatomyModel} setGender={setAnatomyModel}
@@ -171,6 +164,10 @@ export default function Settings({ user, signOut }) {
            mobileLayout={mobileLayout} setMobileLayout={setMobileLayout}
            sidebarPinned={sidebarPinned} setSidebarPinned={setSidebarPinned}
            muscleLanguage={muscleLanguage} setMuscleLanguage={setMuscleLanguage}
+           themeMode={themeMode} setModeState={setModeState}
+           circLight={circLight} setCircLight={setCircLight}
+           circDark={circDark} setCircDark={setCircDark}
+           themes={themes} theme={theme} setThemeState={setThemeState}
            user={user}
          />
        )}

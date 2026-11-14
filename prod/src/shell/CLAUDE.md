@@ -89,7 +89,8 @@ Offene Sheets behalten ihre begrenzte Höhe und ihren eigenen Scrollbereich.
 ## Settings/ (Setup-Tab)
 
 Eigenständiger Setup-Tab — vitalos SSOT. Shell-eigene Sektionen:
-`Account · Profile · Notifications · Appearance · Fuel · LocalDev · Advanced` + Kompositor `index.jsx`.
+`Account · Profile · Notifications · Fuel · LocalDev · Advanced` + Kompositor `index.jsx`.
+Der Theme-Picker aus der Fitness-App liegt unter `AdvancedSection` als experimentelle Funktion.
 
 Der Shell-Setup-Tab ersetzt im VitalOS-Betrieb die Setup-/Settings-Einstiege
 der Subapps. Deshalb sind Shell-eigene Settings-Komponenten und Adapter hier

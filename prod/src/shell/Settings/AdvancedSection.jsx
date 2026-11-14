@@ -1,5 +1,6 @@
 import { Sparkles, ShieldAlert, UserCircle, LayoutGrid } from "lucide-react";
 import SegmentedControl from "./SegmentedControl";
+import AppearanceSection from "./AppearanceSection";
 
 function formatJoinDate(ts) {
   if (!ts) return '—';
@@ -14,6 +15,10 @@ export default function AdvancedSection({
   swipeEnabled, setSwipeEnabled,
   sidebarPinned, setSidebarPinned,
   muscleLanguage, setMuscleLanguage,
+  themeMode, setModeState,
+  circLight, setCircLight,
+  circDark, setCircDark,
+  themes, theme, setThemeState,
   user,
 }) {
   return (
@@ -23,8 +28,7 @@ export default function AdvancedSection({
             <ShieldAlert size={20} className="text-red-500" />
           </div>
           <div>
-             <h3 className="text-xl font-black text-fit-ink">Advanced & Labor</h3>
-             <p className="text-[10px] font-black uppercase tracking-widest opacity-40">Experimentelle Funktionen</p>
+             <h3 className="text-xl font-black text-fit-ink">Experimentelle Funktionen</h3>
           </div>
        </div>
 
@@ -82,6 +86,13 @@ export default function AdvancedSection({
             onChange={setMuscleLanguage}
           />
        </div>
+
+       <AppearanceSection
+         themeMode={themeMode} setModeState={setModeState}
+         circLight={circLight} setCircLight={setCircLight}
+         circDark={circDark} setCircDark={setCircDark}
+         themes={themes} theme={theme} setThemeState={setThemeState}
+       />
 
        {/* User Auth */}
        {user && (

@@ -1,4 +1,3 @@
-import { LayoutGrid } from "lucide-react";
 import { DARK_THEMES, LIGHT_THEMES } from "../themes.js";
 
 export default function AppearanceSection({
@@ -8,19 +7,17 @@ export default function AppearanceSection({
   themes, theme, setThemeState,
 }) {
   return (
-    <section className="card p-8 space-y-10 border-t-4 border-t-fit-accent animate-in fade-in slide-in-from-left-4 duration-500">
-       <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-xl bg-fit-accent/10 flex items-center justify-center">
-            <LayoutGrid size={20} className="text-fit-accent" />
-          </div>
-          <h3 className="text-xl font-black text-fit-ink">Appearance</h3>
+    <section className="bg-fit-bg2 p-6 rounded-3xl border border-fit-line space-y-6">
+       <div>
+          <h4 className="text-sm font-black text-fit-ink uppercase tracking-widest">Theme-Experimente</h4>
+          <p className="mt-1 text-xs text-fit-dim">Experimentelle Themes aus der Fitness-App.</p>
        </div>
 
        <div className="space-y-8">
           {/* Theme Selector */}
           <div>
              <div className="flex items-center justify-between mb-4">
-                <div className="text-[10px] font-black uppercase tracking-widest opacity-30 ml-1">Theme System ({Object.keys(themes).length})</div>
+                <div className="text-[10px] font-black uppercase tracking-widest text-fit-dim ml-1">Themes ({Object.keys(themes).length})</div>
                 <button onClick={() => setModeState(themeMode === 'circadian' ? 'manual' : 'circadian')}
                    className={`px-3 py-1.5 rounded-xl text-[9px] font-black uppercase border transition-all ${themeMode === 'circadian' ? 'border-fit-accent bg-fit-accent/10 text-fit-accent' : 'border-fit-line text-fit-dim hover:text-fit-ink'}`}>
                    Auto-Theme: {themeMode === 'circadian' ? 'Ein' : 'Aus'}
