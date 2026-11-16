@@ -1,6 +1,6 @@
 # Dashboard — vitalos Meta
 
-Generated: 2026-11-14T17:59:10+00:00 · SHA: `8588ff6` · Issue: [#32](https://github.com/nimmsel23/vitalos/issues/32) · Repo: `nimmsel23/vitalos`
+Generated: 2026-11-16T13:38:48+00:00 · SHA: `6bb6b08` · Issue: [#32](https://github.com/nimmsel23/vitalos/issues/32) · Repo: `nimmsel23/vitalos`
 
 Refresh: `prod/coordination/ui/gen-boards.py` (+ optional Hook/Action).
 
@@ -8,15 +8,15 @@ Refresh: `prod/coordination/ui/gen-boards.py` (+ optional Hook/Action).
 
 ## 1. Submodule-Pins (Kurz)
 
-- `fitness-app: `8588ff6``
-- `fuel-app: `8588ff6``
-- `journal-app: `8588ff6``
-- `habit-app: `8588ff6``
-- `learn-app: `8588ff6``
-- `relax-app: `8588ff6``
-- `6pack-app: `8588ff6``
-- `plan-app: `8588ff6``
-- `skills-app: `8588ff6``
+- `fitness-app: `6bb6b08``
+- `fuel-app: `6bb6b08``
+- `journal-app: `6bb6b08``
+- `habit-app: `6bb6b08``
+- `learn-app: `6bb6b08``
+- `relax-app: `6bb6b08``
+- `6pack-app: `6bb6b08``
+- `plan-app: `6bb6b08``
+- `skills-app: `6bb6b08``
 
 
 ## 2. Store / Legal Docs
@@ -46,14 +46,14 @@ Refresh: `prod/coordination/ui/gen-boards.py` (+ optional Hook/Action).
 
 ## 6. Release-Train / Ship-Log
 
-- `8588ff6 chore(submodules): 6pack/fuel/journal/plan/relax/skills auf master (AL-LOG.md entfernt)`
-- `9d14cf0 Merge remote-tracking branch 'origin/master'`
-- `a0dd1c6 clean up & pointer bumps`
-- `88ac3bf feat: unify app settings and embed 6Pack in Core Skills`
-- `60f959e feat(product): import native health profile after login`
-- `ddae86e chore(submodules): fitness-app auf fitness-dev master c3f9a6e4 (#42)`
-- `6b51bb3 Remove duplicate Fitness app shortcuts`
-- `2d08d9d Label experimental theme section simply`
-- `fc1814c Move themes under experimental settings`
-- `609aaf5 docs(al): Session 4af6f88b nachdokumentiert — PRs, Worktree-Leichen, Dependabot-Bestand`
+- `6bb6b08 chore(portal): Registry nach Release aktualisiert (vos-portal)`
+- `ec55b04 chore(submodules): bump habits,learn after release`
+- `dfdf0db chore(portal): Registry nach Release aktualisiert (vos-portal)`
+- `b65eeb9 chore(submodules): bump skills,fitness,fuel,habits,journal,learn,relax,6pack,plan after release`
+- `0ff4cbb fix(vos-release): Agent-Merge nur auf dev, nur Konfliktdateien, atomarer Push`
+- `91b9944 chore(vos-release): Konflikt-Agent läuft auf Sonnet`
+- `82a7240 chore(vos-release): Konflikt-Agent stumm — nur Spinner und [OK], Log nur bei Fehler`
+- `3c980b0 feat(vos-release): Merge-Konflikt → Agent headless (claude, sonst codex), Ausgabe live + Spinner`
+- `9326876 feat(vos-release): dev geht ohne PR mit — FF nach master, sonst master→dev mergen und weiter`
+- `a691975 Merge remote-tracking branch 'origin/master'`
 
