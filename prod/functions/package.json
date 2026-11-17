@@ -10,5 +10,9 @@
   "engines": {
     "node": "22"
   },
+  "scripts": {
+    "lint": "node --check index.js && node --check deleteOwnAccount.js",
+    "test": "node --test deleteOwnAccount.test.mjs"
+  },
   "private": true
 }

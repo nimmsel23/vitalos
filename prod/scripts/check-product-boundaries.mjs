@@ -72,6 +72,40 @@ function checkProductDeployWorkflow() {
   }
 }
 
+function checkDeleteOwnAccountWorkflow() {
+  const path = join(metaRoot, '.github/workflows/deploy-delete-own-account.yml');
+  assert(existsSync(path), 'deploy-delete-own-account.yml missing');
+  const text = read(path);
+  const header = text.split(/^jobs:/m)[0];
+  if (!/workflow_dispatch\s*:/.test(header)) {
+    fail('deploy-delete-own-account.yml must declare workflow_dispatch');
+  }
+  for (const trigger of ['push:', 'pull_request:', 'schedule:']) {
+    if (header.includes(trigger)) {
+      fail(`deploy-delete-own-account.yml must not trigger on ${trigger.slice(0, -1)}`);
+    }
+  }
+  if (!/--only\s+functions:vitalos:deleteOwnAccount\b/.test(text)) {
+    fail('deploy-delete-own-account.yml must deploy only functions:vitalos:deleteOwnAccount');
+  }
+  if (!/--project\s+vitalos-prod\b/.test(text)) {
+    fail('deploy-delete-own-account.yml must target project vitalos-prod');
+  }
+  if (text.includes(PRIVATE_PROJECT)) {
+    fail(`deploy-delete-own-account.yml must not reference ${PRIVATE_PROJECT}`);
+  }
+  // Produkt-Secret heißt …_VITALOS_PROD und enthält den privaten Namen als Präfix.
+  if (new RegExp(`secrets\\.${PRIVATE_SA}(?!_)`).test(text)) {
+    fail(`deploy-delete-own-account.yml must not use private ${PRIVATE_SA}`);
+  }
+  if (!text.includes(`secrets.${PRODUCT_SA}`)) {
+    fail(`deploy-delete-own-account.yml must use secrets.${PRODUCT_SA}`);
+  }
+  if (!/dry_run:[\s\S]*?default:\s*true/.test(header)) {
+    fail('deploy-delete-own-account.yml dry_run must default to true');
+  }
+}
+
 function walkPackageJson(dir, out = []) {
   for (const name of readdirSync(dir, { withFileTypes: true })) {
     if (name.name === 'node_modules' || name.name === 'dist' || name.name.startsWith('dist-')) continue;
@@ -101,6 +135,7 @@ export function checkProductBoundaries() {
   checkFirebaserc();
   checkPrivateShellWorkflow();
   checkProductDeployWorkflow();
+  checkDeleteOwnAccountWorkflow();
   checkNoPrivateProjectInProductDeployScripts();
   return {
     productProject: PRODUCT_PROJECT,

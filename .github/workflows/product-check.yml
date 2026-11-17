@@ -15,6 +15,7 @@ on:
       - 'fuel-app'
       - '.github/workflows/product-check.yml'
       - '.github/workflows/deploy-product-hosting.yml'
+      - '.github/workflows/deploy-delete-own-account.yml'
       - 'pnpm-lock.yaml'
       - 'pnpm-workspace.yaml'
       - 'package.json'
