@@ -1,0 +1,142 @@
+# Manueller Deploy nur von deleteOwnAccount nach vitalos-prod.
+# Kein push, kein pull_request, kein schedule.
+# Authentifizierung wie deploy-push-functions.yml: Service-Account-JSON
+# nach GOOGLE_APPLICATION_CREDENTIALS, ausschließlich
+# FIREBASE_SERVICE_ACCOUNT_VITALOS_PROD. Kein privates Shell-Secret.
+
+name: Deploy deleteOwnAccount (vitalos-prod)
+
+on:
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: 'Nur firebase deploy --dry-run (keine Veröffentlichung)'
+        type: boolean
+        default: true
+
+permissions:
+  contents: read
+
+concurrency:
+  group: vitalos-prod-delete-own-account
+  cancel-in-progress: false
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: prod/functions
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 22
+          package-manager-cache: false
+      - name: Install function package
+        run: npm ci --no-audit --no-fund
+      - name: Lint function sources
+        run: npm run lint
+      - name: Test deleteOwnAccount
+        run: npm test
+
+  deploy:
+    needs: check
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 22
+          package-manager-cache: false
+      - name: Install function package
+        working-directory: prod/functions
+        run: npm ci --no-audit --no-fund
+      - name: Prepare deploy credentials
+        env:
+          FIREBASE_SA: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_VITALOS_PROD }}
+        run: |
+          python3 - <<'PY'
+          import json, os
+          from pathlib import Path
+          raw = os.environ.get('FIREBASE_SA', '')
+          if not raw.strip():
+              raise SystemExit(
+                  'Secret FIREBASE_SERVICE_ACCOUNT_VITALOS_PROD fehlt. '
+                  'Erwartet wird das Service-Account-JSON für das Projekt vitalos-prod.'
+              )
+          try:
+              credentials = json.loads(raw)
+          except json.JSONDecodeError:
+              raise SystemExit(
+                  'Secret FIREBASE_SERVICE_ACCOUNT_VITALOS_PROD ist kein gültiges JSON.'
+              )
+          if not isinstance(credentials, dict):
+              raise SystemExit(
+                  'Secret FIREBASE_SERVICE_ACCOUNT_VITALOS_PROD muss ein JSON-Objekt sein.'
+              )
+          project_id = credentials.get('project_id')
+          if project_id != 'vitalos-prod':
+              raise SystemExit(
+                  'Service-Account project_id muss vitalos-prod sein, '
+                  f'erhalten: {project_id!r}.'
+              )
+          if (
+              credentials.get('type') != 'service_account'
+              or not credentials.get('client_email')
+              or not credentials.get('private_key')
+          ):
+              raise SystemExit(
+                  'Service-Account-JSON unvollständig (type, client_email, private_key).'
+              )
+          path = Path(os.environ['RUNNER_TEMP']) / 'vitalos-prod-deploy-sa.json'
+          path.write_text(json.dumps(credentials))
+          path.chmod(0o600)
+          with open(os.environ['GITHUB_ENV'], 'a') as target:
+              target.write(f'GOOGLE_APPLICATION_CREDENTIALS={path}\n')
+          print('Deploy service account: ' + credentials['client_email'])
+          PY
+      - name: Assert product function config
+        working-directory: prod
+        run: |
+          python3 - <<'PY'
+          import json
+          from pathlib import Path
+          cfg = json.loads(Path('firebase.json').read_text())
+          functions = cfg['functions']
+          assert functions['codebase'] == 'vitalos', functions
+          assert functions['source'] == 'functions', functions
+          source = Path('functions/index.js').read_text()
+          assert 'exports.deleteOwnAccount' in source
+          print('firebase.json codebase=vitalos source=functions')
+          PY
+      - name: Dry-run deleteOwnAccount
+        if: ${{ inputs.dry_run == true || inputs.dry_run == 'true' }}
+        working-directory: prod
+        env:
+          GCLOUD_PROJECT: vitalos-prod
+          GOOGLE_CLOUD_PROJECT: vitalos-prod
+          VOS_PRODUCT_DEPLOY_SA: FIREBASE_SERVICE_ACCOUNT_VITALOS_PROD
+        run: |
+          npx --yes firebase-tools@15.34.0 deploy \
+            --config firebase.json \
+            --only functions:vitalos:deleteOwnAccount \
+            --project vitalos-prod \
+            --non-interactive \
+            --dry-run
+      - name: Deploy deleteOwnAccount
+        if: ${{ inputs.dry_run == false || inputs.dry_run == 'false' }}
+        working-directory: prod
+        env:
+          GCLOUD_PROJECT: vitalos-prod
+          GOOGLE_CLOUD_PROJECT: vitalos-prod
+          VOS_PRODUCT_DEPLOY_SA: FIREBASE_SERVICE_ACCOUNT_VITALOS_PROD
+        run: |
+          npx --yes firebase-tools@15.34.0 deploy \
+            --config firebase.json \
+            --only functions:vitalos:deleteOwnAccount \
+            --project vitalos-prod \
+            --non-interactive
+      - name: Remove temporary deploy credentials
+        if: always()
+        run: rm -f "$RUNNER_TEMP/vitalos-prod-deploy-sa.json"

@@ -37,7 +37,7 @@
 - [x] Öffentliche Seiten: `/datenschutz` ist ein Hosting-Redirect 301 auf `https://vitalos.at/vitalos/datenschutz`. `/konto-loeschen` bleibt statisches HTML in `prod/public` und `public`, Rewrite vor dem SPA-Fangnetz.
 - [x] Callable `deleteOwnAccount` in `prod/functions` löscht nur die Firestore-Bäume der aufrufenden uid und danach den Auth-Nutzer. Tests mit nachgebautem Firestore, kein Lauf gegen echte Daten.
 - [x] Öffentliche Kontaktadresse: `nimmdaniel@gmail.com`. Ort des Verantwortlichen: 1030 Wien, Österreich, ohne Straße. Owner-Freigabe 2026-11-12. Der übrige Datenschutz-Wortlaut ist der Store-Text aus master (Stand 2026-11-12).
-- [ ] Blocker: Function-Deploy nach `vitalos-prod` gehört nicht zum Shell-Auto-Deploy. Ohne ihn hat der In-App-Knopf keine Serverwirkung. Nur ein neues Wegwerfkonto prüfen, nie bestehende Personenkonten.
+- [ ] Blocker: Function-Deploy nach `vitalos-prod` gehört nicht zum Shell-Auto-Deploy. Ohne ihn hat der In-App-Knopf keine Serverwirkung. Weg dafür ist `deploy-delete-own-account.yml` (`workflow_dispatch`, `dry_run` standardmäßig true, nur `functions:vitalos:deleteOwnAccount`). Lauf und Prüfung an einem neuen Wegwerfkonto sind offen. Nie bestehende Personenkonten.
 
 ## 2026-11-11 — C-015 Data Safety und AAB
 

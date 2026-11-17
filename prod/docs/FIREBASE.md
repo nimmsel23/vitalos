@@ -50,7 +50,7 @@ Private Shell-CI (`deploy-shell.yml`) deployt nach `fitness-aos` mit
 
 | GitHub Actions Secret (Name) | Zweck |
 | --- | --- |
-| `FIREBASE_SERVICE_ACCOUNT_VITALOS_PROD` | Hosting-Deploy nach `vitalos-prod` |
+| `FIREBASE_SERVICE_ACCOUNT_VITALOS_PROD` | Hosting-Deploy und `deleteOwnAccount` nach `vitalos-prod` |
 | `VITE_VOS_FIREBASE_PROJECT_ID` | CI-Produkt-Build; Wert muss `vitalos-prod` sein |
 | `VITE_VOS_FIREBASE_WEB_CONFIG` | CI-Produkt-Build (Web-Config JSON) |
 | `VITE_VOS_FIREBASE_VAPID_KEY` | CI-Produkt-Build (VAPID) |
@@ -65,6 +65,7 @@ Workflows:
 
 - `product-check.yml` — Push auf `master` (Paths `prod/**` u. a.) + `workflow_dispatch`: Layout, Boundary-Check, Manifest; optional Store-Build wenn die `VITE_VOS_FIREBASE_*`-Secrets gesetzt sind. **Kein Deploy.**
 - `deploy-product-hosting.yml` — nur `workflow_dispatch`: Store-Build (`dist-store`) + Hosting Target `vitalos` auf `vitalos-prod`. Fehlt `FIREBASE_SERVICE_ACCOUNT_VITALOS_PROD`, bricht der Job ab.
+- `deploy-delete-own-account.yml` — nur `workflow_dispatch`: genau `functions:vitalos:deleteOwnAccount` nach `vitalos-prod`. `dry_run` steht standardmäßig auf true (`firebase deploy --dry-run`). Ein echter Deploy setzt `dry_run` auf false. Dasselbe Secret, kein Fallback auf `FIREBASE_SERVICE_ACCOUNT`.
 
 Lokal/predeploy: `prod/scripts/ci-deploy-guard.mjs` verlangt Projekt `vitalos-prod`; TWA/`pnpm firebase` über `deploy-product.mjs` zusätzlich `VOS_PRODUCT_DEPLOY=1`. Boundary-Check: `pnpm run product:check` bzw. `node prod/scripts/check-product-boundaries.mjs`.
 
@@ -150,8 +151,23 @@ uid nur aus der Anmeldung, löscht die Firestore-Wurzeln dieser uid
 und danach den Auth-Nutzer. `kb` und `public` sind keine Nutzer-IDs.
 Geteilte Kataloge bleiben.
 
-Dieser Deploy ist nicht der Shell-Hosting-Deploy. Ein späterer Auftrag
-veröffentlicht gezielt nur diese Function, nicht die ganze Codebase:
+Dieser Deploy ist nicht der Shell-Hosting-Deploy. Veröffentlichen tut
+`.github/workflows/deploy-delete-own-account.yml`, ausschließlich per
+`workflow_dispatch`. Ziel ist nur `functions:vitalos:deleteOwnAccount` im
+Projekt `vitalos-prod`, aus `prod/firebase.json` (Codebase `vitalos`, Quelle
+`prod/functions`). `dry_run` ist standardmäßig true und führt
+
+```sh
+firebase deploy --only functions:vitalos:deleteOwnAccount --project vitalos-prod --dry-run
+```
+
+aus. Ein echter Deploy setzt `dry_run` auf false und lässt `--dry-run` weg.
+Die Anmeldung folgt `deploy-push-functions.yml`: das JSON aus
+`FIREBASE_SERVICE_ACCOUNT_VITALOS_PROD` liegt in
+`GOOGLE_APPLICATION_CREDENTIALS`. `project_id` im JSON muss `vitalos-prod`
+sein. Es gibt keinen Fallback auf `FIREBASE_SERVICE_ACCOUNT`.
+
+Gleicher Filter, lokal nur mit ausdrücklichem Auftrag:
 
 ```sh
 cd /home/alpha/vitalos/prod

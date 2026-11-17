@@ -15,6 +15,7 @@ nicht veröffentlicht.
 | Produkt-CI prüfen | `product-check.yml` (Push/`workflow_dispatch`); lokal `pnpm run product:check` |
 | Produkt-Hosting veröffentlichen | nur Owner: `deploy-product-hosting.yml` (`workflow_dispatch`) → `vitalos-prod`; Secret `FIREBASE_SERVICE_ACCOUNT_VITALOS_PROD` — **kein** privates `FIREBASE_SERVICE_ACCOUNT` |
 | Produkt-Firebase Rules/Functions | [Produkt-Runbook](../prod/docs/FIREBASE.md); eigene Owner-Aufträge |
+| `deleteOwnAccount` veröffentlichen | nur manuell: `deploy-delete-own-account.yml` (`workflow_dispatch`, `dry_run` standardmäßig true) → nur `functions:vitalos:deleteOwnAccount` auf `vitalos-prod`; Secret `FIREBASE_SERVICE_ACCOUNT_VITALOS_PROD` |
 | APK/AAB, Signing, Store | [Store-Plan](../prod/docs/STORE-PUBLISHING-PLAN.md) |
 | GitHub Pages (`docs/` → `nimmsel23.github.io/vitalos`) | kein Firebase; Bestand/Empfehlung im [Produkt-Runbook § GitHub Pages](../prod/docs/FIREBASE.md#github-pages-meta-repo-kein-firebase-hosting) — Owner-Gate behalten/deaktivieren |
 
