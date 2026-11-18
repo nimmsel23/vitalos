@@ -4,12 +4,21 @@ import { getAuth, GoogleAuthProvider, browserLocalPersistence, setPersistence } 
 import { isSupported, getMessaging } from "firebase/messaging";
 import { getVertexAI as createVertexAI } from "firebase/vertexai";
 import { config } from "@firebase-config";
+import { isCapacitorNative, resolveShellAuthDomain } from "./authDomain.js";
+
+// Same-origin nur auf der Allowlist (Redirect-URI belegt). Localhost, Preview-
+// Channels, andere Domains und Capacitor behalten fitness-aos.firebaseapp.com.
+const pageHost = typeof location !== "undefined" ? location.hostname : "";
+const resolvedAuthDomain = resolveShellAuthDomain(config.authDomain, pageHost, {
+  native: isCapacitorNative(),
+});
+const appConfig = { ...config, authDomain: resolvedAuthDomain };
 
 // Guard gegen Doppel-Init: im Local-Build können Sub-Repo-firebase.js-Module
 // (journal/habits) vor diesem Modul evaluieren — dann existiert die App schon
 // und initializeFirestore() mit eigenen Optionen würde werfen (Tab-Hänger).
 const alreadyInit = getApps().length > 0;
-export const app = alreadyInit ? getApp() : initializeApp(config);
+export const app = alreadyInit ? getApp() : initializeApp(appConfig);
 
 // Firestore with IndexedDB-backed persistent cache.
 // Reads served from cache while offline; writes queued locally and
@@ -32,8 +41,8 @@ setPersistence(auth, browserLocalPersistence).catch(() => {});
 export const googleProvider = new GoogleAuthProvider();
 
 // fuel-app (seit a87a883) importiert authDomain für die iOS-Redirect-Prüfung
-// (sameSiteAuth). Die Shell schreibt die authDomain nicht um; sie gilt wie konfiguriert.
-export const authDomain = config.authDomain;
+// (sameSiteAuth). Wert ist die Domain, mit der diese App initialisiert wurde.
+export const authDomain = app.options?.authDomain ?? resolvedAuthDomain;
 
 // Vertex AI — fuel-dev (ScannerModal, LogView, MicrosAiCoach) erwartet diesen
 // Export, da deren firebase.js im Firebase-Build hierauf umgeleitet wird.

@@ -6,6 +6,11 @@ Kein lokaler Code. Nur für den Firebase-Build (`--mode firebase`).
 
 Firebase-Initialisierung: App, Firestore (IndexedDB-Cache, Multi-Tab), Auth (Google Provider).
 Config kommt via `@firebase-config` Alias → `firebase.config.js` im Repo-Root.
+`authDomain` bleibt dort `fitness-aos.firebaseapp.com`. Nur im Browser auf
+`vitalos.web.app` setzt `authDomain.js` sie zur Laufzeit auf den Seitenhost
+(Allowlist, Redirect-URI registriert). Localhost, Previews, andere Domains
+und Capacitor behalten die Projekt-Domain. Der Shell-Service-Worker fasst
+`/__/` nicht an, damit der Auth-Handler nicht als App-Shell gecacht wird.
 
 ## db.firestore.js — ABGELÖST (2026-07-09)
 

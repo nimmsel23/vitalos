@@ -69,6 +69,18 @@ test('API networkFirst: hängendes Netz → Timeout → letzter gespiegelter Sta
   assert.equal(res, undefined);
 });
 
+test('Firebase /__/ läuft am Service Worker vorbei und ersetzt die Shell nicht', async () => {
+  const w = setup({ net: 'ok', sw: { cacheAllSameOrigin: true } });
+  await w.handlers.install({ waitUntil: (p) => p });
+  for (const path of ['/__/auth/handler', '/__/auth/handler?apiKey=1', '/__/auth/iframe', '/__/firebase/init.json']) {
+    assert.equal(await w.ask(path, {}, 'navigate'), undefined, path);
+    assert.equal(await w.ask(path), undefined, path);
+  }
+  assert.deepEqual(w.calls, []);
+  const shell = await w.ask('/', {}, 'navigate');
+  assert.match(await shell.text(), /^shell:/);
+});
+
 test('navPassthrough: Rechtsseiten gehen am Service Worker vorbei', async () => {
   const w = setup({ net: 'ok', sw: { navPassthrough: ['/datenschutz', '/konto-loeschen'], cacheAllSameOrigin: true } });
   await w.handlers.install({ waitUntil: (p) => p });
