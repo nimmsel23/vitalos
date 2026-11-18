@@ -12,6 +12,8 @@ for (const support of [true, false, 'error']) {
   const module = { exports: {} };
   vm.runInNewContext(code, {
     module, exports: module.exports, config: {},
+    resolveShellAuthDomain: (configured) => configured,
+    isCapacitorNative: () => false,
     getApps: () => [app], getApp: () => app,
     initializeApp: () => { throw Error('must reuse shell Firebase'); },
     getFirestore: () => ({}), getAuth: () => ({}),

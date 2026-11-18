@@ -14,7 +14,8 @@
 //  - neverCache:        Pfade, die der SW gar nicht anfasst (z. B. /api/sync/*).
 //  - Background Sync:   optional, flusht eine IndexedDB-Queue (offline-queue.js-Kontrakt);
 //                       sync.conflicts: HTTP 409 → Eintrag als conflict markieren + Seiten benachrichtigen.
-// Alles andere (Firestore, Auth, Fonts, fremde Origins) läuft unberührt am SW vorbei.
+// Alles andere (Firestore, Auth auf fremder Origin, Fonts) läuft am SW vorbei.
+// Same-origin /__/ (Firebase-Auth-Handler) ebenfalls: siehe fetch-Handler.
 const CFG = /*__VOS_CONFIG__*/ {}
 
 const CACHE = CFG.cache // z. B. "vos-6pack-v<build>"
@@ -160,6 +161,11 @@ self.addEventListener('fetch', (e) => {
 
   if (url.origin !== self.location.origin) return
   const path = rel(url.pathname)
+
+  // Firebase Hosting reserviert /__/ (Auth-Handler, init.json). Eine
+  // Navigation dorthin darf nicht als App-Shell unter index.html landen,
+  // sonst ersetzt der Google-Login die gecachte Shell.
+  if (path === '/__' || path.startsWith('/__/')) return
 
   // Öffentliche Rechtsseiten nicht als Navigation cachen: ein Treffer würde
   // sonst die App-Shell unter index.html ersetzen.

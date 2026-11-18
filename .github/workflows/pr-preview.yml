@@ -95,6 +95,9 @@ jobs:
       - name: Check embedded 6Pack auth
         run: node scripts/test-sixpack-auth.mjs
 
+      - name: Check shell authDomain selection
+        run: node scripts/test-shell-auth-domain.mjs && node --test packages/mini-app-shell/test/offline-first.test.mjs
+
       - name: Build (firebase mode)
         run: pnpm run build:firebase
 
