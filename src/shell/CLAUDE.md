@@ -139,11 +139,21 @@ Kurz: das Problem war eine doppelte Navigation-Synchronisation, nicht einfach
 „zu viel Hashing“.
 
 Dieselbe Regel gilt für die Embed-Routen von 6Pack und Skills
-(`#sixpack/<route>`, `#skills/<skillId>`). `SixPackApp.jsx` und
-`SkillsApp.jsx` merken sich eine von der Shell gesetzte Route in
-`shellSyncTargetRef` und schicken genau diese Route nicht per
-`onRouteChange` zurück. Ein Reload auf dem Hash öffnet dieselbe Ansicht;
-die Embeds schreiben `location.hash` und `documentElement` nicht.
+(`#sixpack/<route>`, `#skills/<skillId>`). Beide Tabs laufen seit
+2026-11-14 über `prod/src/shell/CoreSkillsApp.jsx` (Skills + 6Pack, von
+privater und Produkt-Shell geteilt). Eine von der Shell gesetzte Route kommt
+als `initialRoute` herein und wird nur lokal übernommen, nie per
+`onRouteChange` zurückgeschickt; nur Klicks im Embed melden eine Route. Ein
+Reload auf dem Hash öffnet dieselbe Ansicht; die Embeds schreiben
+`location.hash` und `documentElement` nicht. Die früheren Einzel-Wrapper
+`SixPackApp.jsx`/`SkillsApp.jsx` liegen in
+`docs/archive/shell-wrappers-2026-11-14/`.
+
+6Pack-Push (nur private Shell): `src/shell/sixpackPush.js` registriert
+`/sixpack-messaging-sw.js` im Scope `/sixpack-push/` über die Shell-Firebase-App
+und wird als `enablePush` an `CoreSkillsApp` gegeben (Router und Setup-Tab).
+Die Produkt-Shell reicht keinen Push durch (VAPID/Messaging-SW gehören zu
+`fitness-aos`); nativ gibt `CoreSkillsApp` nie `enablePush` weiter.
 
 ## Mobile-Redesign (2026-10-11)
 

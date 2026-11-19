@@ -16,7 +16,8 @@ const loadProgram = () => getSixpackProgram()
 const saveProgram = (_uid, program) => saveSixpackProgram(program)
 const complete = workout => logWorkoutAsSession(workout)
 
-export default function CoreSkillsApp({ user, settings = false, initialRoute = '', onRouteChange, onNavigate }) {
+// enablePush: optional vom Host (private Shell: src/shell/sixpackPush.js); nativ nie, dort laufen lokale Erinnerungen.
+export default function CoreSkillsApp({ user, settings = false, initialRoute = '', onRouteChange, onNavigate, enablePush }) {
   const [route, setRoute] = useState(initialRoute)
   const changeRoute = next => { setRoute(next); onRouteChange?.(next) }
   const [design, setDesign] = useState(readDesign)
@@ -32,7 +33,7 @@ export default function CoreSkillsApp({ user, settings = false, initialRoute = '
           if (next === 'settings') return onNavigate?.('settings')
           if (settings) return onNavigate?.('skills')
           changeRoute(next.startsWith('skills') ? next.replace(/^skills\/?/, '') : `sixpack/${next}`)
-        }} onNavigate={onNavigate} firebaseApp={isNativeApp ? undefined : getApp()} localReminders={nativeReminderDelivery} setupContent={setup} coachingNotes={getAllCoachingNotes()}
+        }} onNavigate={onNavigate} firebaseApp={isNativeApp ? undefined : getApp()} enablePush={isNativeApp ? undefined : enablePush} localReminders={nativeReminderDelivery} setupContent={setup} coachingNotes={getAllCoachingNotes()}
         onWorkoutComplete={complete} loadRemoteProgram={loadProgram} saveRemoteProgram={saveProgram} />
     </div> : <div className="core-skills-training"><SkillsEmbed route={route} onRouteChange={changeRoute} design={design} onWorkoutComplete={complete} /></div>}
   </section></ErrorBoundary>

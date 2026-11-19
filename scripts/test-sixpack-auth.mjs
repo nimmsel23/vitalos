@@ -12,7 +12,9 @@ const module = { exports: {} };
 vm.runInNewContext(code, {
   module, exports: module.exports, Fragment: 'fragment',
   h: (type, props, ...children) => ({ type, props, children }),
-  require: name => name.includes('CoreSkillsApp') ? { __esModule: true, default: sixpackApp } : { __esModule: true, default: () => null },
+  require: name => name.includes('CoreSkillsApp') ? { __esModule: true, default: sixpackApp }
+    : name.includes('sixpackPush') ? { __esModule: true, enableShellSixpackPush: () => {} }
+    : { __esModule: true, default: () => null },
 });
 function find(node) {
   if (!node || typeof node !== 'object') return null;
@@ -30,6 +32,7 @@ for (const uid of ['alice', 'bob', null]) {
   assert(view, '6Pack remains embedded in the shell via CoreSkillsApp');
   assert.match(view.props.initialRoute, /^sixpack\/?/, 'sixpack tab opens the 6Pack route');
   assert.equal(view.props.user?.uid || null, uid);
+  assert.equal(typeof view.props.enablePush, 'function', 'private shell passes 6Pack push to Core Skills');
   view.props.onNavigate('fitness', 'today');
   assert.equal(routes[0].join('/'), 'fitness/today');
 }
@@ -39,6 +42,10 @@ assert.match(wrapper, /loadRemoteProgram=\{loadProgram\}/, 'wrapper uses shared 
 assert.match(wrapper, /onWorkoutComplete=\{complete\}/, 'wrapper logs finished workouts');
 assert.match(wrapper, /skills-app\/skills\.css/, '6Pack in the shell uses the Skills CSS');
 assert.match(wrapper, /data-theme="skills"/, '6Pack in the shell uses the Skills theme');
+assert.match(wrapper, /enablePush=\{isNativeApp \? undefined : enablePush\}/, 'wrapper forwards host push, never natively');
+const pushModule = await readFile(new URL('../src/shell/sixpackPush.js', import.meta.url), 'utf8');
+assert.match(pushModule, /serviceWorkerUrl: SIXPACK_PUSH_SW_URL/, 'shell push uses its own messaging service worker');
+assert.match(pushModule, /'\/sixpack-push\/'/, 'shell push scope stays separate from the shell SW');
 // Execute the real photo auth adapter against an existing shell Firebase session.
 const authSource = await readFile(new URL('../6pack-app/photoAuth.js', import.meta.url), 'utf8');
 const stripped = authSource.replace(/^import .*;\n/gm, '');
