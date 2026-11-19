@@ -8,6 +8,7 @@ import { usePushNotifications } from '../../../habit-app/src/views/Habits/usePus
 import PushSettingsModal from '../../../habit-app/src/views/Habits/PushSettingsModal.jsx'
 import * as journalDb from '@journal-db'
 import CoreSkillsApp from '../../../prod/src/shell/CoreSkillsApp.jsx'
+import { enableShellSixpackPush } from '../sixpackPush.js'
 
 const queryClient = new QueryClient()
 function Section({ id, title, children }) {
@@ -42,7 +43,7 @@ function HabitControls({ user }) {
 }
 export default function AppSettingsSections({ user }) {
   return <div className="space-y-4">
-    <Section id="skills" title="Core Skills · Skills & 6Pack"><CoreSkillsApp user={user} settings onNavigate={target => { location.hash = `#${target}` }} /></Section>
+    <Section id="skills" title="Core Skills · Skills & 6Pack"><CoreSkillsApp user={user} settings onNavigate={target => { location.hash = `#${target}` }} enablePush={enableShellSixpackPush} /></Section>
     <Section id="fuel" title="Fuel"><QueryClientProvider client={queryClient}><FuelSettings /></QueryClientProvider></Section>
     <Section id="journal" title="Journal"><JournalControls user={user} /></Section>
     <Section id="habits" title="Habits"><HabitControls user={user} /></Section>
