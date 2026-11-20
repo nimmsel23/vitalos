@@ -22,6 +22,7 @@ rules_version = '2';
 // - plan-dev/firestore.rules (Repo liegt bewusst ausserhalb von ~/vitalos;
 //   nutzt ausschliesslich bereits registrierte fitness/{uid}/...-Pfade,
 //   keine neuen Collections)
+// - 6pack-dev/firestore.exercise-videos.rules (Fragment: exerciseVideos/{exerciseId})
 // ─────────────────────────────────────────────────────────────────────────────
 
 service cloud.firestore {
@@ -62,6 +63,53 @@ service cloud.firestore {
         && request.resource.data.dataUrl is string
         && request.resource.data.dataUrl.size() <= 700000
         && request.resource.data.dataUrl.matches('data:image/jpeg;base64,[A-Za-z0-9+/=]+');
+    }
+
+    // ── 6Pack exercise videos (from 6pack-dev/firestore.exercise-videos.rules) ─
+    // Mapping only: exerciseVideos/{exerciseId}. Do not deploy the 6pack-dev
+    // fragment alone; it is not a complete ruleset.
+    function exerciseVideoData() {
+      return request.resource.data;
+    }
+    function exerciseVideoIsSeconds(value) {
+      return value is int || value is float;
+    }
+    function exerciseVideoClipOk(data) {
+      return (!('clipStart' in data) && !('clipEnd' in data))
+        || (
+          exerciseVideoIsSeconds(data.clipStart)
+          && exerciseVideoIsSeconds(data.clipEnd)
+          && data.clipStart >= 0
+          && data.clipEnd > data.clipStart
+          && data.clipEnd - data.clipStart <= 60
+          && data.clipEnd <= data.duration + 0.05
+        );
+    }
+    function exerciseVideoOk(exerciseId) {
+      return authed()
+        && exerciseId.matches('^[a-z][a-z0-9_]{0,63}$')
+        && exerciseVideoData().keys().hasOnly([
+          'exerciseId', 'storagePath', 'uploaderUid', 'createdAt',
+          'duration', 'status', 'contentType', 'sizeBytes', 'clipStart', 'clipEnd'
+        ])
+        && exerciseVideoData().exerciseId == exerciseId
+        && exerciseVideoData().uploaderUid == request.auth.uid
+        && exerciseVideoData().storagePath.matches('^exerciseVideos/' + exerciseId + '/[A-Za-z0-9][A-Za-z0-9_-]{0,80}$')
+        && exerciseVideoData().contentType.matches('video/.+')
+        && exerciseVideoData().sizeBytes is int
+        && exerciseVideoData().sizeBytes > 0
+        && exerciseVideoData().sizeBytes <= 100 * 1024 * 1024
+        && exerciseVideoIsSeconds(exerciseVideoData().duration)
+        && exerciseVideoData().duration > 0
+        && exerciseVideoData().duration <= 60
+        && exerciseVideoData().status in ['pending', 'approved']
+        && exerciseVideoData().createdAt == request.time
+        && exerciseVideoClipOk(exerciseVideoData());
+    }
+    match /exerciseVideos/{exerciseId} {
+      allow read: if authed();
+      allow create, update: if exerciseVideoOk(exerciseId);
+      allow delete: if false;
     }
 
     // >>> module: skills-app/firestore/skills.rules.part
