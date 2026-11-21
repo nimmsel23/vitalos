@@ -30,6 +30,7 @@
     "tooling:check": "pnpm run tooling:biome && pnpm run tooling:knip && pnpm run tooling:syncpack",
     "tooling:syncpack:all": "pnpm dlx syncpack@15.3.3 lint --dependency-types prod,dev",
     "test": "node --test scripts/smoke.test.mjs",
+    "test:firestore-rules": "pnpm dlx firebase-tools@15.37.0 emulators:exec --only firestore --project demo-vitalos-rules \"node scripts/test-firestore-rules.mjs\"",
     "tooling:biome:lint": "pnpm dlx @biomejs/biome@2.6.6 check --formatter-enabled=true --linter-enabled=true --no-errors-on-unmatched scripts"
   },
   "dependencies": {
@@ -95,6 +96,7 @@
     "zustand": "^5.0.14"
   },
   "devDependencies": {
+    "@firebase/rules-unit-testing": "4.0.1",
     "@tailwindcss/postcss": "^4.3.3",
     "@vitejs/plugin-react": "^4.3.2",
     "autoprefixer": "^10.4.20",
