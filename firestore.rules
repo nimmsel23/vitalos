@@ -67,7 +67,11 @@ service cloud.firestore {
 
     // ── 6Pack exercise videos (from 6pack-dev/firestore.exercise-videos.rules) ─
     // Mapping only: exerciseVideos/{exerciseId}. Do not deploy the 6pack-dev
-    // fragment alone; it is not a complete ruleset.
+    // fragment alone; it is not a complete ruleset. Keep this block in lockstep
+    // with that fragment.
+    // Read: any signed-in account. Create: caller only, and only while the
+    // document is absent (createdAt == request.time). Update and delete: only
+    // the stored uploaderUid. On update, uploaderUid and createdAt stay as stored.
     function exerciseVideoData() {
       return request.resource.data;
     }
@@ -103,13 +107,21 @@ service cloud.firestore {
         && exerciseVideoData().duration > 0
         && exerciseVideoData().duration <= 60
         && exerciseVideoData().status in ['pending', 'approved']
-        && exerciseVideoData().createdAt == request.time
+        && exerciseVideoData().createdAt is timestamp
         && exerciseVideoClipOk(exerciseVideoData());
     }
     match /exerciseVideos/{exerciseId} {
       allow read: if authed();
-      allow create, update: if exerciseVideoOk(exerciseId);
-      allow delete: if false;
+      allow create: if resource == null
+        && exerciseVideoOk(exerciseId)
+        && exerciseVideoData().createdAt == request.time;
+      allow update: if authed()
+        && resource.data.uploaderUid == request.auth.uid
+        && request.resource.data.uploaderUid == resource.data.uploaderUid
+        && exerciseVideoOk(exerciseId)
+        && request.resource.data.createdAt == resource.data.createdAt;
+      allow delete: if authed()
+        && resource.data.uploaderUid == request.auth.uid;
     }
 
     // >>> module: skills-app/firestore/skills.rules.part
