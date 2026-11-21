@@ -20,11 +20,13 @@ on:
       - 'pnpm-workspace.yaml'
       - 'package.json'
       - 'firestore.rules'
+      - 'storage.rules'
       - 'firebase.json'
       - 'scripts/test-firestore-rules.mjs'
   pull_request:
     paths:
       - 'firestore.rules'
+      - 'storage.rules'
       - 'firebase.json'
       - 'scripts/test-firestore-rules.mjs'
       - 'package.json'

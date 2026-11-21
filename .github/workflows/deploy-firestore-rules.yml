@@ -1,19 +1,26 @@
-# Deployt die projekt-globalen Firestore-Rules + Indexes (SSOT: Root-Dateien).
+# Deployt die projekt-globalen Rules: Firestore-Rules + Indexes und Storage-Rules
+# (SSOT: Root-Dateien firestore.rules, firestore.indexes.json, storage.rules).
 #
-# NUR manuell auslösbar (workflow_dispatch) — bewusst kein push-Trigger:
-# Rules gelten für ALLE Apps im Projekt fitness-aos; ein Auto-Deploy würde
-# jede versehentliche Änderung an firestore.rules sofort live schieben.
+# Automatisch (seit 2026-11-21): nach jedem GRÜNEN Product-Check auf einem
+# master-Push. Der Product-Check enthält den Pflicht-Job `firestore-rules`
+# (Emulator-Test gegen Kontogrenzen) — ungetestete Rules gehen also nie live.
+# Unveränderte Rules sind ein No-op ("already up to date").
 # Historie: per-App-Rules-Deploys überschrieben sich gegenseitig und brachen
 # am 16.07.2026 die Exercise-Suche (journal-Rules ohne fitness/kb-Match).
+# Deshalb deployt NUR dieser Workflow Rules (Firestore + Storage), keine App-Repos.
 #
-# Auslösen: gh workflow run deploy-firestore-rules.yml
+# Manuell: gh workflow run deploy-firestore-rules.yml
 # (oder GitHub → Actions → "Deploy Firestore Rules" → Run workflow)
-# Alternativ lokal: firebase deploy --only firestore:rules,firestore:indexes
+# Alternativ lokal: firebase deploy --only firestore:rules,firestore:indexes,storage
 # aus ~/vitalos (das Root-firebase.json ist das einzige mit firestore-Block).
 
 name: Deploy Firestore Rules
 
 on:
+  workflow_run:
+    workflows: ["Product shared-source preparation"]
+    types: [completed]
+    branches: [master]
   workflow_dispatch:
     inputs:
       seed_skills_catalog:
@@ -22,12 +29,23 @@ on:
         required: false
         default: false
 
+concurrency:
+  group: deploy-firestore-rules
+  cancel-in-progress: false
+
 jobs:
   deploy:
+    if: >-
+      github.event_name == 'workflow_dispatch' ||
+      (github.event.workflow_run.conclusion == 'success' &&
+       github.event.workflow_run.event == 'push')
     runs-on: ubuntu-latest
     steps:
       - name: Checkout (ohne Submodules)
         uses: actions/checkout@v4
+        with:
+          # workflow_run: genau den geprüften Commit deployen, nicht master-HEAD.
+          ref: ${{ github.event.workflow_run.head_sha || github.sha }}
 
       - uses: actions/setup-node@v4
         if: inputs.seed_skills_catalog
@@ -44,11 +62,11 @@ jobs:
           git config --global url."https://x-access-token:${{ secrets.GH_SUBMODULE_TOKEN || secrets.GITHUB_TOKEN }}@github.com/".insteadOf "git@github.com:"
           git submodule update --init fitness-app
           git -C fitness-app submodule update --init Skills
-      - name: Deploy Firestore Rules & Indexes
+      - name: Deploy Firestore Rules & Indexes + Storage Rules
         run: |
           echo '${{ secrets.FIREBASE_SERVICE_ACCOUNT || secrets.FIREBASE_SERVICE_ACCOUNT_FITNESS_AOS }}' > /tmp/sa.json
           GOOGLE_APPLICATION_CREDENTIALS=/tmp/sa.json \
-            npx firebase-tools@latest deploy --only firestore:rules,firestore:indexes \
+            npx firebase-tools@latest deploy --only firestore:rules,firestore:indexes,storage \
             --project fitness-aos --non-interactive
 
       - name: Publish immutable Skills catalogue
