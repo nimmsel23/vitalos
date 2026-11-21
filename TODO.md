@@ -42,3 +42,9 @@
 ## 2026-11-11 — C-015 Data Safety und AAB
 
 - [x] C-015 Repo-Anteil (2026-11-12 AL): Data Safety / Werbung / Prüferanleitung in `prod/docs/DATA-SAFETY-ANSWERS.md`; Klickliste 7/11/12 bereit; Punkt 13 AAB lokal bereit — Pfad `prod/android/app/build/outputs/bundle/release/app-release.aab`, SHA-256 `682c7ed6557743a3b816bf01434a709f17149f530fef6c8b6b2c22921723865b` (CN VitalOS Product, jarsigner OK). Kein Play-Upload aus diesem Auftrag → Owner.
+
+# TODO — VitalOS
+
+## 2026-11-11 — C-013 Datenschutz und Kontolöschung
+
+- [ ] Blocker: Function-Deploy nach `vitalos-prod` gehört nicht zum Shell-Auto-Deploy. Ohne ihn hat der In-App-Knopf keine Serverwirkung. Weg dafür ist `deploy-delete-own-account.yml` (`workflow_dispatch`, `dry_run` standardmäßig true, nur `functions:vitalos:deleteOwnAccount`). Lauf und Prüfung an einem neuen Wegwerfkonto sind offen. Nie bestehende Personenkonten.

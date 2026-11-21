@@ -1,3 +1,15 @@
+## 2026-11-21 — Firestore + Storage Rules zentralisiert und automatisiert
+
+Die Firebase Firestore- und Storage-Regeln für das Projekt `fitness-aos` werden nun zentral im `vitalos`-Repo verwaltet und automatisch nach erfolgreichem Product-Check deployt. Dies stellt eine Single Source of Truth (SSOT) sicher und verhindert Überschreibungen durch einzelne App-Repos.
+
+-   **`storage.rules`**: Die Storage-Regeln wurden in das Root-Verzeichnis des `vitalos`-Repos verschoben und dienen nun als zentrale SSOT neben `firestore.rules`.
+-   **`.github/workflows/deploy-firestore-rules.yml`**: Der Workflow wurde erweitert, um nach einem erfolgreichen `product-check` auf `master`-Pushes automatisch sowohl Firestore-Regeln (inkl. Indizes) als auch Storage-Regeln zu deployen. Dies gewährleistet, dass nur getestete Regeln live gehen.
+-   **`.github/workflows/product-check.yml`**: Der Product-Check-Workflow wurde angepasst, um auch Änderungen an `storage.rules` zu berücksichtigen und die Validierung der Storage-Regeln in den automatischen Check zu integrieren.
+-   **`firebase.json`**: Die Konfiguration wurde aktualisiert, um auf die neue, zentrale `storage.rules` im Root zu verweisen.
+-   **CI/CD**: Die erfolgreiche Ausführung des `vitalos`-Product-Checks und des automatischen Deploy-Workflows für Firestore- und Storage-Regeln wurde verifiziert.
+
+---
+
 ## 2026-11-14 — Native Health-Profilübernahme
 
 - Produkt-Shell: freiwilliger Import nach Login, wiederholbar im Körperprofil; Vorschau mit Messdatum, Verwerfen/Überspringen und explizite Cloud-Bestätigung. Fehlende Werte überschreiben nichts. Android Health Connect: Größe/Gewicht; iOS HealthKit: zusätzlich optional Geburtsdatum/Alter in einer Freigabe. Keine Schritte, Health-Schreibrechte oder laufende Synchronisierung.

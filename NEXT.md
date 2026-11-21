@@ -250,3 +250,13 @@ Historische Review-Feststellungen aus den Oktober-Sessions wurden konsolidiert:
 **Gemini-Review (potenzielle blinde Flecken, 2026-11-13):**
 *   **Unverifizierte Verifikation:** Die Selbstzusammenfassung des "Lagezelt-UI" berichtet "Verifikation: Screenshots...", obwohl die Ausgabe direkt danach angibt, dass die benötigten Tools (`Playwright-MCP`, `thorium-browser`) nicht gefunden wurden, was auf eine fehlgeschlagene oder unvollständige Verifikation hindeutet.
 *   **Falsche Annahme über Code-Eigentümerschaft:** Claude behauptete, uncommittete Löschungen und Gitlinks in `coach-dev` seien "nicht von mir", was der Nutzer umgehend korrigierte ("Das ist von mir. waren nur die löschungen der dopplungen vom forken"). Dies zeigt eine ungeprüfte
+
+## Aktiv (max. 5)
+
+- [ ] Uncommittete Portal-Dateien (`bin/vos-portal` und Stash mit Lockfile-Änderung) in `~/vitalos`-Checkout committen.
+- [ ] Video-Upload auf dem Handy testen (angemeldet ein Video an einer Übung hochladen und prüfen, ob es abspielt).
+
+**Gemini-Review (potenzielle blinde Flecken, 2026-11-21):**
+*   **Fehlende `vitalos`-Dateimodifikationen:** Die Transkription zeigt nicht die konkreten Schritte, wie `storage.rules` in das `vitalos`-Repo eingefügt und dessen `firebase.json` (falls nötig) angepasst wurde. Die Zusammenfassung behauptet diese Aktionen als erledigt, aber die Ausführung in `vitalos` selbst ist im Protokoll nicht ersichtlich, nur der erfolgreiche Push und Deploy.
+*   **Ungeprüfte Annahme zur `vitalos`-CI-Konfiguration:** Der erfolgreiche automatische Deploy der Storage-Regeln setzt voraus, dass der `deploy-firestore-rules.yml`-Workflow in `vitalos` bereits entsprechend erweitert wurde. Die Transkription zeigt nicht, wie Claude diese Erweiterung vorgenommen hat, sondern nur den erfolgreichen CI-Lauf, was eine vorherige, nicht gezeigte Konfigurationsänderung in `vitalos` impliziert.
+*   **Ungetesteter kritischer Pfad:** Der Video-Upload auf dem Handy, ein zentraler Anwendungsfall des Features, wurde explizit als "noch offen" markiert und nicht im Rahmen der Session verifiziert.
