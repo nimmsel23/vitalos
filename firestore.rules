@@ -67,11 +67,12 @@ service cloud.firestore {
 
     // ── 6Pack exercise videos (from 6pack-dev/firestore.exercise-videos.rules) ─
     // Mapping only: exerciseVideos/{exerciseId}. Do not deploy the 6pack-dev
-    // fragment alone; it is not a complete ruleset. Keep this block in lockstep
-    // with that fragment.
-    // Read: any signed-in account. Create: caller only, and only while the
-    // document is absent (createdAt == request.time). Update and delete: only
-    // the stored uploaderUid. On update, uploaderUid and createdAt stay as stored.
+    // fragment alone; it is not a complete ruleset. Same auth and field logic
+    // as that fragment. isCoach() above is the existing coach check.
+    // Read: any signed-in account. Create: document absent, uploaderUid is the
+    // caller, storagePath is exerciseVideos/{exerciseId}/{uploaderUid},
+    // createdAt == request.time. Update: stored uploader or isCoach();
+    // uploaderUid and createdAt stay as stored. Delete: stored uploader or isCoach().
     function exerciseVideoData() {
       return request.resource.data;
     }
@@ -97,8 +98,8 @@ service cloud.firestore {
           'duration', 'status', 'contentType', 'sizeBytes', 'clipStart', 'clipEnd'
         ])
         && exerciseVideoData().exerciseId == exerciseId
-        && exerciseVideoData().uploaderUid == request.auth.uid
-        && exerciseVideoData().storagePath.matches('^exerciseVideos/' + exerciseId + '/[A-Za-z0-9][A-Za-z0-9_-]{0,80}$')
+        && exerciseVideoData().uploaderUid.matches('^[A-Za-z0-9][A-Za-z0-9_-]{0,127}$')
+        && exerciseVideoData().storagePath == 'exerciseVideos/' + exerciseId + '/' + exerciseVideoData().uploaderUid
         && exerciseVideoData().contentType.matches('video/.+')
         && exerciseVideoData().sizeBytes is int
         && exerciseVideoData().sizeBytes > 0
@@ -114,14 +115,16 @@ service cloud.firestore {
       allow read: if authed();
       allow create: if resource == null
         && exerciseVideoOk(exerciseId)
+        && exerciseVideoData().uploaderUid == request.auth.uid
         && exerciseVideoData().createdAt == request.time;
-      allow update: if authed()
-        && resource.data.uploaderUid == request.auth.uid
-        && request.resource.data.uploaderUid == resource.data.uploaderUid
+      allow update: if resource != null
         && exerciseVideoOk(exerciseId)
-        && request.resource.data.createdAt == resource.data.createdAt;
-      allow delete: if authed()
-        && resource.data.uploaderUid == request.auth.uid;
+        && request.resource.data.uploaderUid == resource.data.uploaderUid
+        && request.resource.data.createdAt == resource.data.createdAt
+        && (resource.data.uploaderUid == request.auth.uid || isCoach());
+      allow delete: if resource != null
+        && authed()
+        && (resource.data.uploaderUid == request.auth.uid || isCoach());
     }
 
     // >>> module: skills-app/firestore/skills.rules.part
