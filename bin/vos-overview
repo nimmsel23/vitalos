@@ -367,9 +367,8 @@ def inspect_pointers(clones: dict[tuple[str, str], Clone]) -> list[Pointer]:
 class BranchRel:
     module: str
     repo: str
-    dev_vs_vitalos: str  # legacy name: jetzt Pin vs origin/master im *-app, falls vorhanden
-    master_vs_vitalos: str  # origin/master vs origin/vitalos (Info, Branch darf noch existieren)
-    dev_vs_master: str
+    dev_vs_master: str  # origin/dev vs origin/master (+ = dev voraus)
+    pin_vs_master: str  # Pin im *-app vs origin/master (negativ = Pin hinten)
 
 
 def branch_relations() -> list[BranchRel]:
@@ -387,11 +386,10 @@ def branch_relations() -> list[BranchRel]:
                 pin_vs_master = _pin_rel(repo, pin, mst)
         out.append(
             BranchRel(
-                m,
-                str(repo).replace(str(HOME), "~"),
-                pin_vs_master,
-                rel(repo, "origin/master", "origin/vitalos"),
-                rel(repo, "origin/dev", "origin/master"),
+                module=m,
+                repo=str(repo).replace(str(HOME), "~"),
+                dev_vs_master=rel(repo, "origin/dev", "origin/master"),
+                pin_vs_master=pin_vs_master,
             )
         )
     return out
@@ -526,9 +524,9 @@ def build_plan(clones: dict[tuple[str, str], Clone], pointers: list[Pointer], re
     # 4) Shell-Pin hinter origin/master → vos-release
     for m in RELEASE_ORDER:
         r = rel_by.get(m)
-        # pin_vs_master in Feld dev_vs_vitalos: negativ = Pin hinter master
-        if r and r.dev_vs_vitalos not in ("=", "?") and r.dev_vs_vitalos.startswith("-"):
-            add(f"~/vitalos/{MODULES[m][1]}", f"{m}: Shell-Pin ist {r.dev_vs_vitalos} hinter origin/master", f"vos-release {m}")
+        # negativ = Pin hinter master
+        if r and r.pin_vs_master not in ("=", "?") and r.pin_vs_master.startswith("-"):
+            add(f"~/vitalos/{MODULES[m][1]}", f"{m}: Shell-Pin ist {r.pin_vs_master} hinter origin/master", f"vos-release {m}")
     # 5) Meta: Pointer-Bump
     vs = [p for p in pointers if p.parent == "vitalos" and p.state in ("stale", "local-only")]
     if vs:
@@ -591,11 +589,11 @@ def render(clones, pointers, rels, sw_files, shells, plan, coach: CoachOverview 
             t.add_row(p.parent, p.child, p.recorded, p.checked_out, f"[{color}]{p.state}[/] {p.detail}")
         console.print(t)
 
-        t = Table(title="Branch-Verhältnis je Modul (Remote-Refs im standalone-Klon; + = links voraus)")
-        for col in ("Modul", "dev vs vitalos", "master vs vitalos", "dev vs master"):
+        t = Table(title="Branch-Verhältnis je Modul (2 Branches: dev & master; + = links voraus)")
+        for col in ("Modul", "dev vs master", "Pin vs master"):
             t.add_column(col)
         for r in rels:
-            t.add_row(r.module, r.dev_vs_vitalos, r.master_vs_vitalos, r.dev_vs_master)
+            t.add_row(r.module, r.dev_vs_master, r.pin_vs_master)
         console.print(t)
 
     if "deployments" in parts:
