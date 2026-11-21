@@ -19,12 +19,26 @@ on:
       - 'pnpm-lock.yaml'
       - 'pnpm-workspace.yaml'
       - 'package.json'
+      - 'firestore.rules'
+      - 'firebase.json'
+      - 'scripts/test-firestore-rules.mjs'
+  pull_request:
+    paths:
+      - 'firestore.rules'
+      - 'firebase.json'
+      - 'scripts/test-firestore-rules.mjs'
+      - 'package.json'
+      - 'pnpm-lock.yaml'
+      - '.github/workflows/product-check.yml'
 
 permissions:
   contents: read
 
 jobs:
   layout:
+    # Pull Requests führen nur den Rules-Emulator aus. Layout und Produkt-Build
+    # bleiben der Push auf master und workflow_dispatch.
+    if: github.event_name != 'pull_request'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v5
@@ -64,6 +78,7 @@ jobs:
 
   product-build:
     needs: layout
+    if: github.event_name != 'pull_request'
     runs-on: ubuntu-latest
     steps:
       - name: Gate on product build secrets
@@ -157,3 +172,37 @@ jobs:
             exit 1
           fi
           pnpm run product:build
+
+  # Pflicht: Root-firestore.rules gegen Kontogrenzen. Demo-Projekt, keine Credentials.
+  # Läuft bei jedem Product-Check und zusätzlich, wenn firestore.rules oder das
+  # Testskript einen Pull Request oder Master-Push auslösen.
+  firestore-rules:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - name: Skills submodule (public)
+        uses: ./.github/actions/skills-submodule-auth
+        with:
+          deploy-key: ${{ secrets.SKILLS_DEPLOY_KEY }}
+      - name: Fetch exact app pins
+        env:
+          GH_TOKEN: ${{ secrets.GH_SUBMODULE_TOKEN || github.token }}
+        run: |
+          git config --global url."https://x-access-token:${GH_TOKEN}@github.com/".insteadOf "git@github.com:"
+          git submodule sync
+          git submodule update --init
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 11.3.0
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 22
+          cache: pnpm
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+      - name: Install
+        run: pnpm install --frozen-lockfile
+      - name: Firestore rules emulator test
+        run: pnpm test:firestore-rules
