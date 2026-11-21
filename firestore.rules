@@ -301,9 +301,13 @@ service cloud.firestore {
     }
     match /{path=**}/habitJournals/{doc} {
       allow read:  if isCoach() || (authed() && resource.data.userId == request.auth.uid);
-      // request.resource.data = incoming doc (works on create + update).
-      // resource.data = existing doc (fails on create).
-      allow write: if isCoach() || (authed() && request.resource.data.userId == request.auth.uid);
+      // userId allein öffnet kein Schreiben unter fremdem fitness/{uid}.
+      // Pfad-Eigentümer: auth.uid == uid und userId == uid. Coach nur auf
+      // diesem Baum, den fitness/{uid}/** schon mit isCoach() beschreibt.
+      allow write: if path.size() == 2 && path[0] == 'fitness' && (
+        isCoach()
+        || (path[1] == request.auth.uid && request.resource.data.userId == request.auth.uid)
+      );
     }
 
     // ── Coach-App (coach-dev / vos-coach) + Plan-App (plan-dev / vos-plan) ───

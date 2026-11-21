@@ -495,15 +495,33 @@ async function main() {
     database(actors.other).doc(habit).set({ userId: OWNER, text: 'fremd' }),
   );
   await wipe(habit);
-  try {
-    await assertSucceeds(database(actors.other).doc(habit).set({ userId: OTHER, text: 'eigen' }));
-    console.log(
-      'HINWEIS habitJournals: collectionGroup erlaubt einem fremden Konto das Schreiben, wenn userId die eigene Uid ist. Rules bleiben in diesem PR unverändert.',
-    );
-    await wipe(habit);
-  } catch {
-    console.log('HINWEIS habitJournals: fremdes Schreiben mit eigener userId ist verweigert.');
-  }
+  await check(
+    'habitJournals other write own userId',
+    false,
+    database(actors.other).doc(habit).set({ userId: OTHER, text: 'eigen' }),
+  );
+  await wipe(habit);
+  await check(
+    'habitJournals owner write',
+    true,
+    database(actors.owner).doc(habit).set({
+      habitId: 'h1',
+      date: '2026-11-21',
+      text: 'eigen',
+    }),
+  );
+  await wipe(habit);
+  await check(
+    'habitJournals owner write own userId',
+    true,
+    database(actors.owner).doc(habit).set({ userId: OWNER, habitId: 'h1', text: 'eigen' }),
+  );
+  await wipe(habit);
+  await check(
+    'habitJournals coach write',
+    true,
+    database(actors.coach).doc(habit).set({ coachFeedback: 'ok' }),
+  );
 
   await exerciseVideos(actors);
 
