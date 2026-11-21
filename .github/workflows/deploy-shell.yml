@@ -91,7 +91,7 @@ jobs:
         run: pnpm install --frozen-lockfile
 
       - name: Check embedded 6Pack auth
-        run: node scripts/test-sixpack-auth.mjs
+        run: node scripts/test-sixpack-auth.mjs && node --test scripts/test-sixpack-menu-height.mjs
 
       - name: Check shared Firebase messaging
         run: node scripts/test-firebase-messaging.mjs

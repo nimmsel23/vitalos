@@ -93,7 +93,7 @@ jobs:
         run: pnpm install --frozen-lockfile
 
       - name: Check embedded 6Pack auth
-        run: node scripts/test-sixpack-auth.mjs
+        run: node scripts/test-sixpack-auth.mjs && node --test scripts/test-sixpack-menu-height.mjs
 
       - name: Check shell authDomain selection
         run: node scripts/test-shell-auth-domain.mjs && node --test packages/mini-app-shell/test/offline-first.test.mjs
