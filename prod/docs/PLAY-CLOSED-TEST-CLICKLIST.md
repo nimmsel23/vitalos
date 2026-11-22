@@ -149,6 +149,10 @@ oben (`3D:4F:…:EB:A7`). Datei-SHA-256
 `versionCode` 1 in Play hochgeladen, vor dem Upload hochzählen. Offen für den
 Owner: Play-Upload, Abgleich mit dem in der Console hinterlegten Upload-Key,
 Login-Nachweis auf einem Gerät.
+Emulator-Smoke (API 37, Play-Image): `bundletool build-apks --connected-device`
+mit Upload-Key, `install-apks`. App startet ohne Absturz. Der Anmeldebildschirm
+zeigt Passwort vergessen, Google-Login, Datenschutz und Konto löschen. Der
+Login-Test mit Konto bleibt offen (ELD-128).
 
 ## Nur wenn die Console die Kachel zeigt
 
