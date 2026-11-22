@@ -138,6 +138,18 @@ eintragen. Den privaten Keystore nicht hochladen.
 **2026-11-12 AL:** Lokales Bundle + Hash belegt; Play-Upload bleibt Owner.
 JDK 21 unter `~/.local/share/jvm/jdk-21` (Symlink auf `jdk-21.0.13+9`).
 
+**2026-11-22 C-016 (Signaturnachweis, frischer Build):** Neu gebaut von
+`master` `6bc092c` mit JDK 21.0.13 (`product:build:native`, `cap sync android`,
+`bundleRelease`). Enthält damit u. a. #37 (Passwort-Reset, Datenschutz-Link).
+`jarsigner -verify`: JAR-Datei verifiziert. Signer CN=VitalOS Product, O=VitalOS,
+RSA 4096, SHA384withRSA. Zertifikat-SHA-256 identisch mit dem Upload-Zertifikat
+oben (`3D:4F:…:EB:A7`). Datei-SHA-256
+`095c2aaba80d95050577ca307aee989a1beb7fb16977a1bb3d794b644ceb6b7e`
+(8 020 077 Bytes). `versionCode` 1 / `0.1.0`. Wurde schon ein Bundle mit
+`versionCode` 1 in Play hochgeladen, vor dem Upload hochzählen. Offen für den
+Owner: Play-Upload, Abgleich mit dem in der Console hinterlegten Upload-Key,
+Login-Nachweis auf einem Gerät.
+
 ## Nur wenn die Console die Kachel zeigt
 
 Diese Punkte sind keine eigenen Zeilen, weil die Console sie nur bei passendem
