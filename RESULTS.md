@@ -1,3 +1,13 @@
+## 2026-11-23 — Prod Living Dashboard unter prod/dashboard
+
+- React-Board von `Vitaltrainer/website/vitalos-dashboard/` nach `prod/dashboard/` übernommen (Observe/Operate · App-Release, nicht Shell).
+- Publisher: `.github/workflows/prod-dashboard-pages.yml` baut nach `docs/`; `pages-docs.yml` unverändert. Titel „VitalOS · Prod Living Dashboard“.
+- Doku: `prod/dashboard/README.md`, `docs/PAGES-DASHBOARD.md`, `docs/DEV-DASHBOARD.md`. Vitaltrainer-Workflow abgelöst (bricht mit Hinweis ab).
+- Hosting-Karte in vos: Quelle auf `vitalos/prod/dashboard/` gestellt. Secret `PUBLIC_DENYLIST` muss in `nimmsel23/vitalos` gesetzt sein (bisher nur Vitaltrainer).
+- Lokal gebaut; `docs/index.html` + Assets aktualisiert. Kein Push in diesem Schritt ohne Owner-OK.
+
+---
+
 ## 2026-11-21 — Firestore + Storage Rules zentralisiert und automatisiert
 
 Die Firebase Firestore- und Storage-Regeln für das Projekt `fitness-aos` werden nun zentral im `vitalos`-Repo verwaltet und automatisch nach erfolgreichem Product-Check deployt. Dies stellt eine Single Source of Truth (SSOT) sicher und verhindert Überschreibungen durch einzelne App-Repos.
