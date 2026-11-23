@@ -2,41 +2,6 @@
 /* The complete 6Pack UI uses Skills tokens inside Core Skills. */
 .core-skills { background: var(--bg); color: var(--ink); }
 
-/* App-Menü (Eat, Track, Learn, …) wieder mindestens halbe Bildschirmhöhe.
-   6Pack-Home teilt Hero und Menü 50/50 über flex-1/basis-0. Dafür zählt nur
-   eine definite Höhe. min-height allein (min-h-[70dvh]) liess die Menüzeile
-   auf das eingebettete min-h-[14rem] zusammenschrumpfen.
-   Wiederherstellung von bf02ea6 (auf master über a5732d8), verloren als
-   88ac3bf den Tab nach Core Skills zog, ohne den Rahmen mitzunehmen.
-   100vh, dann 100svh, dann 100dvh: altes WebKit, iOS Safari mit sichtbarer
-   Leiste, dynamischer Viewport. --sixpack-nav ist --mobile-nav-height
-   (Tab-Leiste inklusive safe-area-inset-bottom). --sixpack-top schliesst die
-   obere Safe-Area ein, sobald der Shell-Abstandshalter sie verbraucht.
-   Die Menüzeile selbst bleibt mindestens die halbe Bildschirmhöhe; der Hero
-   darf dafür schrumpfen. Was nicht in den sichtbaren Rest passt, scrollt im
-   Rahmen und nicht unter die Tab-Bar. */
-.core-skills-sixpack-frame {
-  display: flex;
-  flex-direction: column;
-  box-sizing: border-box;
-  height: calc(100vh - var(--sixpack-top, 0px) - var(--sixpack-nav, 0px));
-  height: calc(100svh - var(--sixpack-top, 0px) - var(--sixpack-nav, 0px));
-  height: calc(100dvh - var(--sixpack-top, 0px) - var(--sixpack-nav, 0px));
-  overflow-y: auto;
-}
-.core-skills-sixpack-frame > section {
-  height: 100%;
-  min-height: 100%;
-  flex: 1 1 auto;
-}
-.core-skills-sixpack-frame .grid.flex-1 {
-  min-height: 50vh;
-  min-height: 50svh;
-  min-height: 50dvh;
-}
-.core-skills-sixpack-frame .flex-1.basis-0:not(.grid) {
-  min-height: 0;
-}
 .core-skills-sixpack { --text: var(--ink); --border: var(--line); }
 .core-skills-sixpack [style*="background: rgb(10, 10, 10)"],
 .core-skills-sixpack [style*="background: rgb(0, 0, 0)"] { background: var(--bg) !important; }
@@ -65,3 +30,27 @@
 
 .core-skills-sixpack svg[stroke="#e2001a"] { stroke: var(--accent); }
 .core-skills-sixpack svg[stroke="#333"] { stroke: var(--dim); }
+
+/* One navigation level; the embedded apps own their content. */
+.core-skills-header {
+  display: flex; align-items: center; gap: 12px;
+  max-width: 48rem; margin: 0 auto; padding: 12px 20px;
+  border-bottom: 1px solid var(--line);
+}
+.core-skills-nav { display: flex; flex: 1; gap: 20px; }
+.core-skills-header button {
+  min-height: 44px; background: transparent; border: 0;
+  color: var(--dim); font: inherit; font-size: 14px; cursor: pointer;
+}
+.core-skills-nav button { border-bottom: 2px solid transparent; font-weight: 600; }
+.core-skills-nav button[aria-pressed="true"] { color: var(--ink); border-bottom-color: var(--accent); }
+.core-skills-header button:hover { color: var(--ink); }
+.core-skills-header button:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 4px; }
+.core-skills-setup { margin-left: auto; }
+.core-skills-content { max-width: 48rem; margin: 0 auto; min-height: 70dvh; }
+.core-skills .skills-classic { border: 0; border-radius: 0; }
+@media (max-width: 380px) {
+  .core-skills-header { padding-inline: 12px; gap: 12px; }
+  .core-skills-nav { gap: 12px; }
+  .core-skills-header button { font-size: 13px; }
+}
