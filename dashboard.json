@@ -1,0 +1,643 @@
+{
+ "evidence": {
+  "generated_at": "2026-11-23T19:27:27+00:00",
+  "repo": "nimmsel23/vitalos",
+  "meta": {
+   "name": "vitalos",
+   "description": null,
+   "html_url": "https://github.com/nimmsel23/vitalos",
+   "pushed_at": "2026-11-23T19:27:08Z",
+   "default_branch": "master",
+   "visibility": "public",
+   "pages_url": "https://nimmsel23.github.io/vitalos/"
+  },
+  "package": {
+   "name": "vitalos",
+   "version": "0.1.0"
+  },
+  "branches": {
+   "main": "master",
+   "has_dev": false,
+   "master_head": "2cc562c 2026-11-23T20:27:04+01:00"
+  },
+  "work": {
+   "branch": "master",
+   "sha": "2cc562c5f5d5a9cdbbb17f6f4d0e71741522a5f4"
+  },
+  "commits": [
+   {
+    "sha": "2cc562c",
+    "date": "2026-11-23T20:27:04+01:00",
+    "author": "Alpha",
+    "subject": "docs(pages): Submodule-Pfade auf *-dev Living Dashboards umleiten"
+   },
+   {
+    "sha": "038a814",
+    "date": "2026-11-23T20:27:04+01:00",
+    "author": "Alpha",
+    "subject": "chore(docs): Root-SPA-Assets entfernen (jetzt unter docs/prod/)"
+   },
+   {
+    "sha": "cb06c57",
+    "date": "2026-11-23T20:27:04+01:00",
+    "author": "Alpha",
+    "subject": "feat(dashboard): Living Shell-Board + Entwicklungsdashboard unter /prod/"
+   },
+   {
+    "sha": "d08baa5",
+    "date": "2026-11-23T20:27:04+01:00",
+    "author": "Alpha",
+    "subject": "fix(prod): PUBLIC_DENYLIST am Prod-Dashboard entfernen"
+   },
+   {
+    "sha": "7a06510",
+    "date": "2026-11-23T20:27:04+01:00",
+    "author": "Alpha",
+    "subject": "feat(prod): Living Dashboard unter prod/dashboard"
+   },
+   {
+    "sha": "2745356",
+    "date": "2026-11-23T20:27:04+01:00",
+    "author": "Alpha",
+    "subject": "docs: auto-update NEXT.md"
+   },
+   {
+    "sha": "68996be",
+    "date": "2026-11-23T20:27:04+01:00",
+    "author": "Alpha",
+    "subject": "docs: auto-update RESULTS.md"
+   },
+   {
+    "sha": "f2c5b7f",
+    "date": "2026-11-23T15:57:50Z",
+    "author": "github-actions[bot]",
+    "subject": "chore(coordination): refresh living boards [skip ci]"
+   },
+   {
+    "sha": "d1a36c8",
+    "date": "2026-11-23T12:58:11+01:00",
+    "author": "vitalos-org-bot[bot]",
+    "subject": "docs(agents): link VitalOS meta repo to product/engineering role contract (#59)"
+   },
+   {
+    "sha": "39f7999",
+    "date": "2026-11-23T12:00:41+01:00",
+    "author": "vitalos-org-bot[bot]",
+    "subject": "ci: Shell-Pins täglich ziehen und ohne peer-ok mergen (#58)"
+   },
+   {
+    "sha": "d89b076",
+    "date": "2026-11-23T12:00:35+01:00",
+    "author": "vitalos-org-bot[bot]",
+    "subject": "chore(submodules): pin fuel-app to b0937c5 (#57)"
+   },
+   {
+    "sha": "36fc655",
+    "date": "2026-11-23T08:54:15+01:00",
+    "author": "vitalos-org-bot[bot]",
+    "subject": "chore(shell): Mini-App-Pins auf master ziehen (23.11.) (#56)"
+   },
+   {
+    "sha": "16177b9",
+    "date": "2026-11-22T09:18:48+01:00",
+    "author": "Alpha",
+    "subject": "docs(play): Emulator-Smoke des Release-AAB (C-016)"
+   },
+   {
+    "sha": "325fa81",
+    "date": "2026-11-22T08:54:44+01:00",
+    "author": "Alpha",
+    "subject": "docs(play): C-016 Signaturnachweis für frisches AAB (6bc092c)"
+   },
+   {
+    "sha": "6bc092c",
+    "date": "2026-11-21T22:42:16+01:00",
+    "author": "Alpha",
+    "subject": "chore(submodules): bump journal after release and sync pnpm-lock.yaml"
+   },
+   {
+    "sha": "3e1da94",
+    "date": "2026-11-21T22:17:34+01:00",
+    "author": "Alpha",
+    "subject": "refactor(vos-overview): 2-Branch-Modell (dev & master) — vitalos-Branch-Spalten und Legacy-Felder entfernt"
+   },
+   {
+    "sha": "ad3bad3",
+    "date": "2026-11-21T22:06:39+01:00",
+    "author": "Alpha",
+    "subject": "cleanup"
+   },
+   {
+    "sha": "b1c0553",
+    "date": "2026-11-21T22:06:39+01:00",
+    "author": "Alpha",
+    "subject": "docs: auto-update RESULTS.md TODO.md NEXT.md (pre-compact)"
+   },
+   {
+    "sha": "806df18",
+    "date": "2026-11-21T21:24:10+01:00",
+    "author": "vitalos-org-bot[bot]",
+    "subject": "fix(shell): 6Pack-App-Menü wieder mindestens halbe Bildschirmhöhe (#55)"
+   },
+   {
+    "sha": "dfb371a",
+    "date": "2026-11-21T20:02:11+01:00",
+    "author": "Alpha",
+    "subject": "rules: Firestore + Storage zentral, automatisch nach grünem Product-Check"
+   }
+  ],
+  "activity": [
+   {
+    "day": "2026-11-03",
+    "n": 3
+   },
+   {
+    "day": "2026-11-04",
+    "n": 16
+   },
+   {
+    "day": "2026-11-05",
+    "n": 61
+   },
+   {
+    "day": "2026-11-06",
+    "n": 82
+   },
+   {
+    "day": "2026-11-07",
+    "n": 18
+   },
+   {
+    "day": "2026-11-08",
+    "n": 46
+   },
+   {
+    "day": "2026-11-09",
+    "n": 64
+   },
+   {
+    "day": "2026-11-10",
+    "n": 22
+   },
+   {
+    "day": "2026-11-11",
+    "n": 76
+   },
+   {
+    "day": "2026-11-12",
+    "n": 41
+   },
+   {
+    "day": "2026-11-13",
+    "n": 31
+   },
+   {
+    "day": "2026-11-14",
+    "n": 26
+   },
+   {
+    "day": "2026-11-15",
+    "n": 0
+   },
+   {
+    "day": "2026-11-16",
+    "n": 1
+   },
+   {
+    "day": "2026-11-17",
+    "n": 2
+   },
+   {
+    "day": "2026-11-18",
+    "n": 1
+   },
+   {
+    "day": "2026-11-19",
+    "n": 2
+   },
+   {
+    "day": "2026-11-20",
+    "n": 2
+   },
+   {
+    "day": "2026-11-21",
+    "n": 11
+   },
+   {
+    "day": "2026-11-22",
+    "n": 2
+   },
+   {
+    "day": "2026-11-23",
+    "n": 12
+   }
+  ],
+  "workflows": [
+   {
+    "name": "Entwicklungsdashboard → Pages-Pfad",
+    "branch": "master",
+    "event": "push",
+    "status": "completed",
+    "conclusion": "failure",
+    "created_at": "2026-11-23T19:27:11Z",
+    "url": "https://github.com/nimmsel23/vitalos/actions/runs/45249088241",
+    "sha": "2cc562c"
+   },
+   {
+    "name": "Product shared-source preparation",
+    "branch": "master",
+    "event": "push",
+    "status": "in_progress",
+    "conclusion": null,
+    "created_at": "2026-11-23T19:27:11Z",
+    "url": "https://github.com/nimmsel23/vitalos/actions/runs/45249088154",
+    "sha": "2cc562c"
+   },
+   {
+    "name": "Deploy VitalOS Shell",
+    "branch": "master",
+    "event": "push",
+    "status": "in_progress",
+    "conclusion": null,
+    "created_at": "2026-11-23T19:27:11Z",
+    "url": "https://github.com/nimmsel23/vitalos/actions/runs/45249088069",
+    "sha": "2cc562c"
+   },
+   {
+    "name": "living-boards",
+    "branch": "master",
+    "event": "schedule",
+    "status": "completed",
+    "conclusion": "success",
+    "created_at": "2026-11-23T15:57:39Z",
+    "url": "https://github.com/nimmsel23/vitalos/actions/runs/45211048175",
+    "sha": "d1a36c8"
+   },
+   {
+    "name": "Org-Bot (PR anlegen & mergen)",
+    "branch": "master",
+    "event": "check_run",
+    "status": "completed",
+    "conclusion": "success",
+    "created_at": "2026-11-23T11:04:38Z",
+    "url": "https://github.com/nimmsel23/vitalos/actions/runs/45161832212",
+    "sha": "39f7999"
+   },
+   {
+    "name": "Org-Bot (PR anlegen & mergen)",
+    "branch": "codex/role-dashboard-contract-20261123",
+    "event": "pull_request_target",
+    "status": "completed",
+    "conclusion": "success",
+    "created_at": "2026-11-23T11:02:56Z",
+    "url": "https://github.com/nimmsel23/vitalos/actions/runs/45161575084",
+    "sha": "aa35f24"
+   },
+   {
+    "name": "Live Smoke (VitalOS)",
+    "branch": "master",
+    "event": "workflow_run",
+    "status": "completed",
+    "conclusion": "success",
+    "created_at": "2026-11-23T11:02:36Z",
+    "url": "https://github.com/nimmsel23/vitalos/actions/runs/45161527258",
+    "sha": "39f7999"
+   },
+   {
+    "name": "Auto Shell Pins",
+    "branch": "master",
+    "event": "workflow_run",
+    "status": "completed",
+    "conclusion": "success",
+    "created_at": "2026-11-23T11:02:36Z",
+    "url": "https://github.com/nimmsel23/vitalos/actions/runs/45161526941",
+    "sha": "39f7999"
+   },
+   {
+    "name": "Deploy Firestore Rules",
+    "branch": "master",
+    "event": "workflow_run",
+    "status": "completed",
+    "conclusion": "success",
+    "created_at": "2026-11-23T11:02:18Z",
+    "url": "https://github.com/nimmsel23/vitalos/actions/runs/45161483229",
+    "sha": "39f7999"
+   },
+   {
+    "name": "Org-Bot (PR anlegen & mergen)",
+    "branch": "codex/auto-shell-pins",
+    "event": "pull_request_target",
+    "status": "completed",
+    "conclusion": "success",
+    "created_at": "2026-11-23T10:36:30Z",
+    "url": "https://github.com/nimmsel23/vitalos/actions/runs/45157650971",
+    "sha": "5816859"
+   },
+   {
+    "name": "Org-Bot (PR anlegen & mergen)",
+    "branch": "codex/shell-fuel-pin-2026-11-23",
+    "event": "pull_request_target",
+    "status": "completed",
+    "conclusion": "success",
+    "created_at": "2026-11-23T10:18:02Z",
+    "url": "https://github.com/nimmsel23/vitalos/actions/runs/45154820980",
+    "sha": "d6dd1a5"
+   },
+   {
+    "name": "Deploy VOS Fitness PWA",
+    "branch": "master",
+    "event": "push",
+    "status": "completed",
+    "conclusion": "success",
+    "created_at": "2026-11-23T07:54:18Z",
+    "url": "https://github.com/nimmsel23/vitalos/actions/runs/45134479716",
+    "sha": "36fc655"
+   },
+   {
+    "name": "Product shared-source preparation",
+    "branch": "codex/shell-pins-2026-11-23",
+    "event": "pull_request",
+    "status": "completed",
+    "conclusion": "success",
+    "created_at": "2026-11-23T07:47:23Z",
+    "url": "https://github.com/nimmsel23/vitalos/actions/runs/45133655875",
+    "sha": "c9d23fb"
+   },
+   {
+    "name": "Org-Bot (PR anlegen & mergen)",
+    "branch": "codex/shell-pins-2026-11-23",
+    "event": "pull_request_target",
+    "status": "completed",
+    "conclusion": "success",
+    "created_at": "2026-11-23T07:47:23Z",
+    "url": "https://github.com/nimmsel23/vitalos/actions/runs/45133655691",
+    "sha": "c9d23fb"
+   },
+   {
+    "name": "Pages Docs",
+    "branch": "master",
+    "event": "push",
+    "status": "completed",
+    "conclusion": "success",
+    "created_at": "2026-11-21T21:06:54Z",
+    "url": "https://github.com/nimmsel23/vitalos/actions/runs/44949827732",
+    "sha": "ad3bad3"
+   },
+   {
+    "name": "Org-Bot (PR anlegen & mergen)",
+    "branch": "codex/ios-app-menu-height",
+    "event": "pull_request_target",
+    "status": "completed",
+    "conclusion": "success",
+    "created_at": "2026-11-21T20:19:45Z",
+    "url": "https://github.com/nimmsel23/vitalos/actions/runs/44945687449",
+    "sha": "04d0858"
+   },
+   {
+    "name": "PR Preview (VitalOS Shell)",
+    "branch": "codex/ios-app-menu-height",
+    "event": "pull_request",
+    "status": "completed",
+    "conclusion": "success",
+    "created_at": "2026-11-21T20:19:33Z",
+    "url": "https://github.com/nimmsel23/vitalos/actions/runs/44945671063",
+    "sha": "04d0858"
+   },
+   {
+    "name": "Product shared-source preparation",
+    "branch": "codex/firestore-rules-habitjournals-fix",
+    "event": "pull_request",
+    "status": "completed",
+    "conclusion": "success",
+    "created_at": "2026-11-21T18:43:21Z",
+    "url": "https://github.com/nimmsel23/vitalos/actions/runs/44937059226",
+    "sha": "bfe8411"
+   },
+   {
+    "name": "Org-Bot (PR anlegen & mergen)",
+    "branch": "codex/firestore-rules-habitjournals-fix",
+    "event": "pull_request_target",
+    "status": "completed",
+    "conclusion": "success",
+    "created_at": "2026-11-21T18:43:19Z",
+    "url": "https://github.com/nimmsel23/vitalos/actions/runs/44937056470",
+    "sha": "bfe8411"
+   },
+   {
+    "name": "PR Preview (VitalOS Shell)",
+    "branch": "codex/firestore-rules-habitjournals-fix",
+    "event": "pull_request",
+    "status": "completed",
+    "conclusion": "success",
+    "created_at": "2026-11-21T08:39:06Z",
+    "url": "https://github.com/nimmsel23/vitalos/actions/runs/44885873882",
+    "sha": "717bb6c"
+   },
+   {
+    "name": "Org-Bot (PR anlegen & mergen)",
+    "branch": "codex/firestore-rules-emulator-test",
+    "event": "pull_request_target",
+    "status": "completed",
+    "conclusion": "success",
+    "created_at": "2026-11-21T08:29:59Z",
+    "url": "https://github.com/nimmsel23/vitalos/actions/runs/44885155820",
+    "sha": "1d2df23"
+   },
+   {
+    "name": "Product shared-source preparation",
+    "branch": "codex/firestore-rules-emulator-test",
+    "event": "pull_request",
+    "status": "completed",
+    "conclusion": "success",
+    "created_at": "2026-11-21T08:29:44Z",
+    "url": "https://github.com/nimmsel23/vitalos/actions/runs/44885137637",
+    "sha": "1d2df23"
+   },
+   {
+    "name": "PR Preview (VitalOS Shell)",
+    "branch": "codex/firestore-rules-emulator-test",
+    "event": "pull_request",
+    "status": "completed",
+    "conclusion": "success",
+    "created_at": "2026-11-21T08:29:44Z",
+    "url": "https://github.com/nimmsel23/vitalos/actions/runs/44885137589",
+    "sha": "1d2df23"
+   },
+   {
+    "name": "Org-Bot (PR anlegen & mergen)",
+    "branch": "codex/exercise-videos-rules-owner-only",
+    "event": "pull_request_target",
+    "status": "completed",
+    "conclusion": "success",
+    "created_at": "2026-11-21T08:03:09Z",
+    "url": "https://github.com/nimmsel23/vitalos/actions/runs/44883042383",
+    "sha": "d026daf"
+   },
+   {
+    "name": "Org-Bot (PR anlegen & mergen)",
+    "branch": "codex/shell-pins-2026-11-21",
+    "event": "pull_request_target",
+    "status": "completed",
+    "conclusion": "success",
+    "created_at": "2026-11-21T07:47:35Z",
+    "url": "https://github.com/nimmsel23/vitalos/actions/runs/44881875204",
+    "sha": "7561d01"
+   },
+   {
+    "name": "Org-Bot (PR anlegen & mergen)",
+    "branch": "codex/exercise-videos-firestore-rules",
+    "event": "pull_request_target",
+    "status": "completed",
+    "conclusion": "success",
+    "created_at": "2026-11-20T20:02:48Z",
+    "url": "https://github.com/nimmsel23/vitalos/actions/runs/44807753065",
+    "sha": "1b4fcf7"
+   }
+  ],
+  "issues": [
+   {
+    "number": 48,
+    "title": "Vorschlag: täglicher Pin-Check-Workflow für veraltete Submodule-Pins",
+    "created_at": "2026-11-20T09:02:19Z",
+    "updated_at": "2026-11-20T09:02:19Z",
+    "labels": [],
+    "url": "https://github.com/nimmsel23/vitalos/issues/48",
+    "author": "nimmsel23"
+   },
+   {
+    "number": 43,
+    "title": "[cpo] Pilot-Readiness: 3–5 Pilotklienten im 4-Wochen-Startblock mit dem bestehenden Build begleiten",
+    "created_at": "2026-11-16T08:13:25Z",
+    "updated_at": "2026-11-16T08:13:25Z",
+    "labels": [],
+    "url": "https://github.com/nimmsel23/vitalos/issues/43",
+    "author": "nimmsel23"
+   },
+   {
+    "number": 35,
+    "title": "Release-Readiness vor Store-Einreichung",
+    "created_at": "2026-11-12T14:01:22Z",
+    "updated_at": "2026-11-12T14:25:15Z",
+    "labels": [
+     "enhancement"
+    ],
+    "url": "https://github.com/nimmsel23/vitalos/issues/35",
+    "author": "nimmsel23"
+   },
+   {
+    "number": 33,
+    "title": "feat(cloud-dashboard): coach-dev — client console & quality living board",
+    "created_at": "2026-11-12T12:02:36Z",
+    "updated_at": "2026-11-12T23:44:46Z",
+    "labels": [
+     "documentation",
+     "enhancement"
+    ],
+    "url": "https://github.com/nimmsel23/vitalos/issues/33",
+    "author": "nimmsel23"
+   },
+   {
+    "number": 32,
+    "title": "feat(cloud-dashboard): vitalos meta — store/org/CI living board",
+    "created_at": "2026-11-12T12:02:34Z",
+    "updated_at": "2026-11-12T23:44:44Z",
+    "labels": [
+     "documentation",
+     "enhancement"
+    ],
+    "url": "https://github.com/nimmsel23/vitalos/issues/32",
+    "author": "nimmsel23"
+   },
+   {
+    "number": 31,
+    "title": "feat(cloud-dashboard): business vault — Focus/Frame/ops living board",
+    "created_at": "2026-11-12T12:02:32Z",
+    "updated_at": "2026-11-12T23:44:43Z",
+    "labels": [
+     "documentation",
+     "enhancement"
+    ],
+    "url": "https://github.com/nimmsel23/vitalos/issues/31",
+    "author": "nimmsel23"
+   },
+   {
+    "number": 30,
+    "title": "feat(cloud-dashboard): creator — BIP/content pipeline living board",
+    "created_at": "2026-11-12T12:02:31Z",
+    "updated_at": "2026-11-12T23:44:42Z",
+    "labels": [
+     "documentation",
+     "enhancement"
+    ],
+    "url": "https://github.com/nimmsel23/vitalos/issues/30",
+    "author": "nimmsel23"
+   },
+   {
+    "number": 29,
+    "title": "feat(cloud-dashboard): VitalTraining / vitaltrainer — research+B2B+offers living board",
+    "created_at": "2026-11-12T12:02:29Z",
+    "updated_at": "2026-11-12T23:44:40Z",
+    "labels": [
+     "documentation",
+     "enhancement"
+    ],
+    "url": "https://github.com/nimmsel23/vitalos/issues/29",
+    "author": "nimmsel23"
+   },
+   {
+    "number": 28,
+    "title": "feat(cloud-dashboard): workspace Business-Hub — living categories + auto-update",
+    "created_at": "2026-11-12T12:02:28Z",
+    "updated_at": "2026-11-12T23:44:39Z",
+    "labels": [
+     "documentation",
+     "enhancement"
+    ],
+    "url": "https://github.com/nimmsel23/vitalos/issues/28",
+    "author": "nimmsel23"
+   },
+   {
+    "number": 27,
+    "title": "docs(cloud): Session-Digest 2026-11-12 — localhost Multi-Workspace + Dashboard-Epic",
+    "created_at": "2026-11-12T12:01:26Z",
+    "updated_at": "2026-11-12T23:44:47Z",
+    "labels": [
+     "documentation",
+     "enhancement"
+    ],
+    "url": "https://github.com/nimmsel23/vitalos/issues/27",
+    "author": "nimmsel23"
+   },
+   {
+    "number": 20,
+    "title": "[fitness] Shell: iOS Same-Origin-Auth-Redirect + Pins nachziehen (6pack/plan/skills/fitness)",
+    "created_at": "2026-11-11T21:19:39Z",
+    "updated_at": "2026-11-14T06:44:43Z",
+    "labels": [],
+    "url": "https://github.com/nimmsel23/vitalos/issues/20",
+    "author": "nimmdaniel"
+   }
+  ],
+  "pulls": [],
+  "live_sites": [
+   "https://fitness-vos.web.app",
+   "https://fuel-os.web.app",
+   "https://fuel-vos.web.app",
+   "https://observe-vos.web.app",
+   "https://vitalos.web.app"
+  ]
+ },
+ "assessment": {
+  "status": "red",
+  "signals": [
+   {
+    "level": "red",
+    "key": "ci:Entwicklungsdashboard → Pages-Pfad:master",
+    "text": "„Entwicklungsdashboard → Pages-Pfad“ auf master ist rot (failure, 2cc562c)",
+    "url": "https://github.com/nimmsel23/vitalos/actions/runs/45249088241"
+   }
+  ],
+  "ai": null,
+  "ai_at": null
+ }
+}
