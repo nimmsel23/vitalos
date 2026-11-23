@@ -9,6 +9,30 @@ sein). CI/Docs/Agent-Workflows außerhalb von `prod/` nicht aufblasen.
 **Umsetzen vor Dokumentieren:** Sofort Machbares zuerst ändern/pushen,
 Doku danach nachziehen — nicht umgekehrt. **Umgesetzt = committed.**
 
+## Produkt-vs.-Technik-Verantwortung (Org-Schnittstelle)
+
+Für Produkt-Portfolio, Product-/PM-Dashboards und die Dev-Dashboards
+gilt der zentrale interne [Produkt-/Technik-Vertrag](https://github.com/nimmsel23/vos/blob/main/org/PRODUCT-TECH-CONTRACT.md)
+im privaten Org-Repo `nimmsel23/vos` (Zugriff erforderlich).
+Dessen Regeln ändern **nicht** die technischen Branch-/Release-/
+Sicherheitsvorgaben in diesem Repository.
+
+- **CPO/PM** definieren Zielgruppe, Kundenwert, fachliche Priorität,
+  Abnahmekriterien und produktseitige Freigabe; Produkt kann mehrere
+  Repos nutzen und ist nicht mit einem Submodule gleichzusetzen.
+- **CTO/AL/Dev** verantworten technische Umsetzung, Architektur,
+  Repo-Checks und konkrete Integrations-/Release-Nachweise.
+- Ein `*-dev`-Commit, grüner Check, gepinnter Meta-Gitlink,
+  integrierter Build, Deploy und Gerätetest sind **unterschiedliche**
+  Stufen. Jede Aussage braucht Revision, Umgebung und Zeitpunkt.
+  Unbekannt nicht als bestanden darstellen.
+- Arbeit/Status/Verantwortliche im Linear-Team **ELD**, technische
+  PRs/Checks in GitHub. Ein pausierter PM-Timer darf nicht als
+  ausführende Instanz aufgeführt werden.
+- Kein PR oder Dashboard-Digest an Daniel wegen Routine-CI; nur echte
+  Owner-Gates über die zuständige Org-Kette. Keine parallele Produkt-
+  oder Dev-Statusdatenbank in einem Dashboard aufbauen.
+
 ## Architektur und Zuständigkeit
 
 `~/vitalos` enthält private PWA und Store-Produkt. Die private Shell liegt in
