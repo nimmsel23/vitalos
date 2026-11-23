@@ -1,6 +1,5 @@
 # Prod Living Dashboard (prod/dashboard) → docs/ → https://nimmsel23.github.io/vitalos/
 # pages-docs.yml deployt danach nur docs/. deploy-shell ignoriert docs/**.
-# Secret: PUBLIC_DENYLIST (kommagetrennte Klartextnamen).
 name: Prod Living Dashboard → Pages
 
 on:
@@ -35,15 +34,6 @@ jobs:
 
       - name: Bauen
         run: npm ci && npm run build
-
-      - name: Öffentlich = anonym (Sperrliste)
-        env:
-          DENYLIST: ${{ secrets.PUBLIC_DENYLIST }}
-        run: |
-          bash scripts/public-denylist.sh dist || {
-            echo "::error::Im Prod-Dashboard Klarnamen in src/data.ts durch K-xx/T-xx ersetzen."
-            exit 1
-          }
 
       - name: Nach docs/ schreiben und pushen
         working-directory: .

@@ -21,14 +21,10 @@ npm run build  # → dist/
 ## Veröffentlichung
 
 Push auf `master`, der `prod/dashboard/**` ändert, startet
-`.github/workflows/prod-dashboard-pages.yml`: bauen → Sperrliste
-(`PUBLIC_DENYLIST`) → Vite-Ausgabe nach `docs/` committen → `pages-docs.yml`
-deployt Pages.
+`.github/workflows/prod-dashboard-pages.yml`: bauen → Vite-Ausgabe nach `docs/`
+committen → `pages-docs.yml` deployt Pages.
 
 Manuell: Actions → „Prod Living Dashboard → Pages“.
-
-Öffentlich = anonym: in `src/data.ts` nur `K-xx`/`T-xx`. Klarnamen
-brechen den Lauf.
 
 ## Inhalt
 

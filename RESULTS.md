@@ -1,9 +1,15 @@
+## 2026-11-23 — Prod-Dashboard: keine PUBLIC_DENYLIST
+
+Sperrlisten-Schritt und Script aus `prod/dashboard` / Workflow entfernt.
+
+---
+
 ## 2026-11-23 — Prod Living Dashboard unter prod/dashboard
 
 - React-Board von `Vitaltrainer/website/vitalos-dashboard/` nach `prod/dashboard/` übernommen (Observe/Operate · App-Release, nicht Shell).
 - Publisher: `.github/workflows/prod-dashboard-pages.yml` baut nach `docs/`; `pages-docs.yml` unverändert. Titel „VitalOS · Prod Living Dashboard“.
 - Doku: `prod/dashboard/README.md`, `docs/PAGES-DASHBOARD.md`, `docs/DEV-DASHBOARD.md`. Vitaltrainer-Workflow abgelöst (bricht mit Hinweis ab).
-- Hosting-Karte in vos: Quelle auf `vitalos/prod/dashboard/` gestellt. Secret `PUBLIC_DENYLIST` muss in `nimmsel23/vitalos` gesetzt sein (bisher nur Vitaltrainer).
+- Hosting-Karte in vos: Quelle auf `vitalos/prod/dashboard/` gestellt. Keine PUBLIC_DENYLIST am Prod-Board.
 - Lokal gebaut; `docs/index.html` + Assets aktualisiert. Kein Push in diesem Schritt ohne Owner-OK.
 
 ---
