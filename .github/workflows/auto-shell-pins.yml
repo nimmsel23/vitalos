@@ -1,0 +1,79 @@
+name: Auto Shell Pins
+
+# Täglich die Mini-App-Gitlinks (Fuel eingeschlossen) auf den neuesten
+# origin/master mit grünem Check-Job „check“ ziehen. Identität ist die
+# bestehende GitHub App vitalos-org-bot (Variable ORG_BOT_APP_ID, Secret
+# ORG_BOT_PRIVATE_KEY). Keine neuen Secrets.
+#
+# 05:00 UTC ist 06:00 Europe/Vienna im Winter (CET) und 07:00 im Sommer (CEST).
+
+on:
+  schedule:
+    - cron: "0 5 * * *"
+  workflow_dispatch:
+  workflow_run:
+    workflows: ["Deploy VitalOS Shell", "Product shared-source preparation"]
+    types: [completed]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: auto-shell-pins-${{ github.event_name }}
+  cancel-in-progress: false
+
+jobs:
+  bump:
+    if: github.event_name != 'workflow_run' && vars.ORG_BOT_APP_ID != ''
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/create-github-app-token@v1
+        id: app
+        with:
+          app-id: ${{ vars.ORG_BOT_APP_ID }}
+          private-key: ${{ secrets.ORG_BOT_PRIVATE_KEY }}
+      - uses: actions/checkout@v5
+        with:
+          ref: master
+          token: ${{ steps.app.outputs.token }}
+          persist-credentials: true
+          fetch-depth: 0
+          submodules: false
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 11.3.0
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 22
+          cache: pnpm
+      - name: Pins setzen und PR öffnen
+        env:
+          GH_TOKEN: ${{ steps.app.outputs.token }}
+          REPO: ${{ github.repository }}
+        run: bash .github/scripts/auto-shell-pins.sh
+
+  report:
+    if: github.event_name == 'workflow_run' && vars.ORG_BOT_APP_ID != ''
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/create-github-app-token@v1
+        id: app
+        with:
+          app-id: ${{ vars.ORG_BOT_APP_ID }}
+          private-key: ${{ secrets.ORG_BOT_PRIVATE_KEY }}
+      - uses: actions/checkout@v5
+        with:
+          ref: ${{ github.event.repository.default_branch }}
+          persist-credentials: false
+          sparse-checkout: .github/scripts
+      - name: Fehlgeschlagenen Pin-Deploy in ein Issue schreiben
+        env:
+          GH_TOKEN: ${{ steps.app.outputs.token }}
+          REPO: ${{ github.repository }}
+          REPORT: deploy
+          WORKFLOW_NAME: ${{ github.event.workflow_run.name }}
+          WORKFLOW_CONCLUSION: ${{ github.event.workflow_run.conclusion }}
+          WORKFLOW_SHA: ${{ github.event.workflow_run.head_sha }}
+          WORKFLOW_BRANCH: ${{ github.event.workflow_run.head_branch }}
+          WORKFLOW_URL: ${{ github.event.workflow_run.html_url }}
+        run: bash .github/scripts/auto-shell-pins.sh
