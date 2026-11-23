@@ -1,6 +1,6 @@
 # Dashboard — coach-dev
 
-Generated: 2026-11-16T13:38:48+00:00 · SHA: `4b6b889` · Issue: [#33](https://github.com/nimmsel23/vitalos/issues/33) · Repo: `nimmsel23/coach-dev`
+Generated: 2026-11-23T15:57:50+00:00 · SHA: `42f401e` · Issue: [#33](https://github.com/nimmsel23/vitalos/issues/33) · Repo: `nimmsel23/coach-dev`
 
 Refresh: `prod/coordination/ui/gen-boards.py` (+ optional Hook/Action).
 
@@ -9,16 +9,16 @@ Refresh: `prod/coordination/ui/gen-boards.py` (+ optional Hook/Action).
 ## 1. Auth & access (recent log hits)
 
 - auth-ish commits in last 15: **0**
-- `4b6b889 dashboard: Check und Dashboard starten`
-- `4ac95e6 dashboard: Check und Dashboard auf dev starten`
-- `3db82df dashboard: master-Push baut ebenfalls dev`
-- `48fbf07 Merge remote-tracking branch 'origin/dev' into dev`
-- `a49100d docs(coach): verify fitness traction release`
+- `42f401e chore: toten Code entfernen (Ausbaustufen #25, #26)`
+- `c0c2c4a docs: npm statt pnpm, NEXT.md auf GitHub-Issue-Inbox und Ausbaustufen`
+- `f88361d feat(coach-inbox): GitHub-Issues aus nimmsel23/fitness als Inbox-Quelle`
+- `d03ca3e Revert "refactor(coach-inbox): toten GitHub-PR-Zweig entfernen"`
+- `4bb30a1 ci: npm 12 wie lokal verwenden (Lockfile-Kompatibilität)`
 
 
 ## 2. Client scope
 
-- client/habit/insight hits: **4**
+- client/habit/insight hits: **0**
 
 
 ## 3. Inspector / notes
@@ -28,12 +28,12 @@ Refresh: `prod/coordination/ui/gen-boards.py` (+ optional Hook/Action).
 
 ## 4. Plan integration
 
-- plan hits: **0**
+- plan hits: **2**
 
 
 ## 5. CI gate
 
-- test/ci hits: **0**
+- test/ci hits: **2**
 
 
 ## 6. Open acceptance (RESULTS.md)

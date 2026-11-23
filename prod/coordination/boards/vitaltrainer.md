@@ -1,6 +1,6 @@
 # Dashboard — VitalTraining
 
-Generated: 2026-11-16T13:38:48+00:00 · SHA: `53e82dd` · Issue: [#29](https://github.com/nimmsel23/vitalos/issues/29) · Repo: `nimmsel23/business-vitaltraining`
+Generated: 2026-11-23T15:57:50+00:00 · SHA: `d9b8498` · Issue: [#29](https://github.com/nimmsel23/vitalos/issues/29) · Repo: `nimmsel23/business-vitaltraining`
 
 Refresh: `prod/coordination/ui/gen-boards.py` (+ optional Hook/Action).
 

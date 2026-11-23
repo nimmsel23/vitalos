@@ -1,6 +1,6 @@
 # Dashboard — creator
 
-Generated: 2026-11-16T13:38:48+00:00 · SHA: `b642cd5` · Issue: [#30](https://github.com/nimmsel23/vitalos/issues/30) · Repo: `nimmsel23/business-creator`
+Generated: 2026-11-23T15:57:50+00:00 · SHA: `e4d65d5` · Issue: [#30](https://github.com/nimmsel23/vitalos/issues/30) · Repo: `nimmsel23/business-creator`
 
 Refresh: `prod/coordination/ui/gen-boards.py` (+ optional Hook/Action).
 
@@ -25,6 +25,7 @@ Refresh: `prod/coordination/ui/gen-boards.py` (+ optional Hook/Action).
 
 ## 4. Ship-Log
 
+- `e4d65d5 org-bot: Workflow installieren (Org-Autonomie 16.11.2026)`
 - `b642cd5 skills: build-in-public — Influencer-Mütter als Beachhead`
 - `eb81246 creator: build-in-public-Skill tracken, Visitenkarte + Homepage-HTML aufnehmen`
 - `05887e0 feat: VitalTraining Business Integration`

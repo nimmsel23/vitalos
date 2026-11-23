@@ -1,6 +1,6 @@
 # Dashboard — vitalos Meta
 
-Generated: 2026-11-16T13:38:48+00:00 · SHA: `6bb6b08` · Issue: [#32](https://github.com/nimmsel23/vitalos/issues/32) · Repo: `nimmsel23/vitalos`
+Generated: 2026-11-23T15:57:50+00:00 · SHA: `d1a36c8` · Issue: [#32](https://github.com/nimmsel23/vitalos/issues/32) · Repo: `nimmsel23/vitalos`
 
 Refresh: `prod/coordination/ui/gen-boards.py` (+ optional Hook/Action).
 
@@ -8,22 +8,22 @@ Refresh: `prod/coordination/ui/gen-boards.py` (+ optional Hook/Action).
 
 ## 1. Submodule-Pins (Kurz)
 
-- `fitness-app: `6bb6b08``
-- `fuel-app: `6bb6b08``
-- `journal-app: `6bb6b08``
-- `habit-app: `6bb6b08``
-- `learn-app: `6bb6b08``
-- `relax-app: `6bb6b08``
-- `6pack-app: `6bb6b08``
-- `plan-app: `6bb6b08``
-- `skills-app: `6bb6b08``
+- `fitness-app: `d1a36c8``
+- `fuel-app: `d1a36c8``
+- `journal-app: `d1a36c8``
+- `habit-app: `d1a36c8``
+- `learn-app: `d1a36c8``
+- `relax-app: `d1a36c8``
+- `6pack-app: `d1a36c8``
+- `plan-app: `d1a36c8``
+- `skills-app: `d1a36c8``
 
 
 ## 2. Store / Legal Docs
 
 - `CLI-VLOG-VOS-FIRESTORE.md`
-- `STORE-PUBLISHING-PLAN.md`
 - `STORE-RELEASE-STATUS.md`
+- `STORE-PUBLISHING-PLAN.md`
 
 
 ## 3. CI-Routing
@@ -46,14 +46,14 @@ Refresh: `prod/coordination/ui/gen-boards.py` (+ optional Hook/Action).
 
 ## 6. Release-Train / Ship-Log
 
-- `6bb6b08 chore(portal): Registry nach Release aktualisiert (vos-portal)`
-- `ec55b04 chore(submodules): bump habits,learn after release`
-- `dfdf0db chore(portal): Registry nach Release aktualisiert (vos-portal)`
-- `b65eeb9 chore(submodules): bump skills,fitness,fuel,habits,journal,learn,relax,6pack,plan after release`
-- `0ff4cbb fix(vos-release): Agent-Merge nur auf dev, nur Konfliktdateien, atomarer Push`
-- `91b9944 chore(vos-release): Konflikt-Agent läuft auf Sonnet`
-- `82a7240 chore(vos-release): Konflikt-Agent stumm — nur Spinner und [OK], Log nur bei Fehler`
-- `3c980b0 feat(vos-release): Merge-Konflikt → Agent headless (claude, sonst codex), Ausgabe live + Spinner`
-- `9326876 feat(vos-release): dev geht ohne PR mit — FF nach master, sonst master→dev mergen und weiter`
-- `a691975 Merge remote-tracking branch 'origin/master'`
+- `d1a36c8 docs(agents): link VitalOS meta repo to product/engineering role contract (#59)`
+- `39f7999 ci: Shell-Pins täglich ziehen und ohne peer-ok mergen (#58)`
+- `d89b076 chore(submodules): pin fuel-app to b0937c5 (#57)`
+- `36fc655 chore(shell): Mini-App-Pins auf master ziehen (23.11.) (#56)`
+- `16177b9 docs(play): Emulator-Smoke des Release-AAB (C-016)`
+- `325fa81 docs(play): C-016 Signaturnachweis für frisches AAB (6bc092c)`
+- `6bc092c chore(submodules): bump journal after release and sync pnpm-lock.yaml`
+- `3e1da94 refactor(vos-overview): 2-Branch-Modell (dev & master) — vitalos-Branch-Spalten und Legacy-Felder entfernt`
+- `ad3bad3 cleanup`
+- `b1c0553 docs: auto-update RESULTS.md TODO.md NEXT.md (pre-compact)`
 
