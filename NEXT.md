@@ -1,5 +1,6 @@
 # NEXT.md
 
+- [ ] Prod Living Dashboard: Secret `PUBLIC_DENYLIST` in `nimmsel23/vitalos` setzen (von Vitaltrainer übernehmen), dann `prod-dashboard-pages` einmal manuell laufen lassen; optional Hub `dashboards/development/` mit `prod/dashboard` zusammenführen.
 - [ ] Native Health-Profilübernahme: echter Android-/iPhone-Roundtrip, Xcode-Build/HealthKit-Provisioning; vor Store-Upload Datenschutz/Health-Erklärungen und neue Buildnummer abgleichen (prod/docs/NATIVE-HEALTH-PROFILE.md).
 
 - [ ] Betta-Modul-GAPS: fitness/fuel/journal/habits/learn (`~/.vos/cto/DRAFTS/2026-11-11-BETTA-GAPS.md`)
