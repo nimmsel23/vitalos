@@ -1,12 +1,12 @@
 {
  "evidence": {
-  "generated_at": "2026-11-23T19:27:27+00:00",
+  "generated_at": "2026-11-23T20:57:11+00:00",
   "repo": "nimmsel23/vitalos",
   "meta": {
    "name": "vitalos",
    "description": null,
    "html_url": "https://github.com/nimmsel23/vitalos",
-   "pushed_at": "2026-11-23T19:27:08Z",
+   "pushed_at": "2026-11-23T20:56:49Z",
    "default_branch": "master",
    "visibility": "public",
    "pages_url": "https://nimmsel23.github.io/vitalos/"
@@ -18,13 +18,19 @@
   "branches": {
    "main": "master",
    "has_dev": false,
-   "master_head": "2cc562c 2026-11-23T20:27:04+01:00"
+   "master_head": "baf8298 2026-11-23T21:56:46+01:00"
   },
   "work": {
    "branch": "master",
-   "sha": "2cc562c5f5d5a9cdbbb17f6f4d0e71741522a5f4"
+   "sha": "baf8298960f0e657103ae4fd63fc1c746e599d6a"
   },
   "commits": [
+   {
+    "sha": "baf8298",
+    "date": "2026-11-23T21:56:46+01:00",
+    "author": "dependabot[bot]",
+    "subject": "chore(deps-dev): bump vite from 8.0.13 to 8.3.8 in /prod/dashboard (#61)"
+   },
    {
     "sha": "2cc562c",
     "date": "2026-11-23T20:27:04+01:00",
@@ -138,18 +144,12 @@
     "date": "2026-11-21T21:24:10+01:00",
     "author": "vitalos-org-bot[bot]",
     "subject": "fix(shell): 6Pack-App-Menü wieder mindestens halbe Bildschirmhöhe (#55)"
-   },
-   {
-    "sha": "dfb371a",
-    "date": "2026-11-21T20:02:11+01:00",
-    "author": "Alpha",
-    "subject": "rules: Firestore + Storage zentral, automatisch nach grünem Product-Check"
    }
   ],
   "activity": [
    {
     "day": "2026-11-03",
-    "n": 3
+    "n": 0
    },
    {
     "day": "2026-11-04",
@@ -229,29 +229,19 @@
    },
    {
     "day": "2026-11-23",
-    "n": 12
+    "n": 13
    }
   ],
   "workflows": [
-   {
-    "name": "Entwicklungsdashboard → Pages-Pfad",
-    "branch": "master",
-    "event": "push",
-    "status": "completed",
-    "conclusion": "failure",
-    "created_at": "2026-11-23T19:27:11Z",
-    "url": "https://github.com/nimmsel23/vitalos/actions/runs/45249088241",
-    "sha": "2cc562c"
-   },
    {
     "name": "Product shared-source preparation",
     "branch": "master",
     "event": "push",
     "status": "in_progress",
     "conclusion": null,
-    "created_at": "2026-11-23T19:27:11Z",
-    "url": "https://github.com/nimmsel23/vitalos/actions/runs/45249088154",
-    "sha": "2cc562c"
+    "created_at": "2026-11-23T20:56:50Z",
+    "url": "https://github.com/nimmsel23/vitalos/actions/runs/45264571448",
+    "sha": "baf8298"
    },
    {
     "name": "Deploy VitalOS Shell",
@@ -259,8 +249,68 @@
     "event": "push",
     "status": "in_progress",
     "conclusion": null,
-    "created_at": "2026-11-23T19:27:11Z",
-    "url": "https://github.com/nimmsel23/vitalos/actions/runs/45249088069",
+    "created_at": "2026-11-23T20:56:49Z",
+    "url": "https://github.com/nimmsel23/vitalos/actions/runs/45264571033",
+    "sha": "baf8298"
+   },
+   {
+    "name": "Entwicklungsdashboard → Pages-Pfad",
+    "branch": "master",
+    "event": "push",
+    "status": "completed",
+    "conclusion": "failure",
+    "created_at": "2026-11-23T20:56:49Z",
+    "url": "https://github.com/nimmsel23/vitalos/actions/runs/45264570947",
+    "sha": "baf8298"
+   },
+   {
+    "name": "Org-Bot (PR anlegen & mergen)",
+    "branch": "master",
+    "event": "check_run",
+    "status": "completed",
+    "conclusion": "skipped",
+    "created_at": "2026-11-23T19:31:40Z",
+    "url": "https://github.com/nimmsel23/vitalos/actions/runs/45249859265",
+    "sha": "2cc562c"
+   },
+   {
+    "name": "Org-Bot (PR anlegen & mergen)",
+    "branch": "dependabot/npm_and_yarn/prod/dashboard/vite-8.3.8",
+    "event": "pull_request_target",
+    "status": "completed",
+    "conclusion": "success",
+    "created_at": "2026-11-23T19:29:33Z",
+    "url": "https://github.com/nimmsel23/vitalos/actions/runs/45249487274",
+    "sha": "d7d059f"
+   },
+   {
+    "name": "Deploy Firestore Rules",
+    "branch": "master",
+    "event": "workflow_run",
+    "status": "completed",
+    "conclusion": "success",
+    "created_at": "2026-11-23T19:29:03Z",
+    "url": "https://github.com/nimmsel23/vitalos/actions/runs/45249403875",
+    "sha": "2cc562c"
+   },
+   {
+    "name": "Auto Shell Pins",
+    "branch": "master",
+    "event": "workflow_run",
+    "status": "completed",
+    "conclusion": "success",
+    "created_at": "2026-11-23T19:29:03Z",
+    "url": "https://github.com/nimmsel23/vitalos/actions/runs/45249403597",
+    "sha": "2cc562c"
+   },
+   {
+    "name": "Live Smoke (VitalOS)",
+    "branch": "master",
+    "event": "workflow_run",
+    "status": "completed",
+    "conclusion": "success",
+    "created_at": "2026-11-23T19:28:45Z",
+    "url": "https://github.com/nimmsel23/vitalos/actions/runs/45249353794",
     "sha": "2cc562c"
    },
    {
@@ -275,16 +325,6 @@
    },
    {
     "name": "Org-Bot (PR anlegen & mergen)",
-    "branch": "master",
-    "event": "check_run",
-    "status": "completed",
-    "conclusion": "success",
-    "created_at": "2026-11-23T11:04:38Z",
-    "url": "https://github.com/nimmsel23/vitalos/actions/runs/45161832212",
-    "sha": "39f7999"
-   },
-   {
-    "name": "Org-Bot (PR anlegen & mergen)",
     "branch": "codex/role-dashboard-contract-20261123",
     "event": "pull_request_target",
     "status": "completed",
@@ -292,36 +332,6 @@
     "created_at": "2026-11-23T11:02:56Z",
     "url": "https://github.com/nimmsel23/vitalos/actions/runs/45161575084",
     "sha": "aa35f24"
-   },
-   {
-    "name": "Live Smoke (VitalOS)",
-    "branch": "master",
-    "event": "workflow_run",
-    "status": "completed",
-    "conclusion": "success",
-    "created_at": "2026-11-23T11:02:36Z",
-    "url": "https://github.com/nimmsel23/vitalos/actions/runs/45161527258",
-    "sha": "39f7999"
-   },
-   {
-    "name": "Auto Shell Pins",
-    "branch": "master",
-    "event": "workflow_run",
-    "status": "completed",
-    "conclusion": "success",
-    "created_at": "2026-11-23T11:02:36Z",
-    "url": "https://github.com/nimmsel23/vitalos/actions/runs/45161526941",
-    "sha": "39f7999"
-   },
-   {
-    "name": "Deploy Firestore Rules",
-    "branch": "master",
-    "event": "workflow_run",
-    "status": "completed",
-    "conclusion": "success",
-    "created_at": "2026-11-23T11:02:18Z",
-    "url": "https://github.com/nimmsel23/vitalos/actions/runs/45161483229",
-    "sha": "39f7999"
    },
    {
     "name": "Org-Bot (PR anlegen & mergen)",
@@ -472,29 +482,20 @@
     "created_at": "2026-11-21T08:03:09Z",
     "url": "https://github.com/nimmsel23/vitalos/actions/runs/44883042383",
     "sha": "d026daf"
-   },
-   {
-    "name": "Org-Bot (PR anlegen & mergen)",
-    "branch": "codex/shell-pins-2026-11-21",
-    "event": "pull_request_target",
-    "status": "completed",
-    "conclusion": "success",
-    "created_at": "2026-11-21T07:47:35Z",
-    "url": "https://github.com/nimmsel23/vitalos/actions/runs/44881875204",
-    "sha": "7561d01"
-   },
-   {
-    "name": "Org-Bot (PR anlegen & mergen)",
-    "branch": "codex/exercise-videos-firestore-rules",
-    "event": "pull_request_target",
-    "status": "completed",
-    "conclusion": "success",
-    "created_at": "2026-11-20T20:02:48Z",
-    "url": "https://github.com/nimmsel23/vitalos/actions/runs/44807753065",
-    "sha": "1b4fcf7"
    }
   ],
   "issues": [
+   {
+    "number": 60,
+    "title": "Dashboard-Lage: rot",
+    "created_at": "2026-11-23T19:27:33Z",
+    "updated_at": "2026-11-23T20:01:28Z",
+    "labels": [
+     "dashboard"
+    ],
+    "url": "https://github.com/nimmsel23/vitalos/issues/60",
+    "author": "github-actions[bot]"
+   },
    {
     "number": 48,
     "title": "Vorschlag: täglicher Pin-Check-Workflow für veraltete Submodule-Pins",
@@ -633,8 +634,8 @@
    {
     "level": "red",
     "key": "ci:Entwicklungsdashboard → Pages-Pfad:master",
-    "text": "„Entwicklungsdashboard → Pages-Pfad“ auf master ist rot (failure, 2cc562c)",
-    "url": "https://github.com/nimmsel23/vitalos/actions/runs/45249088241"
+    "text": "„Entwicklungsdashboard → Pages-Pfad“ auf master ist rot (failure, baf8298)",
+    "url": "https://github.com/nimmsel23/vitalos/actions/runs/45264570947"
    }
   ],
   "ai": null,
