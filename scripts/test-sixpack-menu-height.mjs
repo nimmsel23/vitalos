@@ -21,5 +21,5 @@ test('Core Skills uses content flow instead of nested viewport scroll frames', a
   assert.match(app, /core-skills-content/)
   assert.doesNotMatch(app, /data-sixpack-frame|useSixpackFrame/)
   assert.doesNotMatch(css, /50dvh|overflow-y: auto/)
-  assert.match(app, /aria-pressed=\{!sixpack\}/)
+  assert.doesNotMatch(app, /core-skills-header|aria-label="Core Skills"/)
 })

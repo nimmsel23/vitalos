@@ -26,7 +26,6 @@ export default function CoreSkillsApp({ user, settings = false, initialRoute = '
   const sixpack = settings || route === 'sixpack' || route.startsWith('sixpack/')
   const setup = <div className="p-4 space-y-4"><PersistenceStatus /><label>Skills-Design<select value={design} onChange={e => { saveDesign(e.target.value); setDesign(e.target.value) }} className="block bg-fit-card text-fit-ink p-2 rounded-lg"><option value="classic">Original</option>{DESIGNS.map(item => <option key={item.id} value={item.id}>{item.name}</option>)}</select></label></div>
   return <ErrorBoundary><section data-theme="skills" className="core-skills">
-    {!settings && <header className="core-skills-header"><nav aria-label="Core Skills" className="core-skills-nav"><button type="button" aria-pressed={!sixpack} onClick={() => changeRoute('')}>Skills</button><button type="button" aria-pressed={sixpack} onClick={() => changeRoute('sixpack')}>6Pack</button></nav><button type="button" className="core-skills-setup" onClick={() => onNavigate?.('settings')}>Setup</button></header>}
     {sixpack ? <div className="core-skills-sixpack core-skills-content">
       <SixPackEmbed key={uid || 'local'} uid={uid} route={settings ? 'settings' : route.replace(/^sixpack\/?/, '')}
         onRouteChange={next => {
