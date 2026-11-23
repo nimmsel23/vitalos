@@ -1,3 +1,11 @@
+## 2026-11-23 — Living Dev-Dashboard + Entwicklungsdashboard unter /prod/
+
+- `dashboard.yml` (Living, `dashboards@engine`, Branch master) → Pages-Root `github.io/vitalos/`; Submodule-Dev-Boards gehören dorthin verlinkt.
+- Entwicklungsdashboard: Quelle `prod/dashboard/`, Live `github.io/vitalos/prod/` (`docs/prod/`), Workflow `entwicklungsdashboard-pages.yml`. Nicht „Product-Board“.
+- `pages-docs.yml` / Root-SPA abgelöst. `prod-dashboard-pages.yml` entfernt.
+
+---
+
 ## 2026-11-23 — Prod-Dashboard: keine PUBLIC_DENYLIST
 
 Sperrlisten-Schritt und Script aus `prod/dashboard` / Workflow entfernt.

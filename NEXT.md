@@ -1,6 +1,6 @@
 # NEXT.md
 
-- [ ] Prod Living Dashboard: `prod-dashboard-pages` nach Push einmal prüfen (Pages live).
+- [ ] Living Dev-Dashboard: `dashboard.yml` einmal manuell laufen lassen; Entwicklungsdashboard unter /prod/ prüfen.
 - [ ] Native Health-Profilübernahme: echter Android-/iPhone-Roundtrip, Xcode-Build/HealthKit-Provisioning; vor Store-Upload Datenschutz/Health-Erklärungen und neue Buildnummer abgleichen (prod/docs/NATIVE-HEALTH-PROFILE.md).
 
 - [ ] Betta-Modul-GAPS: fitness/fuel/journal/habits/learn (`~/.vos/cto/DRAFTS/2026-11-11-BETTA-GAPS.md`)

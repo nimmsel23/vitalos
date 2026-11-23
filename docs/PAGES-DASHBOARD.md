@@ -1,10 +1,9 @@
-# GitHub Pages — Prod Living Dashboard
+# Pages — Living Dev-Dashboard und Entwicklungsdashboard
 
-Quelle: `prod/dashboard/` (Observe/Operate · App-Release, nicht Shell).
-Build: `cd prod/dashboard && npm ci && npm run build` → `docs/index.html` + `docs/assets/`.
-Workflow: `.github/workflows/prod-dashboard-pages.yml` → anschließend `pages-docs.yml`.
-Live: https://nimmsel23.github.io/vitalos/
+| URL | Was | Quelle |
+| --- | --- | --- |
+| https://nimmsel23.github.io/vitalos/ | Living Dev-Dashboard (Shell), wie alle `*-dev`-Boards | `dashboard.yml` → `dashboards@engine` |
+| https://nimmsel23.github.io/vitalos/prod/ | Entwicklungsdashboard (Observe/Operate) | `prod/dashboard/` → `docs/prod/` |
+| https://nimmsel23.github.io/vitalos/apps.html | App-Links / APKs | `docs/apps.html` |
 
-Frühere Quelle `Vitaltrainer/website/vitalos-dashboard/` und private Sites-Hub-Kopie
-sind abgelöst. App-Links/APKs bleiben `docs/apps.html` (siehe [DEV-DASHBOARD.md](./DEV-DASHBOARD.md)).
-Paralleler Hub-Export: https://nimmsel23.github.io/dashboards/development/ (noch separat).
+Früher lag das Entwicklungsdashboard auf der Pages-Root; das war falsch für die Shell.

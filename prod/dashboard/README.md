@@ -1,34 +1,21 @@
-# VitalOS · Prod Living Dashboard
+# VitalOS · Entwicklungsdashboard
 
-App-Release- und Observe/Operate-Lage für **`vitalos/prod`** (nicht Shell).
+Observe/Operate — Lage, Release, Roadmap. Quelle: **`prod/dashboard/`**.
 
-- Live: https://nimmsel23.github.io/vitalos/
-- Quelle: dieses Verzeichnis (`prod/dashboard/`)
-- Build → `docs/index.html` + `docs/assets/` (Pages über `pages-docs.yml`)
-- Früher: `Vitaltrainer/website/vitalos-dashboard/` (Publisher abgelöst)
+- Live: https://nimmsel23.github.io/vitalos/prod/
+- Build → `docs/prod/` (Workflow `entwicklungsdashboard-pages.yml`)
+- Root https://nimmsel23.github.io/vitalos/ = Living Dev-Dashboard der Shell (`dashboard.yml`)
 
 ## Lokal
-
-Node ≥ 22:
 
 ```sh
 cd prod/dashboard
 npm ci
-npm run dev    # http://127.0.0.1:5173
-npm run build  # → dist/
+npm run dev
+npm run build
 ```
 
-## Veröffentlichung
+## Abgrenzung
 
-Push auf `master`, der `prod/dashboard/**` ändert, startet
-`.github/workflows/prod-dashboard-pages.yml`: bauen → Vite-Ausgabe nach `docs/`
-committen → `pages-docs.yml` deployt Pages.
-
-Manuell: Actions → „Prod Living Dashboard → Pages“.
-
-## Inhalt
-
-Ampel/Stand zu Observe/Operate, Play/Release-Gates, Roadmap und Wochenlage.
-Detailnachweise bleiben auf Dev-Boards, CPO/CTO und Linear — hier verdichten
-und verlinken, nicht abschreiben. Shell-Pins gehören nicht hierher
-(siehe `prod/coordination/boards/vitalos.md` / Living Boards #32).
+- Dieses Board = Entwicklungsdashboard des Store-Produkts Observe/Operate.
+- Living Dev-Dashboard der Shell (Pins, CI, Links zu `*-dev`-Boards) = Pages-Root.

@@ -1,40 +1,16 @@
-name: Pages Docs
-
-# Publish only docs/ (VitalOS development dashboard + markdown).
-# Avoids legacy Jekyll builds over the whole monorepo.
+# Abgelöst: GitHub Pages Root gehört dem Living Dev-Dashboard (dashboard.yml / engine).
+# docs/ (inkl. apps.html, /prod/ Entwicklungsdashboard) liefert die Engine mit aus.
+# workflow_dispatch bleibt als No-Op-Hinweis.
+name: Pages Docs (abgelöst)
 
 on:
-  push:
-    branches: [master]
-    paths:
-      - "docs/**"
-      - ".github/workflows/pages-docs.yml"
   workflow_dispatch:
 
-permissions:
-  contents: read
-  pages: write
-  id-token: write
-
-concurrency:
-  group: pages-docs
-  cancel-in-progress: true
-
 jobs:
-  deploy:
+  retired:
     runs-on: ubuntu-latest
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
     steps:
-      - uses: actions/checkout@v4
-        with:
-          sparse-checkout: |
-            docs
-          sparse-checkout-cone-mode: true
-      - uses: actions/configure-pages@v5
-      - uses: actions/upload-pages-artifact@v3
-        with:
-          path: docs
-      - id: deployment
-        uses: actions/deploy-pages@v4
+      - name: Hinweis
+        run: |
+          echo "::error::Pages Root = Living Dashboard (dashboard.yml). Entwicklungsdashboard = docs/prod/ → /vitalos/prod/."
+          exit 1

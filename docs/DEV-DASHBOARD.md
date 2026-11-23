@@ -37,6 +37,7 @@ Der Dateiname `DEV-DASHBOARD.md` / `dev-dashboard.html` ist historisch — Inhal
 
 ## Umbenennung (Owner 2026-11-13)
 
-Es gibt genau **ein** Prod Living Dashboard: https://nimmsel23.github.io/vitalos/ (`docs/index.html`, Quelle `prod/dashboard/`, siehe [PAGES-DASHBOARD.md](./PAGES-DASHBOARD.md)).
-Diese Seite hier ist die **App-Link- und APK-Sammlung**: https://nimmsel23.github.io/vitalos/apps.html (Titel „VitalOS App-Links“).
-`docs/dev-dashboard.html` bleibt nur als Weiterleitung auf `apps.html`, damit alte Links funktionieren.
+Pages-Root https://nimmsel23.github.io/vitalos/ = **Living Dev-Dashboard** der Shell (`dashboard.yml`).
+Entwicklungsdashboard (Observe/Operate): https://nimmsel23.github.io/vitalos/prod/ (`prod/dashboard/`, siehe [PAGES-DASHBOARD.md](./PAGES-DASHBOARD.md)).
+Diese Seite hier ist die **App-Link- und APK-Sammlung**: https://nimmsel23.github.io/vitalos/apps.html.
+`docs/dev-dashboard.html` bleibt Weiterleitung auf `apps.html`.

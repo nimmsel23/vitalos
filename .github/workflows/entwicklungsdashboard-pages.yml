@@ -1,0 +1,62 @@
+# Entwicklungsdashboard (prod/dashboard) → docs/prod/ → https://nimmsel23.github.io/vitalos/prod/
+# Live-Root https://nimmsel23.github.io/vitalos/ gehört dem Living Dev-Dashboard (dashboard.yml).
+name: Entwicklungsdashboard → Pages-Pfad
+
+on:
+  push:
+    branches: [master]
+    paths:
+      - "prod/dashboard/**"
+      - ".github/workflows/entwicklungsdashboard-pages.yml"
+  workflow_dispatch:
+
+concurrency:
+  group: entwicklungsdashboard-pages
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: prod/dashboard
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: prod/dashboard/package-lock.json
+
+      - name: Bauen
+        run: npm ci && npm run build
+
+      - name: Nach docs/prod/ schreiben und pushen
+        working-directory: .
+        env:
+          SRC_SHA: ${{ github.sha }}
+        run: |
+          set -euo pipefail
+          DIST="prod/dashboard/dist"
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          mkdir -p docs/prod/assets
+          git rm -q --ignore-unmatch 'docs/prod/assets/index-*.js' 'docs/prod/assets/index-*.css' \
+            'docs/assets/index-*.js' 'docs/assets/index-*.css' || true
+          # Alte Root-SPA entfernen, falls noch vorhanden (Root = Living Dashboard).
+          git rm -q --ignore-unmatch docs/index.html || true
+          rm -f docs/assets/index-*.js docs/assets/index-*.css 2>/dev/null || true
+          cp "$DIST/index.html" docs/prod/index.html
+          cp "$DIST"/assets/* docs/prod/assets/
+          git add docs/prod
+          if git diff --cached --quiet; then
+            echo "Keine Änderung am Entwicklungsdashboard."
+            exit 0
+          fi
+          git commit -q -m "docs(pages): Entwicklungsdashboard nach docs/prod/ (${SRC_SHA:0:7})" \
+            -m "Quelle prod/dashboard · Live /vitalos/prod/ · Living Root via dashboard.yml."
+          git push origin HEAD:master
