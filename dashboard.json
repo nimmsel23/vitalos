@@ -1,12 +1,12 @@
 {
  "evidence": {
-  "generated_at": "2026-11-24T09:43:50+00:00",
+  "generated_at": "2026-11-24T15:13:00+00:00",
   "repo": "nimmsel23/vitalos",
   "meta": {
    "name": "vitalos",
    "description": null,
    "html_url": "https://github.com/nimmsel23/vitalos",
-   "pushed_at": "2026-11-24T09:43:44Z",
+   "pushed_at": "2026-11-24T09:43:56Z",
    "default_branch": "master",
    "visibility": "public",
    "pages_url": "https://nimmsel23.github.io/vitalos/"
@@ -18,13 +18,19 @@
   "branches": {
    "main": "master",
    "has_dev": false,
-   "master_head": "fecfa13 2026-11-24T09:43:16Z"
+   "master_head": "b3a522c 2026-11-24T09:43:43Z"
   },
   "work": {
    "branch": "master",
-   "sha": "fecfa130a9652f831bb20780283de4d2e895d281"
+   "sha": "b3a522ca61f0c13123cc36f98e4a3a7893216665"
   },
   "commits": [
+   {
+    "sha": "b3a522c",
+    "date": "2026-11-24T09:43:43Z",
+    "author": "github-actions[bot]",
+    "subject": "docs(pages): Entwicklungsdashboard nach docs/prod/ (fecfa13)"
+   },
    {
     "sha": "fecfa13",
     "date": "2026-11-24T09:43:16Z",
@@ -138,18 +144,12 @@
     "date": "2026-11-23T08:54:15+01:00",
     "author": "vitalos-org-bot[bot]",
     "subject": "chore(shell): Mini-App-Pins auf master ziehen (23.11.) (#56)"
-   },
-   {
-    "sha": "16177b9",
-    "date": "2026-11-22T09:18:48+01:00",
-    "author": "Alpha",
-    "subject": "docs(play): Emulator-Smoke des Release-AAB (C-016)"
    }
   ],
   "activity": [
    {
     "day": "2026-11-04",
-    "n": 12
+    "n": 5
    },
    {
     "day": "2026-11-05",
@@ -229,36 +229,56 @@
    },
    {
     "day": "2026-11-24",
-    "n": 6
+    "n": 7
    }
   ],
   "workflows": [
+   {
+    "name": "Org-Bot (PR anlegen & mergen)",
+    "branch": "master",
+    "event": "check_run",
+    "status": "completed",
+    "conclusion": "success",
+    "created_at": "2026-11-24T09:56:04Z",
+    "url": "https://github.com/nimmsel23/vitalos/actions/runs/45369876999",
+    "sha": "b3a522c"
+   },
+   {
+    "name": "Live Smoke (VitalOS)",
+    "branch": "master",
+    "event": "workflow_run",
+    "status": "completed",
+    "conclusion": "success",
+    "created_at": "2026-11-24T09:45:12Z",
+    "url": "https://github.com/nimmsel23/vitalos/actions/runs/45368161411",
+    "sha": "b3a522c"
+   },
    {
     "name": "Auto Shell Pins",
     "branch": "master",
     "event": "workflow_run",
     "status": "completed",
     "conclusion": "success",
-    "created_at": "2026-11-24T09:43:36Z",
-    "url": "https://github.com/nimmsel23/vitalos/actions/runs/45367907232",
-    "sha": "fecfa13"
+    "created_at": "2026-11-24T09:45:12Z",
+    "url": "https://github.com/nimmsel23/vitalos/actions/runs/45368161348",
+    "sha": "b3a522c"
    },
    {
-    "name": "Live Smoke (VitalOS)",
+    "name": "Deploy Firestore Rules",
     "branch": "master",
     "event": "workflow_run",
-    "status": "in_progress",
-    "conclusion": null,
-    "created_at": "2026-11-24T09:43:36Z",
-    "url": "https://github.com/nimmsel23/vitalos/actions/runs/45367907086",
-    "sha": "fecfa13"
+    "status": "completed",
+    "conclusion": "success",
+    "created_at": "2026-11-24T09:45:03Z",
+    "url": "https://github.com/nimmsel23/vitalos/actions/runs/45368135868",
+    "sha": "b3a522c"
    },
    {
     "name": "Deploy VitalOS Shell",
     "branch": "master",
     "event": "push",
-    "status": "in_progress",
-    "conclusion": null,
+    "status": "completed",
+    "conclusion": "success",
     "created_at": "2026-11-24T09:43:32Z",
     "url": "https://github.com/nimmsel23/vitalos/actions/runs/45367895315",
     "sha": "fecfa13"
@@ -267,8 +287,8 @@
     "name": "Product shared-source preparation",
     "branch": "master",
     "event": "push",
-    "status": "in_progress",
-    "conclusion": null,
+    "status": "completed",
+    "conclusion": "success",
     "created_at": "2026-11-24T09:43:32Z",
     "url": "https://github.com/nimmsel23/vitalos/actions/runs/45367895282",
     "sha": "fecfa13"
@@ -295,16 +315,6 @@
    },
    {
     "name": "Org-Bot (PR anlegen & mergen)",
-    "branch": "master",
-    "event": "check_suite",
-    "status": "completed",
-    "conclusion": "success",
-    "created_at": "2026-11-24T09:41:49Z",
-    "url": "https://github.com/nimmsel23/vitalos/actions/runs/45367629453",
-    "sha": "466707d"
-   },
-   {
-    "name": "Org-Bot (PR anlegen & mergen)",
     "branch": "codex/deps-bundle-2026-48",
     "event": "pull_request_target",
     "status": "completed",
@@ -322,16 +332,6 @@
     "created_at": "2026-11-24T09:26:49Z",
     "url": "https://github.com/nimmsel23/vitalos/actions/runs/45365270143",
     "sha": "f1be559"
-   },
-   {
-    "name": "Deploy Firestore Rules",
-    "branch": "master",
-    "event": "workflow_run",
-    "status": "completed",
-    "conclusion": "success",
-    "created_at": "2026-11-24T07:48:02Z",
-    "url": "https://github.com/nimmsel23/vitalos/actions/runs/45350791204",
-    "sha": "67d9b70"
    },
    {
     "name": "Org-Bot (PR anlegen & mergen)",
@@ -362,26 +362,6 @@
     "created_at": "2026-11-24T07:47:46Z",
     "url": "https://github.com/nimmsel23/vitalos/actions/runs/45350756543",
     "sha": "e690082"
-   },
-   {
-    "name": "Org-Bot (PR anlegen & mergen)",
-    "branch": "dependabot/npm_and_yarn/prod/functions/multi-e868f0593b",
-    "event": "pull_request_target",
-    "status": "completed",
-    "conclusion": "success",
-    "created_at": "2026-11-24T07:47:43Z",
-    "url": "https://github.com/nimmsel23/vitalos/actions/runs/45350750806",
-    "sha": "905b916"
-   },
-   {
-    "name": "Org-Bot (PR anlegen & mergen)",
-    "branch": "dependabot/npm_and_yarn/prod/functions/multi-bbf9670a95",
-    "event": "pull_request_target",
-    "status": "completed",
-    "conclusion": "success",
-    "created_at": "2026-11-24T07:47:38Z",
-    "url": "https://github.com/nimmsel23/vitalos/actions/runs/45350739932",
-    "sha": "70ad3f5"
    }
   ],
   "issues": [
