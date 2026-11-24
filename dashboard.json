@@ -1,12 +1,12 @@
 {
  "evidence": {
-  "generated_at": "2026-11-24T09:27:09+00:00",
+  "generated_at": "2026-11-24T09:39:06+00:00",
   "repo": "nimmsel23/vitalos",
   "meta": {
    "name": "vitalos",
    "description": null,
    "html_url": "https://github.com/nimmsel23/vitalos",
-   "pushed_at": "2026-11-24T09:27:02Z",
+   "pushed_at": "2026-11-24T09:38:42Z",
    "default_branch": "master",
    "visibility": "public",
    "pages_url": "https://nimmsel23.github.io/vitalos/"
@@ -18,13 +18,25 @@
   "branches": {
    "main": "master",
    "has_dev": false,
-   "master_head": "baba81e 2026-11-24T09:26:49Z"
+   "master_head": "466707d 2026-11-24T09:38:40Z"
   },
   "work": {
    "branch": "master",
-   "sha": "baba81ea4636d56d04e82ef49f0b981e994437a4"
+   "sha": "466707da651ee2d30e642ac753d1569f251108b3"
   },
   "commits": [
+   {
+    "sha": "466707d",
+    "date": "2026-11-24T09:38:40Z",
+    "author": "vitalos-org-bot[bot]",
+    "subject": "ci: Org-Bot v2, CI-Heilung, Zeitpläne abseits der vollen Stunde (#62)"
+   },
+   {
+    "sha": "fc03c6d",
+    "date": "2026-11-24T09:27:01Z",
+    "author": "github-actions[bot]",
+    "subject": "docs(pages): Entwicklungsdashboard nach docs/prod/ (baba81e)"
+   },
    {
     "sha": "baba81e",
     "date": "2026-11-24T09:26:49Z",
@@ -132,18 +144,6 @@
     "date": "2026-11-21T22:42:16+01:00",
     "author": "Alpha",
     "subject": "chore(submodules): bump journal after release and sync pnpm-lock.yaml"
-   },
-   {
-    "sha": "3e1da94",
-    "date": "2026-11-21T22:17:34+01:00",
-    "author": "Alpha",
-    "subject": "refactor(vos-overview): 2-Branch-Modell (dev & master) — vitalos-Branch-Spalten und Legacy-Felder entfernt"
-   },
-   {
-    "sha": "ad3bad3",
-    "date": "2026-11-21T22:06:39+01:00",
-    "author": "Alpha",
-    "subject": "cleanup"
    }
   ],
   "activity": [
@@ -229,10 +229,70 @@
    },
    {
     "day": "2026-11-24",
-    "n": 2
+    "n": 4
    }
   ],
   "workflows": [
+   {
+    "name": "Deploy VitalOS Shell",
+    "branch": "master",
+    "event": "push",
+    "status": "in_progress",
+    "conclusion": null,
+    "created_at": "2026-11-24T09:38:43Z",
+    "url": "https://github.com/nimmsel23/vitalos/actions/runs/45367153608",
+    "sha": "466707d"
+   },
+   {
+    "name": "Org-Bot (PR anlegen & mergen)",
+    "branch": "codex/ci-heal-org-bot-v2",
+    "event": "pull_request_target",
+    "status": "completed",
+    "conclusion": "success",
+    "created_at": "2026-11-24T09:38:40Z",
+    "url": "https://github.com/nimmsel23/vitalos/actions/runs/45367143256",
+    "sha": "b9edd04"
+   },
+   {
+    "name": "Org-Bot (PR anlegen & mergen)",
+    "branch": "master",
+    "event": "check_suite",
+    "status": "completed",
+    "conclusion": "success",
+    "created_at": "2026-11-24T09:31:19Z",
+    "url": "https://github.com/nimmsel23/vitalos/actions/runs/45365982698",
+    "sha": "fc03c6d"
+   },
+   {
+    "name": "Org-Bot (PR anlegen & mergen)",
+    "branch": "codex/deps-bundle-2026-48",
+    "event": "pull_request_target",
+    "status": "completed",
+    "conclusion": "success",
+    "created_at": "2026-11-24T09:29:17Z",
+    "url": "https://github.com/nimmsel23/vitalos/actions/runs/45365652895",
+    "sha": "99e86bc"
+   },
+   {
+    "name": "Auto Shell Pins",
+    "branch": "master",
+    "event": "workflow_run",
+    "status": "completed",
+    "conclusion": "success",
+    "created_at": "2026-11-24T09:28:25Z",
+    "url": "https://github.com/nimmsel23/vitalos/actions/runs/45365521428",
+    "sha": "fc03c6d"
+   },
+   {
+    "name": "Live Smoke (VitalOS)",
+    "branch": "master",
+    "event": "workflow_run",
+    "status": "completed",
+    "conclusion": "success",
+    "created_at": "2026-11-24T09:28:25Z",
+    "url": "https://github.com/nimmsel23/vitalos/actions/runs/45365521264",
+    "sha": "fc03c6d"
+   },
    {
     "name": "Entwicklungsdashboard → Pages-Pfad",
     "branch": "master",
@@ -241,16 +301,6 @@
     "conclusion": "success",
     "created_at": "2026-11-24T09:26:52Z",
     "url": "https://github.com/nimmsel23/vitalos/actions/runs/45365279063",
-    "sha": "baba81e"
-   },
-   {
-    "name": "Deploy VitalOS Shell",
-    "branch": "master",
-    "event": "push",
-    "status": "in_progress",
-    "conclusion": null,
-    "created_at": "2026-11-24T09:26:52Z",
-    "url": "https://github.com/nimmsel23/vitalos/actions/runs/45365278943",
     "sha": "baba81e"
    },
    {
@@ -264,36 +314,6 @@
     "sha": "f1be559"
    },
    {
-    "name": "Org-Bot (PR anlegen & mergen)",
-    "branch": "master",
-    "event": "check_run",
-    "status": "completed",
-    "conclusion": "success",
-    "created_at": "2026-11-24T09:26:46Z",
-    "url": "https://github.com/nimmsel23/vitalos/actions/runs/45365263429",
-    "sha": "67d9b70"
-   },
-   {
-    "name": "Org-Bot (PR anlegen & mergen)",
-    "branch": "codex/ci-heal-org-bot-v2",
-    "event": "pull_request_target",
-    "status": "completed",
-    "conclusion": "success",
-    "created_at": "2026-11-24T09:25:59Z",
-    "url": "https://github.com/nimmsel23/vitalos/actions/runs/45365135662",
-    "sha": "fedec8c"
-   },
-   {
-    "name": "Live Smoke (VitalOS)",
-    "branch": "master",
-    "event": "workflow_run",
-    "status": "completed",
-    "conclusion": "success",
-    "created_at": "2026-11-24T07:48:40Z",
-    "url": "https://github.com/nimmsel23/vitalos/actions/runs/45350872322",
-    "sha": "67d9b70"
-   },
-   {
     "name": "Deploy Firestore Rules",
     "branch": "master",
     "event": "workflow_run",
@@ -301,16 +321,6 @@
     "conclusion": "success",
     "created_at": "2026-11-24T07:48:02Z",
     "url": "https://github.com/nimmsel23/vitalos/actions/runs/45350791204",
-    "sha": "67d9b70"
-   },
-   {
-    "name": "Auto Shell Pins",
-    "branch": "master",
-    "event": "workflow_run",
-    "status": "completed",
-    "conclusion": "success",
-    "created_at": "2026-11-24T07:48:02Z",
-    "url": "https://github.com/nimmsel23/vitalos/actions/runs/45350791167",
     "sha": "67d9b70"
    },
    {
@@ -392,30 +402,9 @@
     "created_at": "2026-11-24T07:46:16Z",
     "url": "https://github.com/nimmsel23/vitalos/actions/runs/45350568832",
     "sha": "427f074"
-   },
-   {
-    "name": "Product shared-source preparation",
-    "branch": "codex/shell-pins-2026-11-24",
-    "event": "pull_request",
-    "status": "completed",
-    "conclusion": "success",
-    "created_at": "2026-11-24T07:43:02Z",
-    "url": "https://github.com/nimmsel23/vitalos/actions/runs/45350139754",
-    "sha": "427f074"
    }
   ],
   "issues": [
-   {
-    "number": 60,
-    "title": "Dashboard-Lage: rot",
-    "created_at": "2026-11-23T19:27:33Z",
-    "updated_at": "2026-11-23T20:57:16Z",
-    "labels": [
-     "dashboard"
-    ],
-    "url": "https://github.com/nimmsel23/vitalos/issues/60",
-    "author": "github-actions[bot]"
-   },
    {
     "number": 48,
     "title": "Vorschlag: täglicher Pin-Check-Workflow für veraltete Submodule-Pins",
@@ -541,6 +530,18 @@
   ],
   "pulls": [
    {
+    "number": 70,
+    "title": "chore(deps): prod/functions Bündel 2026-W48 (#65–#69)",
+    "created_at": "2026-11-24T09:29:13Z",
+    "updated_at": "2026-11-24T09:29:46Z",
+    "labels": [],
+    "url": "https://github.com/nimmsel23/vitalos/pull/70",
+    "author": "vitalos-org-bot[bot]",
+    "head": "codex/deps-bundle-2026-48",
+    "base": "master",
+    "draft": false
+   },
+   {
     "number": 69,
     "title": "chore(deps): bump body-parser from 1.20.6 to 1.20.9 in /prod/functions",
     "created_at": "2026-11-24T07:47:46Z",
@@ -612,20 +613,6 @@
     "url": "https://github.com/nimmsel23/vitalos/pull/65",
     "author": "dependabot[bot]",
     "head": "dependabot/npm_and_yarn/prod/functions/multi-bbf9670a95",
-    "base": "master",
-    "draft": false
-   },
-   {
-    "number": 62,
-    "title": "ci: Org-Bot v2, CI-Heilung, Zeitpläne abseits der vollen Stunde",
-    "created_at": "2026-11-24T07:41:50Z",
-    "updated_at": "2026-11-24T09:25:56Z",
-    "labels": [
-     "needs-peer"
-    ],
-    "url": "https://github.com/nimmsel23/vitalos/pull/62",
-    "author": "vitalos-org-bot[bot]",
-    "head": "codex/ci-heal-org-bot-v2",
     "base": "master",
     "draft": false
    }
