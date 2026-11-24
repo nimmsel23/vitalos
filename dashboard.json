@@ -1,12 +1,12 @@
 {
  "evidence": {
-  "generated_at": "2026-11-24T09:42:24+00:00",
+  "generated_at": "2026-11-24T09:43:50+00:00",
   "repo": "nimmsel23/vitalos",
   "meta": {
    "name": "vitalos",
    "description": null,
    "html_url": "https://github.com/nimmsel23/vitalos",
-   "pushed_at": "2026-11-24T09:42:06Z",
+   "pushed_at": "2026-11-24T09:43:44Z",
    "default_branch": "master",
    "visibility": "public",
    "pages_url": "https://nimmsel23.github.io/vitalos/"
@@ -18,13 +18,19 @@
   "branches": {
    "main": "master",
    "has_dev": false,
-   "master_head": "6e9e284 2026-11-24T09:42:04Z"
+   "master_head": "fecfa13 2026-11-24T09:43:16Z"
   },
   "work": {
    "branch": "master",
-   "sha": "6e9e28498ec43a97a01c73a5e3f2fdfbe97d3c0d"
+   "sha": "fecfa130a9652f831bb20780283de4d2e895d281"
   },
   "commits": [
+   {
+    "sha": "fecfa13",
+    "date": "2026-11-24T09:43:16Z",
+    "author": "Cursor Agent",
+    "subject": "chore: remove obsolete prod/coordination (Daniel 24.11.2026)"
+   },
    {
     "sha": "6e9e284",
     "date": "2026-11-24T09:42:04Z",
@@ -138,12 +144,6 @@
     "date": "2026-11-22T09:18:48+01:00",
     "author": "Alpha",
     "subject": "docs(play): Emulator-Smoke des Release-AAB (C-016)"
-   },
-   {
-    "sha": "325fa81",
-    "date": "2026-11-22T08:54:44+01:00",
-    "author": "Alpha",
-    "subject": "docs(play): C-016 Signaturnachweis für frisches AAB (6bc092c)"
    }
   ],
   "activity": [
@@ -229,10 +229,60 @@
    },
    {
     "day": "2026-11-24",
-    "n": 5
+    "n": 6
    }
   ],
   "workflows": [
+   {
+    "name": "Auto Shell Pins",
+    "branch": "master",
+    "event": "workflow_run",
+    "status": "completed",
+    "conclusion": "success",
+    "created_at": "2026-11-24T09:43:36Z",
+    "url": "https://github.com/nimmsel23/vitalos/actions/runs/45367907232",
+    "sha": "fecfa13"
+   },
+   {
+    "name": "Live Smoke (VitalOS)",
+    "branch": "master",
+    "event": "workflow_run",
+    "status": "in_progress",
+    "conclusion": null,
+    "created_at": "2026-11-24T09:43:36Z",
+    "url": "https://github.com/nimmsel23/vitalos/actions/runs/45367907086",
+    "sha": "fecfa13"
+   },
+   {
+    "name": "Deploy VitalOS Shell",
+    "branch": "master",
+    "event": "push",
+    "status": "in_progress",
+    "conclusion": null,
+    "created_at": "2026-11-24T09:43:32Z",
+    "url": "https://github.com/nimmsel23/vitalos/actions/runs/45367895315",
+    "sha": "fecfa13"
+   },
+   {
+    "name": "Product shared-source preparation",
+    "branch": "master",
+    "event": "push",
+    "status": "in_progress",
+    "conclusion": null,
+    "created_at": "2026-11-24T09:43:32Z",
+    "url": "https://github.com/nimmsel23/vitalos/actions/runs/45367895282",
+    "sha": "fecfa13"
+   },
+   {
+    "name": "Entwicklungsdashboard → Pages-Pfad",
+    "branch": "master",
+    "event": "push",
+    "status": "completed",
+    "conclusion": "success",
+    "created_at": "2026-11-24T09:43:32Z",
+    "url": "https://github.com/nimmsel23/vitalos/actions/runs/45367895277",
+    "sha": "fecfa13"
+   },
    {
     "name": "Org-Bot (PR anlegen & mergen)",
     "branch": "codex/ci-heal-org-bot-v2",
@@ -242,16 +292,6 @@
     "created_at": "2026-11-24T09:42:11Z",
     "url": "https://github.com/nimmsel23/vitalos/actions/runs/45367689417",
     "sha": "526df62"
-   },
-   {
-    "name": "Deploy VitalOS Shell",
-    "branch": "master",
-    "event": "push",
-    "status": "in_progress",
-    "conclusion": null,
-    "created_at": "2026-11-24T09:42:08Z",
-    "url": "https://github.com/nimmsel23/vitalos/actions/runs/45367677989",
-    "sha": "6e9e284"
    },
    {
     "name": "Org-Bot (PR anlegen & mergen)",
@@ -264,26 +304,6 @@
     "sha": "466707d"
    },
    {
-    "name": "Auto Shell Pins",
-    "branch": "master",
-    "event": "workflow_run",
-    "status": "completed",
-    "conclusion": "success",
-    "created_at": "2026-11-24T09:40:19Z",
-    "url": "https://github.com/nimmsel23/vitalos/actions/runs/45367399122",
-    "sha": "466707d"
-   },
-   {
-    "name": "Live Smoke (VitalOS)",
-    "branch": "master",
-    "event": "workflow_run",
-    "status": "completed",
-    "conclusion": "success",
-    "created_at": "2026-11-24T09:40:19Z",
-    "url": "https://github.com/nimmsel23/vitalos/actions/runs/45367398868",
-    "sha": "466707d"
-   },
-   {
     "name": "Org-Bot (PR anlegen & mergen)",
     "branch": "codex/deps-bundle-2026-48",
     "event": "pull_request_target",
@@ -292,16 +312,6 @@
     "created_at": "2026-11-24T09:29:17Z",
     "url": "https://github.com/nimmsel23/vitalos/actions/runs/45365652895",
     "sha": "99e86bc"
-   },
-   {
-    "name": "Entwicklungsdashboard → Pages-Pfad",
-    "branch": "master",
-    "event": "push",
-    "status": "completed",
-    "conclusion": "success",
-    "created_at": "2026-11-24T09:26:52Z",
-    "url": "https://github.com/nimmsel23/vitalos/actions/runs/45365279063",
-    "sha": "baba81e"
    },
    {
     "name": "Org-Bot (PR anlegen & mergen)",
