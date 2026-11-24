@@ -31,9 +31,9 @@ Stand CTO-Runde 2026-11-09.
 - [ ] C-001b Closed-Test-Track (`+cto`): Existenz-Fakt an CEO; Owner-Klickliste C-010.
 
 
-## 2026-11-13 (Lagezelt-UI prod/coordination)
+## 2026-11-13 (Lagezelt-UI)
 
-- [ ] Lagezelt-Parser (`prod/coordination/ui/app.js`) hängen an der Markdown-Struktur: `## OFFEN`/`IST-STAND` in STATUS.md, Rollentabelle in ORG.md, P0–P2 im PRODUKT-BACKLOG, datierte `## `-Abschnitte in TODO/STATUS. Bei Umbau dieser Dateien die UI mit prüfen (`python3 -m http.server 8765 --bind 127.0.0.1`, `/ui/`).
+- [x] Lagezelt-UI (2026-11-24): Koordination liegt in der Org https://github.com/nimmsel23/vos (org/).
 - [ ] Playwright-MCP ist hier unbrauchbar (kein Chrome unter `/opt/google/chrome/chrome`); UI-Checks laufen über `thorium-browser-avx2 --headless`. Entweder Playwright auf einen vorhandenen Browser umstellen oder dabei bleiben — nicht entschieden.
 
 ## 2026-11-09 — Branch-Modell (nach Shell-Pin auf master)
@@ -76,7 +76,7 @@ Aktive Arbeitsliste (max. 5 Punkte) für das vitalos Meta-Repo.
 
 - [x] Org-Task c3315277: M2-Verteilweg erledigt 2026-11-10 AL — `prod/docs/M2-TESTUSER-APK-VERTEILWEG.md` (Sideload; Owner teilt Link).
 - [x] Org-Task 378427eb (+cto +hit): GitHub-Pages-Kanal erfasst (2026-11-09 AL): Legacy `master`/`/docs` → `nimmsel23.github.io/vitalos` (Root 404, `Index.html` 200); 17 Dateien inkl. Ops-Runbooks; keine Rohsecrets, wohl SA-Mails/Secret-Namen; Empfehlung deaktivieren/beschneiden — Owner-Gate. Doku: `prod/docs/FIREBASE.md` § GitHub Pages + Verweise in `docs/DEPLOYMENT.md` / `docs/UNIFIED-PRODUCT.md`.
-- [ ] Nur-gemeldet-Punkte beobachten (fremde Linien, nicht anfassen): uncommittet prod/coordination/CTO.md, D vitalos.html, Untracked 20/docs/Index.html; +-Drift journal-app (9502f2b, heads/vitalos).
+- [ ] Nur-gemeldet-Punkte beobachten (fremde Linien, nicht anfassen): CTO-Notiz der Org (https://github.com/nimmsel23/vos, org/), D vitalos.html, Untracked 20/docs/Index.html; +-Drift journal-app (9502f2b, heads/vitalos).
 - [ ] Submodule-Pointer-Bumps & Shell-Tailwind-4: Modul-PRs master → vitalos und Shell-Upgrade auf Tailwind 4 nach Abschluss der aktiven Dev-Stränge abgleichen.
 
 ## 2026-11-06 (Android-Produktlinie, APK/AAB gebaut)

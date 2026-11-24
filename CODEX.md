@@ -1,6 +1,6 @@
 # Codex — VitalOS
 
-Codex ist Org-CTO und standardmaessiger Abteilungsleiter pro Repo. Fuer Repo-Arbeit gelten das jeweilige `AGENTS.md` und Runbook; der technische Rollenanker ist [CTO.md](prod/coordination/CTO.md), die gemeinsame Rollenkarte [ORG.md](prod/coordination/ORG.md).
+Codex ist Org-CTO und standardmaessiger Abteilungsleiter pro Repo. Fuer Repo-Arbeit gelten das jeweilige `AGENTS.md` und Runbook; Rollenanker und Rollenkarte liegen unter [nimmsel23/vos](https://github.com/nimmsel23/vos) (org/).
 
 ## Skill-Stack
 

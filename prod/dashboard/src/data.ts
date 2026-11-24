@@ -485,7 +485,7 @@ export const changes: [string, string, string][] = [
 export const evidence: [string, string][] = [
   ['Freigegebene Strategie V1.3.0', 'https://github.com/nimmsel23/vitalos/blob/master/VitalOS-Produktstrategie-V1.3.0.md'],
   ['Store-Publishing-Plan', 'https://github.com/nimmsel23/vitalos/blob/master/prod/docs/STORE-PUBLISHING-PLAN.md'],
-  ['ORG.md Koordination', 'https://github.com/nimmsel23/vitalos/blob/master/prod/coordination/ORG.md'],
+  ['Org (nimmsel23/vos)', 'https://github.com/nimmsel23/vos'],
   ['Privates Entwicklungsdashboard', 'https://vitalos-development-hub.nimmdaniel.chatgpt.site'],
 ];
 

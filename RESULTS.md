@@ -50,16 +50,16 @@ Die Firebase Firestore- und Storage-Regeln für das Projekt `fitness-aos` werden
 ## 2026-11-13 07:06 CET — CEO-Belegrunde
 
 - Sweep, Org-Rang und Commit-/DB-Stichproben abgeschlossen. Fuenf juengste Meta-Runs gruen; separate Pages-/Journal-Reds live bestaetigt und mit AL-Belegen an CTO geroutet. Struktur-Doku-Drift in UNIFIED-PRODUCT festgehalten.
-- Ausschliesslich Koordinationsdoku; kein Task-Write, Versand oder produktiver Eingriff. Details: letzte CEO-SEKTION in `prod/coordination/TODO.md`.
+- Ausschliesslich Koordinationsdoku; kein Task-Write, Versand oder produktiver Eingriff. Details: letzte CEO-SEKTION, Org https://github.com/nimmsel23/vos (org/).
 
-## 2026-11-13 — Lagezelt-UI für prod/coordination
+## 2026-11-13 — Lagezelt-UI
 
-Die alte HTML-UI über den Koordinations-Markdowns wurde als „Lagezelt“ neu gebaut: statisches Dashboard ohne Abhängigkeiten, liest STATUS/TODO/ORG/PRODUCT/PRODUKT-BACKLOG live per `fetch`. Commit `c89d815` (lokal zuerst `4e58b6e`, inzwischen auf `origin/master`).
+Die alte HTML-UI über den Koordinations-Markdowns wurde als „Lagezelt“ neu gebaut: statisches Dashboard ohne Abhängigkeiten, liest STATUS/TODO/ORG/PRODUCT/PRODUKT-BACKLOG live per `fetch`. Commit `c89d815` (lokal zuerst `4e58b6e`, inzwischen auf `origin/master`). Seit 2026-11-24 liegt die Koordination in der Org https://github.com/nimmsel23/vos (org/).
 
-- **`prod/coordination/ui/index.html`**: Fünf Ansichten (Lage, Rollen, Produkt, Logbuch, Dokumente) mit nummerierter Navigation, Hell-/Dunkel-Schema (System oder Taste `t`).
-- **`prod/coordination/ui/styles.css`**: Neues Theme (dunkel als Default), Mobil-Layout bei 390px geprüft (Sidebar-Überlauf behoben).
-- **`prod/coordination/ui/app.js`**: Hash-Routing, Tasten `1`–`5` und `/`, Neuladen bei Fokus und jede Minute. Lage = Rangfolge aus STATUS → OFFEN, Funkverkehr (neueste TODO/STATUS-Einträge mit Rollen-Chips), Lieferstatus P0–P2. Logbuch sortiert nach Datum (die alte UI zeigte als „letzte“ CEO-Sektionen die ältesten), mit Suche und Rollenfilter. Heading-Parser überspringt Code-Fences, Tabellen-Parser liest nur die erste Tabelle eines Abschnitts.
-- **`prod/coordination/README.md`**: Startbefehl jetzt `python3 -m http.server 8765 --bind 127.0.0.1` (STATUS.md ist lokal-privat und wäre sonst im Netzwerk lesbar); `ui/`-Zeile auf „Lagezelt“ aktualisiert. `ui/app.js.bak` gelöscht.
+- **`ui/index.html`**: Fünf Ansichten (Lage, Rollen, Produkt, Logbuch, Dokumente) mit nummerierter Navigation, Hell-/Dunkel-Schema (System oder Taste `t`).
+- **`ui/styles.css`**: Neues Theme (dunkel als Default), Mobil-Layout bei 390px geprüft (Sidebar-Überlauf behoben).
+- **`ui/app.js`**: Hash-Routing, Tasten `1`–`5` und `/`, Neuladen bei Fokus und jede Minute. Lage = Rangfolge aus STATUS → OFFEN, Funkverkehr (neueste TODO/STATUS-Einträge mit Rollen-Chips), Lieferstatus P0–P2. Logbuch sortiert nach Datum (die alte UI zeigte als „letzte“ CEO-Sektionen die ältesten), mit Suche und Rollenfilter. Heading-Parser überspringt Code-Fences, Tabellen-Parser liest nur die erste Tabelle eines Abschnitts.
+- **`README.md`**: Startbefehl damals `python3 -m http.server 8765 --bind 127.0.0.1` (STATUS.md ist lokal-privat und wäre sonst im Netzwerk lesbar); `ui/`-Zeile auf „Lagezelt“ aktualisiert. `ui/app.js.bak` gelöscht.
 - **Submodule-Pointer**: Der pre-commit-Hook hat `6pack-app` (`dbddbd2` → `20ced77`) und `skills-app` (`6073486` → `0395efa`) automatisch mit in den UI-Commit gelegt (Stand der Store-Agenten; Lockfile war synchron).
 - **Verifikation**: Screenshots aller Ansichten mit `thorium-browser-avx2 --headless` (Desktop 1440px, Mobil per 390px-iframe); Playwright-MCP findet kein Chrome unter `/opt/google/chrome/chrome`, `thorium-browser` steht nicht im PATH.
 
@@ -89,7 +89,7 @@ Die alte HTML-UI über den Koordinations-Markdowns wurde als „Lagezelt“ neu 
 - Native Store-Webbuild mit product.env OK (`prod/dist-native`). AAB-Rebuild blockiert: kein JDK 21 (nur 17/27); bestehendes AAB 10:52 CET.
 - fitness-dev: Biome-Fix `build-kb-data` → Check grün (`5e9c9ce`).
 
-- `prod/coordination/CPO.md`: Lage aus Issues/PRs, Gate-Schließen, PM-Steuerung, Store-Kette.
+- CPO-Wissensanker (Org https://github.com/nimmsel23/vos, org/): Lage aus Issues/PRs, Gate-Schließen, PM-Steuerung, Store-Kette.
 - Spiegel in `~/.vos/cpo` Skills/README/INTERPLAY (vos-Commit).
 
 ## 2026-11-11 — AL C-002 Handoff (leeres Protokoll)
@@ -155,7 +155,7 @@ Die alte HTML-UI über den Koordinations-Markdowns wurde als „Lagezelt“ neu 
 
 ## 2026-11-11 — Nacht: Org-Desks + Dashboard + systemd
 
-- `prod/coordination/ORG.md`: Skill-Stacks auf `~/.vos`-Desks / Packages 2026-11-11.
+- Org (https://github.com/nimmsel23/vos, org/): Skill-Stacks auf `~/.vos`-Desks / Packages 2026-11-11.
 - `docs/`: VitalOS Org-Dashboard-Build (Organisation/Betrieb/Business) gespiegelt.
 - Parallel (außerhalb Meta-Commit): Vitaltrainer `website/vitalos-dashboard`,
   dotfiles Betta-SSH-Fix + Timer-Align; PT-Strategien unter `~/vitaltrainer/marketing/`.
@@ -322,9 +322,9 @@ Eine Aufgabe (Guide #9): M1-RC Geräteabnahme — kein physisches Gerät, Emulat
 
 ## 2026-11-09 — Koordination aus migration/unified-product gezogen
 
-- `prod/migration/unified-product/coordination/` → `prod/coordination/` (git mv).
-- Altpfad bleibt Symlink; `migration/unified-product/README.md` klaert: nur Checkout-Merge-Rest.
-- Runner/Skills/Guides auf `~/vitalos/prod/coordination/` umgebogen.
+- Koordinationsfläche aus `prod/migration/unified-product/` in den kurzen Pfad gezogen (git mv); am 2026-11-24 entfernt. Org: https://github.com/nimmsel23/vos (org/).
+- `migration/unified-product/README.md` klaert: nur Checkout-Merge-Rest.
+- Runner/Skills/Guides zeigten damals auf den kurzen Pfad; seit 2026-11-24 auf die Org.
 
 ## 2026-11-09 — AL-Guides: Hits = PM-Scope, AL waehlt dringendsten project-Task
 
@@ -380,7 +380,7 @@ Auftrag war die CEO-freigegebene Doku-Hygiene (Aufgabe 6 des Abteilungsleiter-Gu
 Auftrag war die CEO-freigegebene Bereinigung GENAU der zwei prunable /dev/shm-Focus-Worktrees (wt-focus a199fc4, wt-focus1 e11379b). Ergebnis: beide sind bei Laufstart bereits nicht mehr registriert — keine Admin-Einträge unter `.git/worktrees/`, keine Verzeichnisse in `/dev/shm`; die Entfernung erfolgte nach dem Erstlauf (02:45 UTC, dort noch 7 registrierte) durch eine unbekannte Linie, Boot war 2026-11-06 19:48. `git worktree prune` als Freigabe-Schritt ausgeführt: no-op (rc=0), 5 registrierte Worktrees unverändert, Branches `focus-stufe-0-1` (a199fc4) und `focus-stufe-1` (e11379b) wie freigegeben unberührt. Kein Push, kein Branch-/Tag-/Gitlink-Touch.
 
 - **Inventur:** dev-product Spitze `1b9601b`; Branchabstand `origin/master...dev-product` 18/7 (nur dokumentiert, NICHT angeglichen). Submodule: genau 1 Drift-Marker (`+ journal-app` 9502f2b, heads/vitalos, fremde Ausführungslinie — nur gemeldet), sonst sauber.
-- **Nur gemeldet, kein mv/rm:** uncommittet fremd `prod/coordination/CTO.md` (`M`), `D vitalos.html`; unversioniert `20`, `docs/Index.html`, `ABTEILUNG.md` (CEO-Datei), `AL-LOG.md` (dieser Lauf committet ihn).
+- **Nur gemeldet, kein mv/rm:** uncommittet fremd CTO-Notiz der Org (https://github.com/nimmsel23/vos) (`M`), `D vitalos.html`; unversioniert `20`, `docs/Index.html`, `ABTEILUNG.md` (CEO-Datei), `AL-LOG.md` (dieser Lauf committet ihn).
 - **Protokoll:** Guide-Abhaken `prod/docs/product-dev/abteilungen/vitalos.md`, AL-LOG 2026-11-08 gefüllt, NEXT.md-Folgetasks — alles in einem Commit auf dev-product. Guide-Referenzen `README.md`/`WOCHENPLAN.md` unter `docs/product-dev/` fehlen nach der Symlink-Konsolidierung (gemeldet an CEO/CTO).
 
 ---

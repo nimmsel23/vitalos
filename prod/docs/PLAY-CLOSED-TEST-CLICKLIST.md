@@ -12,7 +12,7 @@ Die App existiert laut Auftrag in einem privaten persönlichen Play-Console-Kont
 (C-001 erledigt). Ob der Closed-Test-Track schon existiert, ist unbekannt.
 In den Repos gibt es keinen Beleg für einen Track, eine Testerliste oder ein
 eingereichtes Store-Formular. Der letzte Repo-Vermerk dazu steht in
-`prod/coordination/TODO.md` (C-001, 2026-11-09): vom Laptop war die Console
+Org [nimmsel23/vos](https://github.com/nimmsel23/vos) (org/, C-001, 2026-11-09): vom Laptop war die Console
 nicht einsehbar.
 
 Geprüft am 2026-11-10 gegen die Play-Console-Hilfe:
@@ -76,7 +76,7 @@ bereit zur Freigabe oder AAB offen. Der Console-Klick bleibt beim Owner.
 
 | # | Klick | Repo-Beleg | Status | Liefert |
 | --- | --- | --- | --- | --- |
-| 1 | Closed Testing öffnen (`Test and release` → `Testing` → `Closed testing`). Den von Google angelegten initialen Track prüfen. Fehlt er, Track anlegen. Noch kein extra benannter Zweit-Track. | Kein Track, keine Tester, kein Release in den Repos. `prod/coordination/TODO.md` (C-001) hält nur fest, dass die Console vom Laptop nicht einsehbar war. | fehlt | Owner |
+| 1 | Closed Testing öffnen (`Test and release` → `Testing` → `Closed testing`). Den von Google angelegten initialen Track prüfen. Fehlt er, Track anlegen. Noch kein extra benannter Zweit-Track. | Kein Track, keine Tester, kein Release in den Repos. Org [nimmsel23/vos](https://github.com/nimmsel23/vos) (org/, C-001) hält nur fest, dass die Console vom Laptop nicht einsehbar war. | fehlt | Owner |
 | 2 | Tester hinterlegen: E-Mail-Liste (bis 2.000 Adressen je Liste) oder Google Group (`name@googlegroups.com`). Feedback-URL oder Feedback-E-Mail eintragen. Opt-in-Link kopieren und verschicken, sobald der Status „Published“ ist. Für die 12/14-Regel mindestens 12 Personen, die eingeloggt bleiben. | Keine Testerliste, keine Google Group, keine Feedback-Adresse im Repo. | fehlt | Owner |
 | 3 | Store-Texte eintragen. Name höchstens 30 Zeichen, Kurzbeschreibung höchstens 80, Beschreibung höchstens 4.000. Entwurf kürzen und vom Owner freigeben, bevor er in die Console kommt. | Produktentwurf `prod/docs/STORE-LISTING-DRAFT.md`: Name „VitalOS – Journal & Gewohnheiten“ hat 32 Zeichen (en dash zählt), Kurzbeschreibung 50 Zeichen, Beschreibung vorhanden. Älterer Entwurf nur „VitalOS“ in `docs/STORE-RELEASE-STATUS.md`. Beides ist Arbeitsentwurf, keine freigegebene Store-Aussage. | teilweise | PM/CPO (Text), Owner (Freigabe und Klick) |
 | 4 | Pflichtgrafiken hochladen: App-Icon 512×512 PNG mit Alpha, höchstens 1024 KB; Feature Graphic 1024×500 JPEG oder 24-bit-PNG ohne Alpha; mindestens zwei Screenshots (JPEG oder 24-bit-PNG, kurze Seite mindestens 320 px, lange Seite höchstens 3840 px und höchstens doppelt so lang wie die kurze). Vier Screenshots ab 1080 px sind eine Empfehlung, keine Pflicht zum Veröffentlichen. | 512-px-Kandidaten `prod/branding/observe/icons/icon-512.png` (35 KB) und `prod/branding/operate/icons/icon-512.png` (40 KB), dazu maskable Varianten. Launcher unter `prod/android/app/src/main/res/mipmap-*` endet bei 192 px und ist kein Store-Icon. `prod/docs/STORE-PUBLISHING-PLAN.md` („Fehlt-Liste“) verlangt ein eigenes Store-Icon und eine Feature Graphic. Feature Graphic und vier Phone-Screenshots: `prod/branding/store/` (Maße und Erzeugung in `prod/branding/store/README.md`). Das 512-px-Icon bleibt der bestehende Kandidat. | bereit zur Freigabe | PM/CPO (Grafiken), Owner (Upload) |
