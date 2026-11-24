@@ -1,12 +1,12 @@
 {
  "evidence": {
-  "generated_at": "2026-11-24T09:39:06+00:00",
+  "generated_at": "2026-11-24T09:42:24+00:00",
   "repo": "nimmsel23/vitalos",
   "meta": {
    "name": "vitalos",
    "description": null,
    "html_url": "https://github.com/nimmsel23/vitalos",
-   "pushed_at": "2026-11-24T09:38:42Z",
+   "pushed_at": "2026-11-24T09:42:06Z",
    "default_branch": "master",
    "visibility": "public",
    "pages_url": "https://nimmsel23.github.io/vitalos/"
@@ -18,13 +18,19 @@
   "branches": {
    "main": "master",
    "has_dev": false,
-   "master_head": "466707d 2026-11-24T09:38:40Z"
+   "master_head": "6e9e284 2026-11-24T09:42:04Z"
   },
   "work": {
    "branch": "master",
-   "sha": "466707da651ee2d30e642ac753d1569f251108b3"
+   "sha": "6e9e28498ec43a97a01c73a5e3f2fdfbe97d3c0d"
   },
   "commits": [
+   {
+    "sha": "6e9e284",
+    "date": "2026-11-24T09:42:04Z",
+    "author": "vitalos-org-bot[bot]",
+    "subject": "ci: Merge nur mit --match-head-commit des geprüften Heads (#71)"
+   },
    {
     "sha": "466707d",
     "date": "2026-11-24T09:38:40Z",
@@ -138,12 +144,6 @@
     "date": "2026-11-22T08:54:44+01:00",
     "author": "Alpha",
     "subject": "docs(play): C-016 Signaturnachweis für frisches AAB (6bc092c)"
-   },
-   {
-    "sha": "6bc092c",
-    "date": "2026-11-21T22:42:16+01:00",
-    "author": "Alpha",
-    "subject": "chore(submodules): bump journal after release and sync pnpm-lock.yaml"
    }
   ],
   "activity": [
@@ -229,29 +229,29 @@
    },
    {
     "day": "2026-11-24",
-    "n": 4
+    "n": 5
    }
   ],
   "workflows": [
-   {
-    "name": "Deploy VitalOS Shell",
-    "branch": "master",
-    "event": "push",
-    "status": "in_progress",
-    "conclusion": null,
-    "created_at": "2026-11-24T09:38:43Z",
-    "url": "https://github.com/nimmsel23/vitalos/actions/runs/45367153608",
-    "sha": "466707d"
-   },
    {
     "name": "Org-Bot (PR anlegen & mergen)",
     "branch": "codex/ci-heal-org-bot-v2",
     "event": "pull_request_target",
     "status": "completed",
     "conclusion": "success",
-    "created_at": "2026-11-24T09:38:40Z",
-    "url": "https://github.com/nimmsel23/vitalos/actions/runs/45367143256",
-    "sha": "b9edd04"
+    "created_at": "2026-11-24T09:42:11Z",
+    "url": "https://github.com/nimmsel23/vitalos/actions/runs/45367689417",
+    "sha": "526df62"
+   },
+   {
+    "name": "Deploy VitalOS Shell",
+    "branch": "master",
+    "event": "push",
+    "status": "in_progress",
+    "conclusion": null,
+    "created_at": "2026-11-24T09:42:08Z",
+    "url": "https://github.com/nimmsel23/vitalos/actions/runs/45367677989",
+    "sha": "6e9e284"
    },
    {
     "name": "Org-Bot (PR anlegen & mergen)",
@@ -259,9 +259,29 @@
     "event": "check_suite",
     "status": "completed",
     "conclusion": "success",
-    "created_at": "2026-11-24T09:31:19Z",
-    "url": "https://github.com/nimmsel23/vitalos/actions/runs/45365982698",
-    "sha": "fc03c6d"
+    "created_at": "2026-11-24T09:41:49Z",
+    "url": "https://github.com/nimmsel23/vitalos/actions/runs/45367629453",
+    "sha": "466707d"
+   },
+   {
+    "name": "Auto Shell Pins",
+    "branch": "master",
+    "event": "workflow_run",
+    "status": "completed",
+    "conclusion": "success",
+    "created_at": "2026-11-24T09:40:19Z",
+    "url": "https://github.com/nimmsel23/vitalos/actions/runs/45367399122",
+    "sha": "466707d"
+   },
+   {
+    "name": "Live Smoke (VitalOS)",
+    "branch": "master",
+    "event": "workflow_run",
+    "status": "completed",
+    "conclusion": "success",
+    "created_at": "2026-11-24T09:40:19Z",
+    "url": "https://github.com/nimmsel23/vitalos/actions/runs/45367398868",
+    "sha": "466707d"
    },
    {
     "name": "Org-Bot (PR anlegen & mergen)",
@@ -272,26 +292,6 @@
     "created_at": "2026-11-24T09:29:17Z",
     "url": "https://github.com/nimmsel23/vitalos/actions/runs/45365652895",
     "sha": "99e86bc"
-   },
-   {
-    "name": "Auto Shell Pins",
-    "branch": "master",
-    "event": "workflow_run",
-    "status": "completed",
-    "conclusion": "success",
-    "created_at": "2026-11-24T09:28:25Z",
-    "url": "https://github.com/nimmsel23/vitalos/actions/runs/45365521428",
-    "sha": "fc03c6d"
-   },
-   {
-    "name": "Live Smoke (VitalOS)",
-    "branch": "master",
-    "event": "workflow_run",
-    "status": "completed",
-    "conclusion": "success",
-    "created_at": "2026-11-24T09:28:25Z",
-    "url": "https://github.com/nimmsel23/vitalos/actions/runs/45365521264",
-    "sha": "fc03c6d"
    },
    {
     "name": "Entwicklungsdashboard → Pages-Pfad",
@@ -372,36 +372,6 @@
     "created_at": "2026-11-24T07:47:38Z",
     "url": "https://github.com/nimmsel23/vitalos/actions/runs/45350739932",
     "sha": "70ad3f5"
-   },
-   {
-    "name": "Product shared-source preparation",
-    "branch": "master",
-    "event": "push",
-    "status": "completed",
-    "conclusion": "success",
-    "created_at": "2026-11-24T07:46:19Z",
-    "url": "https://github.com/nimmsel23/vitalos/actions/runs/45350574712",
-    "sha": "67d9b70"
-   },
-   {
-    "name": "Deploy VOS Fitness PWA",
-    "branch": "master",
-    "event": "push",
-    "status": "completed",
-    "conclusion": "success",
-    "created_at": "2026-11-24T07:46:19Z",
-    "url": "https://github.com/nimmsel23/vitalos/actions/runs/45350574506",
-    "sha": "67d9b70"
-   },
-   {
-    "name": "Org-Bot (PR anlegen & mergen)",
-    "branch": "codex/shell-pins-2026-11-24",
-    "event": "pull_request_target",
-    "status": "completed",
-    "conclusion": "success",
-    "created_at": "2026-11-24T07:46:16Z",
-    "url": "https://github.com/nimmsel23/vitalos/actions/runs/45350568832",
-    "sha": "427f074"
    }
   ],
   "issues": [
