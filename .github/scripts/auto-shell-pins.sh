@@ -1,7 +1,11 @@
 #!/usr/bin/env bash
-# Täglicher Shell-Pin: jede Mini-App (Fuel eingeschlossen) auf den neuesten
+# Shell-Pin: jede Mini-App (Fuel eingeschlossen) auf den neuesten
 # origin/master-Commit, dessen Check-Job „check“ grün ist. Lockfile danach
 # neu schreiben und mit pnpm install --frozen-lockfile prüfen.
+#
+# Idempotent: kein Commit und kein PR, wenn kein Gitlink sich ändert.
+# Liegt schon ein offener PR auf codex/shell-pins-*, wird der nachgezogen
+# statt ein zweiter geöffnet.
 #
 # DRY_RUN=1 listet die SHAs und ändert nichts.
 # REPORT=deploy wertet einen abgeschlossenen Deploy-/Product-Lauf aus

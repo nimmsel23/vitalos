@@ -1,16 +1,30 @@
 name: Auto Shell Pins
 
-# Täglich die Mini-App-Gitlinks (Fuel eingeschlossen) auf den neuesten
-# origin/master mit grünem Check-Job „check“ ziehen. Identität ist die
-# bestehende GitHub App vitalos-org-bot (Variable ORG_BOT_APP_ID, Secret
-# ORG_BOT_PRIVATE_KEY). Keine neuen Secrets.
+# Mini-App-Gitlinks (Fuel eingeschlossen) auf den neuesten origin/master
+# mit grünem Check-Job „check“ ziehen. Identität ist die bestehende GitHub
+# App vitalos-org-bot (Variable ORG_BOT_APP_ID, Secret ORG_BOT_PRIVATE_KEY).
+# Keine neuen Secrets. Code, der schon auf einem Dev-master liegt, wird hier
+# nicht erneut gegen den Feature-Freeze geprüft.
 #
-# 05:00 UTC ist 06:00 Europe/Vienna im Winter (CET) und 07:00 im Sommer (CEST).
+# Schedule liegt auf Minute 17 und 47 zwischen 05 und 19 UTC (Winter:
+# 06:17–20:47 Europe/Vienna), nie zur vollen Stunde. Ein einzelner Lauf
+# „0 5 * * *“ ist seit Einführung des Workflows (23.11. 11:00 UTC) nicht
+# angekommen; GitHub verzögert oder verwirft Slots zur vollen Stunde, und
+# ein verpasster Tagesslot holt nichts nach. Mehrere Slots am Tag plus das
+# idempotente Skript (kein zweiter PR, kein PR ohne Diff) fangen das auf.
+#
+# Zusätzlich repository_dispatch event_type=shell-pins. Ein Promote in einem
+# *-dev-Repo kann den Bump damit ohne neues Secret anstoßen: dort liegt
+# ORG_BOT_PRIVATE_KEY schon, Token via create-github-app-token mit
+# repositories: vitalos, dann
+#   gh api repos/nimmsel23/vitalos/dispatches -f event_type=shell-pins
 
 on:
   schedule:
-    - cron: "0 5 * * *"
+    - cron: "17,47 5-19 * * *"
   workflow_dispatch:
+  repository_dispatch:
+    types: [shell-pins]
   workflow_run:
     workflows: ["Deploy VitalOS Shell", "Product shared-source preparation"]
     types: [completed]
@@ -18,8 +32,10 @@ on:
 permissions:
   contents: read
 
+# Bump-Läufe (schedule, dispatch) teilen sich eine Queue. Der Report-Job
+# blockiert den Bump nicht.
 concurrency:
-  group: auto-shell-pins-${{ github.event_name }}
+  group: ${{ github.event_name == 'workflow_run' && 'auto-shell-pins-report' || 'auto-shell-pins-bump' }}
   cancel-in-progress: false
 
 jobs:
