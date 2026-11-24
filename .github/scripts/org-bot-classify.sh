@@ -1,45 +1,91 @@
 #!/usr/bin/env bash
-# Klasse bestimmen und mergen. Läuft nur mit dem Org-Bot-Token, und nur
-# gegen Code aus dem Default-Branch (pull_request_target checkt den PR nicht aus).
+# Org-Bot v2: Klasse bestimmen, Branch nachziehen, mergen.
+# Vorlage: nimmsel23/vos cto/tools/org-bot-classify.sh (in jedes Repo nach
+# .github/scripts/org-bot-classify.sh). Doku: vos cto/ORG-BOT.md und
+# cto/wissen/merge-und-pin-automatik.md.
 #
-# Pin-Bump (Klasse A, kein peer-ok), wenn alle drei gelten:
-#   1. Jede geänderte Datei ist ein Mini-App-Gitlink oder pnpm-lock.yaml.
-#   2. Base und Head jedes Gitlinks sind weiter Submodules unter nimmsel23/.
-#   3. Autor ist vitalos-org-bot, oder der Branch heißt codex/shell-pins-*.
-# Danach Squash, sobald jeder fremde Check grün ist. owner-gate bleibt davor.
-# PIN_ONLY=1 (Sweep, check_suite, check_run) mergt nichts anderes.
+# Läuft nur mit dem Org-Bot-Token und nur gegen Code aus dem Default-Branch
+# (pull_request_target checkt den PR nicht aus).
+#
+# Klassen (org/DECISIONS/2026-11-16-merge-klassen.md):
+#   A  Modus docs, keine sensiblen Pfade      -> Squash, sobald kein Check rot/offen ist
+#   B  Modus code oder sensible Pfade         -> erst mit Label peer-ok; dann Auto-Merge,
+#                                                ohne Branch-Schutz Squash bei grünen Checks
+#   owner-gate (Label)                        -> nie
+#   Pin-Bump (nur wenn .github/scripts/pin-bump-policy.sh existiert, z. B. vitalos)
+#                                             -> Klasse A ohne peer-ok
+#
+# Liegt der PR hinter der Basis oder hat er Konflikte, zieht der Bot die
+# Basis per "Update branch" nach (Merge-Commit, kein Force-Push). Bleibt ein
+# Konflikt, meldet ihn der Org-Sweep in vos in genau einem Issue.
 set -euo pipefail
 
 : "${REPO:?}" "${PR:?}"
 
 HERE="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-# shellcheck source=pin-bump-policy.sh
-source "$HERE/pin-bump-policy.sh"
-# shellcheck source=shell-pin-issue.sh
-source "$HERE/shell-pin-issue.sh"
+if [ -f "$HERE/pin-bump-policy.sh" ]; then
+  # shellcheck source=/dev/null
+  source "$HERE/pin-bump-policy.sh"
+else
+  pin_files_ok() { return 1; }
+  pin_actor_ok() { return 1; }
+fi
+if [ -f "$HERE/shell-pin-issue.sh" ]; then
+  # shellcheck source=/dev/null
+  source "$HERE/shell-pin-issue.sh"
+else
+  pin_issue_upsert() { echo "::warning::$1"; }
+fi
 
 MODE="${MODE:-docs}"
 EVENT="${EVENT:-pull_request_target}"
 DRY_RUN="${DRY_RUN:-}"
-PIN_ONLY="${PIN_ONLY:-}"
+PREFIXES="${ORG_BOT_PREFIXES:-codex/ claude/ cursor/ agent/ vibe/ orch/ dependabot/}"
 
 ensure_label() {
   gh label create "$1" -R "$REPO" --color "$2" --description "$3" 2>/dev/null || true
 }
 
-meta_json="$(gh pr view "$PR" -R "$REPO" --json author,headRefName,baseRefOid,headRefOid,isDraft,state,title)"
-state="$(printf '%s' "$meta_json" | jq -r .state)"
-[ "$state" = "OPEN" ] || { echo "PR #${PR} ist ${state}."; exit 0; }
-draft="$(printf '%s' "$meta_json" | jq -r .isDraft)"
-[ "$draft" = "true" ] && { echo "PR #${PR} ist Draft."; exit 0; }
+meta_json="$(gh pr view "$PR" -R "$REPO" --json author,headRefName,baseRefOid,headRefOid,isDraft,state,title,isCrossRepository,mergeStateStatus,labels)"
+j() { printf '%s' "$meta_json" | jq -r "$1"; }
+[ "$(j .state)" = "OPEN" ] || { echo "PR #${PR} ist $(j .state)."; exit 0; }
+[ "$(j .isDraft)" = "true" ] && { echo "PR #${PR} ist Draft."; exit 0; }
+[ "$(j .isCrossRepository)" = "true" ] && { echo "PR #${PR} kommt aus einem Fork."; exit 0; }
 
-login="$(printf '%s' "$meta_json" | jq -r .author.login)"
-branch="$(printf '%s' "$meta_json" | jq -r .headRefName)"
-base_sha="$(printf '%s' "$meta_json" | jq -r .baseRefOid)"
-head_sha="$(printf '%s' "$meta_json" | jq -r .headRefOid)"
-title="$(printf '%s' "$meta_json" | jq -r .title)"
+login="$(j .author.login)"
+branch="$(j .headRefName)"
+base_sha="$(j .baseRefOid)"
+head_sha="$(j .headRefOid)"
+title="$(j .title)"
+merge_state="$(j .mergeStateStatus)"
+labels="$(j '.labels[].name')"
+
+covered=0
+for p in $PREFIXES; do [[ "$branch" == "$p"* ]] && covered=1; done
+[ "$covered" = 1 ] || { echo "PR #${PR}: Branch ${branch} ist kein Agenten-Branch (${PREFIXES})."; exit 0; }
+
+has_label() { printf '%s\n' "$labels" | grep -qx "$1"; }
+
+if has_label owner-gate; then
+  echo "PR #${PR}: Label owner-gate, kein Merge."
+  exit 0
+fi
+
+# Basis nachziehen: BEHIND oder DIRTY -> GitHub "Update branch" (Merge-Commit).
+# Bei echtem Konflikt lehnt GitHub ab; der Org-Sweep meldet das.
+if [ "$merge_state" = "BEHIND" ] || [ "$merge_state" = "DIRTY" ]; then
+  if [ "$DRY_RUN" = 1 ]; then
+    echo "DRY-RUN: würde Basis in #${PR} nachziehen (${merge_state})."
+  elif gh api -X PUT "repos/${REPO}/pulls/${PR}/update-branch" -f expected_head_sha="$head_sha" >/dev/null 2>&1; then
+    echo "PR #${PR}: Basis nachgezogen (${merge_state}); neue Checks laufen."
+    exit 0
+  else
+    echo "::warning::PR #${PR}: ${merge_state}, Basis nicht automatisch nachziehbar (Konflikt). Org-Sweep meldet."
+    exit 0
+  fi
+fi
+
 files="$(gh api --paginate "repos/${REPO}/pulls/${PR}/files" -q '.[].filename')"
-labels="$(gh pr view "$PR" -R "$REPO" --json labels -q '.labels[].name')"
 
 gitlink_ok() {
   local path="$1" sha="$2" typ url
@@ -59,108 +105,76 @@ pin_gitlinks_ok() {
   done <<< "$files"
 }
 
-# Neueste Conclusion je Check-Name. classify-merge und open-pr sind der Bot
-# selbst und dürfen ihn nicht blockieren (sonst sieht er sich ewig als laufend).
+# Neueste Conclusion je Check-Name; der Bot selbst zählt nicht.
+# Ausgabe: green | pending | failure | none
 checks_state() {
-  local sha="$1"
-  local pending=0 failed=0
-  local names=""
-  local row name status conclusion
+  local sha="$1" pending=0 failed=0 seen=0 names="" name status conclusion
   while IFS=$'\t' read -r name status conclusion; do
     [ -n "$name" ] || continue
-    case " $names " in
-      *" $name "*) continue ;;
-    esac
+    case " $names " in *" $name "*) continue ;; esac
     names="$names $name"
-    case "$name" in
-      classify-merge | open-pr) continue ;;
-    esac
-    if [ "$status" != "completed" ]; then
-      pending=1
-      continue
-    fi
+    case "$name" in classify-merge | open-pr | heal | sweep) continue ;; esac
+    seen=1
+    if [ "$status" != "completed" ]; then pending=1; continue; fi
     case "$conclusion" in
       success | skipped | neutral) ;;
-      *)
-        failed=1
-        printf 'rot: %s (%s)\n' "$name" "$conclusion" >&2
-        ;;
+      *) failed=1; printf 'rot: %s (%s)\n' "$name" "$conclusion" >&2 ;;
     esac
   done < <(gh api "repos/${REPO}/commits/${sha}/check-runs?per_page=100" \
-    -q '.check_runs[] | [.name, .status, (.conclusion // "")] | @tsv')
+    -q '.check_runs | sort_by(.started_at) | reverse | .[] | [.name, .status, (.conclusion // "")] | @tsv' 2>/dev/null || true)
 
   local commit_state count
-  commit_state="$(gh api "repos/${REPO}/commits/${sha}/status" -q .state)"
-  count="$(gh api "repos/${REPO}/commits/${sha}/status" -q .total_count)"
+  count="$(gh api "repos/${REPO}/commits/${sha}/status" -q .total_count 2>/dev/null || echo 0)"
   if [ "$count" != "0" ]; then
-    case "$commit_state" in
-      failure | error) failed=1 ;;
-      pending) pending=1 ;;
-    esac
+    seen=1
+    commit_state="$(gh api "repos/${REPO}/commits/${sha}/status" -q .state)"
+    case "$commit_state" in failure | error) failed=1 ;; pending) pending=1 ;; esac
   fi
-
-  if [ "$failed" = 1 ]; then
-    echo failure
-  elif [ "$pending" = 1 ]; then
-    echo pending
-  else
-    echo green
+  if [ "$failed" = 1 ]; then echo failure
+  elif [ "$pending" = 1 ]; then echo pending
+  elif [ "$seen" = 1 ]; then echo green
+  else echo none
   fi
 }
 
-merge_pin() {
-  if [ "$DRY_RUN" = 1 ]; then
-    echo "DRY-RUN: würde PR #${PR} squash-mergen (${title})."
-    return 0
+# Direkt nach dem Öffnen sind noch nicht alle Checks angemeldet: auf PR-Events
+# kurz warten und "keine Checks" als "laufen noch" werten. Der Stunden-Sweep
+# und die Check-Events mergen danach.
+settled_checks() {
+  local st
+  st="$(checks_state "$head_sha" 2>/tmp/org-checks.txt || true)"
+  if [ "$EVENT" = "pull_request_target" ]; then
+    if [ "$st" = "green" ] || [ "$st" = "none" ]; then
+      sleep "${PIN_CHECK_SETTLE_SECONDS:-25}"
+      st="$(checks_state "$head_sha" 2>/tmp/org-checks.txt || true)"
+    fi
+    [ "$st" = "none" ] && st=pending
   fi
-  ensure_label "merge:A" C2E0C6 "Vom Org-Bot gemergt (Klasse A)"
-  gh pr edit "$PR" -R "$REPO" --add-label "merge:A" --remove-label "needs-peer" >/dev/null 2>&1 \
-    || gh pr edit "$PR" -R "$REPO" --add-label "merge:A" >/dev/null
-  if gh pr merge "$PR" -R "$REPO" --squash --auto --delete-branch; then
-    echo "PR #${PR} per Auto-Merge (Squash) eingereiht."
-    return 0
-  fi
-  if gh pr merge "$PR" -R "$REPO" --squash --delete-branch; then
-    echo "PR #${PR} squash-gemergt."
-    return 0
-  fi
-  local now
-  now="$(gh pr view "$PR" -R "$REPO" --json state -q .state)"
-  [ "$now" = "MERGED" ] && return 0
-  return 1
+  echo "$st"
 }
 
+squash() {
+  local cls="$1"
+  if [ "$DRY_RUN" = 1 ]; then echo "DRY-RUN: würde #${PR} squash-mergen (Klasse ${cls})."; return 0; fi
+  ensure_label "merge:$cls" C2E0C6 "Vom Org-Bot gemergt (Klasse $cls)"
+  gh pr edit "$PR" -R "$REPO" --add-label "merge:$cls" >/dev/null 2>&1 || true
+  gh pr merge "$PR" -R "$REPO" --squash --delete-branch && return 0
+  [ "$(gh pr view "$PR" -R "$REPO" --json state -q .state)" = "MERGED" ]
+}
+
+# --- Pin-Bump (nur Repos mit pin-bump-policy.sh) ---------------------------
 if pin_files_ok "$files" && pin_actor_ok "$login" "$branch" && pin_gitlinks_ok; then
-  if printf '%s\n' "$labels" | grep -qx 'owner-gate'; then
-    echo "PR #${PR}: owner-gate, kein Pin-Merge."
-    exit 0
-  fi
   echo "PR #${PR}: Pin-Bump Klasse A (${login}, ${branch}). Kein peer-ok."
-  check_state="$(checks_state "$head_sha" 2>/tmp/pin-checks.txt || true)"
-  if [ "$EVENT" = "pull_request_target" ] && [ "$check_state" = "green" ]; then
-    sleep "${PIN_CHECK_SETTLE_SECONDS:-25}"
-    check_state="$(checks_state "$head_sha" 2>/tmp/pin-checks.txt || true)"
-  fi
-  case "$check_state" in
-    green)
-      merge_pin || pin_issue_upsert "$(printf 'PR #%s konnte nicht gemergt werden (%s).\n%s' "$PR" "$title" "https://github.com/${REPO}/pull/${PR}")"
-      ;;
-    pending)
-      echo "PR #${PR}: Checks noch nicht fertig."
-      ;;
-    *)
-      pin_issue_upsert "$(printf 'PR #%s (%s) hat rote Checks.\n%s\n%s\n' "$PR" "$title" "https://github.com/${REPO}/pull/${PR}" "$(cat /tmp/pin-checks.txt 2>/dev/null || true)")"
-      echo "PR #${PR}: Checks rot, kein Merge."
-      ;;
+  state="$(settled_checks)"
+  case "$state" in
+    green|none) squash A || pin_issue_upsert "$(printf 'PR #%s konnte nicht gemergt werden (%s).\n%s' "$PR" "$title" "https://github.com/${REPO}/pull/${PR}")" ;;
+    pending) echo "PR #${PR}: Checks laufen noch." ;;
+    *) pin_issue_upsert "$(printf 'PR #%s (%s) hat rote Checks.\n%s\n%s\n' "$PR" "$title" "https://github.com/${REPO}/pull/${PR}" "$(cat /tmp/org-checks.txt 2>/dev/null || true)")" ;;
   esac
   exit 0
 fi
 
-if [ "$PIN_ONLY" = 1 ]; then
-  echo "PR #${PR}: kein abgesicherter Pin-Bump."
-  exit 0
-fi
-
+# --- Klassen A/B -------------------------------------------------------------
 class=A
 [ "$MODE" = "code" ] && class=B
 reason=""
@@ -170,43 +184,42 @@ while IFS= read -r f; do
     .github/workflows/*|firebase.json|.firebaserc|*/firebase.json|*/.firebaserc|\
     *.env|*.env.*|*secret*|*Secret*|*credential*|*.pem|*.key|*keystore*|*.jks|\
     AGENTS.md|org/OWNER-CONTRACT.md|dashboard/publish.sh|*datenschutz*|*privacy*)
-      class=B
-      reason="$reason $f"
-      ;;
+      class=B; reason="$reason $f" ;;
   esac
 done <<< "$files"
-printf '%s\n' "$labels" | grep -qx 'owner-gate' && class=C
 
-if [ "$class" = "C" ]; then
-  echo "Label owner-gate: wartet auf CEO-Bündel, kein Merge."
-  exit 0
-fi
-
-if [ "$class" = "B" ] && ! printf '%s\n' "$labels" | grep -qx 'peer-ok'; then
+if [ "$class" = "B" ] && ! has_label peer-ok; then
   ensure_label peer-ok 0E8A16 "Klasse B: von einem anderen Agenten als dem Autor geprüft"
-  if [ -n "$reason" ] && ! printf '%s\n' "$labels" | grep -qx 'needs-peer'; then
-    ensure_label needs-peer FBCA04 "Klasse B: braucht Prüfung durch einen anderen Agenten"
-    if [ "$DRY_RUN" != 1 ]; then
-      gh pr edit "$PR" -R "$REPO" --add-label needs-peer
-    fi
+  ensure_label needs-peer FBCA04 "Klasse B: braucht Prüfung durch einen anderen Agenten"
+  if [ -n "$reason" ] && ! has_label needs-peer && [ "$DRY_RUN" != 1 ]; then
+    gh pr edit "$PR" -R "$REPO" --add-label needs-peer >/dev/null || true
   fi
-  echo "Klasse B: wartet auf Label peer-ok.${reason}"
+  echo "PR #${PR}: Klasse B, wartet auf peer-ok.${reason}"
   exit 0
 fi
 
-if [ "$DRY_RUN" = 1 ]; then
-  echo "DRY-RUN: würde Klasse ${class} squash-mergen."
+state="$(settled_checks)"
+echo "PR #${PR}: Klasse ${class}, Checks ${state}."
+case "$state" in
+  pending) echo "Checks laufen noch; der nächste Check-Event oder der Stunden-Sweep merged."; exit 0 ;;
+  failure) cat /tmp/org-checks.txt >&2 || true; echo "Checks rot: kein Merge."; exit 0 ;;
+esac
+
+if [ "$class" = "A" ]; then
+  squash A
   exit 0
 fi
 
-ensure_label "merge:$class" C2E0C6 "Vom Org-Bot gemergt (Klasse $class)"
-gh pr edit "$PR" -R "$REPO" --add-label "merge:$class" || true
-# Auto-Merge wartet auf Pflicht-Checks, wo Branch-Schutz sie verlangt.
-# Code und sensible Pfade nie ohne Pflicht-Checks mergen: dort nur --auto.
-if ! gh pr merge "$PR" -R "$REPO" --squash --auto --delete-branch; then
-  if [ "$class" = "A" ]; then
-    gh pr merge "$PR" -R "$REPO" --squash --delete-branch
-  else
-    echo "::warning::Auto-Merge nicht möglich (Branch-Schutz mit Pflicht-Checks fehlt?). Kein Direkt-Merge im Modus code."
-  fi
+# Klasse B mit peer-ok: zuerst Auto-Merge (wartet auf Pflicht-Checks, falls
+# Branch-Schutz gesetzt). Ohne Branch-Schutz nur bei grünen Checks direkt.
+if [ "$DRY_RUN" != 1 ] && gh pr merge "$PR" -R "$REPO" --squash --auto --delete-branch 2>/dev/null; then
+  ensure_label "merge:B" C2E0C6 "Vom Org-Bot gemergt (Klasse B)"
+  gh pr edit "$PR" -R "$REPO" --add-label "merge:B" >/dev/null 2>&1 || true
+  echo "PR #${PR}: Auto-Merge eingereiht."
+  exit 0
+fi
+if [ "$state" = "green" ]; then
+  squash B
+else
+  echo "::warning::PR #${PR}: Klasse B ohne einen einzigen Check. Kein Merge; Repo braucht check.yml (Org-Sweep meldet)."
 fi

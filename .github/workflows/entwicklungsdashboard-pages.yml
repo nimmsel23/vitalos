@@ -44,12 +44,14 @@ jobs:
           DIST="prod/dashboard/dist"
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          mkdir -p docs/prod/assets
           git rm -q --ignore-unmatch 'docs/prod/assets/index-*.js' 'docs/prod/assets/index-*.css' \
             'docs/assets/index-*.js' 'docs/assets/index-*.css' || true
           # Alte Root-SPA entfernen, falls noch vorhanden (Root = Living Dashboard).
           git rm -q --ignore-unmatch docs/index.html || true
           rm -f docs/assets/index-*.js docs/assets/index-*.css 2>/dev/null || true
+          # Erst nach dem git rm anlegen: git rm löscht leer gewordene Ordner mit
+          # (Ursache #60: "cp: target 'docs/prod/assets/': No such file or directory").
+          mkdir -p docs/prod/assets
           cp "$DIST/index.html" docs/prod/index.html
           cp "$DIST"/assets/* docs/prod/assets/
           git add docs/prod
