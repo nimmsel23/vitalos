@@ -1,12 +1,12 @@
 {
  "evidence": {
-  "generated_at": "2026-11-24T20:21:52+00:00",
+  "generated_at": "2026-11-24T22:42:01+00:00",
   "repo": "nimmsel23/vitalos",
   "meta": {
    "name": "vitalos",
    "description": null,
    "html_url": "https://github.com/nimmsel23/vitalos",
-   "pushed_at": "2026-11-24T20:21:32Z",
+   "pushed_at": "2026-11-24T22:41:42Z",
    "default_branch": "master",
    "visibility": "public",
    "pages_url": "https://nimmsel23.github.io/vitalos/"
@@ -18,13 +18,31 @@
   "branches": {
    "main": "master",
    "has_dev": false,
-   "master_head": "b48d450 2026-11-24T20:21:30Z"
+   "master_head": "ce2bd83 2026-11-24T23:41:33+01:00"
   },
   "work": {
    "branch": "master",
-   "sha": "b48d4501b83285a91e5670fc297bab91fc38c321"
+   "sha": "ce2bd836126b1ee4eeb8624c9f905d2db257e0a9"
   },
   "commits": [
+   {
+    "sha": "ce2bd83",
+    "date": "2026-11-24T23:41:33+01:00",
+    "author": "Alpha",
+    "subject": "submodules"
+   },
+   {
+    "sha": "dfb29a2",
+    "date": "2026-11-24T23:41:00+01:00",
+    "author": "Alpha",
+    "subject": "Remove the extra Core Skills shell header"
+   },
+   {
+    "sha": "4fa7917",
+    "date": "2026-11-24T23:41:00+01:00",
+    "author": "Alpha",
+    "subject": "Simplify Core Skills shell navigation and remove forced menu height"
+   },
    {
     "sha": "b48d450",
     "date": "2026-11-24T20:21:30Z",
@@ -126,30 +144,12 @@
     "date": "2026-11-23T15:57:50Z",
     "author": "github-actions[bot]",
     "subject": "chore(coordination): refresh living boards [skip ci]"
-   },
-   {
-    "sha": "d1a36c8",
-    "date": "2026-11-23T12:58:11+01:00",
-    "author": "vitalos-org-bot[bot]",
-    "subject": "docs(agents): link VitalOS meta repo to product/engineering role contract (#59)"
-   },
-   {
-    "sha": "39f7999",
-    "date": "2026-11-23T12:00:41+01:00",
-    "author": "vitalos-org-bot[bot]",
-    "subject": "ci: Shell-Pins täglich ziehen und ohne peer-ok mergen (#58)"
-   },
-   {
-    "sha": "d89b076",
-    "date": "2026-11-23T12:00:35+01:00",
-    "author": "vitalos-org-bot[bot]",
-    "subject": "chore(submodules): pin fuel-app to b0937c5 (#57)"
    }
   ],
   "activity": [
    {
     "day": "2026-11-04",
-    "n": 1
+    "n": 0
    },
    {
     "day": "2026-11-05",
@@ -229,29 +229,19 @@
    },
    {
     "day": "2026-11-24",
-    "n": 8
+    "n": 11
    }
   ],
   "workflows": [
    {
-    "name": "Org-Bot (PR anlegen & mergen)",
-    "branch": "codex/deps-bundle-2026-48",
-    "event": "pull_request_target",
-    "status": "in_progress",
-    "conclusion": null,
-    "created_at": "2026-11-24T20:21:40Z",
-    "url": "https://github.com/nimmsel23/vitalos/actions/runs/45479989320",
-    "sha": "99e86bc"
-   },
-   {
-    "name": "Auto Shell Pins",
+    "name": "Deploy VOS Fitness PWA",
     "branch": "master",
-    "event": "schedule",
+    "event": "push",
     "status": "in_progress",
     "conclusion": null,
-    "created_at": "2026-11-24T20:21:36Z",
-    "url": "https://github.com/nimmsel23/vitalos/actions/runs/45479978566",
-    "sha": "b48d450"
+    "created_at": "2026-11-24T22:41:45Z",
+    "url": "https://github.com/nimmsel23/vitalos/actions/runs/45503317456",
+    "sha": "ce2bd83"
    },
    {
     "name": "Product shared-source preparation",
@@ -259,9 +249,9 @@
     "event": "push",
     "status": "in_progress",
     "conclusion": null,
-    "created_at": "2026-11-24T20:21:34Z",
-    "url": "https://github.com/nimmsel23/vitalos/actions/runs/45479971742",
-    "sha": "b48d450"
+    "created_at": "2026-11-24T22:41:45Z",
+    "url": "https://github.com/nimmsel23/vitalos/actions/runs/45503317427",
+    "sha": "ce2bd83"
    },
    {
     "name": "Deploy VitalOS Shell",
@@ -269,9 +259,59 @@
     "event": "push",
     "status": "in_progress",
     "conclusion": null,
-    "created_at": "2026-11-24T20:21:34Z",
-    "url": "https://github.com/nimmsel23/vitalos/actions/runs/45479971715",
+    "created_at": "2026-11-24T22:41:45Z",
+    "url": "https://github.com/nimmsel23/vitalos/actions/runs/45503317410",
+    "sha": "ce2bd83"
+   },
+   {
+    "name": "CI-Heilung (rote Läufe wiederholen)",
+    "branch": "master",
+    "event": "schedule",
+    "status": "completed",
+    "conclusion": "success",
+    "created_at": "2026-11-24T20:37:57Z",
+    "url": "https://github.com/nimmsel23/vitalos/actions/runs/45482823482",
     "sha": "b48d450"
+   },
+   {
+    "name": "Live Smoke (VitalOS)",
+    "branch": "master",
+    "event": "workflow_run",
+    "status": "completed",
+    "conclusion": "success",
+    "created_at": "2026-11-24T20:23:16Z",
+    "url": "https://github.com/nimmsel23/vitalos/actions/runs/45480274138",
+    "sha": "b48d450"
+   },
+   {
+    "name": "Auto Shell Pins",
+    "branch": "master",
+    "event": "workflow_run",
+    "status": "completed",
+    "conclusion": "success",
+    "created_at": "2026-11-24T20:23:16Z",
+    "url": "https://github.com/nimmsel23/vitalos/actions/runs/45480273883",
+    "sha": "b48d450"
+   },
+   {
+    "name": "Deploy Firestore Rules",
+    "branch": "master",
+    "event": "workflow_run",
+    "status": "completed",
+    "conclusion": "success",
+    "created_at": "2026-11-24T20:23:16Z",
+    "url": "https://github.com/nimmsel23/vitalos/actions/runs/45480273851",
+    "sha": "b48d450"
+   },
+   {
+    "name": "Org-Bot (PR anlegen & mergen)",
+    "branch": "codex/deps-bundle-2026-48",
+    "event": "pull_request_target",
+    "status": "completed",
+    "conclusion": "success",
+    "created_at": "2026-11-24T20:21:40Z",
+    "url": "https://github.com/nimmsel23/vitalos/actions/runs/45479989320",
+    "sha": "99e86bc"
    },
    {
     "name": "Org-Bot (PR anlegen & mergen)",
@@ -281,26 +321,6 @@
     "conclusion": "success",
     "created_at": "2026-11-24T20:21:17Z",
     "url": "https://github.com/nimmsel23/vitalos/actions/runs/45479919968",
-    "sha": "b3a522c"
-   },
-   {
-    "name": "Live Smoke (VitalOS)",
-    "branch": "master",
-    "event": "workflow_run",
-    "status": "completed",
-    "conclusion": "success",
-    "created_at": "2026-11-24T09:45:12Z",
-    "url": "https://github.com/nimmsel23/vitalos/actions/runs/45368161411",
-    "sha": "b3a522c"
-   },
-   {
-    "name": "Deploy Firestore Rules",
-    "branch": "master",
-    "event": "workflow_run",
-    "status": "completed",
-    "conclusion": "success",
-    "created_at": "2026-11-24T09:45:03Z",
-    "url": "https://github.com/nimmsel23/vitalos/actions/runs/45368135868",
     "sha": "b3a522c"
    },
    {
@@ -342,19 +362,18 @@
     "created_at": "2026-11-24T07:47:54Z",
     "url": "https://github.com/nimmsel23/vitalos/actions/runs/45350772939",
     "sha": "9a3f388"
-   },
-   {
-    "name": "Org-Bot (PR anlegen & mergen)",
-    "branch": "dependabot/npm_and_yarn/prod/functions/fastify/busboy-3.2.6",
-    "event": "pull_request_target",
-    "status": "completed",
-    "conclusion": "success",
-    "created_at": "2026-11-24T07:47:51Z",
-    "url": "https://github.com/nimmsel23/vitalos/actions/runs/45350767216",
-    "sha": "d600302"
    }
   ],
   "issues": [
+   {
+    "number": 72,
+    "title": "Shell-Pin: Build oder Checks rot",
+    "created_at": "2026-11-24T20:21:54Z",
+    "updated_at": "2026-11-24T20:21:54Z",
+    "labels": [],
+    "url": "https://github.com/nimmsel23/vitalos/issues/72",
+    "author": "vitalos-org-bot[bot]"
+   },
    {
     "number": 48,
     "title": "Vorschlag: täglicher Pin-Check-Workflow für veraltete Submodule-Pins",
