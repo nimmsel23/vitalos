@@ -40,7 +40,16 @@ concurrency:
 
 jobs:
   bump:
-    if: github.event_name != 'workflow_run' && vars.ORG_BOT_APP_ID != ''
+    # Schedule, Dispatch und ein roter Deploy/Product-Lauf. Der Report-Job
+    # allein hat ce2bd836 nicht zurückgesetzt: nach dem direkten Pin-Push
+    # liefen nur workflow_run-Reports, und der letzte Bump (45479978566)
+    # war am SSH-Klon der Submodule gescheitert.
+    if: >-
+      vars.ORG_BOT_APP_ID != '' &&
+      (
+        github.event_name != 'workflow_run' ||
+        github.event.workflow_run.conclusion == 'failure'
+      )
     runs-on: ubuntu-latest
     steps:
       - uses: actions/create-github-app-token@v1

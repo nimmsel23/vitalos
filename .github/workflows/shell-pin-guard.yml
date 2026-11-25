@@ -1,0 +1,75 @@
+name: Shell pin and lockfile guard
+
+# Direkt nach einem Push auf master (und auf Pull Requests): ein Pin, der
+# nicht auf dem *-dev-master liegt, und ein veraltetes pnpm-lock.yaml
+# werden als eigene Meldung rot, bevor der Deploy-Install an
+# ERR_PNPM_OUTDATED_LOCKFILE scheitert.
+#
+# Der Install-Schritt von Deploy VitalOS Shell bleibt pnpm install
+# --frozen-lockfile. Hier reicht --lockfile-only: derselbe Abgleich der
+# Specifier, ohne node_modules.
+
+on:
+  push:
+    branches: [master]
+    paths-ignore:
+      - '**/*.md'
+      - '**/*.mdx'
+      - '**/*.markdown'
+      - '**/*.txt'
+      - '**/docs/**'
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  pins-on-master:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+          submodules: false
+      - name: Pins sind Vorfahren von *-dev master
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: bash .github/scripts/check-pin-ancestry.sh
+
+  lockfile:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+          submodules: false
+      - name: Submodules per HTTPS
+        env:
+          GH_TOKEN: ${{ secrets.GH_SUBMODULE_TOKEN || github.token }}
+        run: |
+          git config --global url."https://x-access-token:${GH_TOKEN}@github.com/".insteadOf "git@github.com:"
+          git submodule sync
+          git submodule update --init
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 11.3.0
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 22
+          cache: pnpm
+      - name: Lockfile passt zu den Workspace-package.json
+        run: |
+          set -euo pipefail
+          log="$(mktemp)"
+          if pnpm install --lockfile-only --frozen-lockfile >"$log" 2>&1; then
+            cat "$log"
+            exit 0
+          fi
+          cat "$log"
+          if grep -q 'ERR_PNPM_OUTDATED_LOCKFILE' "$log"; then
+            echo "::error title=ERR_PNPM_OUTDATED_LOCKFILE::pnpm-lock.yaml passt nicht zu den package.json der gepinnten Submodule. Ein Pin-Bump muss das Lockfile im selben Commit neu schreiben (pnpm install --lockfile-only --no-frozen-lockfile)."
+          else
+            echo "::error title=Lockfile-Prüfung rot::pnpm install --lockfile-only --frozen-lockfile ist fehlgeschlagen. Log oben."
+          fi
+          exit 1
