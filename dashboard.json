@@ -1,12 +1,12 @@
 {
  "evidence": {
-  "generated_at": "2026-11-25T07:59:32+00:00",
+  "generated_at": "2026-11-25T14:53:05+00:00",
   "repo": "nimmsel23/vitalos",
   "meta": {
    "name": "vitalos",
    "description": null,
    "html_url": "https://github.com/nimmsel23/vitalos",
-   "pushed_at": "2026-11-25T07:59:14Z",
+   "pushed_at": "2026-11-25T07:59:48Z",
    "default_branch": "master",
    "visibility": "public",
    "pages_url": "https://nimmsel23.github.io/vitalos/"
@@ -149,7 +149,7 @@
   "activity": [
    {
     "day": "2026-11-05",
-    "n": 53
+    "n": 34
    },
    {
     "day": "2026-11-06",
@@ -234,11 +234,61 @@
   ],
   "workflows": [
    {
+    "name": "CI-Heilung (rote Läufe wiederholen)",
+    "branch": "master",
+    "event": "schedule",
+    "status": "completed",
+    "conclusion": "success",
+    "created_at": "2026-11-25T14:14:27Z",
+    "url": "https://github.com/nimmsel23/vitalos/actions/runs/45631890110",
+    "sha": "4fb5b5b"
+   },
+   {
+    "name": "Org-Bot (PR anlegen & mergen)",
+    "branch": "master",
+    "event": "schedule",
+    "status": "completed",
+    "conclusion": "success",
+    "created_at": "2026-11-25T13:32:49Z",
+    "url": "https://github.com/nimmsel23/vitalos/actions/runs/45624689301",
+    "sha": "4fb5b5b"
+   },
+   {
+    "name": "Live Smoke (VitalOS)",
+    "branch": "master",
+    "event": "workflow_run",
+    "status": "completed",
+    "conclusion": "success",
+    "created_at": "2026-11-25T08:01:19Z",
+    "url": "https://github.com/nimmsel23/vitalos/actions/runs/45572703906",
+    "sha": "4fb5b5b"
+   },
+   {
+    "name": "Auto Shell Pins",
+    "branch": "master",
+    "event": "workflow_run",
+    "status": "completed",
+    "conclusion": "success",
+    "created_at": "2026-11-25T08:00:55Z",
+    "url": "https://github.com/nimmsel23/vitalos/actions/runs/45572643789",
+    "sha": "4fb5b5b"
+   },
+   {
+    "name": "Deploy Firestore Rules",
+    "branch": "master",
+    "event": "workflow_run",
+    "status": "completed",
+    "conclusion": "success",
+    "created_at": "2026-11-25T08:00:43Z",
+    "url": "https://github.com/nimmsel23/vitalos/actions/runs/45572616385",
+    "sha": "4fb5b5b"
+   },
+   {
     "name": "Org-Bot (PR anlegen & mergen)",
     "branch": "codex/fix-shell-pins-lockfile-478b",
     "event": "pull_request_target",
-    "status": "in_progress",
-    "conclusion": null,
+    "status": "completed",
+    "conclusion": "success",
     "created_at": "2026-11-25T07:59:19Z",
     "url": "https://github.com/nimmsel23/vitalos/actions/runs/45572420976",
     "sha": "607630e"
@@ -247,8 +297,8 @@
     "name": "Deploy VOS Fitness PWA",
     "branch": "master",
     "event": "push",
-    "status": "in_progress",
-    "conclusion": null,
+    "status": "completed",
+    "conclusion": "success",
     "created_at": "2026-11-25T07:59:15Z",
     "url": "https://github.com/nimmsel23/vitalos/actions/runs/45572414463",
     "sha": "4fb5b5b"
@@ -257,8 +307,8 @@
     "name": "Deploy VitalOS Shell",
     "branch": "master",
     "event": "push",
-    "status": "in_progress",
-    "conclusion": null,
+    "status": "completed",
+    "conclusion": "success",
     "created_at": "2026-11-25T07:59:15Z",
     "url": "https://github.com/nimmsel23/vitalos/actions/runs/45572414456",
     "sha": "4fb5b5b"
@@ -267,8 +317,8 @@
     "name": "Close superseded Dependabot PRs",
     "branch": "master",
     "event": "push",
-    "status": "in_progress",
-    "conclusion": null,
+    "status": "completed",
+    "conclusion": "success",
     "created_at": "2026-11-25T07:59:15Z",
     "url": "https://github.com/nimmsel23/vitalos/actions/runs/45572414372",
     "sha": "4fb5b5b"
@@ -277,8 +327,8 @@
     "name": "Product shared-source preparation",
     "branch": "master",
     "event": "push",
-    "status": "in_progress",
-    "conclusion": null,
+    "status": "completed",
+    "conclusion": "success",
     "created_at": "2026-11-25T07:59:15Z",
     "url": "https://github.com/nimmsel23/vitalos/actions/runs/45572414302",
     "sha": "4fb5b5b"
@@ -287,21 +337,11 @@
     "name": "Shell pin and lockfile guard",
     "branch": "master",
     "event": "push",
-    "status": "in_progress",
-    "conclusion": null,
+    "status": "completed",
+    "conclusion": "success",
     "created_at": "2026-11-25T07:59:15Z",
     "url": "https://github.com/nimmsel23/vitalos/actions/runs/45572414285",
     "sha": "4fb5b5b"
-   },
-   {
-    "name": "Org-Bot (PR anlegen & mergen)",
-    "branch": "master",
-    "event": "check_suite",
-    "status": "completed",
-    "conclusion": "success",
-    "created_at": "2026-11-25T07:58:59Z",
-    "url": "https://github.com/nimmsel23/vitalos/actions/runs/45572380627",
-    "sha": "ce2bd83"
    },
    {
     "name": "Shell pin and lockfile guard",
@@ -312,46 +352,6 @@
     "created_at": "2026-11-25T07:53:24Z",
     "url": "https://github.com/nimmsel23/vitalos/actions/runs/45571662978",
     "sha": "607630e"
-   },
-   {
-    "name": "Deploy Firestore Rules",
-    "branch": "master",
-    "event": "workflow_run",
-    "status": "completed",
-    "conclusion": "skipped",
-    "created_at": "2026-11-25T03:48:57Z",
-    "url": "https://github.com/nimmsel23/vitalos/actions/runs/45542546920",
-    "sha": "ce2bd83"
-   },
-   {
-    "name": "Auto Shell Pins",
-    "branch": "master",
-    "event": "workflow_run",
-    "status": "completed",
-    "conclusion": "success",
-    "created_at": "2026-11-25T03:48:57Z",
-    "url": "https://github.com/nimmsel23/vitalos/actions/runs/45542546903",
-    "sha": "ce2bd83"
-   },
-   {
-    "name": "Live Smoke (VitalOS)",
-    "branch": "master",
-    "event": "workflow_run",
-    "status": "completed",
-    "conclusion": "skipped",
-    "created_at": "2026-11-25T03:48:56Z",
-    "url": "https://github.com/nimmsel23/vitalos/actions/runs/45542545338",
-    "sha": "ce2bd83"
-   },
-   {
-    "name": "CI-Heilung (rote Läufe wiederholen)",
-    "branch": "master",
-    "event": "repository_dispatch",
-    "status": "completed",
-    "conclusion": "success",
-    "created_at": "2026-11-25T03:47:57Z",
-    "url": "https://github.com/nimmsel23/vitalos/actions/runs/45542433515",
-    "sha": "ce2bd83"
    },
    {
     "name": "Org-Bot (PR anlegen & mergen)",
@@ -382,16 +382,6 @@
     "created_at": "2026-11-24T09:42:11Z",
     "url": "https://github.com/nimmsel23/vitalos/actions/runs/45367689417",
     "sha": "526df62"
-   },
-   {
-    "name": "Org-Bot (PR anlegen & mergen)",
-    "branch": "codex/ci-auto-shell-pins-fix",
-    "event": "pull_request_target",
-    "status": "completed",
-    "conclusion": "success",
-    "created_at": "2026-11-24T09:26:49Z",
-    "url": "https://github.com/nimmsel23/vitalos/actions/runs/45365270143",
-    "sha": "f1be559"
    }
   ],
   "issues": [
@@ -529,21 +519,6 @@
   ],
   "pulls": [
    {
-    "number": 67,
-    "title": "chore(deps): bump @grpc/grpc-js from 1.14.4 to 1.14.7 in /prod/functions",
-    "created_at": "2026-11-24T07:47:39Z",
-    "updated_at": "2026-11-24T07:47:42Z",
-    "labels": [
-     "dependencies",
-     "javascript"
-    ],
-    "url": "https://github.com/nimmsel23/vitalos/pull/67",
-    "author": "dependabot[bot]",
-    "head": "dependabot/npm_and_yarn/prod/functions/grpc/grpc-js-1.14.7",
-    "base": "master",
-    "draft": false
-   },
-   {
     "number": 66,
     "title": "chore(deps): bump uuid, firebase-admin and firebase-functions in /prod/functions",
     "created_at": "2026-11-24T07:47:35Z",
@@ -555,21 +530,6 @@
     "url": "https://github.com/nimmsel23/vitalos/pull/66",
     "author": "dependabot[bot]",
     "head": "dependabot/npm_and_yarn/prod/functions/multi-e868f0593b",
-    "base": "master",
-    "draft": false
-   },
-   {
-    "number": 65,
-    "title": "chore(deps): bump qs and express in /prod/functions",
-    "created_at": "2026-11-24T07:47:29Z",
-    "updated_at": "2026-11-24T07:48:03Z",
-    "labels": [
-     "dependencies",
-     "javascript"
-    ],
-    "url": "https://github.com/nimmsel23/vitalos/pull/65",
-    "author": "dependabot[bot]",
-    "head": "dependabot/npm_and_yarn/prod/functions/multi-bbf9670a95",
     "base": "master",
     "draft": false
    }
