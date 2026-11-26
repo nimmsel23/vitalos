@@ -115,3 +115,27 @@ weiter den veröffentlichten alten Journal-Pin: er beweist die Build-/Firebase-
 Trennung, NICHT den bereits integrierten neuen Smart-Logger-Schalter. Kein
 Browser-/Gerätetest oder echter Produkt-KI-Aufruf durchgeführt.
 Backend-Dokumentation zusätzlich committed als `f6f715c`.
+
+### Abschluss nach ausdrücklicher Push-Freigabe (2026-11-26)
+
+Die vorherige Veröffentlichungssperre ist aufgehoben: Owner hat Source-Push
+und anschließende lokale Journal-Integration ausdrücklich erlaubt.
+Journal-Fix veröffentlicht als `e7420218076d87312e757c025b9209d5f37db61b`
+auf `dev` und automatisch nach `master` übernommen. GitHub-Check
+`45821835419`: erfolgreich, 197/197 Tests und Build. Backend-`dev` steht
+veröffentlicht auf `f6f715c5f5716fc320de39009928fb7cc5ed1cfd`; keine neue
+Backend-CI-Ausführung für diese Revision nachgewiesen.
+
+Der lokale gemeinsame Journal-Gitlink pinnt jetzt den veröffentlichten
+`origin/master`-Stand `e742021`. Keine Abhängigkeitsänderung, deshalb kein
+Lockfile-Diff. Integrierter Produkt-Store-Build erfolgreich; Bundle-Isolation
+bestätigt ausschließlich die Produkt-Firebase-Identität. Gebautes Artefakt
+enthält die ausdrückliche Smart-Logger-Freigabe und Kontingentanzeige.
+Boundary-Check und neun gezielte Produkt-Tests bestanden.
+
+KEIN Meta-Push, Produkt-Hosting-/Functions-Deploy oder Store-Upload erfolgt.
+Öffentliche Datenschutz-/Store-Angaben vor Veröffentlichung abgleichen.
+Kein echter Produkt-KI-Aufruf oder Geräte-Abnahmetest. Private Journal-CI
+kann durch die Source-Veröffentlichung ihren eigenen Release-Weg starten;
+das ist kein Produkt-Deploy. Die fremden uncommitted Änderungen und der
+alte lokale Dev-Branch im Journal-Quellcheckout wurden nicht umgeschrieben.
