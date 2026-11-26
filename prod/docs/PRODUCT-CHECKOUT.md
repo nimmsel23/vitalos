@@ -139,3 +139,17 @@ Kein echter Produkt-KI-Aufruf oder Geräte-Abnahmetest. Private Journal-CI
 kann durch die Source-Veröffentlichung ihren eigenen Release-Weg starten;
 das ist kein Produkt-Deploy. Die fremden uncommitted Änderungen und der
 alte lokale Dev-Branch im Journal-Quellcheckout wurden nicht umgeschrieben.
+
+### Owner-Auftrag: Meta-Push und alle Submodule (2026-11-26)
+
+Owner hat Meta-Push und Aktualisierung aller neun Root-Submodule freigegeben.
+Alle wurden gegen frisch gefetchtes `origin/master` geprüft; neue Pins gab es
+für Fitness (`5d5d375`), Plan (`e4bf12a7`) und 6Pack (`a2fb373`).
+Die übrigen sechs waren bereits aktuell. Keine Dev-Branches wurden dabei
+promotet. Frozen-Lockfile-Installation erfolgreich, Lockfile unverändert.
+`pnpm test` scheitert am bestehenden Verweis auf die fehlende Datei
+`scripts/smoke.test.mjs`; das ist kein bestandener Testnachweis.
+Meta-Push gehört zum privaten Shell-Release-Weg, nicht zur Veröffentlichung
+von `prod/`. Produkt-Deploy und Store-Upload bleiben separat.
+Der integrierte private Shell-Build `pnpm run build:firebase` mit allen
+aktuellen Pins war erfolgreich; kein neuer Produkt-Build in diesem Schritt.
