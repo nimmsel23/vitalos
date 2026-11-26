@@ -106,3 +106,12 @@ Backend-Produktweg lokal committed: `f205f31`, `a6e3c6b` in `~/dev/backend`;
 noch nicht veröffentlicht/deployt. `firebase.product.json` nutzt dieselbe
 Backend-Quelle mit eigenem Produktziel und AI-Metadaten-Preflight.
 Kein Produkt-Hosting, keine Functions, keine Produkt-Entitlements verändert.
+
+Validierung des lokalen Fixes: Journal-Firebase-Build erfolgreich; Produkt-
+Store-Build erfolgreich, Bundle-Isolation bestätigt ausschließlich die
+Produkt-Firebase-Identität. Boundary-Check, Rules-Generierungscheck und neun
+gezielte Edition-/Store-/Runtime-Tests bestanden. Der Store-Build verwendet
+weiter den veröffentlichten alten Journal-Pin: er beweist die Build-/Firebase-
+Trennung, NICHT den bereits integrierten neuen Smart-Logger-Schalter. Kein
+Browser-/Gerätetest oder echter Produkt-KI-Aufruf durchgeführt.
+Backend-Dokumentation zusätzlich committed als `f6f715c`.
