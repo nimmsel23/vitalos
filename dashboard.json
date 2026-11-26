@@ -1,12 +1,12 @@
 {
  "evidence": {
-  "generated_at": "2026-11-26T12:00:35+00:00",
+  "generated_at": "2026-11-26T13:24:04+00:00",
   "repo": "nimmsel23/vitalos",
   "meta": {
    "name": "vitalos",
    "description": null,
    "html_url": "https://github.com/nimmsel23/vitalos",
-   "pushed_at": "2026-11-26T12:00:12Z",
+   "pushed_at": "2026-11-26T13:23:43Z",
    "default_branch": "master",
    "visibility": "public",
    "pages_url": "https://nimmsel23.github.io/vitalos/"
@@ -18,13 +18,37 @@
   "branches": {
    "main": "master",
    "has_dev": false,
-   "master_head": "1e071b1 2026-11-26T13:00:06+01:00"
+   "master_head": "51a8aa8 2026-11-26T14:23:39+01:00"
   },
   "work": {
    "branch": "master",
-   "sha": "1e071b129f2eb76e92b47484c135935eff23217e"
+   "sha": "51a8aa8091433f58e6b6d540a9ab28bcba713791"
   },
   "commits": [
+   {
+    "sha": "51a8aa8",
+    "date": "2026-11-26T14:23:39+01:00",
+    "author": "Alpha",
+    "subject": "chore(submodules): pin all apps to published master tips"
+   },
+   {
+    "sha": "7dd611b",
+    "date": "2026-11-26T13:43:25+01:00",
+    "author": "Alpha",
+    "subject": "fix(product): pin published journal smart logging capability"
+   },
+   {
+    "sha": "8b45e98",
+    "date": "2026-11-26T13:16:52+01:00",
+    "author": "Alpha",
+    "subject": "docs(product): record build evidence and pending journal integration"
+   },
+   {
+    "sha": "caff61d",
+    "date": "2026-11-26T13:15:37+01:00",
+    "author": "Alpha",
+    "subject": "fix(product): separate store smart logging and backend release ownership"
+   },
    {
     "sha": "1e071b1",
     "date": "2026-11-26T13:00:06+01:00",
@@ -120,36 +144,12 @@
     "date": "2026-11-24T07:46:16Z",
     "author": "vitalos-org-bot[bot]",
     "subject": "chore(submodules): Shell-Pins 2026-11-24 (#63)"
-   },
-   {
-    "sha": "baf8298",
-    "date": "2026-11-23T21:56:46+01:00",
-    "author": "dependabot[bot]",
-    "subject": "chore(deps-dev): bump vite from 8.0.13 to 8.3.8 in /prod/dashboard (#61)"
-   },
-   {
-    "sha": "2cc562c",
-    "date": "2026-11-23T20:27:04+01:00",
-    "author": "Alpha",
-    "subject": "docs(pages): Submodule-Pfade auf *-dev Living Dashboards umleiten"
-   },
-   {
-    "sha": "038a814",
-    "date": "2026-11-23T20:27:04+01:00",
-    "author": "Alpha",
-    "subject": "chore(docs): Root-SPA-Assets entfernen (jetzt unter docs/prod/)"
-   },
-   {
-    "sha": "cb06c57",
-    "date": "2026-11-23T20:27:04+01:00",
-    "author": "Alpha",
-    "subject": "feat(dashboard): Living Shell-Board + Entwicklungsdashboard unter /prod/"
    }
   ],
   "activity": [
    {
     "day": "2026-11-06",
-    "n": 63
+    "n": 55
    },
    {
     "day": "2026-11-07",
@@ -229,19 +229,39 @@
    },
    {
     "day": "2026-11-26",
-    "n": 4
+    "n": 8
    }
   ],
   "workflows": [
+   {
+    "name": "Product shared-source preparation",
+    "branch": "master",
+    "event": "push",
+    "status": "queued",
+    "conclusion": null,
+    "created_at": "2026-11-26T13:23:46Z",
+    "url": "https://github.com/nimmsel23/vitalos/actions/runs/45828725327",
+    "sha": "51a8aa8"
+   },
+   {
+    "name": "Deploy VOS Fitness PWA",
+    "branch": "master",
+    "event": "push",
+    "status": "in_progress",
+    "conclusion": null,
+    "created_at": "2026-11-26T13:23:46Z",
+    "url": "https://github.com/nimmsel23/vitalos/actions/runs/45828725275",
+    "sha": "51a8aa8"
+   },
    {
     "name": "Deploy VitalOS Shell",
     "branch": "master",
     "event": "push",
     "status": "in_progress",
     "conclusion": null,
-    "created_at": "2026-11-26T12:00:14Z",
-    "url": "https://github.com/nimmsel23/vitalos/actions/runs/45815595673",
-    "sha": "1e071b1"
+    "created_at": "2026-11-26T13:23:46Z",
+    "url": "https://github.com/nimmsel23/vitalos/actions/runs/45828725103",
+    "sha": "51a8aa8"
    },
    {
     "name": "Shell pin and lockfile guard",
@@ -249,8 +269,18 @@
     "event": "push",
     "status": "in_progress",
     "conclusion": null,
-    "created_at": "2026-11-26T12:00:14Z",
-    "url": "https://github.com/nimmsel23/vitalos/actions/runs/45815595532",
+    "created_at": "2026-11-26T13:23:46Z",
+    "url": "https://github.com/nimmsel23/vitalos/actions/runs/45828725083",
+    "sha": "51a8aa8"
+   },
+   {
+    "name": "Auto Shell Pins",
+    "branch": "master",
+    "event": "workflow_run",
+    "status": "completed",
+    "conclusion": "success",
+    "created_at": "2026-11-26T12:01:45Z",
+    "url": "https://github.com/nimmsel23/vitalos/actions/runs/45815844688",
     "sha": "1e071b1"
    },
    {
@@ -259,19 +289,9 @@
     "event": "workflow_run",
     "status": "completed",
     "conclusion": "success",
-    "created_at": "2026-11-26T11:45:16Z",
-    "url": "https://github.com/nimmsel23/vitalos/actions/runs/45813400192",
-    "sha": "7defec1"
-   },
-   {
-    "name": "Auto Shell Pins",
-    "branch": "master",
-    "event": "workflow_run",
-    "status": "completed",
-    "conclusion": "success",
-    "created_at": "2026-11-26T11:45:16Z",
-    "url": "https://github.com/nimmsel23/vitalos/actions/runs/45813400173",
-    "sha": "7defec1"
+    "created_at": "2026-11-26T12:01:45Z",
+    "url": "https://github.com/nimmsel23/vitalos/actions/runs/45815844674",
+    "sha": "1e071b1"
    },
    {
     "name": "Deploy Firestore Rules",
@@ -281,16 +301,6 @@
     "conclusion": "success",
     "created_at": "2026-11-26T11:45:00Z",
     "url": "https://github.com/nimmsel23/vitalos/actions/runs/45813359567",
-    "sha": "7defec1"
-   },
-   {
-    "name": "Product shared-source preparation",
-    "branch": "master",
-    "event": "push",
-    "status": "completed",
-    "conclusion": "success",
-    "created_at": "2026-11-26T11:43:40Z",
-    "url": "https://github.com/nimmsel23/vitalos/actions/runs/45813163983",
     "sha": "7defec1"
    },
    {
@@ -334,16 +344,6 @@
     "sha": "607630e"
    },
    {
-    "name": "Deploy VOS Fitness PWA",
-    "branch": "master",
-    "event": "push",
-    "status": "completed",
-    "conclusion": "success",
-    "created_at": "2026-11-25T07:59:15Z",
-    "url": "https://github.com/nimmsel23/vitalos/actions/runs/45572414463",
-    "sha": "4fb5b5b"
-   },
-   {
     "name": "Shell pin and lockfile guard",
     "branch": "codex/fix-shell-pins-lockfile-478b",
     "event": "pull_request",
@@ -372,16 +372,6 @@
     "created_at": "2026-11-24T09:43:32Z",
     "url": "https://github.com/nimmsel23/vitalos/actions/runs/45367895277",
     "sha": "fecfa13"
-   },
-   {
-    "name": "Org-Bot (PR anlegen & mergen)",
-    "branch": "codex/ci-heal-org-bot-v2",
-    "event": "pull_request_target",
-    "status": "completed",
-    "conclusion": "success",
-    "created_at": "2026-11-24T09:42:11Z",
-    "url": "https://github.com/nimmsel23/vitalos/actions/runs/45367689417",
-    "sha": "526df62"
    }
   ],
   "issues": [
