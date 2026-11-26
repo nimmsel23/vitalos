@@ -29,6 +29,7 @@ export default function JournalApp({ user, onOpenSession, onNavigateShell, runti
             </button>
           </div>
           <JournalV2
+            allowSmartLogging
             user={user}
             date={runtimeDate}
             mode={jv2Mode}

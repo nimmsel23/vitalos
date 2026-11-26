@@ -1,3 +1,21 @@
+
+## Owner-Korrektur 2026-11-26: Produkt ist keine Produktionsstufe
+
+`prod/` ist das eigenständige shipbare Play-/App-Store-Produkt, keine
+Produktionsstufe der privaten VitalOS-Shell. Gemeinsame App-Gitlinks teilen
+Quellcode; sie veröffentlichen weder das Produkt noch übertragen sie
+Accounts, Entitlements oder Functions aus `fitness-aos` nach `vitalos-prod`.
+Observe/Operate als Ansichten vergeben keine KI-Rechte. Diese prüft der Server.
+
+Owner beauftragt die Korrektur der widersprüchlichen Smart-Logger-Verdrahtung:
+Store-Sperre auch für Operate, veralteter Functions-Quellpfad und falsche
+Behauptung „nie deployt“. Live geprüft am 2026-11-26: `analyzeSmartLog` und
+`getSmartLogQuota` existieren in `vitalos-prod`; `voiceReflect` fehlt. Beide
+Owner-Mails existieren dort mit eigenen UIDs ohne Operate-Entitlement. Die
+Freischaltungen aus dieser Session betrafen ausschließlich `fitness-aos`.
+KI-Freigabe im Code ersetzt keine Anpassung/Abnahme der öffentlichen
+Datenschutzerklärung und Store-Datensicherheitsangaben vor Veröffentlichung.
+
 # Produktstand im gemeinsamen VitalOS-Meta-Repo
 
 ## Aktuelle Quelle
@@ -67,3 +85,24 @@ authentifizierte Nutzung oder Store-Freigabe.
 Die Historie enthält datierte Hosting-, Auth-, Rules- und Android-Befunde sowie
 ältere, teils überholte Aussagen. Sie wird bewahrt, aber nicht als aktueller
 Build- oder Cloud-Zustand ausgegeben.
+
+### Übergabe zum Fix (2026-11-26)
+
+Journal-Quellfix lokal: `~/dev/journal-dev`, Commit `8d98ad7`. Die neue
+optionale Prop `allowSmartLogging` aktiviert den serverseitigen Smart Logger
+explizit im Produkt-Wrapper. Private Defaults und andere Store-Sperren bleiben
+erhalten. Vorhandene Gemini-Offenlegung und manuelles Review bleiben aktiv.
+Journal-Suite: 196/196 bestanden (lokaler Dev-Stand).
+
+Achtung: Der lokale Journal-Dev-Stand liegt hinter `origin/dev`; dort liegen
+zusätzlich fremde uncommitted Hosting-/Dokumentationsänderungen. Diese nicht
+stashen, überschreiben oder als Teil dieses Fixes committen. Source-Push war
+non-fast-forward; automatische Freigabeprüfung lehnt anschließende Veröffentlichung
+ohne ausdrücklichen Auftrag ab. Deshalb wurde KEIN neuer Parent-Gitlink auf
+einen unveröffentlichten Journal-Commit gesetzt. Der Produkt-Wrapper ist erst
+nach Veröffentlichung/Integration des Journal-Fixes wirksam.
+
+Backend-Produktweg lokal committed: `f205f31`, `a6e3c6b` in `~/dev/backend`;
+noch nicht veröffentlicht/deployt. `firebase.product.json` nutzt dieselbe
+Backend-Quelle mit eigenem Produktziel und AI-Metadaten-Preflight.
+Kein Produkt-Hosting, keine Functions, keine Produkt-Entitlements verändert.

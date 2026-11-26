@@ -1,7 +1,4 @@
-// Functions-Deploy zurueckgestellt bis Operate (Phase 06, Owner-Entscheid
-// 2026-11-07): Journal-Functions laufen nur im privaten Projekt; dieser
-// Guard bleibt als Operate-Vorausarbeitung im Repo und wird bei
-// Nicht-Deploy nicht ausgefuehrt.
+// Product AI metadata preflight; run before an explicitly authorized backend release.
 import { execFileSync } from 'node:child_process';
 import { checkProductAiAccess } from './product-ai-access.mjs';
 

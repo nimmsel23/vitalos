@@ -111,7 +111,7 @@ mit Fingerabdruck; Owner-Checkliste und lokale Signing-Fingerabdrücke stehen im
 | --- | --- | --- |
 | Shell-Hosting | `firebase.json` | Vorgabe `dist-firebase`; Store-Build liegt in `dist-store` |
 | Produkt-Rules | `firebase.product-rules.json`, `firestore.product.rules` | Produkttransformation aus `firestore.rules`; kein privater Rules-Deploy |
-| Journal-Functions | `firebase.product-journal.json`, `../journal-app/functions` | Preflight prüft gemeinsamen Parent-Pin und Produktkonfiguration |
+| Journal-Functions | `~/dev/backend/firebase.product.json`, `functions/journal` | Separater Backend-Release nach `vitalos-prod`; kein App-Gitlink als Function-Quelle |
 | Fitness-TWA-Hosting | `firebase.product-fitness.json` | eigener Host und Digital Asset Links; geerbtes `vos-fitness/firebase.json` nicht verwenden |
 
 Für einen später autorisierten Shell-Hosting-Deploy aus diesem Verzeichnis
@@ -233,3 +233,30 @@ dem Pages-Pfad nehmen (oder Actions-Publish nur für kuratierte Public-Dateien).
 Verweiskette: [Deployment](../../docs/DEPLOYMENT.md),
 [UNIFIED-PRODUCT](../../docs/UNIFIED-PRODUCT.md). Verwandter CTO-Hit zur
 Public-Repo-Sichtbarkeit: Org-Task `8e82a31b` (C-004).
+
+## Korrektur 2026-11-26: Smart Logger und Backend-Quelle
+
+`prod/` ist das Store-Produkt, nicht eine Release-Stufe der privaten Shell.
+Die Store-Hülle aktiviert Smart Logging ausdrücklich via `allowSmartLogging`;
+die Observe-/Operate-Ansicht vergibt keine Rechte. Die Callables prüfen
+Entitlements und Kontingente in `vitalos-prod`. Private Freischaltungen und
+BYOK-Einstellungen aus `fitness-aos` werden nicht übernommen.
+
+Live-Inventar am 2026-11-26: `analyzeSmartLog`, `getSmartLogQuota` und
+Google-Callables existieren bereits in `vitalos-prod`; `voiceReflect` fehlt.
+Frühere Aussagen „nie deployt“ sind überholt. Die defekte
+`firebase.product-journal.json` mit `../journal-app/functions` wurde entfernt.
+Kanonische Quelle ist `~/dev/backend/functions/journal`, Produktkonfiguration
+`~/dev/backend/firebase.product.json`. Der Projektguard verweigert andere Ziele.
+Vor einem gesondert autorisierten Release: Backend-Revision veröffentlichen,
+`GCLOUD_PROJECT=vitalos-prod node prod/scripts/check-product-ai-access.mjs`
+im Meta-Repo ausführen, Secrets/IAM prüfen und gezielte Function-Namen wählen.
+Kein Whole-Codebase-Deploy als Nebenwirkung eines Hosting-Releases.
+
+Der Smart Logger ist opt-in: Die Oberfläche erklärt vor „Analyse“ die
+Übermittlung an Gemini; Vorschläge werden erst nach Bestätigung übernommen.
+Die bisherige öffentliche Aussage „keine KI“ und die Store-Angaben müssen
+vor Produktveröffentlichung angepasst/abgenommen sein. Diese Codekorrektur
+ist kein Hosting-/Functions-Deploy und kein Store-Publish.
+VOICE/BYOK ist ein eigener Funktionsumfang; der private `#voice/settings`-Tab
+wird hierdurch nicht als fertige Store-Funktion angeboten.
