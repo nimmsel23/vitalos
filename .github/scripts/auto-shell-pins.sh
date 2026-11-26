@@ -1,7 +1,9 @@
 #!/usr/bin/env bash
 # Shell-Pin: jede Mini-App (Fuel eingeschlossen) auf den neuesten
-# origin/master-Commit, dessen Check-Job „check“ grün ist. Lockfile danach
-# neu schreiben und mit pnpm install --frozen-lockfile prüfen.
+# origin/master-Commit, dessen Check-Job „check“ grün ist. Ein Pin, der
+# kein Vorfahre von origin/master ist (diverged oder ahead), wird auf
+# diesen Stand zurückgesetzt. Lockfile danach neu schreiben und mit
+# pnpm install --frozen-lockfile prüfen.
 #
 # Idempotent: kein Commit und kein PR, wenn kein Gitlink sich ändert.
 # Liegt schon ein offener PR auf codex/shell-pins-*, wird der nachgezogen
@@ -11,6 +13,36 @@
 # REPORT=deploy wertet einen abgeschlossenen Deploy-/Product-Lauf aus
 # (WORKFLOW_NAME, WORKFLOW_CONCLUSION, WORKFLOW_SHA, WORKFLOW_BRANCH, WORKFLOW_URL).
 set -euo pipefail
+
+# GitHub compare master...pin: behind/identical = Pin ist Vorfahre oder gleich.
+# ahead/diverged = der Pin enthält Commits, die nicht auf master sind.
+pin_relation_needs_reset() {
+  case "$1" in
+    ahead|diverged) return 0 ;;
+    *) return 1 ;;
+  esac
+}
+
+if [[ "${1:-}" == "--self-test" ]]; then
+  fail=0
+  expect() {
+    local want="$1" desc="$2"
+    shift 2
+    if "$@"; then got=0; else got=1; fi
+    if [ "$got" -eq "$want" ]; then
+      echo "ok  $desc"
+    else
+      echo "FAIL $desc (exit $got, want $want)"
+      fail=1
+    fi
+  }
+  expect 0 "diverged wird zurückgesetzt" pin_relation_needs_reset diverged
+  expect 0 "ahead wird zurückgesetzt" pin_relation_needs_reset ahead
+  expect 1 "behind bleibt" pin_relation_needs_reset behind
+  expect 1 "identical bleibt" pin_relation_needs_reset identical
+  expect 1 "unbekannt bleibt" pin_relation_needs_reset unknown
+  exit "$fail"
+fi
 
 HERE="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 ROOT="$(cd "$HERE/../.." && pwd)"
@@ -88,6 +120,14 @@ if [ "${REPORT:-}" = "deploy" ]; then
   exit 0
 fi
 
+configure_https_remotes() {
+  git config --global url."https://github.com/".insteadOf "git@github.com:"
+  git config --global url."https://github.com/".insteadOf "ssh://git@github.com/"
+  if [ -n "${GH_TOKEN:-}" ]; then
+    git config --global url."https://x-access-token:${GH_TOKEN}@github.com/".insteadOf "https://github.com/"
+  fi
+}
+
 date_vienna="$(TZ=Europe/Vienna date +%F)"
 branch="codex/shell-pins-${date_vienna}"
 if [ "$DRY_RUN" != 1 ]; then
@@ -103,10 +143,14 @@ if [ "$DRY_RUN" != 1 ]; then
       exit 1
     }
   fi
-  git config url."https://github.com/".insteadOf "git@github.com:"
+  # Lokal reicht nicht: `git submodule update` klont mit der SSH-URL aus
+  # .gitmodules, und der Kindprozess sieht url.insteadOf nur global
+  # (Lauf 45479978566: Permission denied publickey).
+  configure_https_remotes
 fi
 
 rows=""
+off_notes=""
 changed=0
 if [ "$DRY_RUN" != 1 ]; then
   trapped=0
@@ -127,20 +171,32 @@ while read -r key path; do
   repo="${repo#https://github.com/}"
   repo="${repo%.git}"
   current="$(git rev-parse "HEAD:${path}")"
+  master="$(api_get "repos/${repo}/commits/master" | jq -r .sha)"
+  relation="$(api_get "repos/${repo}/compare/${master}...${current}" | jq -r '.status // "unknown"')"
+  note="\`check\` grün"
   if ! green="$(latest_green_master "$repo")"; then
     echo "::warning::${path}: kein grüner check in den letzten ${LOOKBACK} Commits auf master."
-    rows="${rows}| ${path} | ${current:0:12} | unverändert | kein grüner \`check\` |"$'\n'
-    continue
+    if pin_relation_needs_reset "$relation"; then
+      green="$master"
+      note="kein grüner \`check\`, Pin lag nicht auf master"
+    else
+      rows="${rows}| ${path} | ${current:0:12} | unverändert | kein grüner \`check\` |"$'\n'
+      continue
+    fi
   fi
   short_green="${green:0:12}"
   short_cur="${current:0:12}"
   if [ "$current" = "$green" ]; then
-    echo "${path} bleibt ${short_cur}"
+    echo "${path} bleibt ${short_cur} (${relation})"
     continue
   fi
   changed=1
-  echo "${path}: ${short_cur} -> ${short_green}"
-  rows="${rows}| ${path} | ${short_cur} | ${short_green} | \`check\` grün |"$'\n'
+  echo "${path}: ${short_cur} -> ${short_green} (${relation})"
+  rows="${rows}| ${path} | ${short_cur} | ${short_green} | ${note} |"$'\n'
+  if pin_relation_needs_reset "$relation"; then
+    only="$(api_get "repos/${repo}/compare/${master}...${current}" | jq -r '.commits[]? | "- \(.sha[0:12]) \(.commit.message | split("\n")[0] | .[0:120])"')"
+    off_notes="${off_notes}"$'\n'"### ${path} (\`${repo}\`)"$'\n'"${only}"$'\n'
+  fi
   if [ "$DRY_RUN" = 1 ]; then
     continue
   fi
@@ -192,7 +248,13 @@ Automatisch von Auto Shell Pins (vitalos-org-bot).
 | --- | --- | --- | --- |
 ${rows}
 Lockfile: \`pnpm install --lockfile-only --no-frozen-lockfile\`, danach \`pnpm install --frozen-lockfile\`.
+${off_notes:+
+## Nicht auf *-dev master
 
+Diese Pins waren kein Vorfahre von \`master\` (ahead oder diverged). Der Pin geht auf den grünen master-HEAD. Die Commits bleiben in den Dev-Repos.
+
+${off_notes}
+}
 ## Merge
 
 Reiner Pin-Bump. \`classify-merge\` stuft das als Klasse A ein (kein \`peer-ok\`) und squash-mergt, sobald alle Checks außer \`open-pr\`/\`classify-merge\` grün sind. Danach läuft Deploy VitalOS Shell auf \`master\`.
