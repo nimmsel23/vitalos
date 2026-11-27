@@ -1,12 +1,12 @@
 {
  "evidence": {
-  "generated_at": "2026-11-26T14:20:55+00:00",
+  "generated_at": "2026-11-27T13:32:25+00:00",
   "repo": "nimmsel23/vitalos",
   "meta": {
    "name": "vitalos",
    "description": null,
    "html_url": "https://github.com/nimmsel23/vitalos",
-   "pushed_at": "2026-11-26T13:24:11Z",
+   "pushed_at": "2026-11-27T13:32:02Z",
    "default_branch": "master",
    "visibility": "public",
    "pages_url": "https://nimmsel23.github.io/vitalos/"
@@ -18,13 +18,19 @@
   "branches": {
    "main": "master",
    "has_dev": false,
-   "master_head": "51a8aa8 2026-11-26T14:23:39+01:00"
+   "master_head": "198a0e7 2026-11-27T14:31:37+01:00"
   },
   "work": {
    "branch": "master",
-   "sha": "51a8aa8091433f58e6b6d540a9ab28bcba713791"
+   "sha": "198a0e7d286a3f484ba6c463c612844e541abf0c"
   },
   "commits": [
+   {
+    "sha": "198a0e7",
+    "date": "2026-11-27T14:31:37+01:00",
+    "author": "Alpha",
+    "subject": "feat(fitness): integrate week 4 and edge-swipe return in Core Skills"
+   },
    {
     "sha": "51a8aa8",
     "date": "2026-11-26T14:23:39+01:00",
@@ -138,22 +144,12 @@
     "date": "2026-11-24T09:26:49Z",
     "author": "nimmsel23",
     "subject": "ci: Shell-Pins mehrfach am Tag und Dashboard-Assets-Verzeichnis (#64)"
-   },
-   {
-    "sha": "67d9b70",
-    "date": "2026-11-24T07:46:16Z",
-    "author": "vitalos-org-bot[bot]",
-    "subject": "chore(submodules): Shell-Pins 2026-11-24 (#63)"
    }
   ],
   "activity": [
    {
-    "day": "2026-11-06",
-    "n": 48
-   },
-   {
     "day": "2026-11-07",
-    "n": 18
+    "n": 13
    },
    {
     "day": "2026-11-08",
@@ -230,9 +226,93 @@
    {
     "day": "2026-11-26",
     "n": 8
+   },
+   {
+    "day": "2026-11-27",
+    "n": 1
    }
   ],
   "workflows": [
+   {
+    "name": "Shell pin and lockfile guard",
+    "branch": "master",
+    "event": "push",
+    "status": "in_progress",
+    "conclusion": null,
+    "created_at": "2026-11-27T13:32:04Z",
+    "url": "https://github.com/nimmsel23/vitalos/actions/runs/46007925527",
+    "sha": "198a0e7"
+   },
+   {
+    "name": "Deploy VitalOS Shell",
+    "branch": "master",
+    "event": "push",
+    "status": "in_progress",
+    "conclusion": null,
+    "created_at": "2026-11-27T13:32:04Z",
+    "url": "https://github.com/nimmsel23/vitalos/actions/runs/46007925524",
+    "sha": "198a0e7"
+   },
+   {
+    "name": "Product shared-source preparation",
+    "branch": "master",
+    "event": "push",
+    "status": "in_progress",
+    "conclusion": null,
+    "created_at": "2026-11-27T13:32:04Z",
+    "url": "https://github.com/nimmsel23/vitalos/actions/runs/46007925435",
+    "sha": "198a0e7"
+   },
+   {
+    "name": "Deploy VOS Fitness PWA",
+    "branch": "master",
+    "event": "push",
+    "status": "in_progress",
+    "conclusion": null,
+    "created_at": "2026-11-27T13:32:04Z",
+    "url": "https://github.com/nimmsel23/vitalos/actions/runs/46007925367",
+    "sha": "198a0e7"
+   },
+   {
+    "name": "Close superseded Dependabot PRs",
+    "branch": "master",
+    "event": "push",
+    "status": "completed",
+    "conclusion": "success",
+    "created_at": "2026-11-27T13:32:04Z",
+    "url": "https://github.com/nimmsel23/vitalos/actions/runs/46007925359",
+    "sha": "198a0e7"
+   },
+   {
+    "name": "CI-Heilung (rote Läufe wiederholen)",
+    "branch": "master",
+    "event": "schedule",
+    "status": "completed",
+    "conclusion": "success",
+    "created_at": "2026-11-27T09:03:57Z",
+    "url": "https://github.com/nimmsel23/vitalos/actions/runs/45970589094",
+    "sha": "51a8aa8"
+   },
+   {
+    "name": "Org-Bot (PR anlegen & mergen)",
+    "branch": "master",
+    "event": "schedule",
+    "status": "completed",
+    "conclusion": "success",
+    "created_at": "2026-11-27T05:22:19Z",
+    "url": "https://github.com/nimmsel23/vitalos/actions/runs/45945402515",
+    "sha": "51a8aa8"
+   },
+   {
+    "name": "Auto Shell Pins",
+    "branch": "master",
+    "event": "schedule",
+    "status": "completed",
+    "conclusion": "failure",
+    "created_at": "2026-11-26T23:53:37Z",
+    "url": "https://github.com/nimmsel23/vitalos/actions/runs/45913569374",
+    "sha": "51a8aa8"
+   },
    {
     "name": "Live Smoke (VitalOS)",
     "branch": "master",
@@ -244,16 +324,6 @@
     "sha": "51a8aa8"
    },
    {
-    "name": "Auto Shell Pins",
-    "branch": "master",
-    "event": "workflow_run",
-    "status": "completed",
-    "conclusion": "success",
-    "created_at": "2026-11-26T13:25:27Z",
-    "url": "https://github.com/nimmsel23/vitalos/actions/runs/45829003070",
-    "sha": "51a8aa8"
-   },
-   {
     "name": "Deploy Firestore Rules",
     "branch": "master",
     "event": "workflow_run",
@@ -262,76 +332,6 @@
     "created_at": "2026-11-26T13:25:27Z",
     "url": "https://github.com/nimmsel23/vitalos/actions/runs/45829002999",
     "sha": "51a8aa8"
-   },
-   {
-    "name": "Product shared-source preparation",
-    "branch": "master",
-    "event": "push",
-    "status": "completed",
-    "conclusion": "success",
-    "created_at": "2026-11-26T13:23:46Z",
-    "url": "https://github.com/nimmsel23/vitalos/actions/runs/45828725327",
-    "sha": "51a8aa8"
-   },
-   {
-    "name": "Deploy VOS Fitness PWA",
-    "branch": "master",
-    "event": "push",
-    "status": "completed",
-    "conclusion": "success",
-    "created_at": "2026-11-26T13:23:46Z",
-    "url": "https://github.com/nimmsel23/vitalos/actions/runs/45828725275",
-    "sha": "51a8aa8"
-   },
-   {
-    "name": "Deploy VitalOS Shell",
-    "branch": "master",
-    "event": "push",
-    "status": "completed",
-    "conclusion": "success",
-    "created_at": "2026-11-26T13:23:46Z",
-    "url": "https://github.com/nimmsel23/vitalos/actions/runs/45828725103",
-    "sha": "51a8aa8"
-   },
-   {
-    "name": "Shell pin and lockfile guard",
-    "branch": "master",
-    "event": "push",
-    "status": "completed",
-    "conclusion": "success",
-    "created_at": "2026-11-26T13:23:46Z",
-    "url": "https://github.com/nimmsel23/vitalos/actions/runs/45828725083",
-    "sha": "51a8aa8"
-   },
-   {
-    "name": "Close superseded Dependabot PRs",
-    "branch": "master",
-    "event": "push",
-    "status": "completed",
-    "conclusion": "success",
-    "created_at": "2026-11-26T11:43:40Z",
-    "url": "https://github.com/nimmsel23/vitalos/actions/runs/45813163809",
-    "sha": "7defec1"
-   },
-   {
-    "name": "CI-Heilung (rote Läufe wiederholen)",
-    "branch": "master",
-    "event": "schedule",
-    "status": "completed",
-    "conclusion": "success",
-    "created_at": "2026-11-26T05:27:14Z",
-    "url": "https://github.com/nimmsel23/vitalos/actions/runs/45761695427",
-    "sha": "4fb5b5b"
-   },
-   {
-    "name": "Org-Bot (PR anlegen & mergen)",
-    "branch": "master",
-    "event": "schedule",
-    "status": "completed",
-    "conclusion": "success",
-    "created_at": "2026-11-26T04:29:46Z",
-    "url": "https://github.com/nimmsel23/vitalos/actions/runs/45755557111",
-    "sha": "4fb5b5b"
    },
    {
     "name": "Org-Bot (PR anlegen & mergen)",
@@ -352,19 +352,18 @@
     "created_at": "2026-11-25T07:53:24Z",
     "url": "https://github.com/nimmsel23/vitalos/actions/runs/45571662978",
     "sha": "607630e"
-   },
-   {
-    "name": "Org-Bot (PR anlegen & mergen)",
-    "branch": "codex/deps-bundle-2026-48",
-    "event": "pull_request_target",
-    "status": "completed",
-    "conclusion": "success",
-    "created_at": "2026-11-24T20:21:40Z",
-    "url": "https://github.com/nimmsel23/vitalos/actions/runs/45479989320",
-    "sha": "99e86bc"
    }
   ],
   "issues": [
+   {
+    "number": 74,
+    "title": "Shell-Pin: Build oder Checks rot",
+    "created_at": "2026-11-26T15:16:25Z",
+    "updated_at": "2026-11-26T23:53:56Z",
+    "labels": [],
+    "url": "https://github.com/nimmsel23/vitalos/issues/74",
+    "author": "vitalos-org-bot[bot]"
+   },
    {
     "number": 48,
     "title": "Vorschlag: täglicher Pin-Check-Workflow für veraltete Submodule-Pins",
@@ -514,8 +513,15 @@
   ]
  },
  "assessment": {
-  "status": "green",
-  "signals": [],
+  "status": "red",
+  "signals": [
+   {
+    "level": "red",
+    "key": "ci:Auto Shell Pins:master",
+    "text": "„Auto Shell Pins“ auf master ist rot (failure, 51a8aa8)",
+    "url": "https://github.com/nimmsel23/vitalos/actions/runs/45913569374"
+   }
+  ],
   "ai": null,
   "ai_at": null
  }
