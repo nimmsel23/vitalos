@@ -190,6 +190,8 @@ export default defineConfig(({ mode }) => {
   }
 
   return {
+    // Shared clip processing worker may emit multiple modules.
+    worker: { format: 'es' },
     root: __dirname,
     base: process.env.VITE_VOS_NATIVE_BUILD === '1' ? './' : '/',
     define: {

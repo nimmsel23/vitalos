@@ -1,3 +1,4 @@
+import SessionAppSurface from '@fitness-components/SessionAppSurface.jsx'
 import ErrorBoundary from '@components/common/ErrorBoundary.jsx'
 import { useEffect, useState } from 'react'
 import { SkillsEmbed } from '../../../skills-app/embed.jsx'
@@ -25,7 +26,7 @@ export default function CoreSkillsApp({ user, settings = false, initialRoute = '
   useEffect(() => setRoute(initialRoute), [initialRoute])
   const sixpack = settings || route === 'sixpack' || route.startsWith('sixpack/')
   const setup = <div className="p-4 space-y-4"><PersistenceStatus /><label>Skills-Design<select value={design} onChange={e => { saveDesign(e.target.value); setDesign(e.target.value) }} className="block bg-fit-card text-fit-ink p-2 rounded-lg"><option value="classic">Original</option>{DESIGNS.map(item => <option key={item.id} value={item.id}>{item.name}</option>)}</select></label></div>
-  return <ErrorBoundary><section data-theme="skills" className="core-skills">
+  return <ErrorBoundary><SessionAppSurface onBack={() => { if (!settings) onNavigate?.('fitness', 'session') }}><section data-theme="skills" className="core-skills">
     {sixpack ? <div className="core-skills-sixpack core-skills-content">
       <SixPackEmbed key={uid || 'local'} uid={uid} route={settings ? 'settings' : route.replace(/^sixpack\/?/, '')}
         onRouteChange={next => {
@@ -35,5 +36,5 @@ export default function CoreSkillsApp({ user, settings = false, initialRoute = '
         }} onNavigate={onNavigate} firebaseApp={isNativeApp ? undefined : getApp()} enablePush={isNativeApp ? undefined : enablePush} localReminders={nativeReminderDelivery} setupContent={setup} coachingNotes={getAllCoachingNotes()}
         onWorkoutComplete={complete} loadRemoteProgram={loadProgram} saveRemoteProgram={saveProgram} />
     </div> : <div className="core-skills-training"><SkillsEmbed route={route} onRouteChange={changeRoute} design={design} onWorkoutComplete={complete} /></div>}
-  </section></ErrorBoundary>
+  </section></SessionAppSurface></ErrorBoundary>
 }

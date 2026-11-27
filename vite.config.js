@@ -206,6 +206,8 @@ export default defineConfig(({ mode }) => {
   }
 
   return {
+    // Shared clip processing worker may emit multiple modules.
+    worker: { format: 'es' },
     root: __dirname,
     base: '/',
     plugins: [
