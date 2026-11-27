@@ -1,12 +1,12 @@
 {
  "evidence": {
-  "generated_at": "2026-11-27T13:32:25+00:00",
+  "generated_at": "2026-11-27T14:15:54+00:00",
   "repo": "nimmsel23/vitalos",
   "meta": {
    "name": "vitalos",
    "description": null,
    "html_url": "https://github.com/nimmsel23/vitalos",
-   "pushed_at": "2026-11-27T13:32:02Z",
+   "pushed_at": "2026-11-27T13:32:34Z",
    "default_branch": "master",
    "visibility": "public",
    "pages_url": "https://nimmsel23.github.io/vitalos/"
@@ -234,11 +234,41 @@
   ],
   "workflows": [
    {
+    "name": "Live Smoke (VitalOS)",
+    "branch": "master",
+    "event": "workflow_run",
+    "status": "completed",
+    "conclusion": "success",
+    "created_at": "2026-11-27T13:33:46Z",
+    "url": "https://github.com/nimmsel23/vitalos/actions/runs/46008176930",
+    "sha": "198a0e7"
+   },
+   {
+    "name": "Auto Shell Pins",
+    "branch": "master",
+    "event": "workflow_run",
+    "status": "completed",
+    "conclusion": "success",
+    "created_at": "2026-11-27T13:33:46Z",
+    "url": "https://github.com/nimmsel23/vitalos/actions/runs/46008176909",
+    "sha": "198a0e7"
+   },
+   {
+    "name": "Deploy Firestore Rules",
+    "branch": "master",
+    "event": "workflow_run",
+    "status": "completed",
+    "conclusion": "success",
+    "created_at": "2026-11-27T13:33:46Z",
+    "url": "https://github.com/nimmsel23/vitalos/actions/runs/46008176861",
+    "sha": "198a0e7"
+   },
+   {
     "name": "Shell pin and lockfile guard",
     "branch": "master",
     "event": "push",
-    "status": "in_progress",
-    "conclusion": null,
+    "status": "completed",
+    "conclusion": "success",
     "created_at": "2026-11-27T13:32:04Z",
     "url": "https://github.com/nimmsel23/vitalos/actions/runs/46007925527",
     "sha": "198a0e7"
@@ -247,8 +277,8 @@
     "name": "Deploy VitalOS Shell",
     "branch": "master",
     "event": "push",
-    "status": "in_progress",
-    "conclusion": null,
+    "status": "completed",
+    "conclusion": "success",
     "created_at": "2026-11-27T13:32:04Z",
     "url": "https://github.com/nimmsel23/vitalos/actions/runs/46007925524",
     "sha": "198a0e7"
@@ -257,8 +287,8 @@
     "name": "Product shared-source preparation",
     "branch": "master",
     "event": "push",
-    "status": "in_progress",
-    "conclusion": null,
+    "status": "completed",
+    "conclusion": "success",
     "created_at": "2026-11-27T13:32:04Z",
     "url": "https://github.com/nimmsel23/vitalos/actions/runs/46007925435",
     "sha": "198a0e7"
@@ -267,8 +297,8 @@
     "name": "Deploy VOS Fitness PWA",
     "branch": "master",
     "event": "push",
-    "status": "in_progress",
-    "conclusion": null,
+    "status": "completed",
+    "conclusion": "success",
     "created_at": "2026-11-27T13:32:04Z",
     "url": "https://github.com/nimmsel23/vitalos/actions/runs/46007925367",
     "sha": "198a0e7"
@@ -304,36 +334,6 @@
     "sha": "51a8aa8"
    },
    {
-    "name": "Auto Shell Pins",
-    "branch": "master",
-    "event": "schedule",
-    "status": "completed",
-    "conclusion": "failure",
-    "created_at": "2026-11-26T23:53:37Z",
-    "url": "https://github.com/nimmsel23/vitalos/actions/runs/45913569374",
-    "sha": "51a8aa8"
-   },
-   {
-    "name": "Live Smoke (VitalOS)",
-    "branch": "master",
-    "event": "workflow_run",
-    "status": "completed",
-    "conclusion": "success",
-    "created_at": "2026-11-26T13:25:40Z",
-    "url": "https://github.com/nimmsel23/vitalos/actions/runs/45829037037",
-    "sha": "51a8aa8"
-   },
-   {
-    "name": "Deploy Firestore Rules",
-    "branch": "master",
-    "event": "workflow_run",
-    "status": "completed",
-    "conclusion": "success",
-    "created_at": "2026-11-26T13:25:27Z",
-    "url": "https://github.com/nimmsel23/vitalos/actions/runs/45829002999",
-    "sha": "51a8aa8"
-   },
-   {
     "name": "Org-Bot (PR anlegen & mergen)",
     "branch": "codex/fix-shell-pins-lockfile-478b",
     "event": "pull_request_target",
@@ -355,6 +355,17 @@
    }
   ],
   "issues": [
+   {
+    "number": 75,
+    "title": "Dashboard-Lage: rot",
+    "created_at": "2026-11-27T13:32:33Z",
+    "updated_at": "2026-11-27T13:32:33Z",
+    "labels": [
+     "dashboard"
+    ],
+    "url": "https://github.com/nimmsel23/vitalos/issues/75",
+    "author": "github-actions[bot]"
+   },
    {
     "number": 74,
     "title": "Shell-Pin: Build oder Checks rot",
@@ -513,15 +524,8 @@
   ]
  },
  "assessment": {
-  "status": "red",
-  "signals": [
-   {
-    "level": "red",
-    "key": "ci:Auto Shell Pins:master",
-    "text": "„Auto Shell Pins“ auf master ist rot (failure, 51a8aa8)",
-    "url": "https://github.com/nimmsel23/vitalos/actions/runs/45913569374"
-   }
-  ],
+  "status": "green",
+  "signals": [],
   "ai": null,
   "ai_at": null
  }
