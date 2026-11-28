@@ -119,6 +119,8 @@ module.exports = defineConfig(async ({ mode }) => {
       },
       dedupe: ["react", "react-dom", "@tanstack/react-query"],
     },
+    // 6Pack-Clip-Worker (via eingebettete Skills/6Pack) erzeugt mehrere Module.
+    worker: { format: "es" },
     build: {
       outDir,
       emptyOutDir: true,
