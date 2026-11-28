@@ -10,30 +10,15 @@
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <title>Fitness VOS</title>
     <script>
-      (function() {
-        // vos-fitness hat seit 2026-10-12 einen eigenständigen Look
-        // ("vos-pulse", src/styles/vos-pulse.css). Default für Erstbesuche;
-        // einmal in localStorage gesetzt, bleibt eine manuelle Theme-Wahl
-        // über Settings erhalten (wir überschreiben hier nie einen
-        // vorhandenen Wert).
-        const DEFAULT_THEME = 'vos-pulse';
-        if (localStorage.getItem('fitness-theme') === null) {
-          localStorage.setItem('fitness-theme', DEFAULT_THEME);
-        }
-        if (localStorage.getItem('fitness-theme-mode') === null) {
-          localStorage.setItem('fitness-theme-mode', 'manual');
-        }
-        const theme = localStorage.getItem('fitness-theme') || DEFAULT_THEME;
-        const mode = localStorage.getItem('fitness-theme-mode') || 'manual';
-        if (mode === 'manual') {
-          document.documentElement.setAttribute('data-theme', theme);
-        } else {
-          const hour = new Date().getHours();
-          const dark = localStorage.getItem('fitness-circ-dark') || DEFAULT_THEME;
-          const light = localStorage.getItem('fitness-circ-light') || 'honey';
-          document.documentElement.setAttribute('data-theme', (hour >= 8 && hour < 20) ? light : dark);
-        }
-      })();
+      // vos-fitness ignoriert die fitness-app-Themes bewusst: immer "vos-pulse"
+      // (src/styles/vos-pulse.css), auch wenn aus früheren Besuchen ein anderes
+      // Theme oder der Circadian-Modus im localStorage steht. Die Theme-Auswahl
+      // ist in Settings ausgeblendet (hideAppearance).
+      try {
+        localStorage.setItem('fitness-theme', 'vos-pulse');
+        localStorage.setItem('fitness-theme-mode', 'manual');
+      } catch (e) {}
+      document.documentElement.setAttribute('data-theme', 'vos-pulse');
     </script>
     <script type="module" src="/src/main.jsx"></script>
   </head>
