@@ -51,7 +51,8 @@ export default function RelaxApp({ subTab = 'dash', onSubTab, onOpenSession, run
     if (!subTab || subTab === tab) return
     shellSyncTargetRef.current = subTab
     setTab(subTab)
-  }, [subTab, tab])
+  // Only a new Shell route may override internal navigation.
+  }, [subTab])
 
   useEffect(() => {
     if (!tab || !onSubTab) return

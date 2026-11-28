@@ -59,14 +59,14 @@ export default function PulseFeed({ exercises, onLog, pending, saveError, onRetr
   )
 }
 
-export function PulseHeader({ streak, onOpenMore }) {
-  const dateLabel = new Date().toLocaleDateString('de-AT', { weekday: 'long', day: '2-digit', month: 'long' })
+export function PulseHeader({ streak, onOpenMore, date = null }) {
+  const dateLabel = (date ? new Date(`${date}T12:00:00`) : new Date()).toLocaleDateString('de-AT', { weekday: 'long', day: '2-digit', month: 'long' })
   return (
     <div className="pulse-header">
       <div>
         <div className="pulse-date">{dateLabel}</div>
         <div className="pulse-sub">
-          {streak > 0 ? (<><Flame size={11} style={{ display: 'inline', marginRight: 4, marginBottom: -1 }} />{streak} Tage Pulse</>) : 'Heutiger Pulse'}
+          {streak > 0 ? (<><Flame size={11} style={{ display: 'inline', marginRight: 4, marginBottom: -1 }} />{streak} Tage Pulse</>) : (date ? 'Dein Pulse' : 'Heutiger Pulse')}
         </div>
       </div>
       <button className="pulse-more-btn" onClick={onOpenMore} aria-label="Mehr">

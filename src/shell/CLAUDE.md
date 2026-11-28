@@ -205,3 +205,14 @@ Session-Gate, Session-Sidebar, Habit-Sidebar, Fuel-TapBoard, Relax-Substanz-Deta
 
 - **Pulse** (Ein-Zeilen-Logger aus `vos-fitness`) ist Fitness-Untertab `pulse` (`#fitness/pulse`, erster Eintrag in `SUB_NAV.fitness` und im Fitness-Gate). `FitnessApp.jsx` importiert den Kern `PulseLog` über den Alias `@pulse` (`vos-fitness/src/pulse`); `user` kommt aus `ShellAppRouter`. Eingebettet über `embedded` (CSS `.pulse-embedded`: kein eigenes Vollbild, Composer klebt über der Bottom-Nav).
 - **Fuel-Untertabs** in `SUB_NAV.fuel`: `log-dashboard` und `log-timeline` (Log-Ansichten, Tabs aus `fuel-app/routes.js`), `pots` (Töpfe) und `kitchen` (Küche), außerdem die Schnelleinstiege `tapboard`, `shutter`, `tagesfaden`. Diese drei rendert `ShellAppRouter` über `FuelFrontdoorScreen` (`FuelFrontdoors.jsx`) statt über `FuelWrapper`. Neue Fuel-Tabs in `fuel-app/routes.js` müssen hier ebenfalls in `SUB_NAV.fuel` eingetragen werden, sonst sind sie in der Shell nicht anwählbar.
+
+## Shell-Zustand und Regressionen (2026-11-28)
+
+- Die private Shell hat einen Auth-Listener in `App.jsx`; der alte `src/contexts/UserContext` wird nicht mehr gemountet.
+- `accountState.js` trennt Körperprofil und Fuel-Einstellungen nach UID. Unzugeordnete Altwerte bleiben separat erhalten und werden keinem Login automatisch zugeordnet. Verspätete Cloud-Antworten werden verworfen.
+- Alle Shell-Query-Provider nutzen `queryClient.js`. Der Cache wird beim Kontowechsel geleert. Fuel-Mutationen und die Shell-DB-Schreibadapter invalidieren die Wochenmarkierungen. Fuel-Profilspiegelung verwendet `setState`, nie die Cloud-schreibenden `setSetting`-Setter.
+- Bei Fuel/Relax darf nur eine neue Shell-Route die interne Navigation überschreiben; interne Tabwechsel werden zurückgemeldet.
+- `hashState.js` schreibt nur bekannte Kurzrouten ohne App-Präfix. Alle übrigen Untertabs behalten `#fitness/...` oder `#fuel/...`; unbekannte Hauptpfade öffnen das Hub-Gate.
+- Pulse erhält in der Shell `date={sessionDate}` und wird beim Datumswechsel neu gemountet. Sein Standalone-Default bleibt heute.
+- `pnpm test` führt `scripts/smoke.test.mjs` aus, einschließlich Routing, Kontowechsel, verspäteter Antworten, Datum, Wrapper-Navigation und Pulse-Datum. Shell-CI nutzt denselben Einstieg.
+- Beide privaten Build-Modi leiten die Firebase-Initialisierung der Subapps auf die Shell-Instanz um. Der lokale Vite-Proxy reicht `/nutrition`, `/supplements`, `/fuel` an den vorhandenen Fuel-Backend-Port 9000 durch.

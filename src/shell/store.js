@@ -1,5 +1,5 @@
 import { createSettingsStore, ls, lsInt, lsFloat } from '@fitness/src/store/settingsStore.js'
-import { localISO } from './runtimeDate.js'
+import { localISO, isISODate } from './runtimeDate.js'
 
 /**
  * Shell-Settings-Store (Zustand) — SSOT für alle vitalos-weiten User-Settings.
@@ -19,6 +19,7 @@ import { localISO } from './runtimeDate.js'
  */
 
 const EXTRA_FIELDS = {
+  displayName:          ['vitalos-displayName',          () => ls('vitalos-displayName', '')],
   gender:               ['vitalos-gender',               () => ls('vitalos-gender', 'm')],
   // Anatomie-Modell (BodyMap-Visualisierung, 'male'/'female') — bewusst getrennt
   // vom Profil-Geschlecht ('m'/'f'): ein gemeinsames Feld machte beide Settings
@@ -30,8 +31,13 @@ const EXTRA_FIELDS = {
   split:                ['vitalos-split',                () => ls('vitalos-split', 'PPL')],
   cycleLength:          ['vitalos-cycleLength',          () => lsInt('vitalos-cycleLength', 4)],
   defaultLocation:      ['vitalos-defaultLocation',      () => ls('vitalos-defaultLocation', 'Home')],
-  runtimeDate:          ['vitalos-runtimeDate',          () => ls('vitalos-runtimeDate', localISO())],
+  runtimeDate:          ['vitalos-runtimeDate',          () => { const date = ls('vitalos-runtimeDate', localISO()); return isISODate(date) ? date : localISO() }],
   mobileLayout:         ['vitalos-mobileLayout',         () => ls('vitalos-mobileLayout', 'classic')],
 }
 
 export const useShellSettings = createSettingsStore('vitalos', EXTRA_FIELDS)
+
+const persistRuntimeDate = useShellSettings.getState().setRuntimeDate
+useShellSettings.setState({
+  setRuntimeDate: date => { if (isISODate(date)) persistRuntimeDate(date) },
+})

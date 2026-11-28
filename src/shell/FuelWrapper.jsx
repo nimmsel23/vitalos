@@ -44,10 +44,10 @@ export default function FuelWrapper({ user, subTab, onSubTab, onNavigateShell, e
   useEffect(() => {
     if (!subTab) return
     const targetTab = desiredShellTab
-    if (!targetTab || targetTab === activeTab) return
+    if (!targetTab || targetTab === useApp.getState().activeTab) return
     shellSyncTargetRef.current = targetTab
     setActiveTab(targetTab)
-  }, [activeTab, desiredShellTab, setActiveTab, subTab])
+  }, [desiredShellTab, setActiveTab, subTab])
 
   // Fuel intern → Sidebar: Store-Änderung zurückmelden
   useEffect(() => {

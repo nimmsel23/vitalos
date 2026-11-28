@@ -12,8 +12,6 @@ function FuelHubStatInner() {
   return <span>{Math.round(kcal)} kcal heute</span>
 }
 
-// Eigener QueryClient statt fuel-app-App-weiten Client (analog FuelDashboardWidget.jsx)
-// — Hub rendert unabhängig vom Fuel-Tab, braucht keinen geteilten Cache.
 export default function FuelHubStat() {
   return (
     <QueryClientProvider client={fuelHubQueryClient}>

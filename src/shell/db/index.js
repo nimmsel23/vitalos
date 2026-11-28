@@ -48,8 +48,8 @@ export { getNutritionNotes, saveNutritionNotes, getNutritionNotesHistory } from 
 // (habits.js re-exportiert komplett @fitness-db, das kollidiert hier mit
 // journal-devs eigenem Journal-Modul — journal.js gewinnt)
 export {
-  getJournal, saveJournal,
-  getJournalHistory, updateJournal, getAllHabitJournalsHistory,
+  getJournal,
+  getJournalHistory, getAllHabitJournalsHistory,
   getAllHabitJournalsForDate,
 } from "./journal.js";
 
@@ -67,3 +67,14 @@ export {
   getSessionHistory
 } from "./fitness.js";
 
+
+// Shell reads stay shared with the standalone apps; writes refresh the week strip.
+import { withActivityRefresh } from '../activityChanges.js';
+import { saveSession as writeSession, deleteSession as removeSession, saveHabitJournal as writeHabitJournal } from './fitness.js';
+import { saveJournal as writeJournal, updateJournal as editJournal, deleteJournal as removeJournal } from './journal.js';
+export const saveSession = withActivityRefresh(writeSession);
+export const deleteSession = withActivityRefresh(removeSession);
+export const saveHabitJournal = withActivityRefresh(writeHabitJournal);
+export const saveJournal = withActivityRefresh(writeJournal);
+export const updateJournal = withActivityRefresh(editJournal);
+export const deleteJournal = withActivityRefresh(removeJournal);

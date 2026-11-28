@@ -34,3 +34,12 @@ export async function registerShellDevice() {}
 // nicht an (siehe isLocalMode()-Guard in NotificationsSection.jsx).
 export async function getPushSettings() { return { enabled: false, token: null, reminderTime: "18:00", types: {} }; }
 export async function savePushSettings(_settings) { return { ok: true }; }
+
+export async function getUserSettings() { return null; }
+
+import { withActivityRefresh } from '../shell/activityChanges.js';
+import { saveSession as writeSession, deleteSession as removeSession, saveJournal as writeJournal, updateJournal as editJournal } from '@fitness-db';
+export const saveSession = withActivityRefresh(writeSession);
+export const deleteSession = withActivityRefresh(removeSession);
+export const saveJournal = withActivityRefresh(writeJournal);
+export const updateJournal = withActivityRefresh(editJournal);

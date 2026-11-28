@@ -1,5 +1,6 @@
+import { shellQueryClient } from '../queryClient.js'
 import { useEffect, useState } from 'react'
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
+import { QueryClientProvider } from '@tanstack/react-query'
 import FuelSettings from '@fuel/views/Settings/SettingsView.jsx'
 import RelaxSettings from '@relax/views/Settings.jsx'
 import JournalSettings from '../../../journal-app/src/components/Journal/JournalSettings.jsx'
@@ -10,7 +11,7 @@ import * as journalDb from '@journal-db'
 import CoreSkillsApp from '../../../prod/src/shell/CoreSkillsApp.jsx'
 import { enableShellSixpackPush } from '../sixpackPush.js'
 
-const queryClient = new QueryClient()
+
 function Section({ id, title, children }) {
   const [open, setOpen] = useState(false)
   return <details id={`settings-${id}`} className="card p-4" onToggle={e => setOpen(e.currentTarget.open)}><summary className="cursor-pointer text-lg font-bold">{title}</summary>{open && <div className="pt-4">{children}</div>}</details>
@@ -44,7 +45,7 @@ function HabitControls({ user }) {
 export default function AppSettingsSections({ user }) {
   return <div className="space-y-4">
     <Section id="skills" title="Core Skills · Skills & 6Pack"><CoreSkillsApp user={user} settings onNavigate={target => { location.hash = `#${target}` }} enablePush={enableShellSixpackPush} /></Section>
-    <Section id="fuel" title="Fuel"><QueryClientProvider client={queryClient}><FuelSettings /></QueryClientProvider></Section>
+    <Section id="fuel" title="Fuel"><QueryClientProvider client={shellQueryClient}><FuelSettings /></QueryClientProvider></Section>
     <Section id="journal" title="Journal"><JournalControls user={user} /></Section>
     <Section id="habits" title="Habits"><HabitControls user={user} /></Section>
     <Section id="relax" title="Relax"><div className="relax-scope"><RelaxSettings /></div></Section>

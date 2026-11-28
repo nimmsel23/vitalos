@@ -122,7 +122,7 @@ export default function Settings({ user, signOut }) {
 
        <AccountSection user={user} signOut={signOut} />
 
-       <ProfileSection />
+       <ProfileSection user={user} />
        <AppSettingsSections user={user} />
 
        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">

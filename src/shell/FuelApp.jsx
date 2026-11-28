@@ -1,3 +1,4 @@
+import { shellQueryClient } from './queryClient.js'
 /**
  * FuelApp — Federation Shim für VitalOS.
  * Im Embedded-Modus rendert nur den eigentlichen Tab-Content; Shell-Header
@@ -5,7 +6,7 @@
  */
 
 import { Suspense, useEffect } from 'react'
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
+import { QueryClientProvider } from '@tanstack/react-query'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Sparkles } from 'lucide-react'
 import { useApp } from '@fuel/store.js'
@@ -16,9 +17,7 @@ import { useAppData } from '@fuel/hooks/useAppData.js'
 import { sumMetric, formatMetric } from '@fuel-shared/utils/utils.js'
 import '@fuel/styles.embedded.css'
 
-const qc = new QueryClient({
-  defaultOptions: { queries: { staleTime: 60_000 } },
-})
+
 
 function FuelInner({ embedded = false }) {
   const { activeTab, setActiveTab, activeDate, setActiveDate } = useApp()
@@ -109,7 +108,7 @@ function FuelInner({ embedded = false }) {
 
 export default function FuelApp({ embedded = false }) {
   return (
-    <QueryClientProvider client={qc}>
+    <QueryClientProvider client={shellQueryClient}>
       <FuelInner embedded={embedded} />
     </QueryClientProvider>
   )

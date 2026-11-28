@@ -14,11 +14,11 @@ function todayISO() {
   return isoLocal(new Date())
 }
 
-function computeStreak(history, hasToday) {
+function computeStreak(history, hasToday, date = todayISO()) {
   const days = new Set((Array.isArray(history) ? history : []).map((s) => s?.date))
-  if (hasToday) days.add(todayISO())
+  if (hasToday) days.add(date)
   let streak = 0
-  const cur = new Date()
+  const cur = new Date(`${date}T12:00:00`)
   cur.setHours(12, 0, 0, 0) // Mittag: setDate bleibt bei Sommerzeitwechsel auf dem richtigen Tag
   // heute zählt nur mit, wenn schon was geloggt ist — sonst ab gestern rückwärts zählen
   if (!days.has(isoLocal(cur))) cur.setDate(cur.getDate() - 1)
@@ -34,7 +34,7 @@ function computeStreak(history, hasToday) {
  * noch Wischen — das liefert die jeweilige Hülle (vos-fitness: PulseApp,
  * VitalOS-Shell: FitnessApp-Untertab 'pulse'). `user` kommt von dort.
  */
-export default function PulseLog({ user, onOpenMore, onHistory, embedded = false }) {
+export default function PulseLog({ user, onOpenMore, onHistory, embedded = false, date = null }) {
   const [exercises, setExercises] = useState([])
   const [pending, setPending] = useState([])
   const [history, setHistory] = useState([])
@@ -62,23 +62,23 @@ export default function PulseLog({ user, onOpenMore, onHistory, embedded = false
   }
 
   async function ensureLoaded() {
-    const date = todayISO()
+    const targetDate = date || todayISO()
     const cur = loadRef.current
-    if (cur.date === date && (cur.ok || cur.promise)) {
+    if (cur.date === targetDate && (cur.ok || cur.promise)) {
       const ok = await cur.promise
       if (ok) return true
       if (loadRef.current !== cur) return ensureLoaded()
     }
-    return loadDay(date)
+    return loadDay(targetDate)
   }
 
   useEffect(() => {
     if (!user) return
-    loadDay(todayISO())
+    loadDay(date || todayISO())
     getSessionHistory(60).then((h) => { setHistory(h); onHistory?.(h) }).catch(() => {})
-  }, [user])
+  }, [user, date])
 
-  const streak = useMemo(() => computeStreak(history, exercises.length > 0), [history, exercises])
+  const streak = useMemo(() => computeStreak(history, exercises.length > 0, date || todayISO()), [history, exercises, date])
 
   async function handleLog(text) {
     const parsed = parseLogText(text)
@@ -178,7 +178,7 @@ export default function PulseLog({ user, onOpenMore, onHistory, embedded = false
 
   return (
     <div className={embedded ? 'pulse-root pulse-embedded' : 'pulse-log'}>
-      <PulseHeader streak={streak} onOpenMore={onOpenMore} />
+      <PulseHeader date={date} streak={streak} onOpenMore={onOpenMore} />
       <PulseFeed exercises={exercises} pending={pending} onLog={handleLog} saveError={saveError} onRetrySave={retrySave} />
     </div>
   )

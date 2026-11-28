@@ -1,17 +1,17 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { User2, Save, Check } from 'lucide-react';
-import { useUser } from '../../contexts/UserContext';
 import { useShellSettings } from '../store.js';
-import { updateUserProfile } from '@db';
+import { updateUserProfile, isLocalMode, auth } from '@db';
+import { updateProfile } from 'firebase/auth';
 
 const inputCls = "w-full bg-fit-bg2 border border-fit-line rounded-xl px-4 py-3 text-sm font-bold text-fit-ink focus:border-fit-accent outline-none transition-colors";
 
-export default function ProfileSection() {
-  const { user } = useUser();
+export default function ProfileSection({ user }) {
   // Profil-Werte kommen aus dem Shell-Store (SSOT, vitalos-* Keys) — nicht aus
   // dem UserContext, der auf die alten fitness-* Keys persistierte und damit
   // parallel zum Sidebar-Quickedit lief.
   const {
+    displayName, setDisplayName,
     gender, setGender,
     age, setAge,
     heightCm, setHeightCm,
@@ -19,41 +19,34 @@ export default function ProfileSection() {
     split, defaultLocation, cycleLength, recentDays, coverageThreshold,
   } = useShellSettings();
 
-  // Lokale States für den Namen und den Speicher-Button
-  const [displayName, setDisplayName] = useState("");
+  // Speicherstatus
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
+  const [error, setError] = useState('');
 
-  // Zieht beim ersten Laden den Namen aus dem Google-Login
-  useEffect(() => {
-    if (user?.displayName) setDisplayName(user.displayName);
-  }, [user]);
-
-    // 2. Die neue Speicher-Logik für Firestore
-    async function handleSave() {
-      if (!user || !user.uid) return;
-      setSaving(true);
-
+  async function handleSave() {
+    if (!user?.uid) return;
+    setSaving(true);
+    setError('');
+    try {
+      if (!isLocalMode()) await updateProfile(auth.currentUser, { displayName: displayName.trim() });
       const success = await updateUserProfile(user.uid, {
-        displayName,
-        email: user.email,
-        gender,
-        age,
-        heightCm,
-        weightKg,
-        split,
-        defaultLocation,
-        cycleLength,
-        recentDays,
-        coverageThreshold,
+        displayName: displayName.trim(), email: user.email,
+        gender, age, heightCm, weightKg,
+        split, defaultLocation, cycleLength, recentDays, coverageThreshold,
       });
-
       if (success) {
         setSaved(true);
         setTimeout(() => setSaved(false), 2000);
+      } else {
+        setError('Profil konnte nicht gespeichert werden.');
       }
+    } catch {
+      setError('Profil konnte nicht gespeichert werden.');
+    } finally {
       setSaving(false);
     }
+  }
 
     // Nichts rendern, bevor Auth geladen ist
     if (!user) return null;
@@ -132,6 +125,7 @@ export default function ProfileSection() {
       </div>
       </div>
 
+      {error && <p role="alert" className="text-sm text-fit-red">{error}</p>}
       {/* Firestore Speichern Button */}
       <button
       onClick={handleSave}

@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback, useRef } from 'react'
 import { RefreshCw, Zap } from 'lucide-react'
 import { useEscapeKey } from './hooks/useEscapeKey.js'
-import { watchAuth, signIn, signInEmail, signUpEmail, signOut, isLocalMode, auth, getUserProfile, registerShellDevice } from '@db'
+import { watchAuth, signIn, signInEmail, signUpEmail, signOut, isLocalMode, auth, getUserProfile, getUserSettings, registerShellDevice } from '@db'
 import { PRIVACY_URL } from '../prod/src/cloud/legal.js'
 import { PASSWORD_RESET_NEED_EMAIL, PASSWORD_RESET_SENT, passwordResetNotice } from '../prod/src/cloud/passwordReset.js'
 import { NAV_ITEMS, VALID_TABS, SUB_NAV } from './shell/NavigationItems.js'
@@ -14,9 +14,13 @@ import ErrorBoundary from './components/common/ErrorBoundary.jsx'
 import { useApp as useFuelAppStore, useSettings as useFuelStore } from '@fuel/store.js'
 import ShellHeader from './shell/ShellHeader.jsx'
 import { useShellSettings } from './shell/store.js'
+import { shellQueryClient } from './shell/queryClient.js'
+import { createAccountState } from './shell/accountState.js'
 import ShellAppRouter from './shell/ShellAppRouter.jsx'
 import { HomeHubGate } from './shell/HomeGates.jsx'
 import { readHashState, buildHashState } from './shell/hashState.js'
+
+const accountState = createAccountState(useShellSettings, useFuelStore, shellQueryClient)
 
 const DAY_START = 8
 const DAY_END   = 20
@@ -84,15 +88,17 @@ export default function App() {
   const [resetNotice, setResetNotice] = useState('')
   const [resetError, setResetError] = useState('')
 
-  useEffect(() => {
-    if (isLocalMode()) { setAuthLoading(false); return }
-    // authStateReady() wartet bis Firebase die Session aus IndexedDB geladen hat —
-    // verhindert Login-Screen-Flash bei jedem Reload
-    auth.authStateReady().then(() => {
-      setAuthLoading(false)
-      watchAuth(u => setUser(u))
-    })
-  }, [])
+  useEffect(() => watchAuth(nextUser => {
+    const uid = isLocalMode() ? 'local' : nextUser?.uid || null
+    accountState.switchAccount(uid)
+    if (!useShellSettings.getState().displayName && nextUser?.displayName) {
+      accountState.applyProfile(uid, { displayName: nextUser.displayName })
+    }
+    setSessionDraft(null)
+    setSessionDate(null)
+    setUser(isLocalMode() ? { ...nextUser, uid: 'local' } : nextUser)
+    setAuthLoading(false)
+  }), [])
 
   useEffect(() => {
     if (typeof window === 'undefined') return undefined
@@ -142,36 +148,25 @@ export default function App() {
     }
   }, [tab, fuelActiveDate, runtimeDate, setFuelActiveDate, setRuntimeDate])
 
-  // User-Settings global: vitalos-Profil (Alter/Geschlecht) in den Fuel-Store spiegeln,
-  // damit z. B. DACH-Referenzwerte im Mikros-Tab dieselben Werte nutzen — unabhängig
-  // davon, ob der Setup-Tab je geöffnet wurde.
-  // Cloud-Hydration: Firestore-Profil (users/{uid}) nach Login in den
-  // Shell-Store übernehmen — SSOT bleibt der Store, Firestore ist Backup/Sync.
+  // Late profile responses cannot update another account.
   useEffect(() => {
     if (!user?.uid || isLocalMode()) return
+    let cancelled = false
+    const uid = user.uid
     registerShellDevice()
-    getUserProfile(user.uid).then(p => {
-      if (!p) return
-      const s = useShellSettings.getState()
-      if (p.gender) s.setGender(p.gender)
-      if (p.age) s.setAge(p.age)
-      if (p.heightCm) s.setHeightCm(p.heightCm)
-      if (p.weightKg) s.setWeightKg(p.weightKg)
-      if (p.split) s.setSplit(p.split)
-      if (p.defaultLocation) s.setDefaultLocation(p.defaultLocation)
-      if (p.cycleLength) s.setCycleLength(p.cycleLength)
-      if (p.recentDays) s.setRecentDays(p.recentDays)
-      if (p.coverageThreshold) s.setCoverageThreshold(p.coverageThreshold)
-    }).catch(() => {})
-  }, [user])
+    getUserProfile(uid).then(profile => {
+      if (!cancelled) accountState.applyProfile(uid, profile)
+    }).catch(error => console.error('Profil konnte nicht geladen werden:', error))
+    getUserSettings().then(settings => {
+      if (!cancelled) accountState.applyFuelSettings(uid, settings)
+    }).catch(error => console.error('Fuel-Einstellungen konnten nicht geladen werden:', error))
+    return () => { cancelled = true }
+  }, [user?.uid])
 
-  const setFuelSetting = useFuelStore(s => s.setSetting)
   useEffect(() => {
-    if (age) setFuelSetting('age', age)
-    if (gender) setFuelSetting('gender', gender)
-    if (heightCm) setFuelSetting('height_cm', heightCm)
-    if (weightKg) setFuelSetting('weight_kg', weightKg)
-  }, [age, gender, heightCm, weightKg, setFuelSetting])
+    // setSetting also writes to Firestore; mirroring must never write defaults back.
+    useFuelStore.setState({ age, gender, height_cm: heightCm, weight_kg: weightKg })
+  }, [age, gender, heightCm, weightKg])
 
   // Einmalige Migration auf das neue Default-Theme (Redesign 2026-10):
   // wer noch auf dem alten Default "nordic" steht (bzw. nie gewählt hat),
@@ -331,6 +326,7 @@ export default function App() {
   function changeHeaderDate(date) {
     setRuntimeDate(date)
     setSessionDate(null)
+    setSessionDraft(null)
   }
 
   function navigateToDomainDate(id, date) {
@@ -352,13 +348,13 @@ export default function App() {
     }
     if (id === 'door') {
       setHomeGate(null)
-      setDoorTab(subTab || doorTab || 'potential')
+      setDoorTab(doorTab || 'potential')
       setTab('door')
       return
     }
     if (id === 'game') {
       setHomeGate(null)
-      setGameTab(subTab || gameTab || 'fire')
+      setGameTab(gameTab || 'fire')
       setTab('game')
       return
     }
@@ -533,7 +529,7 @@ export default function App() {
           setFitnessTab(id)
         },
         sessionDate: sessionDate || runtimeDate, sessionDraft, onOpenSession: openSession,
-        onRuntimeDateChange: setRuntimeDate,
+        onRuntimeDateChange: changeHeaderDate,
         onNavigateShell: navigate,
         sidebarPinned, showDesktopChrome,
       }
@@ -570,7 +566,7 @@ export default function App() {
         : null
 
       return (
-        <ErrorBoundary>
+        <ErrorBoundary key={user?.uid || 'local'}>
         {/* HIER ist die app-shell Klasse wieder an Ort und Stelle */}
         <div className="app-shell flex min-h-screen overflow-x-clip w-full bg-fit-bg text-fit-ink font-sans transition-colors duration-500" onKeyDown={handleNavigationKeys}>
         <a href="#vos-shell-content" className="vos-skip-link vos-surface rounded-xl px-4 py-3" onClick={(event) => {

@@ -127,7 +127,7 @@ export default function FitnessApp({ user, recentDays, coverageThreshold, gender
               {tab === 'session' && <Session key={sessionDate || 'today'} initialDate={sessionDate} initialDraft={sessionDraft} onInspectExercise={inspectExercise} recentDays={recentDays} coverageThreshold={coverageThreshold} subTab={route.sessionSubTab} onDateChange={onRuntimeDateChange} onSubNav={setTab} />}
               {tab === 'review'  && <WeeklyReview onOpenSession={onOpenSession} onInspectExercise={inspectExercise} muscleLanguage={muscleLanguage} taxonomy={taxonomy} gender={gender} recentDays={recentDays} subTab={activeReviewSubTab} onSubNav={setReviewSubTab} />}
               {tab === 'learn'   && <Learn subTab={activeLearnSubTab} onInspectExercise={inspectExercise} muscleLanguage={muscleLanguage} taxonomy={taxonomy} />}
-              {tab === 'pulse'   && <PulseLog embedded user={user} onOpenMore={() => setTab('gate')} />}
+              {tab === 'pulse'   && <PulseLog key={sessionDate || 'today'} date={sessionDate} embedded user={user} onOpenMore={() => setTab('gate')} />}
               {tab === 'inbox'   && <Inbox />}
               {tab === 'coach'   && <Coach onInspectExercise={inspectExercise} />}
             </div>

@@ -134,7 +134,7 @@ export default defineConfig(({ mode }) => {
 
   const federationPlugin = []
 
-  // Firebase-Build: Sub-Repo-eigene firebase.js-Inits (fitness-dev, fuel-dev)
+  // In beiden Build-Modi: Sub-Repo-eigene firebase.js-Inits (fitness-dev, fuel-dev)
   // auf die Shell-Init umleiten — genau eine initializeApp/initializeFirestore
   // im Bundle, Config aus @firebase-config. enforce:'pre' nötig, damit der
   // Hook vor vite:resolve läuft — im Gegensatz zum toten journalDbPlugin
@@ -163,7 +163,7 @@ export default defineConfig(({ mode }) => {
     name: 'vitalos:subrepo-firebase-redirect',
     enforce: 'pre',
     resolveId(source, importer) {
-      if (!isFirebase || !importer || !source.startsWith('.')) return null
+      if (!importer || !source.startsWith('.')) return null
       const resolved = resolve(dirname(importer.split('?')[0]), source)
       if (resolved === SKILLS_CLOUD || `${resolved}.js` === SKILLS_CLOUD) return null
       if (SUBREPO_FIREBASE.has(resolved) || SUBREPO_FIREBASE.has(`${resolved}.js`)) {
@@ -172,7 +172,7 @@ export default defineConfig(({ mode }) => {
       return null
     },
     transform(code, id) {
-      if (!isFirebase || id.split('?')[0] !== SKILLS_CLOUD) return null
+      if (id.split('?')[0] !== SKILLS_CLOUD) return null
       if (!code.includes(SKILLS_CLOUD_INIT)) {
         this.error('skills-app/data/cloud.js initialisiert Firebase anders als der Shell-Redirect erwartet.')
       }
@@ -267,6 +267,9 @@ export default defineConfig(({ mode }) => {
         ],
       },
       proxy: {
+        '^/nutrition(/|\\?|$)': 'http://127.0.0.1:9000',
+        '^/supplements(/|\\?|$)': 'http://127.0.0.1:9000',
+        '^/fuel(/|\\?|$)': 'http://127.0.0.1:9000',
         '^/exercises(/|\\?|$)': BACKEND,
         '^/session(/|\\?|$)':   BACKEND,
         '^/journal(/|\\?|$)':   BACKEND,

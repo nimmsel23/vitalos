@@ -1,0 +1,7 @@
+import './test-shell-navigation.mjs'
+import './test-shell-state.mjs'
+import './test-sixpack-auth.mjs'
+import './test-firebase-messaging.mjs'
+import './test-shell-auth-domain.mjs'
+import './test-sixpack-menu-height.mjs'
+import '../packages/mini-app-shell/test/offline-first.test.mjs'

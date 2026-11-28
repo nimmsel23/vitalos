@@ -1,7 +1,9 @@
-import { useEffect, useMemo, useState } from 'react'
+import { ACTIVITY_QUERY_KEY } from './activityChanges.js'
+import { shellQueryClient } from './queryClient.js'
+import { useMemo } from 'react'
 import { CalendarRange, ChevronLeft, ChevronRight, Dumbbell, Flame, BookOpen, CheckSquare, Beef, Wheat, Droplet } from 'lucide-react'
 import { getRecentSessions, getMealsHistory, getJournalHistory, getAllHabitJournalsHistory } from '@db'
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
+import { QueryClientProvider, useQuery } from '@tanstack/react-query'
 import { useAppData } from '@fuel/hooks/useAppData.js'
 import { useSettings } from '@fuel/store.js'
 import { computeMacroGoals } from '@fuel/views/Settings/GoalsSection.jsx'
@@ -16,9 +18,6 @@ const DOMAIN_META = [
   { key: 'habits', label: 'Habits', color: '#a3e635', Icon: CheckSquare },
 ]
 
-const fuelHeaderQueryClient = new QueryClient({
-  defaultOptions: { queries: { staleTime: 60_000 } },
-})
 
 function buildDayMap(sessions, meals, journal, habits) {
   return {
@@ -146,7 +145,7 @@ function FuelHeaderSummaryInner({ runtimeDate, compact = false }) {
 
 function FuelHeaderSummary(props) {
   return (
-    <QueryClientProvider client={fuelHeaderQueryClient}>
+    <QueryClientProvider client={shellQueryClient}>
       <FuelHeaderSummaryInner {...props} />
     </QueryClientProvider>
   )
@@ -165,33 +164,25 @@ function findSubTabLabel(tab, subTab) {
   return null
 }
 
-function useActivityMap() {
-  const [activity, setActivity] = useState(() => buildDayMap([], [], [], []))
-
-  useEffect(() => {
-    let cancelled = false
-
-    async function load() {
+function useActivityMap(tab, runtimeDate) {
+  const { data } = useQuery({
+    queryKey: [...ACTIVITY_QUERY_KEY, tab, runtimeDate],
+    queryFn: async () => {
       const [sessions, meals, journal, habits] = await Promise.all([
-        Promise.resolve(getRecentSessions?.(90)).catch(() => []),
-        Promise.resolve(getMealsHistory?.(90)).catch(() => []),
-        Promise.resolve(getJournalHistory?.(90)).catch(() => []),
-        Promise.resolve(getAllHabitJournalsHistory?.(90)).catch(() => []),
-      ])
-      if (!cancelled) setActivity(buildDayMap(sessions, meals, journal, habits))
-    }
-
-    load()
-    return () => { cancelled = true }
-  }, [])
-
-  return activity
+        getRecentSessions(90), getMealsHistory(90),
+        getJournalHistory(90), getAllHabitJournalsHistory(90),
+      ].map(request => request.catch(() => [])))
+      return buildDayMap(sessions, meals, journal, habits)
+    },
+    staleTime: 0,
+  }, shellQueryClient)
+  return data || buildDayMap([], [], [], [])
 }
 
 // Mobile-Header: schlanke Sticky-Leiste (Titel + Datum) + scrollende
 // Wochenleiste und Sub-Tabs. Konsumiert das obere Safe-Area-Inset selbst.
 function CompactHeader({ tab, subTab, runtimeDate, setRuntimeDate, subNav, onSubTab }) {
-  const activity = useActivityMap()
+  const activity = useActivityMap(tab, runtimeDate)
   const current = NAV_ITEMS.find((item) => item.id === tab) || NAV_ITEMS[0]
   const title = tab === 'home' ? 'Journal' : current.label
   const subLabel = findSubTabLabel(tab, subTab)
@@ -325,24 +316,7 @@ export default function ShellHeader(props) {
 }
 
 function DesktopHeader({ tab, subTab = null, runtimeDate, setRuntimeDate, compact = false, subNav = null, onSubTab = null, onNavigateDomain = null }) {
-  const [activity, setActivity] = useState(() => buildDayMap([], [], [], []))
-
-  useEffect(() => {
-    let cancelled = false
-
-    async function load() {
-      const [sessions, meals, journal, habits] = await Promise.all([
-        Promise.resolve(getRecentSessions?.(90)).catch(() => []),
-        Promise.resolve(getMealsHistory?.(90)).catch(() => []),
-        Promise.resolve(getJournalHistory?.(90)).catch(() => []),
-        Promise.resolve(getAllHabitJournalsHistory?.(90)).catch(() => []),
-      ])
-      if (!cancelled) setActivity(buildDayMap(sessions, meals, journal, habits))
-    }
-
-    load()
-    return () => { cancelled = true }
-  }, [])
+  const activity = useActivityMap(tab, runtimeDate)
 
   const current = NAV_ITEMS.find((item) => item.id === tab) || NAV_ITEMS[0]
   const currentSubTabLabel = findSubTabLabel(tab, subTab)
@@ -424,16 +398,17 @@ function DesktopHeader({ tab, subTab = null, runtimeDate, setRuntimeDate, compac
               const dayNum = date.slice(8)
 
               return (
-                <button
+                <div
                   key={date}
-                  onClick={() => setRuntimeDate(date)}
                   className={`rounded-2xl px-2 py-2 text-left transition ${selected ? 'bg-fit-accent/15 ring-1 ring-fit-accent/30' : 'hover:bg-white/5'}`}
                 >
+                  <button type="button" onClick={() => setRuntimeDate(date)} className="w-full text-left">
                   <div className="flex items-center justify-between">
                     <span className={`text-[9px] font-black uppercase tracking-[0.18em] ${selected ? 'text-fit-accent' : today ? 'text-fit-ink' : 'text-fit-dim'}`}>{dayLabel}</span>
                     {today && !selected && <span className="h-2 w-2 rounded-full bg-fit-accent" />}
                   </div>
                   <div className={`mt-1 text-sm font-black ${selected ? 'text-fit-ink' : 'text-fit-dim'}`}>{dayNum}</div>
+                  </button>
                   <div className="mt-2 grid grid-cols-2 gap-1">
                     {DOMAIN_META.map(({ key, label, color, Icon }) => {
                       const active = activity[key]?.has(date)
@@ -453,7 +428,7 @@ function DesktopHeader({ tab, subTab = null, runtimeDate, setRuntimeDate, compac
                       )
                     })}
                   </div>
-                </button>
+                </div>
               )
             })}
           </div>

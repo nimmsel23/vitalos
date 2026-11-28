@@ -30,3 +30,7 @@ export function formatRuntimeDate(isoDate, compact = false) {
     ? { weekday: 'short', day: 'numeric', month: 'short' }
     : { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })
 }
+
+export function isISODate(value) {
+  return /^\d{4}-\d{2}-\d{2}$/.test(value || '') && localISO(new Date(`${value}T12:00:00`)) === value
+}

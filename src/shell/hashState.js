@@ -95,8 +95,8 @@ export function readHashState() {
   if (mainTab === 'fuel' && subTab === 'habits') return { tab: 'habits', subTab: null }
   if (mainTab === 'fuel' && subTab === 'settings') return { tab: 'settings', subTab: null }
   return {
-    tab: SHELL_TABS.has(mainTab) ? mainTab : 'hub',
-    subTab: subTab || null,
+    tab: SHELL_TABS.has(mainTab) ? mainTab : 'home',
+    subTab: SHELL_TABS.has(mainTab) ? (subTab || null) : 'hub',
     date: fitnessSessionDate || null,
   }
 }
@@ -105,12 +105,12 @@ export function buildHashState({ tab, subTab = null, date = null }) {
   if (tab === 'sixpack') return subTab ? `#sixpack/${subTab}` : '#sixpack'
   if (tab === 'skills') return subTab ? `#skills/${subTab}` : '#skills'
   if (tab === 'fitness' && subTab) {
-    const parts = [subTab]
+    const parts = FITNESS_DIRECT_ROUTES.has(subTab) ? [subTab] : ['fitness', subTab]
     if (FITNESS_DATE_ROUTES.has(subTab) && date) parts.push(date)
     return `#${parts.join('/')}`
   }
   if (tab === 'fuel' && subTab) {
-    const parts = [subTab]
+    const parts = FUEL_DIRECT_ROUTES.has(subTab) ? [subTab] : ['fuel', subTab]
     if (date) parts.push(date === localToday() ? 'today' : date)
     return `#${parts.join('/')}`
   }
