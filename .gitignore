@@ -21,3 +21,6 @@ fuel-os/src/client/lib/firebase.config*.js
 
 # Shared-SOT nimmsel23/backend (CI checkt es hierhin aus, lokal Symlink → ~/dev/backend)
 /backend
+
+# Repo-local session log
+/RESULTS.md
